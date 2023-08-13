@@ -21,7 +21,7 @@
 <main
 	role="presentation"
 	class="absolute h-screen w-screen overflow-hidden"
-	on:mousedown={(event) => {
+	on:pointerdown={(event) => {
 		if (event.target === event.currentTarget) {
 			selection.clear()
 		}
@@ -33,7 +33,7 @@
 			data-selected={$selection.has(card.id)}
 			class="bg-base-800 border-base-700 max-w-64 data-[selected=true]:border-accent-500 absolute cursor-pointer overflow-clip rounded-md border shadow-lg"
 			style="transform: translate({card.position.x}px, {card.position.y}px);"
-			on:mousedown={(event) => {
+			on:pointerdown={(event) => {
 				event.preventDefault()
 				event.stopPropagation()
 				if (event.ctrlKey || event.shiftKey) {
