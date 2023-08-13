@@ -27,51 +27,88 @@
 	type ToolbarItem = {
 		id: string
 		onSelected?: () => void
+		onInput?: (input: EditorInput) => void
+
 		// there's no good component type that doesn't raise errors everywhere
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		icon: any
 	}
 
+	type EditorInput =
+		| {
+				type: `${"window" | "viewport" | "card"}:${
+					| "pointerdown"
+					| "pointerup"
+					| "pointermove"}`
+				event: PointerEvent
+		  }
+		| { type: "window:blur" }
+
+	const selectTool: ToolbarItem = {
+		id: "select",
+		icon: LucideMousePointer2,
+	}
+
+	const panTool: ToolbarItem = {
+		id: "pan",
+		icon: LucideMove,
+		onInput(input) {
+			switch (input.type) {
+				case "viewport:pointerdown": {
+					input.event.preventDefault()
+					input.event.preventDefault()
+					draggingViewport = true
+					break
+				}
+
+				case "window:pointermove": {
+					if (draggingViewport) {
+						input.event.preventDefault()
+						viewportOffset.x += input.event.movementX
+						viewportOffset.y += input.event.movementY
+					}
+					break
+				}
+
+				case "window:pointerup":
+				case "window:blur": {
+					draggingViewport = false
+					break
+				}
+			}
+		},
+	}
+
 	const toolbarItems: Array<ToolbarItem | typeof divider> = [
-		{
-			id: "select",
-			icon: LucideMousePointer2,
-		},
+		selectTool,
 		divider,
-		{
-			id: "pan",
-			icon: LucideMove,
-		},
+		panTool,
 	]
 
-	let currentTool = "select"
+	let currentTool = selectTool
 </script>
 
 <svelte:window
-	on:pointermove={(event) => {
-		if (draggingViewport) {
-			event.preventDefault()
-			viewportOffset.x += event.movementX
-			viewportOffset.y += event.movementY
-		}
-	}}
-	on:pointerup={() => {
-		draggingViewport = false
-	}}
-	on:blur={() => {
-		draggingViewport = false
-	}}
+	on:pointerdown={(event) =>
+		currentTool.onInput?.({ type: "window:pointerdown", event })}
+	on:pointermove={(event) =>
+		currentTool.onInput?.({ type: "window:pointermove", event })}
+	on:pointerup={(event) =>
+		currentTool.onInput?.({ type: "window:pointerup", event })}
+	on:blur={() => currentTool.onInput?.({ type: "window:blur" })}
 />
 
 <main class="relative flex h-[100dvh] flex-col items-center overflow-hidden">
 	<div
 		class="absolute inset-0 touch-none"
 		on:pointerdown={(event) => {
-			if (event.target === event.currentTarget) {
-				event.preventDefault()
-				selection.clear()
-				draggingViewport = true
-			}
+			currentTool.onInput?.({ type: "viewport:pointerdown", event })
+		}}
+		on:pointermove={(event) => {
+			currentTool.onInput?.({ type: "viewport:pointermove", event })
+		}}
+		on:pointerup={(event) => {
+			currentTool.onInput?.({ type: "viewport:pointerup", event })
 		}}
 	>
 		{#each cards as card}
@@ -85,13 +122,13 @@
 				)}
 				style="transform: translate({x}px, {y}px);"
 				on:pointerdown={(event) => {
-					event.preventDefault()
-					event.stopPropagation()
-					if (event.ctrlKey || event.shiftKey) {
-						selection.toggle(card.id)
-					} else {
-						selection.set([card.id])
-					}
+					currentTool.onInput?.({ type: "card:pointerdown", event })
+				}}
+				on:pointerup={(event) => {
+					currentTool.onInput?.({ type: "card:pointerup", event })
+				}}
+				on:pointermove={(event) => {
+					currentTool.onInput?.({ type: "card:pointermove", event })
 				}}
 			>
 				<h2 class="bg-base-900 p-2 text-xl font-light leading-none">
@@ -102,17 +139,17 @@
 		{/each}
 	</div>
 	<div class={panel("absolute inset-x-auto bottom-4 flex")}>
-		{#each toolbarItems as _item}
-			{@const item = _item}
+		{#each toolbarItems as it (it === divider ? "divider" : it.id)}
+			{@const item = it}
 			{#if item === divider}
 				<div class="my-2 shrink-0 basis-px self-stretch bg-slate-700" />
 			{:else}
 				<button
-					class="p-2 transition {currentTool === item.id
+					class="p-2 transition {currentTool.id === item.id
 						? 'text-accent-500'
 						: 'opacity-50 hover:opacity-100'}"
 					on:click={() => {
-						currentTool = item.id
+						currentTool = item
 						selection.clear()
 					}}
 				>
