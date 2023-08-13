@@ -36,17 +36,34 @@
 
 	type EditorInput =
 		| {
-				type: `${"window" | "viewport" | "card"}:${
+				type: `${"window" | "viewport"}:${
 					| "pointerdown"
 					| "pointerup"
 					| "pointermove"}`
 				event: PointerEvent
+		  }
+		| {
+				type: `card:${"pointerdown" | "pointerup" | "pointermove"}`
+				event: PointerEvent
+				card: Card
 		  }
 		| { type: "window:blur" }
 
 	const selectTool: ToolbarItem = {
 		id: "select",
 		icon: LucideMousePointer2,
+		onInput(input) {
+			if (input.type === "card:pointerdown") {
+				input.event.preventDefault()
+				input.event.stopPropagation()
+				selection.set([input.card.id])
+			}
+			if (input.type === "viewport:pointerdown") {
+				input.event.preventDefault()
+				input.event.stopPropagation()
+				selection.clear()
+			}
+		},
 	}
 
 	const panTool: ToolbarItem = {
@@ -122,13 +139,13 @@
 				)}
 				style="transform: translate({x}px, {y}px);"
 				on:pointerdown={(event) => {
-					currentTool.onInput?.({ type: "card:pointerdown", event })
+					currentTool.onInput?.({ type: "card:pointerdown", event, card })
 				}}
 				on:pointerup={(event) => {
-					currentTool.onInput?.({ type: "card:pointerup", event })
+					currentTool.onInput?.({ type: "card:pointerup", event, card })
 				}}
 				on:pointermove={(event) => {
-					currentTool.onInput?.({ type: "card:pointermove", event })
+					currentTool.onInput?.({ type: "card:pointermove", event, card })
 				}}
 			>
 				<h2 class="bg-base-900 p-2 text-xl font-light leading-none">
