@@ -7,6 +7,10 @@ declare global {
 		// interface PageData {}
 		// interface Platform {}
 	}
+
+	interface ErrorConstructor {
+		captureStackTrace(thisArg: Error, func?: Function): void
+	}
 }
 
 export {}
