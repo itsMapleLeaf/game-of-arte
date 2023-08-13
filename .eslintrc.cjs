@@ -13,6 +13,9 @@ module.exports = {
 		ecmaVersion: "latest",
 		extraFileExtensions: [".svelte"],
 	},
+	rules: {
+		"@typescript-eslint/ban-types": "off",
+	},
 	env: {
 		browser: true,
 		es2017: true,
