@@ -1,5 +1,6 @@
 import { Config } from "tailwindcss"
 import colors from "tailwindcss/colors"
+import plugin from "tailwindcss/plugin"
 
 export default {
 	content: ["./src/**/*.{html,js,svelte,ts}"],
@@ -16,5 +17,12 @@ export default {
 			maxHeight: (utils) => utils.theme("height"),
 		},
 	},
-	plugins: [],
+	plugins: [
+		plugin(function sizePlugin(api) {
+			api.matchUtilities(
+				{ s: (value) => ({ width: value, height: value }) },
+				{ values: { ...api.theme("width"), ...api.theme("height") } },
+			)
+		}),
+	],
 } satisfies Config
