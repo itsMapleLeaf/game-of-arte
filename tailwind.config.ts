@@ -18,11 +18,14 @@ export default {
 		},
 	},
 	plugins: [
-		plugin(function sizePlugin(api) {
+		plugin(function size(api) {
 			api.matchUtilities(
 				{ s: (value) => ({ width: value, height: value }) },
 				{ values: { ...api.theme("width"), ...api.theme("height") } },
 			)
+		}),
+		plugin(function ariaCurrentPage(api) {
+			api.addVariant("aria-current-page", '&[aria-current="page"]')
 		}),
 	],
 } satisfies Config
