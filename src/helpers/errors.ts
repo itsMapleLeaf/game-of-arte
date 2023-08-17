@@ -2,6 +2,7 @@ export function toError(error: unknown): Error {
 	return error instanceof Error ? error : new Error(String(error))
 }
 
+// eslint-disable-next-line @typescript-eslint/ban-types
 export function raise(value: unknown, caller?: Function): never {
 	if (typeof value === "string") {
 		const error = new Error(value)

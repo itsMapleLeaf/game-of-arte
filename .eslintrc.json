@@ -1,0 +1,25 @@
+{
+	"root": true,
+	"ignorePatterns": ["node_modules", "dist", "convex/_generated"],
+	"extends": [
+		"eslint:recommended",
+		"plugin:@typescript-eslint/recommended",
+		"plugin:react/recommended",
+		"plugin:react/jsx-runtime",
+		"plugin:react-hooks/recommended",
+		"prettier"
+	],
+	"parser": "@typescript-eslint/parser",
+	"plugins": ["@typescript-eslint"],
+	"parserOptions": {
+		"sourceType": "module",
+		"ecmaVersion": "latest"
+	},
+	"rules": {},
+	"env": {
+		"browser": true,
+		"node": true,
+		"es2021": true
+	},
+	"overrides": []
+}

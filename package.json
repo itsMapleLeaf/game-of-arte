@@ -1,44 +1,43 @@
 {
-	"name": "game-of-arte",
-	"version": "0.0.1",
+	"type": "module",
 	"private": true,
 	"scripts": {
 		"dev": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
 		"lint": "run-p --print-label --continue-on-error --silent lint:*",
-		"lint:types": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"lint:types": "tsc -b",
 		"lint:prettier": "prettier --cache --check .",
 		"lint:eslint": "eslint .",
 		"format": "run-s --print-label --silent format:*",
 		"format:eslint": "eslint --fix .",
 		"format:prettier": "prettier --cache --write ."
 	},
+	"dependencies": {
+		"lucide-react": "^0.268.0",
+		"react": "^18.2.0",
+		"react-dom": "^18.2.0",
+		"tailwind-merge": "^1.14.0"
+	},
 	"devDependencies": {
-		"@sveltejs/adapter-auto": "^2.0.0",
-		"@sveltejs/kit": "^1.20.4",
+		"@total-typescript/ts-reset": "^0.5.1",
+		"@types/react": "^18.2.20",
+		"@types/react-dom": "^18.2.7",
 		"@typescript-eslint/eslint-plugin": "^6.3.0",
 		"@typescript-eslint/parser": "^6.3.0",
+		"@vitejs/plugin-react": "^4.0.4",
 		"autoprefixer": "^10.4.14",
 		"eslint": "^8.28.0",
 		"eslint-config-prettier": "^9.0.0",
-		"eslint-plugin-svelte": "^2.30.0",
+		"eslint-plugin-react": "^7.33.2",
+		"eslint-plugin-react-hooks": "^4.6.0",
 		"npm-run-all": "^4.1.5",
 		"postcss": "^8.4.24",
-		"postcss-load-config": "^4.0.1",
 		"prettier": "^3.0.1",
-		"prettier-plugin-svelte": "^3.0.3",
 		"prettier-plugin-tailwindcss": "^0.5.2",
-		"svelte": "^4.0.5",
-		"svelte-check": "^3.4.3",
 		"tailwindcss": "^3.3.2",
-		"tslib": "^2.4.1",
 		"typescript": "^5.0.0",
-		"vite": "^4.4.2"
-	},
-	"type": "module",
-	"dependencies": {
-		"lucide-svelte": "^0.266.0",
-		"tailwind-merge": "^1.14.0"
+		"vite": "^4.4.2",
+		"vite-tsconfig-paths": "^4.2.0"
 	}
 }
