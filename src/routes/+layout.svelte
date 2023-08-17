@@ -2,8 +2,8 @@
 	import "../app.css"
 
 	import { goto } from "$app/navigation"
-	import NavLink from "$lib/NavLink.svelte"
 	import { characterStore } from "$lib/characters/character-store"
+	import NavLink from "$lib/components/NavLink.svelte"
 	import { container } from "$lib/styles/container"
 	import { panel } from "$lib/styles/panel"
 	import { LucidePlus } from "lucide-svelte"
@@ -16,7 +16,7 @@
 		{#each $characters as character}
 			<NavLink
 				href="/characters/{character.id}"
-				class="aria-current-page:border-accent-400 aria-current-page:opacity-100 flex items-center border-b border-transparent px-4 font-medium leading-none opacity-50"
+				class="flex items-center border-b border-transparent px-4 font-medium leading-none opacity-50 aria-current-page:border-accent-400 aria-current-page:opacity-100"
 			>
 				{character.name}
 			</NavLink>
