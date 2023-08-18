@@ -9,7 +9,8 @@
 		"noEmit": true,
 		"noUncheckedIndexedAccess": true,
 		"paths": {
-			"~/*": ["./src/*"]
+			"~/*": ["./src/*"],
+			"convex/*": ["./convex/*"]
 		},
 		"resolveJsonModule": true,
 		"target": "ESNext",
