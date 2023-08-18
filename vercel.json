@@ -6,7 +6,7 @@
 	"buildCommand": "pnpm validate-env && pnpm build && pnpm convex deploy",
 	"rewrites": [
 		{
-			"source": "/path:*",
+			"source": "/:path*",
 			"destination": "/index.html"
 		}
 	]
