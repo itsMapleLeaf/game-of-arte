@@ -1,14 +1,12 @@
 import { api } from "convex/_generated/api"
-import { useQuery } from "convex/react"
 import { LucideChevronRight } from "lucide-react"
 import { Link } from "wouter"
+import { useQuerySuspense } from "~/convex/useSuspenseQuery"
 import { panel } from "~/styles/panel"
 
 export function CharacterList() {
-	const characters = useQuery(api.characters.list)
-	return characters === undefined ? (
-		<p>Loading...</p>
-	) : characters.length === 0 ? (
+	const characters = useQuerySuspense(api.characters.list)
+	return characters.length === 0 ? (
 		<p>No characters found.</p>
 	) : (
 		<ul className="grid gap-2">
