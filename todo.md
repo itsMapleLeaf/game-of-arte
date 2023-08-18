@@ -5,3 +5,4 @@
 - [ ] character editor
 - [ ] clocks
 - [ ] dice
+- [ ] confirmation modal for signing out
