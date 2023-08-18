@@ -14,7 +14,7 @@
 		"format": "run-s --print-label --silent format:*",
 		"format:eslint": "eslint --fix .",
 		"format:prettier": "prettier --cache --write .",
-		"validate-env": "node scripts/validate-env.ts"
+		"validate-env": "node scripts/validate-env.mjs"
 	},
 	"dependencies": {
 		"@clerk/clerk-react": "^4.23.2",
