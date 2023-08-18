@@ -8,8 +8,8 @@ import {
 	type LucideIcon,
 } from "lucide-react"
 import { twMerge } from "tailwind-merge"
-import { panel } from "~/styles/panel"
-import { ActiveLink } from "../components/ActiveLink"
+import { panel } from "../styles/panel"
+import { ActiveLink } from "./ActiveLink"
 
 export function MobileBottomNav() {
 	return (

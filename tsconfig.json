@@ -3,20 +3,21 @@
 		"allowImportingTsExtensions": true,
 		"allowJs": true,
 		"checkJs": true,
+		"esModuleInterop": true,
 		"forceConsistentCasingInFileNames": true,
+		"isolatedModules": true,
+		"jsx": "react-jsx",
 		"module": "ESNext",
 		"moduleResolution": "Bundler",
 		"noEmit": true,
 		"noUncheckedIndexedAccess": true,
 		"paths": {
-			"~/*": ["./src/*"],
 			"convex/*": ["./convex/*"]
 		},
 		"resolveJsonModule": true,
-		"target": "ESNext",
 		"skipLibCheck": true,
 		"strict": true,
-		"jsx": "react-jsx"
+		"target": "ESNext"
 	},
 	"exclude": ["node_modules", "dist", "convex/_generated"]
 }

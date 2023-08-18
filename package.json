@@ -13,7 +13,8 @@
 		"lint:eslint": "eslint .",
 		"format": "run-s --print-label --silent format:*",
 		"format:eslint": "eslint --fix .",
-		"format:prettier": "prettier --cache --write ."
+		"format:prettier": "prettier --cache --write .",
+		"validate-env": "node scripts/validate-env.ts"
 	},
 	"dependencies": {
 		"@clerk/clerk-react": "^4.23.2",

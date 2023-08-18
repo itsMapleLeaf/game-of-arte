@@ -1,17 +1,19 @@
+import "./styles/tailwind.css"
+
 import { ClerkProvider, useAuth } from "@clerk/clerk-react"
 import { ConvexReactClient } from "convex/react"
 import { ConvexProviderWithClerk } from "convex/react-clerk"
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
-import { App } from "./app/App"
-import { LoadingSuspense } from "./app/LoadingPlaceholder"
-import { env } from "./env"
-import "./main.css"
+import { App } from "./components/App"
+import { LoadingSuspense } from "./components/LoadingPlaceholder"
 
-const convex = new ConvexReactClient(env.VITE_PUBLIC_CONVEX_URL)
+const convex = new ConvexReactClient(import.meta.env.VITE_PUBLIC_CONVEX_URL)
 
 createRoot(document.querySelector("#root")!).render(
-	<ClerkProvider publishableKey={env.VITE_PUBLIC_CLERK_PUBLISHABLE_KEY}>
+	<ClerkProvider
+		publishableKey={import.meta.env.VITE_PUBLIC_CLERK_PUBLISHABLE_KEY}
+	>
 		<ConvexProviderWithClerk client={convex} useAuth={useAuth}>
 			<StrictMode>
 				<LoadingSuspense className="fixed inset-0">
