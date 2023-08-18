@@ -1,3 +1,4 @@
+import chalk from "chalk"
 import { readFile } from "node:fs/promises"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
@@ -19,7 +20,11 @@ const variables = envExampleContent
 const missing = variables.filter((variable) => !process.env[variable])
 
 if (missing.length) {
-	const missingList = missing.map((variable) => `- ${variable}`).join("\n")
-	console.error(`Missing environment variables:\n${missingList}`)
+	const missingList = missing.map((variable) => ` • ${variable}`).join("\n")
+	console.error(
+		chalk.redBright`❌ Missing environment variables:\n` + missingList,
+	)
 	process.exit(1)
 }
+
+console.info(chalk.greenBright`✅ All environment variables are set.`)
