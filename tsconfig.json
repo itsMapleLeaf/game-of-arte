@@ -12,6 +12,7 @@
 			"~/*": ["./src/*"]
 		},
 		"resolveJsonModule": true,
+		"target": "ESNext",
 		"skipLibCheck": true,
 		"strict": true,
 		"jsx": "react-jsx"
