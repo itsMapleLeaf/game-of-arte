@@ -12,6 +12,7 @@ import {
 import { useEffect } from "react"
 import { Link, Redirect, Route, Switch } from "wouter"
 import { panel } from "~/styles/panel"
+import { ActiveLink } from "./ActiveLink"
 
 export function App() {
 	const auth = useConvexAuth()
@@ -63,23 +64,26 @@ export function App() {
 				</Switch>
 			</main>
 
-			<footer className={panel("sticky bottom-0 mt-auto border-t shadow-md")}>
+			<footer className={panel("sticky bottom-0 mt-auto shadow-md")}>
 				<nav className="mx-auto grid w-full max-w-lg auto-cols-fr grid-flow-col">
-					<Link href="/characters">
-						<a>
-							<TabNavItem icon={LucideUsers} label="Characters" />
-						</a>
-					</Link>
-					<Link href="/clocks">
-						<a>
-							<TabNavItem icon={LucideClock} label="Clocks" />
-						</a>
-					</Link>
-					<Link href="/dice">
-						<a>
-							<TabNavItem icon={LucideDices} label="Dice" />
-						</a>
-					</Link>
+					<ActiveLink
+						href="/characters"
+						className="opacity-50 transition aria-[current=page]:opacity-100"
+					>
+						<TabNavItem icon={LucideUsers} label="Characters" />
+					</ActiveLink>
+					<ActiveLink
+						href="/clocks"
+						className="opacity-50 transition aria-[current=page]:opacity-100"
+					>
+						<TabNavItem icon={LucideClock} label="Clocks" />
+					</ActiveLink>
+					<ActiveLink
+						href="/dice"
+						className="opacity-50 transition aria-[current=page]:opacity-100"
+					>
+						<TabNavItem icon={LucideDices} label="Dice" />
+					</ActiveLink>
 					{user ? (
 						<SignOutButton>
 							<button>
