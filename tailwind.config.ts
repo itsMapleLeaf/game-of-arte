@@ -3,11 +3,11 @@ import colors from "tailwindcss/colors"
 import plugin from "tailwindcss/plugin"
 
 export default {
-	content: ["./src/**/*.{html,js,svelte,ts}", "./index.html"],
+	content: ["./src/**/*.{ts,tsx}", "./index.html"],
 	theme: {
 		extend: {
 			colors: {
-				base: colors.gray,
+				base: colors.zinc,
 				accent: colors.emerald,
 				error: colors.red,
 			},

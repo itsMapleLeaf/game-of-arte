@@ -1,3 +1,7 @@
 - [x] set up auth with convex and clerk
-- [ ] add tanstack router
-- [ ] convert svelte components to react
+- [x] bottom panel navigation
+- [x] character list
+- [ ] character details
+- [ ] character editor
+- [ ] clocks
+- [ ] dice
