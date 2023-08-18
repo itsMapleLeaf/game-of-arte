@@ -14,7 +14,7 @@
 		"format": "run-s --print-label --silent format:*",
 		"format:eslint": "eslint --fix .",
 		"format:prettier": "prettier --cache --write .",
-		"validate-env": "node scripts/validate-env.mjs"
+		"validate-env": "tsx scripts/validate-env.ts"
 	},
 	"dependencies": {
 		"@clerk/clerk-react": "^4.23.2",
@@ -44,6 +44,7 @@
 		"prettier": "^3.0.2",
 		"prettier-plugin-tailwindcss": "^0.5.3",
 		"tailwindcss": "^3.3.2",
+		"tsx": "^3.12.7",
 		"typescript": "^5.2.1-rc",
 		"vite": "^4.4.2",
 		"vite-tsconfig-paths": "^4.2.0"
