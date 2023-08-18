@@ -3,7 +3,7 @@ import { ConvexReactClient } from "convex/react"
 import { ConvexProviderWithClerk } from "convex/react-clerk"
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
-import { App } from "./components/App"
+import { App } from "./app/App"
 import { env } from "./env"
 import "./main.css"
 

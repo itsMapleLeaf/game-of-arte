@@ -2,7 +2,9 @@
 	"type": "module",
 	"private": true,
 	"scripts": {
-		"dev": "vite dev",
+		"dev": "run-p --print-label --race dev:*",
+		"dev:vite": "vite dev",
+		"dev:convex": "convex dev",
 		"build": "vite build",
 		"preview": "vite preview",
 		"lint": "run-p --print-label --continue-on-error --silent lint:*",
