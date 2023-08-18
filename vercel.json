@@ -3,5 +3,11 @@
 	"github": {
 		"silent": true
 	},
-	"buildCommand": "pnpm validate-env && pnpm build && pnpm convex deploy"
+	"buildCommand": "pnpm validate-env && pnpm build && pnpm convex deploy",
+	"rewrites": [
+		{
+			"source": "/path:*",
+			"destination": "/index.html"
+		}
+	]
 }
