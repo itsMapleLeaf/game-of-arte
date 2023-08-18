@@ -1,7 +1,7 @@
 import { api } from "convex/_generated/api"
 import { LucideChevronRight } from "lucide-react"
 import { Link } from "wouter"
-import { useQuerySuspense } from "~/convex/useSuspenseQuery"
+import { useQuerySuspense } from "~/helpers/useQuerySuspense"
 import { panel } from "~/styles/panel"
 
 export function CharacterList() {

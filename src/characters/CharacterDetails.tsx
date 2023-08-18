@@ -1,6 +1,6 @@
 import { api } from "convex/_generated/api"
 import { type Id } from "convex/_generated/dataModel"
-import { useQuerySuspense } from "~/convex/useSuspenseQuery"
+import { useQuerySuspense } from "~/helpers/useQuerySuspense"
 
 export function CharacterDetails({ characterId }: { characterId: string }) {
 	const result = useQuerySuspense(api.characters.get, {

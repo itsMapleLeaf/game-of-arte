@@ -1,13 +1,12 @@
-import { type WatchQueryOptions } from "convex/react"
+import { useConvex, type WatchQueryOptions } from "convex/react"
 import { type ArgsAndOptions, type FunctionReference } from "convex/server"
 import { useEffect, useState } from "react"
-import { raise } from "~/helpers/errors"
-import { convex } from "./convex"
 
 export function useQuerySuspense<Query extends FunctionReference<"query">>(
 	query: Query,
 	...argsAndOptions: ArgsAndOptions<Query, WatchQueryOptions>
 ) {
+	const convex = useConvex()
 	const watch = convex.watchQuery(query, ...argsAndOptions)
 	const initialValue = watch.localQueryResult()
 
@@ -24,7 +23,10 @@ export function useQuerySuspense<Query extends FunctionReference<"query">>(
 
 	useEffect(() => {
 		return watch.onUpdate(() => {
-			const value = watch.localQueryResult() ?? raise("No query result")
+			const value = watch.localQueryResult()
+			if (!value) {
+				throw new Error("No query result")
+			}
 			setValue(value)
 		})
 	}, [watch])
