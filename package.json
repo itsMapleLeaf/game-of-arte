@@ -24,6 +24,7 @@
 		"wouter": "^2.11.0"
 	},
 	"devDependencies": {
+		"@faker-js/faker": "^8.0.2",
 		"@total-typescript/ts-reset": "^0.5.1",
 		"@types/node": "^20.5.0",
 		"@types/react": "^18.2.20",

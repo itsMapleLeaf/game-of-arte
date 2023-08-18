@@ -11,7 +11,7 @@ export function App() {
 	useIdentify()
 	return (
 		<div className="flex min-h-[100dvh] flex-col">
-			<main className="mx-auto w-full max-w-screen-md p-2 sm:p-4 md:py-8">
+			<main className="mx-auto w-full max-w-screen-md">
 				<LoadingSuspense>
 					<Switch>
 						<Route path="/">

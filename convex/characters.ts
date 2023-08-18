@@ -1,3 +1,4 @@
+import { faker } from "@faker-js/faker"
 import { mutation, query } from "convex/_generated/server"
 import { v } from "convex/values"
 import { requireAdmin, requirePlayer } from "./auth"
@@ -16,14 +17,26 @@ export const get = query({
 	},
 })
 
-export const protectedCreate = mutation({
-	args: { name: v.string() },
+function randomCharacterName() {
+	faker.seed(Math.random() * 1000000)
+	const adjective = faker.word.adjective()
+	const noun = faker.animal.type()
+	return `${capitalize(adjective)} ${capitalize(noun)}`
+}
+
+function capitalize(str: string) {
+	return str.charAt(0).toUpperCase() + str.slice(1)
+}
+
+export const create = mutation({
+	args: { name: v.optional(v.string()) },
 	handler: async (ctx, args) => {
 		await requireAdmin(ctx)
-		await ctx.db.insert("characters", {
-			name: args.name,
+		const id = await ctx.db.insert("characters", {
+			name: args.name ?? randomCharacterName(),
 			sheetValues: [],
 		})
+		return { id }
 	},
 })
 
