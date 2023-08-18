@@ -8,7 +8,7 @@
 		"dev:vite": "vite dev",
 		"build": "vite build",
 		"preview": "vite preview",
-		"lint": "run-p --print-label --continue-on-error --silent lint:*",
+		"lint": "run-p --print-label --continue-on-error lint:*",
 		"lint:types": "tsc -b",
 		"lint:prettier": "prettier --cache --check .",
 		"lint:eslint": "eslint .",
