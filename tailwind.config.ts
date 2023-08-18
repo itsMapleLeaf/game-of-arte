@@ -1,6 +1,7 @@
-import { Config } from "tailwindcss"
+import { type Config } from "tailwindcss"
 import colors from "tailwindcss/colors"
 import plugin from "tailwindcss/plugin"
+import { type KeyValuePair } from "tailwindcss/types/config"
 
 export default {
 	content: ["./src/**/*.{ts,tsx}", "./index.html"],
@@ -11,16 +12,16 @@ export default {
 				accent: colors.emerald,
 				error: colors.red,
 			},
-			minWidth: (utils) => utils.theme("width"),
-			maxWidth: (utils) => utils.theme("width"),
-			minHeight: (utils) => utils.theme("height"),
-			maxHeight: (utils) => utils.theme("height"),
+			minWidth: (utils) => utils.theme("width") as KeyValuePair,
+			maxWidth: (utils) => utils.theme("width") as KeyValuePair,
+			minHeight: (utils) => utils.theme("height") as KeyValuePair,
+			maxHeight: (utils) => utils.theme("height") as KeyValuePair,
 		},
 	},
 	plugins: [
 		plugin(function size(api) {
 			api.matchUtilities(
-				{ s: (value) => ({ width: value, height: value }) },
+				{ s: (value: string) => ({ width: value, height: value }) },
 				{ values: { ...api.theme("width"), ...api.theme("height") } },
 			)
 		}),

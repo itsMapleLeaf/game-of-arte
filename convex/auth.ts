@@ -1,5 +1,5 @@
 import { internal } from "./_generated/api"
-import { QueryCtx, action, query } from "./_generated/server"
+import { action, query, type QueryCtx } from "./_generated/server"
 import { findUserByTokenIdentifier } from "./users"
 
 export const identify = action({
@@ -35,7 +35,7 @@ export const identify = action({
 		}
 
 		await ctx.runMutation(internal.users.update, {
-			name: identity.name as string,
+			name: identity.name!,
 			tokenIdentifier: identity.tokenIdentifier,
 			discordUserId: discordAccount.provider_user_id,
 		})

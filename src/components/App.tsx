@@ -1,14 +1,13 @@
 import { SignInButton, SignOutButton, useUser } from "@clerk/clerk-react"
 import { api } from "convex/_generated/api"
-import { useAction, useConvexAuth, useMutation, useQuery } from "convex/react"
+import { useAction, useConvexAuth, useQuery } from "convex/react"
 import {
 	LucideChevronRight,
 	LucideClock,
 	LucideDices,
-	LucideIcon,
 	LucideLogIn,
-	LucideUser,
 	LucideUsers,
+	type LucideIcon,
 } from "lucide-react"
 import { useEffect } from "react"
 import { Link, Redirect, Route, Switch } from "wouter"
@@ -23,13 +22,10 @@ export function App() {
 		if (auth.isLoading) return
 		if (!auth.isAuthenticated) return
 		if (!user) return
-		identify()
+		void identify()
 	}, [auth.isAuthenticated, auth.isLoading, identify, user])
 
-	const roles = useQuery(api.auth.roles)
 	const characters = useQuery(api.characters.list)
-	const createCharacter = useMutation(api.characters.protectedCreate)
-	const removeCharacter = useMutation(api.characters.remove)
 
 	return (
 		<div className="flex min-h-[100dvh] flex-col">
@@ -87,10 +83,7 @@ export function App() {
 					{user ? (
 						<SignOutButton>
 							<button>
-								<TabNavItem
-									icon={user?.imageUrl ?? LucideUser}
-									label="Sign Out"
-								/>
+								<TabNavItem icon={user.imageUrl} label="Sign Out" />
 							</button>
 						</SignOutButton>
 					) : (
