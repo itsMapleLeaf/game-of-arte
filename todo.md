@@ -1,2 +1,3 @@
-- [ ] convert svelte components to react + add tanstack router
-- [ ] set up auth with convex and clerk
+- [x] set up auth with convex and clerk
+- [ ] add tanstack router
+- [ ] convert svelte components to react
