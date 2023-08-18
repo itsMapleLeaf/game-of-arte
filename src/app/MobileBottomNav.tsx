@@ -19,19 +19,19 @@ export function MobileBottomNav() {
 					href="/characters"
 					className="opacity-50 transition aria-[current=page]:opacity-100"
 				>
-					<TabNavItem icon={LucideUsers} label="Characters" />
+					<TabContent icon={LucideUsers} label="Characters" />
 				</ActiveLink>
 				<ActiveLink
 					href="/clocks"
 					className="opacity-50 transition aria-[current=page]:opacity-100"
 				>
-					<TabNavItem icon={LucideClock} label="Clocks" />
+					<TabContent icon={LucideClock} label="Clocks" />
 				</ActiveLink>
 				<ActiveLink
 					href="/dice"
 					className="opacity-50 transition aria-[current=page]:opacity-100"
 				>
-					<TabNavItem icon={LucideDices} label="Dice" />
+					<TabContent icon={LucideDices} label="Dice" />
 				</ActiveLink>
 				<AuthButton />
 			</nav>
@@ -42,7 +42,7 @@ export function MobileBottomNav() {
 function AuthButton() {
 	const { user, isLoaded } = useUser()
 	return !isLoaded ? (
-		<TabNavItem
+		<TabContent
 			icon={LucideLoader2}
 			iconClass="animate-spin"
 			label="Loading..."
@@ -50,19 +50,19 @@ function AuthButton() {
 	) : user ? (
 		<SignOutButton>
 			<button>
-				<TabNavItem icon={user.imageUrl} label="Sign Out" />
+				<TabContent icon={user.imageUrl} label="Sign Out" />
 			</button>
 		</SignOutButton>
 	) : (
 		<SignInButton>
 			<button>
-				<TabNavItem icon={LucideLogIn} label="Sign In" />
+				<TabContent icon={LucideLogIn} label="Sign In" />
 			</button>
 		</SignInButton>
 	)
 }
 
-function TabNavItem({
+function TabContent({
 	icon: Icon,
 	iconClass,
 	label,
