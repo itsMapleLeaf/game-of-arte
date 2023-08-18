@@ -1,0 +1,14 @@
+{
+	"$schema": "https://openapi.vercel.sh/vercel.json",
+	"github": {
+		"silent": true
+	},
+	"buildCommand": "pnpm validate-env && pnpm build",
+	"redirects": [
+		{
+			"source": "/:path*",
+			"destination": "/index.html",
+			"permanent": true
+		}
+	]
+}
