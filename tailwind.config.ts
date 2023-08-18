@@ -3,7 +3,7 @@ import colors from "tailwindcss/colors"
 import plugin from "tailwindcss/plugin"
 
 export default {
-	content: ["./src/**/*.{html,js,svelte,ts}"],
+	content: ["./src/**/*.{html,js,svelte,ts}", "./index.html"],
 	theme: {
 		extend: {
 			colors: {
