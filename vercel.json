@@ -3,12 +3,5 @@
 	"github": {
 		"silent": true
 	},
-	"buildCommand": "pnpm validate-env && pnpm build && pnpm convex deploy",
-	"redirects": [
-		{
-			"source": "/:path*",
-			"destination": "/index.html",
-			"permanent": true
-		}
-	]
+	"buildCommand": "pnpm validate-env && pnpm build && pnpm convex deploy"
 }
