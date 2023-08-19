@@ -6,7 +6,7 @@ export function LoadingSpinner(props: LucideProps) {
 	return (
 		<LucideLoader2
 			{...props}
-			className={twMerge("animate-spin s-12", props.className)}
+			className={twMerge("animate-spin", props.className)}
 		/>
 	)
 }
@@ -19,7 +19,7 @@ export function LoadingPlaceholder(props: { className?: string }) {
 				props.className,
 			)}
 		>
-			<LoadingSpinner />
+			<LoadingSpinner className="s-12" />
 		</div>
 	)
 }
