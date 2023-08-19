@@ -1,7 +1,7 @@
 import { Redirect, Route, Switch } from "wouter"
 import { useIdentify } from "../helpers/useIdentify"
 import { CharacterDetails } from "./CharacterDetails"
-import { CharacterList } from "./CharacterList"
+import { CharacterListRoute } from "./CharacterListRoute"
 import { ClockList } from "./ClockList"
 import { DiceRoute } from "./DiceRoute"
 import { LoadingSuspense } from "./LoadingPlaceholder"
@@ -18,7 +18,7 @@ export function App() {
 							<Redirect to="/characters" />
 						</Route>
 						<Route path="/characters">
-							<CharacterList />
+							<CharacterListRoute />
 						</Route>
 						<Route path="/characters/:characterId">
 							{(props) => <CharacterDetails {...props} />}

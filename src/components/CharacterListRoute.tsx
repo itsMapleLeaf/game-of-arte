@@ -6,13 +6,13 @@ import { Link, useLocation } from "wouter"
 import { useAction } from "../helpers/useAction"
 import { useQuerySuspense } from "../helpers/useQuerySuspense"
 import { panel } from "../styles/panel"
+import { LoadingSuspense } from "./LoadingPlaceholder"
 
 const itemClass = panel(
 	"flex items-center rounded-md border gap-2 p-3 text-xl font-light leading-tight shadow",
 )
 
-export function CharacterList() {
-	const characters = useQuerySuspense(api.characters.list)
+export function CharacterListRoute() {
 	return (
 		<>
 			<header className={panel("flex border-b p-2 shadow-md")}>
@@ -21,27 +21,30 @@ export function CharacterList() {
 					<span className="sr-only">Create Character</span>
 				</CreateCharacterButton>
 			</header>
-
 			<section className="grid gap-2 p-2">
-				{characters.length === 0 ? (
-					<p>No characters found.</p>
-				) : (
-					<ul className="contents">
-						{characters.map((character) => (
-							<li key={character._id}>
-								<Link
-									href={`/characters/${character._id}`}
-									className={itemClass}
-								>
-									<LucideChevronsRight />
-									{character.name}
-								</Link>
-							</li>
-						))}
-					</ul>
-				)}
+				<LoadingSuspense>
+					<CharacterList />
+				</LoadingSuspense>
 			</section>
 		</>
+	)
+}
+
+function CharacterList() {
+	const characters = useQuerySuspense(api.characters.list)
+	return characters.length === 0 ? (
+		<p>No characters found.</p>
+	) : (
+		<ul className="contents">
+			{characters.map((character) => (
+				<li key={character._id}>
+					<Link href={`/characters/${character._id}`} className={itemClass}>
+						<LucideChevronsRight />
+						{character.name}
+					</Link>
+				</li>
+			))}
+		</ul>
 	)
 }
 
