@@ -51,5 +51,10 @@
 		"valibot": "^0.12.0",
 		"vite": "^4.4.2",
 		"vite-tsconfig-paths": "^4.2.0"
+	},
+	"pnpm": {
+		"patchedDependencies": {
+			"randimals@2.0.3": "patches/randimals@2.0.3.patch"
+		}
 	}
 }

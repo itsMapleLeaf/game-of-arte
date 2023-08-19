@@ -1,0 +1,13 @@
+diff --git a/package.json b/package.json
+index ce56658611e9451d4eb55ab91327f5c082375dab..815c321498e1a480cc8a9918c584e58f61043bc5 100644
+--- a/package.json
++++ b/package.json
+@@ -8,7 +8,7 @@
+   "repository": "https://github.com/vinhvn/randimals",
+   "bugs": "https://github.com/vinhvn/randimals/issues",
+   "main": "./index.js",
+-  "types": "./lib/types.d.ts",
++  "types": "./dist/index.d.ts",
+   "bin": {
+     "randimals": "./bin/cli.js"
+   },

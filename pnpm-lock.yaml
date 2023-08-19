@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  randimals@2.0.3:
+    hash: egwc6h6tpixtyqfzmgmafb5h3a
+    path: patches/randimals@2.0.3.patch
+
 dependencies:
   '@clerk/clerk-react':
     specifier: ^4.23.2
@@ -81,7 +86,7 @@ devDependencies:
     version: 0.5.3(prettier@3.0.2)
   randimals:
     specifier: ^2.0.3
-    version: 2.0.3
+    version: 2.0.3(patch_hash=egwc6h6tpixtyqfzmgmafb5h3a)
   tailwindcss:
     specifier: ^3.3.2
     version: 3.3.3
@@ -3154,13 +3159,14 @@ packages:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
     dev: true
 
-  /randimals@2.0.3:
+  /randimals@2.0.3(patch_hash=egwc6h6tpixtyqfzmgmafb5h3a):
     resolution: {integrity: sha512-GLDC/TDfsqnkYKXNK6jBKDerAqlbuoK49HVUNz40Qxa6cXVi38j4QtPu1OBNukpnHAWxrmS9ng+NHglNrZ4snw==}
     hasBin: true
     dependencies:
       change-case: 4.1.2
       commander: 7.2.0
     dev: true
+    patched: true
 
   /react-dom@18.2.0(react@18.2.0):
     resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==}
