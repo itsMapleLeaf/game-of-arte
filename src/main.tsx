@@ -1,4 +1,4 @@
-import "./styles/tailwind.css"
+import "tailwindcss/tailwind.css"
 
 import { ClerkProvider, useAuth } from "@clerk/clerk-react"
 import { ConvexReactClient } from "convex/react"
