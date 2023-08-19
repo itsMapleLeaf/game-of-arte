@@ -1,20 +1,21 @@
-import { useConvex, type WatchQueryOptions } from "convex/react"
-import { type ArgsAndOptions, type FunctionReference } from "convex/server"
+import { useConvex } from "convex/react"
+import { type OptionalRestArgs, type FunctionReference } from "convex/server"
 import { useEffect, useState } from "react"
 
 export function useQuerySuspense<Query extends FunctionReference<"query">>(
 	query: Query,
-	...argsAndOptions: ArgsAndOptions<Query, WatchQueryOptions>
+	...args: OptionalRestArgs<Query>
 ) {
 	const convex = useConvex()
-	const watch = convex.watchQuery(query, ...argsAndOptions)
+	const watch = convex.watchQuery(query, ...args)
 	const initialValue = watch.localQueryResult()
 
 	if (initialValue === undefined) {
 		// eslint-disable-next-line @typescript-eslint/no-throw-literal
 		throw new Promise<void>((resolve) => {
-			watch.onUpdate(() => {
+			const unsubscribe = watch.onUpdate(() => {
 				resolve()
+				unsubscribe()
 			})
 		})
 	}
