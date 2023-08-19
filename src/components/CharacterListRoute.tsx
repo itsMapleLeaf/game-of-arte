@@ -3,7 +3,7 @@ import { useMutation } from "convex/react"
 import { LucideUserPlus } from "lucide-react"
 import { twMerge } from "tailwind-merge"
 import { useLocation } from "wouter"
-import { useAction } from "../helpers/useAction"
+import { useAsyncCallback } from "../helpers/useAsyncCallback"
 import { panel } from "../styles/panel"
 import { CharacterList } from "./CharacterList"
 import { LoadingSuspense } from "./LoadingPlaceholder"
@@ -31,7 +31,7 @@ function CreateCharacterButton(
 ) {
 	const [, setLocation] = useLocation()
 
-	const [create, state] = useAction(useMutation(api.characters.create), {
+	const [create, state] = useAsyncCallback(useMutation(api.characters.create), {
 		onSuccess(data) {
 			setLocation(`/characters/${data.id}`)
 		},

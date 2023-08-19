@@ -1,22 +1,22 @@
 import { useRef, useState } from "react"
 
-type ActionState<T> =
+type AsyncCallbackState<T> =
 	| { status: "idle" }
 	| { status: "loading" }
 	| { status: "success"; data: T }
 	| { status: "error"; error: unknown }
 
-type ActionOptions<T> = {
+type UseAsyncCallbackOptions<T> = {
 	onSuccess?: (data: T) => void
 	onError?: (error: unknown) => void
 	onSettled?: () => void
 }
 
-export function useAction<Args extends unknown[], Return>(
+export function useAsyncCallback<Args extends unknown[], Return>(
 	callback: (...args: Args) => Return | PromiseLike<Return>,
-	options: ActionOptions<Awaited<Return>> = {},
+	options: UseAsyncCallbackOptions<Awaited<Return>> = {},
 ) {
-	const [state, setState] = useState<ActionState<Awaited<Return>>>({
+	const [state, setState] = useState<AsyncCallbackState<Awaited<Return>>>({
 		status: "idle",
 	})
 	const latestToken = useRef<symbol>()
@@ -45,5 +45,36 @@ export function useAction<Args extends unknown[], Return>(
 		})()
 	}
 
-	return [run, state] as const
+	let computedState
+	if (state.status === "idle") {
+		computedState = {
+			...state,
+			isLoading: false,
+			isSuccess: false,
+			isError: false,
+		} as const
+	} else if (state.status === "loading") {
+		computedState = {
+			...state,
+			isLoading: true,
+			isSuccess: false,
+			isError: false,
+		} as const
+	} else if (state.status === "success") {
+		computedState = {
+			...state,
+			isLoading: false,
+			isSuccess: true,
+			isError: false,
+		} as const
+	} else {
+		computedState = {
+			...state,
+			isLoading: false,
+			isSuccess: false,
+			isError: true,
+		} as const
+	}
+
+	return [run, computedState] as const
 }
