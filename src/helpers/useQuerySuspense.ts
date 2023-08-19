@@ -1,5 +1,5 @@
 import { useConvex } from "convex/react"
-import { type OptionalRestArgs, type FunctionReference } from "convex/server"
+import { type FunctionReference, type OptionalRestArgs } from "convex/server"
 import { useEffect, useState } from "react"
 
 export function useQuerySuspense<Query extends FunctionReference<"query">>(
@@ -13,9 +13,8 @@ export function useQuerySuspense<Query extends FunctionReference<"query">>(
 	if (initialValue === undefined) {
 		// eslint-disable-next-line @typescript-eslint/no-throw-literal
 		throw new Promise<void>((resolve) => {
-			const unsubscribe = watch.onUpdate(() => {
+			watch.onUpdate(() => {
 				resolve()
-				unsubscribe()
 			})
 		})
 	}
