@@ -1,5 +1,5 @@
 import { mutation, query } from "convex/_generated/server"
-import { v } from "convex/values"
+import { v, type Validator } from "convex/values"
 import randimals from "randimals"
 import * as vb from "valibot"
 import { type Doc } from "./_generated/dataModel"
@@ -43,7 +43,7 @@ export const update = mutation({
 export const updateData = mutation({
 	args: {
 		id: v.id("characters"),
-		data: v.any(),
+		data: v.any() as Validator<Record<string, string | number>>,
 	},
 	handler: async (ctx, args) => {
 		await requirePlayer(ctx)
@@ -58,7 +58,7 @@ export const updateData = mutation({
 		await ctx.db.patch(args.id, {
 			data: {
 				...character.data,
-				...characterDataSchema.parse(args.data),
+				...args.data,
 			},
 		})
 	},
