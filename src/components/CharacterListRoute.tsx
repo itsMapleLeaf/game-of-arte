@@ -1,16 +1,12 @@
 import { api } from "convex/_generated/api"
 import { useMutation } from "convex/react"
-import { LucideChevronsRight, LucideUserPlus } from "lucide-react"
+import { LucideUserPlus } from "lucide-react"
 import { twMerge } from "tailwind-merge"
-import { Link, useLocation } from "wouter"
+import { useLocation } from "wouter"
 import { useAction } from "../helpers/useAction"
-import { useQuerySuspense } from "../helpers/useQuerySuspense"
 import { panel } from "../styles/panel"
+import { CharacterList } from "./CharacterList"
 import { LoadingSuspense } from "./LoadingPlaceholder"
-
-const itemClass = panel(
-	"flex items-center rounded-md border gap-2 p-3 text-xl font-light leading-tight shadow",
-)
 
 export function CharacterListRoute() {
 	return (
@@ -27,24 +23,6 @@ export function CharacterListRoute() {
 				</LoadingSuspense>
 			</section>
 		</>
-	)
-}
-
-function CharacterList() {
-	const characters = useQuerySuspense(api.characters.list)
-	return characters.length === 0 ? (
-		<p>No characters found.</p>
-	) : (
-		<ul className="contents">
-			{characters.map((character) => (
-				<li key={character._id}>
-					<Link href={`/characters/${character._id}`} className={itemClass}>
-						<LucideChevronsRight />
-						{character.name}
-					</Link>
-				</li>
-			))}
-		</ul>
 	)
 }
 
