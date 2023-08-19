@@ -11,11 +11,6 @@ export default defineSchema({
 		.index("by_discord_user_id", ["discordUserId"]),
 	characters: defineTable({
 		name: v.string(),
-		sheetValues: v.array(
-			v.object({
-				key: v.string(),
-				value: v.union(v.string(), v.number()),
-			}),
-		),
+		data: v.any(),
 	}),
 })

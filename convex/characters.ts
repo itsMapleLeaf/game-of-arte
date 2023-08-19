@@ -1,11 +1,14 @@
 import { faker } from "@faker-js/faker"
 import { mutation, query } from "convex/_generated/server"
 import { v } from "convex/values"
+import * as vb from "valibot"
+import { type Doc } from "./_generated/dataModel"
 import { requireAdmin, requirePlayer } from "./auth"
 
 export const list = query({
 	handler: async (ctx) => {
-		return await ctx.db.query("characters").collect()
+		const characters = await ctx.db.query("characters").collect()
+		return characters.map(parseCharacter)
 	},
 })
 
@@ -17,24 +20,13 @@ export const get = query({
 	},
 })
 
-function randomCharacterName() {
-	faker.seed(Math.random() * 1000000)
-	const adjective = faker.word.adjective()
-	const noun = faker.animal.type()
-	return `${capitalize(adjective)} ${capitalize(noun)}`
-}
-
-function capitalize(str: string) {
-	return str.charAt(0).toUpperCase() + str.slice(1)
-}
-
 export const create = mutation({
 	args: { name: v.optional(v.string()) },
 	handler: async (ctx, args) => {
 		await requireAdmin(ctx)
 		const id = await ctx.db.insert("characters", {
 			name: args.name ?? randomCharacterName(),
-			sheetValues: [],
+			data: {},
 		})
 		return { id }
 	},
@@ -48,25 +40,27 @@ export const update = mutation({
 	},
 })
 
-export const setSheetValue = mutation({
+export const updateData = mutation({
 	args: {
 		id: v.id("characters"),
-		key: v.string(),
-		value: v.union(v.string(), v.number()),
+		data: v.any(),
 	},
 	handler: async (ctx, args) => {
 		await requirePlayer(ctx)
 
-		const character = await ctx.db.get(args.id)
-		if (!character) {
+		const doc = await ctx.db.get(args.id)
+		if (!doc) {
 			throw new Error(`Character not found: ${args.id}`)
 		}
 
-		const sheetValues = character.sheetValues.map((sv) => {
-			return sv.key === args.key ? { key: args.key, value: args.value } : sv
-		})
+		const character = parseCharacter(doc)
 
-		await ctx.db.patch(args.id, { sheetValues })
+		await ctx.db.patch(args.id, {
+			data: {
+				...character.data,
+				...characterDataSchema.parse(args.data),
+			},
+		})
 	},
 })
 
@@ -77,3 +71,25 @@ export const remove = mutation({
 		await ctx.db.delete(args.id)
 	},
 })
+
+const characterDataSchema = vb.record(vb.union([vb.string(), vb.number()]))
+
+export type Character = ReturnType<typeof parseCharacter>
+function parseCharacter(doc: Doc<"characters">) {
+	return {
+		...doc,
+		data: characterDataSchema.parse(doc.data),
+	}
+}
+
+// TODO: treeshake faker
+function randomCharacterName() {
+	faker.seed(Math.random() * 1000000)
+	const adjective = faker.word.adjective()
+	const noun = faker.animal.type()
+	return `${capitalize(adjective)} ${capitalize(noun)}`
+}
+
+function capitalize(str: string) {
+	return str.charAt(0).toUpperCase() + str.slice(1)
+}
