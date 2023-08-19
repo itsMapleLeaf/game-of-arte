@@ -19,6 +19,13 @@ export default {
 		},
 	},
 	plugins: [
+		plugin(function customPreflight(api) {
+			api.addBase({
+				button: {
+					"text-align": "left",
+				},
+			})
+		}),
 		plugin(function size(api) {
 			api.matchUtilities(
 				{ s: (value: string) => ({ width: value, height: value }) },
