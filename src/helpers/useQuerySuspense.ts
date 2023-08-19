@@ -1,38 +1,88 @@
 import { useConvex } from "convex/react"
-import { type FunctionReference, type OptionalRestArgs } from "convex/server"
-import { useEffect, useState } from "react"
+import {
+	getFunctionName,
+	type FunctionReference,
+	type FunctionReturnType,
+	type OptionalRestArgs,
+} from "convex/server"
+import { LRUCache } from "lru-cache"
+import { useLayoutEffect, useState } from "react"
+import { useMemoValue } from "./useMemoValue"
+
+const cache = new LRUCache<string, NonNullable<unknown>>({
+	max: 100,
+})
+
+function getCacheKey(
+	query: FunctionReference<"query">,
+	args: [args?: Record<string, unknown>],
+) {
+	return JSON.stringify([getFunctionName(query), args])
+}
+
+function getQueryCacheData<Query extends FunctionReference<"query">>(
+	query: Query,
+	args: OptionalRestArgs<Query>,
+) {
+	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+	return cache.get(getCacheKey(query, args)) as
+		| FunctionReturnType<Query>
+		| undefined
+}
+
+function setQueryCacheData<Query extends FunctionReference<"query">>(
+	query: Query,
+	args: OptionalRestArgs<Query>,
+	data: FunctionReturnType<Query>,
+) {
+	cache.set(getCacheKey(query, args), data)
+}
 
 export function useQuerySuspense<Query extends FunctionReference<"query">>(
 	query: Query,
 	...args: OptionalRestArgs<Query>
 ) {
 	const convex = useConvex()
-	const watch = convex.watchQuery(query, ...args)
-	const initialValue = watch.localQueryResult()
+	const cacheData = getQueryCacheData(query, args)
 
-	if (initialValue === undefined) {
+	if (cacheData === undefined) {
 		// eslint-disable-next-line @typescript-eslint/no-throw-literal
 		throw new Promise<void>((resolve) => {
-			watch.onUpdate(() => {
+			const watch = convex.watchQuery(query, ...args)
+			const unsubscribe = watch.onUpdate(() => {
+				const result = watch.localQueryResult()
+				if (result === undefined) {
+					throw new Error("No query result")
+				}
+
+				setQueryCacheData(query, args, result)
 				resolve()
+				unsubscribe()
 			})
 		})
 	}
 
-	const [value, setValue] = useState(initialValue)
+	const [data, setData] = useState(cacheData)
 
-	useEffect(() => {
-		const updateValueFromQueryResult = () => {
-			const value = watch.localQueryResult()
-			if (value === undefined) throw new Error("No query result")
-			setValue(value)
-		}
+	const memoQuery = useMemoValue(
+		query,
+		(a, b) => getFunctionName(a) === getFunctionName(b),
+	)
 
-		updateValueFromQueryResult()
-		return watch.onUpdate(updateValueFromQueryResult)
-	}, [watch])
+	const memoArgs = useMemoValue(args)
 
-	// eslint struggles with this for some reason
+	useLayoutEffect(() => {
+		const watch = convex.watchQuery(memoQuery, ...memoArgs)
+		return watch.onUpdate(() => {
+			const result = watch.localQueryResult()
+			if (result === undefined) {
+				throw new Error("No query result")
+			}
+			setData(result)
+			setQueryCacheData(memoQuery, memoArgs, result)
+		})
+	}, [convex, memoQuery, memoArgs])
+
 	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
-	return value
+	return data
 }
