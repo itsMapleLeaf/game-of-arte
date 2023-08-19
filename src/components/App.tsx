@@ -120,7 +120,9 @@ function SideNav() {
 					</button>
 				))}
 			</header>
-			<main className="overflow-y-auto">{currentView.content}</main>
+			<main className="overflow-y-auto">
+				<LoadingSuspense>{currentView.content}</LoadingSuspense>
+			</main>
 		</nav>
 	)
 }
