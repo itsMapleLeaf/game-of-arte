@@ -1,6 +1,6 @@
-import { faker } from "@faker-js/faker"
 import { mutation, query } from "convex/_generated/server"
 import { v } from "convex/values"
+import randimals from "randimals"
 import * as vb from "valibot"
 import { type Doc } from "./_generated/dataModel"
 import { requireAdmin, requirePlayer } from "./auth"
@@ -25,7 +25,7 @@ export const create = mutation({
 	handler: async (ctx, args) => {
 		await requireAdmin(ctx)
 		const id = await ctx.db.insert("characters", {
-			name: args.name ?? randomCharacterName(),
+			name: args.name ?? randimals(),
 			data: {},
 		})
 		return { id }
@@ -80,16 +80,4 @@ function parseCharacter(doc: Doc<"characters">) {
 		...doc,
 		data: characterDataSchema.parse(doc.data),
 	}
-}
-
-// TODO: treeshake faker
-function randomCharacterName() {
-	faker.seed(Math.random() * 1000000)
-	const adjective = faker.word.adjective()
-	const noun = faker.animal.type()
-	return `${capitalize(adjective)} ${capitalize(noun)}`
-}
-
-function capitalize(str: string) {
-	return str.charAt(0).toUpperCase() + str.slice(1)
 }

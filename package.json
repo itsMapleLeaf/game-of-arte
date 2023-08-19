@@ -26,7 +26,6 @@
 		"wouter": "^2.11.0"
 	},
 	"devDependencies": {
-		"@faker-js/faker": "^8.0.2",
 		"@total-typescript/ts-reset": "^0.5.1",
 		"@types/node": "^20.5.0",
 		"@types/react": "^18.2.20",
@@ -45,6 +44,7 @@
 		"postcss": "^8.4.28",
 		"prettier": "^3.0.2",
 		"prettier-plugin-tailwindcss": "^0.5.3",
+		"randimals": "^2.0.3",
 		"tailwindcss": "^3.3.2",
 		"tsx": "^3.12.7",
 		"typescript": "^5.2.1-rc",
