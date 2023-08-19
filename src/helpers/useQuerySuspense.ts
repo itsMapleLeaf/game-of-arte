@@ -10,7 +10,7 @@ export function useQuerySuspense<Query extends FunctionReference<"query">>(
 	const watch = convex.watchQuery(query, ...argsAndOptions)
 	const initialValue = watch.localQueryResult()
 
-	if (!initialValue) {
+	if (initialValue === undefined) {
 		// eslint-disable-next-line @typescript-eslint/no-throw-literal
 		throw new Promise<void>((resolve) => {
 			watch.onUpdate(() => {
@@ -22,13 +22,14 @@ export function useQuerySuspense<Query extends FunctionReference<"query">>(
 	const [value, setValue] = useState(initialValue)
 
 	useEffect(() => {
-		return watch.onUpdate(() => {
+		const updateValueFromQueryResult = () => {
 			const value = watch.localQueryResult()
-			if (!value) {
-				throw new Error("No query result")
-			}
+			if (value === undefined) throw new Error("No query result")
 			setValue(value)
-		})
+		}
+
+		updateValueFromQueryResult()
+		return watch.onUpdate(updateValueFromQueryResult)
 	}, [watch])
 
 	// eslint struggles with this for some reason
