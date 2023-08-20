@@ -2,6 +2,7 @@ import { api } from "convex/_generated/api.js"
 import { type Doc } from "convex/_generated/dataModel.js"
 import { useMutation } from "convex/react"
 import { LucideDices } from "lucide-react"
+import { useAppParams } from "../../helpers/useAppParams.ts"
 import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
 import { input } from "../../styles/index.ts"
 
@@ -14,6 +15,7 @@ export function AttributeInput({
 	character: Doc<"characters">
 }) {
 	const [roll] = useAsyncCallback(useMutation(api.diceRolls.roll))
+	const appParams = useAppParams()
 
 	let value = Number(props.value)
 	if (!Number.isFinite(value)) {
@@ -40,6 +42,7 @@ export function AttributeInput({
 						dice: [{ count: value, sides: 12 }],
 						characterId: character._id,
 					})
+					appParams.tab.replace("dice")
 				}}
 			>
 				<LucideDices />
