@@ -44,9 +44,9 @@ function DiceRollDetails({ roll }: { roll: DiceRollListItem }) {
 		.reduce((a, b) => a + b, 0)
 
 	return (
-		<div className="grid gap-2 border-t border-base-800 p-2">
+		<div className="grid gap-2 border-t border-base-800 px-2 py-3">
 			<h2 className="text-lg leading-none">{roll.label}</h2>
-			<ul className="-mx-0.5 flex flex-wrap items-center gap-x-1 gap-y-1.5">
+			<ul className="-mx-1 flex flex-wrap items-center">
 				{dice.map((die, index) =>
 					isAction ? (
 						<Diecon
