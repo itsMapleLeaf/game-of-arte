@@ -45,7 +45,7 @@ export function CharacterDetails({
 
 				<section className={column()}>
 					<h3 className={sectionHeading()}>Status</h3>
-					<div className={row("gap-2")}>
+					<div className={row("items-end gap-2")}>
 						<DataInput character={character} dataKey="resilience">
 							<Field label="Resilience">
 								<NumberInput defaultValue={2} min={0} />
@@ -119,7 +119,7 @@ export function CharacterDetails({
 				))}
 			</div>
 
-			<section className={column()}>
+			<section className={column("gap-2")}>
 				<h3 className={sectionHeading()}>Background</h3>
 				<p>
 					{`Write your character's backstory. Doesn't have to be too long. Unless you want it
