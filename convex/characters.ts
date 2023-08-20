@@ -15,8 +15,7 @@ export const list = query({
 export const get = query({
 	args: { id: v.id("characters") },
 	handler: async (ctx, args) => {
-		const character = await ctx.db.get(args.id)
-		return { character }
+		return await ctx.db.get(args.id)
 	},
 })
 

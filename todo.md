@@ -1,8 +1,11 @@
 - [x] set up auth with convex and clerk
 - [x] bottom panel navigation
 - [x] character list
-- [ ] character details
-- [ ] character editor
+- [x] working character sheet fields as plain inputs (text inputs, textareas, number inputs, sliders)
+- [ ] player list config
+- [ ] move navigation state to query params
+- [ ] counter input
+- [ ] attribute input
 - [ ] clocks
 - [ ] dice
 - [ ] confirmation modal for signing out
