@@ -1,3 +1,5 @@
+# mvp
+
 - [x] set up auth with convex and clerk
 - [x] bottom panel navigation
 - [x] character list
@@ -6,12 +8,16 @@
 - [x] move navigation state to query params
 - [x] dice
 - [x] attribute dice roll button
+- [x] attribute descriptions
 - [ ] dice roll button popover for using resilience
-- [ ] attribute descriptions
 - [ ] clocks
-- [ ] mobile responsive styles
 - [ ] improved counter-style number input
+- [ ] toggle character visibility
+
+# polish
+
 - [ ] readonly state for spectators
-- [ ] remove dice rolls
+- [ ] remove button on dice rolls
 - [ ] confirmation modal for signing out
 - [ ] toasts
+- [ ] mobile responsive styles
