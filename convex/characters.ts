@@ -3,7 +3,7 @@ import { v, type Validator } from "convex/values"
 import randimals from "randimals"
 import * as vb from "valibot"
 import { type Doc } from "./_generated/dataModel"
-import { requireAdmin, requirePlayer } from "./auth"
+import { requireAdmin, requirePlayer } from "./roles"
 
 export const list = query({
 	handler: async (ctx) => {
