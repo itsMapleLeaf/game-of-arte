@@ -21,6 +21,12 @@ export default {
 	plugins: [
 		plugin(function customPreflight(api) {
 			api.addBase({
+				":focus": {
+					outline: "none",
+				},
+				":focus-visible": {
+					"@apply ring-2 ring-accent-400 ring-inset": {},
+				},
 				button: {
 					"text-align": "left",
 				},
