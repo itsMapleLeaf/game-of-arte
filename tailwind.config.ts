@@ -7,6 +7,9 @@ export default {
 	content: ["./src/**/*.{ts,tsx}", "./index.html"],
 	theme: {
 		extend: {
+			fontFamily: {
+				sans: `'Rubik Variable', sans-serif`,
+			},
 			colors: {
 				base: colors.zinc,
 				accent: colors.emerald,

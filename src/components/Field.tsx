@@ -22,7 +22,7 @@ export function Field({
 	return (
 		<div className={field()}>
 			<div className="flex items-center gap-1">
-				<label htmlFor={inputId} className="font-medium leading-tight">
+				<label htmlFor={inputId} className="font-medium leading-none">
 					{label}
 				</label>
 				{tooltip && (

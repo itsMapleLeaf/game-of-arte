@@ -13,6 +13,9 @@ dependencies:
   '@clerk/clerk-react':
     specifier: ^4.23.2
     version: 4.23.2(react@18.2.0)
+  '@fontsource-variable/rubik':
+    specifier: ^5.0.10
+    version: 5.0.10
   fast-deep-equal:
     specifier: ^3.1.3
     version: 3.1.3
@@ -859,6 +862,10 @@ packages:
     resolution: {integrity: sha512-P6omY1zv5MItm93kLM8s2vr1HICJH8v0dvddDhysbIuZ+vcjOHg5Zbkf1mTkcmi2JA9oBG2anOkRnW8WJTS8Og==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     dev: true
+
+  /@fontsource-variable/rubik@5.0.10:
+    resolution: {integrity: sha512-R0LkqHa5VCO3YgLaTRqy/J/H1/Q6CgIfu+uFCb8a6qFdui0iLxbFh2BQv5lshrKBpZP8IUbNMAb/A1P2r/tq5Q==}
+    dev: false
 
   /@humanwhocodes/config-array@0.11.10:
     resolution: {integrity: sha512-KVVjQmNUepDVGXNuoRRdmmEjruj0KfiGSbS8LVc12LMsWDQzRXJ0qdhN8L8uUigKpfEHRhlaQFY0ib1tnUbNeQ==}

@@ -1,3 +1,4 @@
+import "@fontsource-variable/rubik"
 import "tailwindcss/tailwind.css"
 
 import { ClerkProvider, useAuth } from "@clerk/clerk-react"
