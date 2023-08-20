@@ -62,6 +62,8 @@ export const collectResilience = mutation({
 		id: v.id("diceRolls"),
 	},
 	handler: async (ctx, args) => {
+		await requirePlayerUser(ctx)
+
 		const roll = await ctx.db.get(args.id)
 		if (!roll) {
 			throw new Error("Roll not found")
