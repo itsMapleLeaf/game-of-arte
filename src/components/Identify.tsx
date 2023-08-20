@@ -3,7 +3,7 @@ import { api } from "convex/_generated/api"
 import { useAction, useConvexAuth } from "convex/react"
 import { useEffect } from "react"
 
-export function useIdentify() {
+export function Identify() {
 	const auth = useConvexAuth()
 	const { user } = useUser()
 	const identify = useAction(api.auth.identify)
@@ -14,4 +14,6 @@ export function useIdentify() {
 		if (!user) return
 		void identify()
 	}, [auth.isAuthenticated, auth.isLoading, identify, user])
+
+	return null
 }

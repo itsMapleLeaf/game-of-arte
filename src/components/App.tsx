@@ -1,7 +1,6 @@
-import { type Id } from "convex/_generated/dataModel"
+import { type Id } from "convex/_generated/dataModel.js"
 import { LucideClock, LucideDices, LucideUsers } from "lucide-react"
 import { useState } from "react"
-import { useIdentify } from "../helpers/useIdentify"
 import { container } from "../styles/container"
 import { AuthButton } from "./AuthButton"
 import { CharacterDetails } from "./CharacterDetails"
@@ -10,11 +9,7 @@ import { LoadingSuspense } from "./LoadingPlaceholder"
 import { SideNav } from "./SideNav"
 
 export function App() {
-	useIdentify()
-
-	const [currentCharacterId, setCurrentCharacterId] =
-		useState<Id<"characters">>()
-
+	const [currentCharacterId, setCurrentCharacterId] = useState<Id<'characters'>>()
 	return (
 		<div className={container("flex min-h-[100dvh] flex-col gap-4 p-4")}>
 			<header className="flex">
