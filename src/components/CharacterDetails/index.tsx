@@ -100,6 +100,7 @@ export function CharacterDetails({
 									? { name: item, dataKey: item.toLowerCase() }
 									: item,
 							)
+							.toSorted((a, b) => a.name.localeCompare(b.name))
 							.map(({ name, dataKey }) => (
 								<DataInput
 									key={dataKey}
