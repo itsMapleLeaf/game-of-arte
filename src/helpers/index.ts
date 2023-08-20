@@ -15,3 +15,8 @@ export function parseNonEmptyArray<T>(value: T[]): NonEmptyArray<T> {
 	}
 	return value as NonEmptyArray<T>
 }
+
+export function toFiniteNumberOrUndefined(input: unknown): number | undefined {
+	const number = Number(input)
+	return Number.isFinite(number) ? number : undefined
+}

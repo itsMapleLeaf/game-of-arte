@@ -1,4 +1,5 @@
 import { v } from "convex/values"
+import { toFiniteNumberOrUndefined } from "../src/helpers/index.ts"
 import { type Doc } from "./_generated/dataModel"
 import { mutation, query } from "./_generated/server"
 import { requireAdmin, requirePlayerUser } from "./roles.ts"
@@ -79,17 +80,13 @@ export const collectResilience = mutation({
 			throw new Error("Character not found")
 		}
 
-		let resilience = Number(character.data.resilience)
-		if (!Number.isFinite(resilience)) {
-			resilience = 2
-		}
-
 		await Promise.all([
 			ctx.db.patch(args.id, { resilienceCollected: true }),
 			ctx.db.patch(character._id, {
 				data: {
 					...character.data,
-					resilience: resilience + 1,
+					resilience:
+						(toFiniteNumberOrUndefined(character.data.resilience) ?? 2) + 1,
 				},
 			}),
 		])

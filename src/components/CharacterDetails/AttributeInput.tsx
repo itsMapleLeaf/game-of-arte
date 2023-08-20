@@ -2,6 +2,7 @@ import { api } from "convex/_generated/api.js"
 import { type Doc } from "convex/_generated/dataModel.js"
 import { useMutation } from "convex/react"
 import { LucideDices } from "lucide-react"
+import { toFiniteNumberOrUndefined } from "../../helpers/index.ts"
 import { useAppParams } from "../../helpers/useAppParams.ts"
 import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
 import { input } from "../../styles/index.ts"
@@ -16,11 +17,7 @@ export function AttributeInput({
 }) {
 	const [roll] = useAsyncCallback(useMutation(api.diceRolls.roll))
 	const appParams = useAppParams()
-
-	let value = Number(props.value)
-	if (!Number.isFinite(value)) {
-		value = 1
-	}
+	const value = toFiniteNumberOrUndefined(props.value) ?? 1
 
 	return (
 		<div className="flex gap-2">
