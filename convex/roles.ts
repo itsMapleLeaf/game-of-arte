@@ -26,7 +26,9 @@ async function getRoles(ctx: QueryCtx): Promise<Roles> {
 
 	const player = await ctx.db
 		.query("players")
-		.filter((q) => q.eq("discordUserId", user.discordUserId))
+		.withIndex("by_discord_user_id", (q) =>
+			q.eq("discordUserId", user.discordUserId),
+		)
 		.first()
 
 	if (!player) {
