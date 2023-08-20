@@ -49,13 +49,6 @@ export async function requireAdmin(ctx: QueryCtx) {
 	}
 }
 
-export async function requirePlayer(ctx: QueryCtx) {
-	const roles = await getRoles(ctx)
-	if (!roles.isPlayer) {
-		throw new Error("Unauthorized")
-	}
-}
-
 export async function getPlayerUser(ctx: QueryCtx) {
 	const user = await findUserByTokenIdentifier(ctx)
 	if (!user) return
