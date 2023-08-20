@@ -11,6 +11,7 @@ import { useAppParams } from "../helpers/useAppParams.ts"
 import { useQuerySuspense } from "../helpers/useQuerySuspense.ts"
 import { panel } from "../styles/panel"
 import { CharacterList } from "./CharacterList.tsx"
+import { DiceRollList } from "./DiceRollList/index.tsx"
 import { LoadingSuspense } from "./LoadingPlaceholder"
 import { PlayerList } from "./PlayerList.tsx"
 
@@ -38,7 +39,7 @@ export function SideNav() {
 			defineView({
 				title: "Dice",
 				icon: <LucideDices />,
-				content: <p>todo</p>,
+				content: <DiceRollList />,
 			}),
 			defineView({
 				title: "Clocks",

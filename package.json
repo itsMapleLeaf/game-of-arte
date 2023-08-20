@@ -26,6 +26,7 @@
 		"react": "^18.2.0",
 		"react-dom": "^18.2.0",
 		"react-expanding-textarea": "^2.3.6",
+		"react-virtuoso": "^4.5.0",
 		"spin-delay": "^1.2.0",
 		"tailwind-merge": "^1.14.0"
 	},

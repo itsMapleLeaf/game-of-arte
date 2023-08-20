@@ -53,3 +53,33 @@ export async function requirePlayer(ctx: QueryCtx) {
 		throw new Error("Unauthorized")
 	}
 }
+
+export async function getPlayerUser(ctx: QueryCtx) {
+	const user = await findUserByTokenIdentifier(ctx)
+	if (!user) return
+
+	if (user.discordUserId === process.env.ADMIN_DISCORD_USER_ID) {
+		return user
+	}
+
+	const player = await ctx.db
+		.query("players")
+		.withIndex("by_discord_user_id", (q) =>
+			q.eq("discordUserId", user.discordUserId),
+		)
+		.first()
+
+	if (!player) {
+		return
+	}
+
+	return user
+}
+
+export async function requirePlayerUser(ctx: QueryCtx) {
+	const user = await getPlayerUser(ctx)
+	if (!user) {
+		throw new Error("Unauthorized")
+	}
+	return user
+}

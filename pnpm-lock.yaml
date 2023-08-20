@@ -34,6 +34,9 @@ dependencies:
   react-expanding-textarea:
     specifier: ^2.3.6
     version: 2.3.6(react@18.2.0)
+  react-virtuoso:
+    specifier: ^4.5.0
+    version: 4.5.0(react-dom@18.2.0)(react@18.2.0)
   spin-delay:
     specifier: ^1.2.0
     version: 1.2.0(react@18.2.0)
@@ -3226,6 +3229,17 @@ packages:
     resolution: {integrity: sha512-wViHqhAd8OHeLS/IRMJjTSDHF3U9eWi62F/MledQGPdJGDhodXJ9PBLNGr6WWL7qlH12Mt3TyTpbS+hGXMjCzQ==}
     engines: {node: '>=0.10.0'}
     dev: true
+
+  /react-virtuoso@4.5.0(react-dom@18.2.0)(react@18.2.0):
+    resolution: {integrity: sha512-OMP6XrzJMMos1vbJZC16RxGW7utAxUMP7i5PNPi6epBNVH7nz+CF/DlmecNBep5wyjLud51dQ5epjb2A0w9W/Q==}
+    engines: {node: '>=10'}
+    peerDependencies:
+      react: '>=16 || >=17 || >= 18'
+      react-dom: '>=16 || >=17 || >= 18'
+    dependencies:
+      react: 18.2.0
+      react-dom: 18.2.0(react@18.2.0)
+    dev: false
 
   /react-with-forwarded-ref@0.3.5(react@18.2.0):
     resolution: {integrity: sha512-BJK4q0Nvqg4AFwc+LV+PZZb2nxS1ZqQlS9hY14TdIyg7Lapzirk/V/TtbYjPFSsm/fGm0wC4tsgI1IDhxSVVSQ==}
