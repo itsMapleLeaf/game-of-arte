@@ -1,25 +1,19 @@
 import { api } from "convex/_generated/api"
-import { type Id } from "convex/_generated/dataModel"
 import { type Character } from "convex/characters"
 import { useMutation } from "convex/react"
 import { LucidePlus, LucideUser } from "lucide-react"
 import { startTransition, useTransition } from "react"
 import { useSpinDelay } from "spin-delay"
+import { useAppParams } from "../helpers/useAppParams.ts"
 import { useAsyncCallback } from "../helpers/useAsyncCallback"
 import { useQuerySuspense } from "../helpers/useQuerySuspense"
 import { LoadingSpinner } from "./LoadingPlaceholder"
 
-export function CharacterList({
-	selectedCharacterId,
-	onSelectCharacter,
-}: {
-	selectedCharacterId: Id<"characters"> | undefined
-	onSelectCharacter: (id: Id<"characters">) => void
-}) {
+export function CharacterList() {
 	const characters = useQuerySuspense(api.characters.list)
 	return (
 		<div className="flex h-full flex-col divide-y divide-base-800">
-			<NewCharacterButton onSuccess={onSelectCharacter} />
+			<NewCharacterButton />
 			{characters.length === 0 ? (
 				<p className="px-3 py-2 opacity-75">No characters found.</p>
 			) : (
@@ -28,11 +22,7 @@ export function CharacterList({
 						.sort((a, b) => a.name.localeCompare(b.name))
 						.map((character) => (
 							<li key={character._id}>
-								<CharacterListItem
-									selected={character._id === selectedCharacterId}
-									character={character}
-									onClick={onSelectCharacter}
-								/>
+								<CharacterListItem character={character} />
 							</li>
 						))}
 				</ul>
@@ -41,24 +31,17 @@ export function CharacterList({
 	)
 }
 
-function CharacterListItem({
-	character,
-	selected,
-	onClick,
-}: {
-	character: Character
-	selected: boolean
-	onClick: (id: Id<"characters">) => void
-}) {
+function CharacterListItem({ character }: { character: Character }) {
 	const [isPending, startTransition] = useTransition()
 	const isPendingDelayed = useSpinDelay(isPending)
+	const appParams = useAppParams()
 	return (
 		<button
-			data-selected={selected}
+			data-selected={appParams.characterId.current === character._id}
 			className="flex w-full gap-2 p-2 opacity-60 transition hover:bg-base-800 hover:opacity-100 data-[selected=true]:opacity-100"
 			onClick={() => {
 				startTransition(() => {
-					onClick(character._id)
+					appParams.characterId.push(character._id)
 				})
 			}}
 		>
@@ -68,17 +51,14 @@ function CharacterListItem({
 	)
 }
 
-function NewCharacterButton({
-	onSuccess,
-}: {
-	onSuccess: (id: Id<"characters">) => void
-}) {
+function NewCharacterButton() {
+	const appParams = useAppParams()
 	const [handleClick, state] = useAsyncCallback(
 		useMutation(api.characters.create),
 		{
 			onSuccess(result) {
 				startTransition(() => {
-					onSuccess(result.id)
+					appParams.characterId.push(result._id)
 				})
 			},
 		},

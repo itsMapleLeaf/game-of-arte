@@ -11,9 +11,13 @@ import { NumberInput } from "./NumberInput.tsx"
 import { attributes } from "./attributes.ts"
 import { column, row, sectionHeading } from "./styles.ts"
 
-export function CharacterDetails({ characterId }: { characterId: string }) {
+export function CharacterDetails({
+	characterId,
+}: {
+	characterId: Id<"characters">
+}) {
 	const character = useQuerySuspense(api.characters.get, {
-		id: characterId as Id<"characters">,
+		id: characterId,
 	})
 
 	return !character ? (

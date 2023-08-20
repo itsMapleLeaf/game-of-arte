@@ -1,6 +1,5 @@
-import { type Id } from "convex/_generated/dataModel.js"
 import { LucideClock, LucideDices, LucideUsers } from "lucide-react"
-import { useState } from "react"
+import { AppParams } from "../helpers/useAppParams.ts"
 import { container } from "../styles/container"
 import { AuthButton } from "./AuthButton"
 import { CharacterDetails } from "./CharacterDetails"
@@ -9,7 +8,6 @@ import { LoadingSuspense } from "./LoadingPlaceholder"
 import { SideNav } from "./SideNav"
 
 export function App() {
-	const [currentCharacterId, setCurrentCharacterId] = useState<Id<'characters'>>()
 	return (
 		<div className={container("flex min-h-[100dvh] flex-col gap-4 p-4")}>
 			<header className="flex">
@@ -24,12 +22,7 @@ export function App() {
 							id: "characters",
 							title: "Characters",
 							icon: LucideUsers,
-							content: (
-								<CharacterList
-									selectedCharacterId={currentCharacterId}
-									onSelectCharacter={setCurrentCharacterId}
-								/>
-							),
+							content: <CharacterList />,
 						},
 						{
 							id: "dice",
@@ -46,11 +39,15 @@ export function App() {
 					]}
 				/>
 
-				<LoadingSuspense className="flex-1 justify-start">
-					{currentCharacterId && (
-						<CharacterDetails characterId={currentCharacterId} />
-					)}
-				</LoadingSuspense>
+				<AppParams>
+					{({ characterId }) =>
+						characterId.current && (
+							<LoadingSuspense className="flex-1 justify-start">
+								<CharacterDetails characterId={characterId.current} />
+							</LoadingSuspense>
+						)
+					}
+				</AppParams>
 			</div>
 		</div>
 	)

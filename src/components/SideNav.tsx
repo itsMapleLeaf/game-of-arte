@@ -1,5 +1,5 @@
-import { useState } from "react"
-import { twMerge } from "tailwind-merge"
+import { startTransition } from "react"
+import { useAppParams } from "../helpers/useAppParams.ts"
 import { panel } from "../styles/panel"
 import { LoadingSuspense } from "./LoadingPlaceholder"
 
@@ -15,9 +15,9 @@ export function SideNav({
 }: {
 	views: readonly [SideNavView, ...SideNavView[]]
 }) {
-	const [currentViewId, setCurrentViewId] = useState(views[0].id)
+	const params = useAppParams()
 	const currentView =
-		views.find((view) => view.id === currentViewId) ?? views[0]
+		views.find((view) => view.id === params.tab.current) ?? views[0]
 
 	return (
 		<nav
@@ -29,14 +29,12 @@ export function SideNav({
 				{views.map((view) => (
 					<button
 						key={view.title}
-						className={twMerge(
-							"flex items-center justify-center gap-3 p-3 transition first:rounded-tl-md last:rounded-tr-md hover:bg-base-800 ",
-							currentViewId === view.id
-								? "opacity-100"
-								: "opacity-50 hover:opacity-75",
-						)}
+						data-active={view.id === currentView.id}
+						className="flex items-center justify-center gap-3 p-3 opacity-40 transition first:rounded-tl-md last:rounded-tr-md hover:bg-base-800 hover:opacity-70 data-[active=true]:opacity-100"
 						onClick={() => {
-							setCurrentViewId(view.id)
+							startTransition(() => {
+								params.tab.replace(view.id)
+							})
 						}}
 					>
 						<view.icon />
