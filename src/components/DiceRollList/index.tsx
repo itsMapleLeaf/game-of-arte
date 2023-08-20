@@ -68,7 +68,7 @@ function DiceRollDetails({ roll }: { roll: DiceRollListItem }) {
 							data-fail={successCount === 0}
 							className="data-[fail=true]:text-red-300 data-[success=true]:text-green-300"
 						>
-							{successCount} Success{successCount === 1 ? "" : "es"}
+							{successCount} success{successCount === 1 ? "" : "es"}
 						</span>
 						{" • "}
 					</>
