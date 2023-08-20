@@ -9,19 +9,15 @@ export const list = query({
 		const players = await ctx.db.query("players").collect()
 		const discordUserIds = players.map((player) => player.discordUserId)
 
-		const users = await Promise.all(
-			discordUserIds.map((discordUserId) =>
-				ctx.db
-					.query("users")
-					.withIndex("by_discord_user_id", (q) =>
-						q.eq("discordUserId", discordUserId),
-					)
-					.first(),
-			),
-		)
+		const users = await ctx.db
+			.query("users")
+			.filter((q) =>
+				q.or(...discordUserIds.map((id) => q.eq(q.field("discordUserId"), id))),
+			)
+			.collect()
 
 		const usersByDiscordUserId = new Map(
-			users.filter(Boolean).map((user) => [user.discordUserId, user]),
+			users.map((user) => [user.discordUserId, user]),
 		)
 
 		return players.map((player) => ({
