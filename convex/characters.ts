@@ -1,14 +1,12 @@
 import { mutation, query } from "convex/_generated/server"
-import { v, type Validator } from "convex/values"
+import { v } from "convex/values"
 import randimals from "randimals"
-import * as vb from "valibot"
-import { type Doc } from "./_generated/dataModel"
 import { requireAdmin, requirePlayer } from "./roles"
+import { playerDataValidator } from "./schema.ts"
 
 export const list = query({
 	handler: async (ctx) => {
-		const characters = await ctx.db.query("characters").collect()
-		return characters.map(parseCharacter)
+		return await ctx.db.query("characters").collect()
 	},
 })
 
@@ -42,17 +40,15 @@ export const update = mutation({
 export const updateData = mutation({
 	args: {
 		id: v.id("characters"),
-		data: v.any() as Validator<Record<string, string | number>>,
+		data: playerDataValidator(),
 	},
 	handler: async (ctx, args) => {
 		await requirePlayer(ctx)
 
-		const doc = await ctx.db.get(args.id)
-		if (!doc) {
+		const character = await ctx.db.get(args.id)
+		if (!character) {
 			throw new Error(`Character not found: ${args.id}`)
 		}
-
-		const character = parseCharacter(doc)
 
 		await ctx.db.patch(args.id, {
 			data: {
@@ -70,13 +66,3 @@ export const remove = mutation({
 		await ctx.db.delete(args.id)
 	},
 })
-
-const characterDataSchema = vb.record(vb.union([vb.string(), vb.number()]))
-
-export type Character = ReturnType<typeof parseCharacter>
-function parseCharacter(doc: Doc<"characters">) {
-	return {
-		...doc,
-		data: characterDataSchema.parse(doc.data),
-	}
-}

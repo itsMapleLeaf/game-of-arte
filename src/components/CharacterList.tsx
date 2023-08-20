@@ -1,5 +1,5 @@
 import { api } from "convex/_generated/api"
-import { type Character } from "convex/characters"
+import { type Doc } from "convex/_generated/dataModel.js"
 import { useMutation } from "convex/react"
 import { LucidePlus, LucideUser } from "lucide-react"
 import { startTransition, useTransition } from "react"
@@ -31,7 +31,7 @@ export function CharacterList() {
 	)
 }
 
-function CharacterListItem({ character }: { character: Character }) {
+function CharacterListItem({ character }: { character: Doc<"characters"> }) {
 	const [isPending, startTransition] = useTransition()
 	const isPendingDelayed = useSpinDelay(isPending)
 	const appParams = useAppParams()

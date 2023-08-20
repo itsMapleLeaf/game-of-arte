@@ -1,5 +1,5 @@
 import { api } from "convex/_generated/api"
-import { type Character } from "convex/characters"
+import { type Doc } from "convex/_generated/dataModel.js"
 import { useMutation } from "convex/react"
 import { renderSlot, type Slot } from "../../helpers/slot.ts"
 
@@ -9,7 +9,7 @@ export function DataInput<ExtraProps extends object>({
 	children,
 	...props
 }: ExtraProps & {
-	character: Character
+	character: Doc<"characters">
 	dataKey: string
 	children: Slot<
 		Omit<ExtraProps, "character" | "dataKey" | "children"> & {

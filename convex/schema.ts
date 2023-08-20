@@ -1,5 +1,8 @@
 import { defineSchema, defineTable } from "convex/server"
-import { v } from "convex/values"
+import { v, type Validator } from "convex/values"
+
+export const playerDataValidator = () =>
+	v.any() as Validator<Record<string, string | number>>
 
 export default defineSchema({
 	users: defineTable({
@@ -11,6 +14,6 @@ export default defineSchema({
 		.index("by_discord_user_id", ["discordUserId"]),
 	characters: defineTable({
 		name: v.string(),
-		data: v.any(),
+		data: playerDataValidator(),
 	}),
 })

@@ -1,10 +1,10 @@
 import { api } from "convex/_generated/api"
-import { type Character } from "convex/characters"
+import { type Doc } from "convex/_generated/dataModel.js"
 import { useMutation } from "convex/react"
 import { input } from "../../styles/index.ts"
 import { Field } from "../Field.tsx"
 
-export function NameInput({ character }: { character: Character }) {
+export function NameInput({ character }: { character: Doc<"characters"> }) {
 	const update = useMutation(api.characters.update).withOptimisticUpdate(
 		(store, args) => {
 			store.setQuery(
