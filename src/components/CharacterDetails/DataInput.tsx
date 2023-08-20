@@ -25,7 +25,7 @@ export function DataInput<ExtraProps extends object>({
 				{ id: character._id },
 				{
 					...character,
-					data: { ...character.data, [dataKey]: args.data[dataKey] },
+					data: { ...character.data, [dataKey]: args.data[dataKey]! },
 				},
 			)
 		},

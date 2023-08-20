@@ -9,30 +9,29 @@ import {
 } from "lucide-react"
 import { twMerge } from "tailwind-merge"
 import { panel } from "../styles/panel"
-import { ActiveLink } from "./ActiveLink"
 
 export function MobileBottomNav() {
 	return (
 		<footer className={panel("sticky bottom-0 mt-auto border-t shadow-md")}>
 			<nav className="mx-auto grid w-full max-w-lg auto-cols-fr grid-flow-col">
-				<ActiveLink
-					href="/characters"
+				<button
+					type="button"
 					className="opacity-50 transition aria-[current=page]:opacity-100"
 				>
 					<TabContent icon={LucideUsers} label="Characters" />
-				</ActiveLink>
-				<ActiveLink
-					href="/clocks"
+				</button>
+				<button
+					type="button"
 					className="opacity-50 transition aria-[current=page]:opacity-100"
 				>
 					<TabContent icon={LucideClock} label="Clocks" />
-				</ActiveLink>
-				<ActiveLink
-					href="/dice"
+				</button>
+				<button
+					type="button"
 					className="opacity-50 transition aria-[current=page]:opacity-100"
 				>
 					<TabContent icon={LucideDices} label="Dice" />
-				</ActiveLink>
+				</button>
 				<AuthButton />
 			</nav>
 		</footer>
