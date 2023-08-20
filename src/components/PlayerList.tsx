@@ -55,7 +55,7 @@ function NewPlayerForm() {
 			<input
 				type="text"
 				name="discordUserId"
-				className="flex-1 bg-transparent px-3"
+				className="min-w-0 flex-1 bg-transparent px-3"
 				placeholder="Discord User ID (e.g. 123456789012345678)"
 			/>
 			<button type="submit" className="p-2">
