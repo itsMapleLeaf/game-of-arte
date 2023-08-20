@@ -27,7 +27,7 @@ export const create = mutation({
 			name: args.name ?? randimals(),
 			data: {},
 		})
-		return { id }
+		return { _id: id }
 	},
 })
 
