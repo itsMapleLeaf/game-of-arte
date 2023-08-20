@@ -4,8 +4,14 @@
 - [x] working character sheet fields as plain inputs (text inputs, textareas, number inputs, sliders)
 - [x] player list config
 - [x] move navigation state to query params
-- [ ] dice
-- [ ] attribute input
-- [ ] counter input
+- [x] dice
+- [x] attribute dice roll button
+- [ ] dice roll button popover for using resilience
+- [ ] attribute descriptions
 - [ ] clocks
+- [ ] mobile responsive styles
+- [ ] improved counter-style number input
+- [ ] readonly state for spectators
+- [ ] remove dice rolls
 - [ ] confirmation modal for signing out
+- [ ] toasts
