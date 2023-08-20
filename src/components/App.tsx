@@ -1,9 +1,7 @@
-import { LucideClock, LucideDices, LucideUsers } from "lucide-react"
 import { AppParams } from "../helpers/useAppParams.ts"
 import { container } from "../styles/container"
 import { AuthButton } from "./AuthButton"
 import { CharacterDetails } from "./CharacterDetails"
-import { CharacterList } from "./CharacterList"
 import { LoadingSuspense } from "./LoadingPlaceholder"
 import { SideNav } from "./SideNav"
 
@@ -16,29 +14,7 @@ export function App() {
 				</div>
 			</header>
 			<div className="flex flex-1 gap-4">
-				<SideNav
-					views={[
-						{
-							id: "characters",
-							title: "Characters",
-							icon: LucideUsers,
-							content: <CharacterList />,
-						},
-						{
-							id: "dice",
-							title: "Dice",
-							icon: LucideDices,
-							content: <p>todo</p>,
-						},
-						{
-							id: "clocks",
-							title: "Clocks",
-							icon: LucideClock,
-							content: <p>todo</p>,
-						},
-					]}
-				/>
-
+				<SideNav />
 				<AppParams>
 					{({ characterId }) =>
 						characterId.current && (
