@@ -93,22 +93,21 @@ export function CharacterDetails({
 
 			<div className={row()}>
 				{attributes.map(({ title, attributes }) => (
-					<div key={title} className={column()}>
+					<div key={title} className={column("gap-4")}>
 						<h3 className={sectionHeading()}>{title}</h3>
 						{attributes
-							.map((item) =>
-								typeof item === "string"
-									? { name: item, dataKey: item.toLowerCase() }
-									: item,
-							)
 							.toSorted((a, b) => a.name.localeCompare(b.name))
-							.map(({ name, dataKey }) => (
+							.map((item) => ({
+								...item,
+								dataKey: item.dataKey ?? item.name.toLowerCase(),
+							}))
+							.map(({ name, description, dataKey }) => (
 								<DataInput
 									key={dataKey}
 									character={character}
 									dataKey={dataKey}
 								>
-									<Field label={name}>
+									<Field label={name} tooltip={description}>
 										<AttributeInput
 											character={character}
 											attributeName={name}
