@@ -4,6 +4,7 @@ import ExpandingTextArea from "react-expanding-textarea"
 import { useQuerySuspense } from "../../helpers/useQuerySuspense.ts"
 import { input, textArea } from "../../styles/index.ts"
 import { Field } from "../Field.tsx"
+import { AttributeInput } from "./AttributeInput.tsx"
 import { DataInput } from "./DataInput.tsx"
 import { ImageInput } from "./ImageInput.tsx"
 import { NameInput } from "./NameInput.tsx"
@@ -108,7 +109,10 @@ export function CharacterDetails({
 									dataKey={dataKey}
 								>
 									<Field label={name}>
-										<NumberInput defaultValue={1} min={1} />
+										<AttributeInput
+											character={character}
+											attributeName={name}
+										/>
 									</Field>
 								</DataInput>
 							))}
