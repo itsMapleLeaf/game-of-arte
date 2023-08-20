@@ -79,12 +79,17 @@ export const collectResilience = mutation({
 			throw new Error("Character not found")
 		}
 
+		let resilience = Number(character.data.resilience)
+		if (!Number.isFinite(resilience)) {
+			resilience = 2
+		}
+
 		await Promise.all([
 			ctx.db.patch(args.id, { resilienceCollected: true }),
 			ctx.db.patch(character._id, {
 				data: {
 					...character.data,
-					resilience: (Number(character.data.resilience) || 2) + 1,
+					resilience: resilience + 1,
 				},
 			}),
 		])
