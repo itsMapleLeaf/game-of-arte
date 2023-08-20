@@ -9,6 +9,7 @@
 - [x] dice
 - [x] attribute dice roll button
 - [x] attribute descriptions
+- [ ] show total EXP for the whole party and used EXP per-character
 - [ ] dice roll button popover for using resilience
 - [ ] clocks
 - [ ] improved counter-style number input
@@ -16,6 +17,7 @@
 
 # polish
 
+- [ ] show current character in document title
 - [ ] readonly state for spectators
 - [ ] remove button on dice rolls
 - [ ] confirmation modal for signing out
