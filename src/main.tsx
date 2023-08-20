@@ -17,9 +17,9 @@ createRoot(document.querySelector("#root")!).render(
 	>
 		<ConvexProviderWithClerk client={convex} useAuth={useAuth}>
 			<StrictMode>
+				<Identify />
 				<LoadingSuspense className="fixed inset-0">
 					<App />
-					<Identify />
 				</LoadingSuspense>
 			</StrictMode>
 		</ConvexProviderWithClerk>
