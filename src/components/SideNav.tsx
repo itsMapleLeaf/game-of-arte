@@ -80,9 +80,9 @@ export function SideNav() {
 					</button>
 				))}
 			</header>
-			<main className="overflow-y-auto">
+			<section className="min-h-0 flex-1 overflow-y-auto">
 				<LoadingSuspense>{current.content}</LoadingSuspense>
-			</main>
+			</section>
 		</nav>
 	)
 }

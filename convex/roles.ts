@@ -1,16 +1,40 @@
 import { query, type QueryCtx } from "./_generated/server"
 import { findUserByTokenIdentifier } from "./users"
 
-export const roles = query({
+export const get = query({
 	handler: async (ctx) => {
 		return await getRoles(ctx)
 	},
 })
 
-async function getRoles(ctx: QueryCtx) {
+export type Roles = {
+	isAdmin: boolean
+	isPlayer: boolean
+	isSpectator: boolean
+}
+
+async function getRoles(ctx: QueryCtx): Promise<Roles> {
 	const user = await findUserByTokenIdentifier(ctx)
+	if (!user) {
+		return { isAdmin: false, isPlayer: false, isSpectator: true }
+	}
+
+	const isAdmin = user.discordUserId === process.env.ADMIN_DISCORD_USER_ID
+	if (isAdmin) {
+		return { isAdmin: true, isPlayer: true, isSpectator: false }
+	}
+
+	const player = await ctx.db
+		.query("players")
+		.filter((q) => q.eq("discordUserId", user.discordUserId))
+		.first()
+
+	if (!player) {
+		return { isAdmin: false, isPlayer: false, isSpectator: true }
+	}
+
 	return {
-		isAdmin: user?.discordUserId === process.env.ADMIN_DISCORD_USER_ID,
+		isAdmin: false,
 		isPlayer: true,
 		isSpectator: false,
 	}

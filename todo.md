@@ -2,10 +2,10 @@
 - [x] bottom panel navigation
 - [x] character list
 - [x] working character sheet fields as plain inputs (text inputs, textareas, number inputs, sliders)
-- [ ] player list config
-- [ ] move navigation state to query params
-- [ ] counter input
-- [ ] attribute input
-- [ ] clocks
+- [x] player list config
+- [x] move navigation state to query params
 - [ ] dice
+- [ ] attribute input
+- [ ] counter input
+- [ ] clocks
 - [ ] confirmation modal for signing out

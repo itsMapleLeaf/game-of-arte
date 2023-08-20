@@ -12,6 +12,9 @@ export default defineSchema({
 	})
 		.index("by_token_identifier", ["tokenIdentifier"])
 		.index("by_discord_user_id", ["discordUserId"]),
+	players: defineTable({
+		discordUserId: v.string(),
+	}).index("by_discord_user_id", ["discordUserId"]),
 	characters: defineTable({
 		name: v.string(),
 		data: playerDataValidator(),
