@@ -17,6 +17,7 @@
 
 # polish
 
+- [ ] generic world data, similar to character data
 - [ ] show current character in document title
 - [ ] readonly state for spectators
 - [ ] remove button on dice rolls
