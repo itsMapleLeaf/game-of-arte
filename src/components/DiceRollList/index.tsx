@@ -123,7 +123,7 @@ function CollectResilienceButton({ rollId }: { rollId: Id<"diceRolls"> }) {
 				collectResilience({ id: rollId })
 			}}
 		>
-			Collect resilience
+			+1 Resilience
 		</button>
 	)
 }
