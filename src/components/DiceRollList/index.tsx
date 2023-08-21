@@ -23,7 +23,8 @@ function DiceRollItems() {
 	const rolls = useQuerySuspense(api.diceRolls.list)
 	return (
 		<Virtuoso
-			data={rolls.toReversed()}
+			data={rolls}
+			computeItemKey={(index, roll) => roll._id}
 			itemContent={(index, roll) => <DiceRollDetails roll={roll} />}
 			initialTopMostItemIndex={rolls.length - 1}
 			followOutput="smooth"

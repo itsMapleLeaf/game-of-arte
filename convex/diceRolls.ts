@@ -10,7 +10,7 @@ export type DiceRollListItem = Omit<Doc<"diceRolls">, "discordUserId"> & {
 
 export const list = query({
 	handler: async (ctx): Promise<DiceRollListItem[]> => {
-		const rolls = await ctx.db.query("diceRolls").order("desc").take(100)
+		const rolls = await ctx.db.query("diceRolls").take(100)
 		const discordUserIds = [...new Set(rolls.map((r) => r.discordUserId))]
 
 		const users = await ctx.db
