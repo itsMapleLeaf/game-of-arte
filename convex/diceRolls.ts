@@ -8,9 +8,11 @@ export type DiceRollListItem = Omit<Doc<"diceRolls">, "discordUserId"> & {
 	initiatorName: string | undefined
 }
 
+const maxRolls = 250
+
 export const list = query({
 	handler: async (ctx): Promise<DiceRollListItem[]> => {
-		const rolls = await ctx.db.query("diceRolls").take(100)
+		const rolls = await ctx.db.query("diceRolls").collect()
 		const discordUserIds = [...new Set(rolls.map((r) => r.discordUserId))]
 
 		const users = await ctx.db
@@ -54,6 +56,10 @@ export const roll = mutation({
 			discordUserId: user.discordUserId,
 			dice: rolls,
 		})
+
+		const allRolls = await ctx.db.query("diceRolls").collect()
+		const excessRolls = allRolls.slice(0, -maxRolls)
+		await Promise.all(excessRolls.map((r) => ctx.db.delete(r._id)))
 	},
 })
 
