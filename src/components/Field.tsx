@@ -1,7 +1,7 @@
 import { LucideInfo } from "lucide-react"
 import { useId } from "react"
 import { renderSlot, type Slot } from "../helpers/slot.ts"
-import { field } from "../styles"
+import { field, fieldDescription, labelText } from "../styles"
 import { panel } from "../styles/panel.ts"
 
 export function Field({
@@ -22,7 +22,7 @@ export function Field({
 	return (
 		<div className={field()}>
 			<div className="flex items-center gap-1">
-				<label htmlFor={inputId} className="font-medium leading-none">
+				<label htmlFor={inputId} className={labelText()}>
 					{label}
 				</label>
 				{tooltip && (
@@ -47,7 +47,7 @@ export function Field({
 				)}
 			</div>
 			{description && (
-				<p id={descriptionId} className="text-sm opacity-75">
+				<p id={descriptionId} className={fieldDescription()}>
 					{description}
 				</p>
 			)}

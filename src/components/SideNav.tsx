@@ -3,6 +3,7 @@ import {
 	LucideClock,
 	LucideDices,
 	LucideGamepad2,
+	LucideGlobe,
 	LucideUsers,
 } from "lucide-react"
 import { startTransition } from "react"
@@ -14,6 +15,7 @@ import { CharacterList } from "./CharacterList.tsx"
 import { DiceRollList } from "./DiceRollList/index.tsx"
 import { LoadingSuspense } from "./LoadingPlaceholder"
 import { PlayerList } from "./PlayerList.tsx"
+import { WorldSettings } from "./WorldSettings.tsx"
 
 const defineView = (options: {
 	id?: string
@@ -51,6 +53,12 @@ export function SideNav() {
 					title: "Players",
 					icon: <LucideGamepad2 />,
 					content: <PlayerList />,
+				}),
+			roles.isAdmin &&
+				defineView({
+					title: "World",
+					icon: <LucideGlobe />,
+					content: <WorldSettings />,
 				}),
 		].filter(Boolean),
 	)

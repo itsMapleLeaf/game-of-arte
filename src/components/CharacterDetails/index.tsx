@@ -1,8 +1,16 @@
 import { api } from "convex/_generated/api"
-import { type Id } from "convex/_generated/dataModel"
+import { type Doc, type Id } from "convex/_generated/dataModel"
+import { useId } from "react"
 import ExpandingTextArea from "react-expanding-textarea"
+import { toFiniteNumberOrUndefined } from "../../helpers/index.ts"
 import { useQuerySuspense } from "../../helpers/useQuerySuspense.ts"
-import { input, textArea } from "../../styles/index.ts"
+import {
+	field,
+	fieldDescription,
+	input,
+	labelText,
+	textArea,
+} from "../../styles/index.ts"
 import { Field } from "../Field.tsx"
 import { AttributeInput } from "./AttributeInput.tsx"
 import { DataInput } from "./DataInput.tsx"
@@ -53,13 +61,13 @@ export function CharacterDetails({
 						</DataInput>
 
 						<DataInput character={character} dataKey="physicalStress">
-							<Field label="Physical Stress">
+							<Field label="Phys. Stress">
 								<NumberInput min={0} max={6} />
 							</Field>
 						</DataInput>
 
 						<DataInput character={character} dataKey="mentalStress">
-							<Field label="Mental Stress">
+							<Field label="Ment. Stress">
 								<NumberInput min={0} max={6} />
 							</Field>
 						</DataInput>
@@ -88,6 +96,8 @@ export function CharacterDetails({
 							<ExpandingTextArea className={textArea()} />
 						</Field>
 					</DataInput>
+
+					<ExperienceDisplay character={character} />
 				</section>
 			</div>
 
@@ -129,6 +139,41 @@ export function CharacterDetails({
 					<ExpandingTextArea rows={5} className={textArea()} />
 				</DataInput>
 			</section>
+		</div>
+	)
+}
+
+function ExperienceDisplay({ character }: { character: Doc<"characters"> }) {
+	const world = useQuerySuspense(api.world.get)
+
+	const usedExperience = attributes
+		.flatMap((group) => group.attributes)
+		.map((attribute) => {
+			const key = attribute.dataKey ?? attribute.name.toLowerCase()
+			return toFiniteNumberOrUndefined(character.data[key]) ?? 1
+		})
+		.reduce((sum, value) => sum + value - 1, 0)
+
+	const labelId = useId()
+	const description = useId()
+
+	return (
+		<div className={field()}>
+			<p id={labelId} className={labelText()}>
+				Experience
+			</p>
+			<p id={description} className={fieldDescription()}>
+				Spend these points on attributes!
+			</p>
+			<p
+				aria-labelledby={labelId}
+				aria-describedby={description}
+				data-negative={usedExperience > world.experience}
+				className={input("data-[negative=true]:text-error-400")}
+			>
+				{world.experience - usedExperience} <span aria-label="out of">/</span>{" "}
+				{world.experience}
+			</p>
 		</div>
 	)
 }

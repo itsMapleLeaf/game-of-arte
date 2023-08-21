@@ -9,7 +9,7 @@
 - [x] dice
 - [x] attribute dice roll button
 - [x] attribute descriptions
-- [ ] show total EXP for the whole party and used EXP per-character
+- [x] show total EXP for the whole party and used EXP per-character
 - [ ] dice roll button popover for using resilience
 - [ ] clocks
 - [ ] improved counter-style number input

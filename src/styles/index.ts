@@ -19,6 +19,10 @@ export function field(...classes: ClassNameValue[]) {
 	return twMerge("flex flex-col gap-1 w-full min-w-0", ...classes)
 }
 
+export function fieldDescription(...classes: ClassNameValue[]) {
+	return twMerge("text-sm opacity-75", ...classes)
+}
+
 export function labelText(...classes: ClassNameValue[]) {
-	return twMerge("text-sm font-medium leading-none", ...classes)
+	return twMerge("font-medium leading-none", ...classes)
 }

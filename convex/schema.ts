@@ -16,6 +16,9 @@ export default defineSchema({
 	})
 		.index("by_token_identifier", ["tokenIdentifier"])
 		.index("by_discord_user_id", ["discordUserId"]),
+	worlds: defineTable({
+		experience: v.number(),
+	}),
 	players: defineTable({
 		discordUserId: v.string(),
 	}).index("by_discord_user_id", ["discordUserId"]),
