@@ -1,6 +1,6 @@
 import { type Id } from "convex/_generated/dataModel.js"
 import { type ReactNode } from "react"
-import { useParam } from "./useParam"
+import { useParam } from "./useParam.ts"
 
 export function useAppParams() {
 	return {

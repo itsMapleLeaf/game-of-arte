@@ -1,5 +1,5 @@
 import { v } from "convex/values"
-import { internalMutation, type QueryCtx } from "./_generated/server"
+import { internalMutation, type QueryCtx } from "./_generated/server.js"
 
 export const update = internalMutation({
 	args: {

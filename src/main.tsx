@@ -6,9 +6,9 @@ import { ConvexReactClient } from "convex/react"
 import { ConvexProviderWithClerk } from "convex/react-clerk"
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
-import { App } from "./components/App"
+import { App } from "./components/App.tsx"
 import { Identify } from "./components/Identify.tsx"
-import { LoadingSuspense } from "./components/LoadingPlaceholder"
+import { LoadingSuspense } from "./components/LoadingPlaceholder.tsx"
 
 const convex = new ConvexReactClient(import.meta.env.VITE_PUBLIC_CONVEX_URL)
 

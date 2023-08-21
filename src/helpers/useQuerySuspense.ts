@@ -7,7 +7,7 @@ import {
 } from "convex/server"
 import { LRUCache } from "lru-cache"
 import { useLayoutEffect, useState } from "react"
-import { useMemoValue } from "./useMemoValue"
+import { useMemoValue } from "./useMemoValue.ts"
 
 const cache = new LRUCache<string, NonNullable<unknown>>({
 	max: 100,

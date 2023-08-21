@@ -1,5 +1,5 @@
-import { internal } from "./_generated/api"
-import { action } from "./_generated/server"
+import { internal } from "./_generated/api.js"
+import { action } from "./_generated/server.js"
 
 export const identify = action({
 	handler: async (ctx) => {

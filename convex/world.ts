@@ -1,7 +1,7 @@
 import { v } from "convex/values"
 import { type Simplify } from "../src/helpers/types.ts"
 import { type Doc } from "./_generated/dataModel"
-import { mutation, query } from "./_generated/server"
+import { mutation, query } from "./_generated/server.js"
 import { requireAdmin } from "./roles.ts"
 
 export type World = Simplify<Omit<Doc<"worlds">, "_id" | "_creationTime">>

@@ -8,7 +8,7 @@ import {
 	type LucideIcon,
 } from "lucide-react"
 import { twMerge } from "tailwind-merge"
-import { panel } from "../styles/panel"
+import { panel } from "../styles/panel.ts"
 
 export function MobileBottomNav() {
 	return (

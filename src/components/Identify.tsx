@@ -1,5 +1,5 @@
 import { useUser } from "@clerk/clerk-react"
-import { api } from "convex/_generated/api"
+import { api } from "convex/_generated/api.js"
 import { useAction, useConvexAuth } from "convex/react"
 import { useEffect } from "react"
 

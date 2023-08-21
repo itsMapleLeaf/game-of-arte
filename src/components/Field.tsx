@@ -1,7 +1,7 @@
 import { LucideInfo } from "lucide-react"
 import { useId } from "react"
 import { renderSlot, type Slot } from "../helpers/slot.ts"
-import { field, fieldDescription, labelText } from "../styles"
+import { field, fieldDescription, labelText } from "../styles/index.ts"
 import { panel } from "../styles/panel.ts"
 
 export function Field({

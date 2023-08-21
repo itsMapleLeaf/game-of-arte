@@ -5,9 +5,9 @@ import { LucidePlus, LucideUser } from "lucide-react"
 import { startTransition, useTransition } from "react"
 import { useSpinDelay } from "spin-delay"
 import { useAppParams } from "../helpers/useAppParams.ts"
-import { useAsyncCallback } from "../helpers/useAsyncCallback"
-import { useQuerySuspense } from "../helpers/useQuerySuspense"
-import { LoadingSpinner } from "./LoadingPlaceholder"
+import { useAsyncCallback } from "../helpers/useAsyncCallback.ts"
+import { useQuerySuspense } from "../helpers/useQuerySuspense.ts"
+import { LoadingSpinner } from "./LoadingPlaceholder.tsx"
 
 export function CharacterList() {
 	const characters = useQuerySuspense(api.characters.list)

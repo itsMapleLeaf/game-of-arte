@@ -1,9 +1,9 @@
 import { AppParams } from "../helpers/useAppParams.ts"
-import { container } from "../styles/container"
-import { AuthButton } from "./AuthButton"
-import { CharacterDetails } from "./CharacterDetails"
-import { LoadingSuspense } from "./LoadingPlaceholder"
-import { SideNav } from "./SideNav"
+import { container } from "../styles/container.ts"
+import { AuthButton } from "./AuthButton.tsx"
+import { CharacterDetails } from "./CharacterDetails/index.tsx"
+import { LoadingSuspense } from "./LoadingPlaceholder.tsx"
+import { SideNav } from "./SideNav.tsx"
 
 export function App() {
 	return (

@@ -1,5 +1,5 @@
 import { twMerge, type ClassNameValue } from "tailwind-merge"
-import { panel } from "./panel"
+import { panel } from "./panel.ts"
 
 export function input(...classes: ClassNameValue[]) {
 	return panel(

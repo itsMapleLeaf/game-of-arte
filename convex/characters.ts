@@ -1,7 +1,7 @@
 import { mutation, query } from "convex/_generated/server"
 import { v } from "convex/values"
 import randimals from "randimals"
-import { requireAdmin, requirePlayerUser } from "./roles"
+import { requireAdmin, requirePlayerUser } from "./roles.ts"
 import { playerDataValidator } from "./schema.ts"
 
 export const list = query({

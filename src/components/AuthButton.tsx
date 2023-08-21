@@ -1,6 +1,6 @@
 import { SignInButton, SignOutButton, useUser } from "@clerk/clerk-react"
 import { LucideLogIn } from "lucide-react"
-import { LoadingSpinner } from "./LoadingPlaceholder"
+import { LoadingSpinner } from "./LoadingPlaceholder.tsx"
 
 export function AuthButton() {
 	const { user, isLoaded } = useUser()
