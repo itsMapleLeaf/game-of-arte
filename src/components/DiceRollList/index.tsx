@@ -27,7 +27,7 @@ function DiceRollItems() {
 			computeItemKey={(index, roll) => roll._id}
 			itemContent={(index, roll) => <DiceRollDetails roll={roll} />}
 			initialTopMostItemIndex={rolls.length - 1}
-			followOutput="smooth"
+			followOutput
 			alignToBottom
 		/>
 	)
@@ -45,7 +45,7 @@ function DiceRollDetails({ roll }: { roll: DiceRollListItem }) {
 		.reduce((a, b) => a + b, 0)
 
 	return (
-		<div className="grid gap-2 border-t border-base-800 px-2 py-3">
+		<div className="grid content-between gap-2 border-t border-base-800 px-2 py-3">
 			{roll.label && (
 				<h2 className="text-lg font-light leading-none">{roll.label}</h2>
 			)}
