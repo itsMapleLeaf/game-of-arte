@@ -7,6 +7,7 @@ import { ConvexProviderWithClerk } from "convex/react-clerk"
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 import { App } from "./components/App.tsx"
+import { AppTitle } from "./components/AppTitle.tsx"
 import { Identify } from "./components/Identify.tsx"
 import { LoadingSuspense } from "./components/LoadingPlaceholder.tsx"
 
@@ -19,6 +20,7 @@ createRoot(document.querySelector("#root")!).render(
 		<ConvexProviderWithClerk client={convex} useAuth={useAuth}>
 			<StrictMode>
 				<Identify />
+				<AppTitle />
 				<LoadingSuspense className="fixed inset-0">
 					<App />
 				</LoadingSuspense>

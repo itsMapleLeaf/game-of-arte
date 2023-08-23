@@ -14,12 +14,14 @@
 - [ ] dice roll button popover for using resilience
 - [ ] improved counter-style number input
 - [ ] toggle character visibility
+  - list characters under different headings for visible and hidden
+  - only show hidden characters to admin
 
 # polish
 
 - [ ] generic world data, similar to character data
 - [ ] toggle clock visibility
-- [ ] show current character in document title
+- [x] show current character in document title
 - [ ] readonly state for spectators
 - [ ] remove button on dice rolls
 - [ ] confirmation modal for signing out
