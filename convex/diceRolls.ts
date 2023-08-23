@@ -33,7 +33,7 @@ export const list = query({
 
 export const roll = mutation({
 	args: {
-		type: v.optional(v.string()),
+		type: v.optional(v.literal("action")),
 		label: v.optional(v.string()),
 		characterId: v.optional(v.id("characters")),
 		dice: v.array(v.object({ sides: v.number(), count: v.number() })),

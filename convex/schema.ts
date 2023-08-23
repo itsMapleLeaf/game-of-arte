@@ -27,7 +27,7 @@ export default defineSchema({
 		data: playerDataValidator(),
 	}),
 	diceRolls: defineTable({
-		type: v.optional(v.string()),
+		type: v.optional(v.literal("action")),
 		label: v.optional(v.string()),
 		discordUserId: v.string(),
 		characterId: v.optional(v.id("characters")),
