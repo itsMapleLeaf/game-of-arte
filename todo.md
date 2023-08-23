@@ -11,14 +11,14 @@
 - [x] attribute descriptions
 - [x] show total EXP for the whole party and used EXP per-character
 - [x] clocks
-- [ ] dice roll button popover for using resilience
-- [ ] improved counter-style number input
 - [ ] toggle character visibility
   - list characters under different headings for visible and hidden
   - only show hidden characters to admin
+- [ ] dice roll button popover for using resilience
 
 # polish
 
+- [ ] improved counter-style number input
 - [ ] generic world data, similar to character data
 - [ ] toggle clock visibility
 - [x] show current character in document title
