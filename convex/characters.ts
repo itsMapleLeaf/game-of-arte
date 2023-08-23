@@ -2,7 +2,7 @@ import { mutation, query } from "convex/_generated/server"
 import { v } from "convex/values"
 import randimals from "randimals"
 import { requireAdmin, requirePlayerUser } from "./roles.ts"
-import { playerDataValidator } from "./schema.ts"
+import { nullish, playerDataValidator } from "./schema.ts"
 
 export const list = query({
 	handler: async (ctx) => {
@@ -11,9 +11,9 @@ export const list = query({
 })
 
 export const get = query({
-	args: { id: v.id("characters") },
+	args: { id: nullish(v.id("characters")) },
 	handler: async (ctx, args) => {
-		return await ctx.db.get(args.id)
+		return args.id ? await ctx.db.get(args.id) : null
 	},
 })
 
