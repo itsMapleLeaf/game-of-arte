@@ -1,17 +1,24 @@
 import { LucideInfo } from "lucide-react"
 import { useId } from "react"
 import { renderSlot, type Slot } from "../helpers/slot.ts"
-import { field, fieldDescription, labelText } from "../styles/index.ts"
+import {
+	field,
+	fieldDescription,
+	labelText,
+	type LabelTextVariant,
+} from "../styles/index.ts"
 import { panel } from "../styles/panel.ts"
 
 export function Field({
 	label,
+	labelTextVariant,
 	description,
 	tooltip,
 	children = <input />,
 	...props
 }: React.InputHTMLAttributes<HTMLInputElement> & {
 	label: string
+	labelTextVariant?: LabelTextVariant
 	description?: string
 	tooltip?: string
 	children?: Slot<React.InputHTMLAttributes<HTMLInputElement>>
@@ -22,7 +29,7 @@ export function Field({
 	return (
 		<div className={field()}>
 			<div className="flex items-center gap-1">
-				<label htmlFor={inputId} className={labelText()}>
+				<label htmlFor={inputId} className={labelText(labelTextVariant)}>
 					{label}
 				</label>
 				{tooltip && (

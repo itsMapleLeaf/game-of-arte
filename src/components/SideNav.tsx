@@ -12,6 +12,7 @@ import { useAppParams } from "../helpers/useAppParams.ts"
 import { useQuerySuspense } from "../helpers/useQuerySuspense.ts"
 import { panel } from "../styles/panel.ts"
 import { CharacterList } from "./CharacterList.tsx"
+import { ClockList } from "./ClockList.tsx"
 import { DiceRollList } from "./DiceRollList/index.tsx"
 import { LoadingSuspense } from "./LoadingPlaceholder.tsx"
 import { PlayerList } from "./PlayerList.tsx"
@@ -46,7 +47,7 @@ export function SideNav() {
 			defineView({
 				title: "Clocks",
 				icon: <LucideClock />,
-				content: <p>todo</p>,
+				content: <ClockList />,
 			}),
 			roles.isAdmin &&
 				defineView({

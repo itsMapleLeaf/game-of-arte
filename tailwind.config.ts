@@ -34,6 +34,12 @@ export default {
 					"text-align": "left",
 				},
 			})
+
+			api.addUtilities({
+				".ring-no-inset": {
+					"--tw-ring-inset": "",
+				},
+			})
 		}),
 		plugin(function size(api) {
 			api.matchUtilities(

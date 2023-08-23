@@ -20,3 +20,7 @@ export function toFiniteNumberOrUndefined(input: unknown): number | undefined {
 	const number = Number(input)
 	return Number.isFinite(number) ? number : undefined
 }
+
+export function clamp(value: number, min: number, max: number) {
+	return value > max ? max : value < min ? min : value
+}

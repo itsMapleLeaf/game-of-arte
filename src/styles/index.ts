@@ -23,6 +23,15 @@ export function fieldDescription(...classes: ClassNameValue[]) {
 	return twMerge("text-sm opacity-75", ...classes)
 }
 
-export function labelText(...classes: ClassNameValue[]) {
-	return twMerge("font-medium leading-none", ...classes)
+export type LabelTextVariant = "sm" | "base"
+
+export function labelText(
+	variant: LabelTextVariant = "base",
+	...classes: ClassNameValue[]
+) {
+	return twMerge(
+		"font-medium",
+		variant === "sm" ? "text-sm/none" : "text-base/none",
+		...classes,
+	)
 }

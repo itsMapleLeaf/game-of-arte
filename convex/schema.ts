@@ -34,4 +34,9 @@ export default defineSchema({
 		dice: diceSchema,
 		resilienceCollected: v.optional(v.boolean()),
 	}),
+	clocks: defineTable({
+		name: v.string(),
+		value: v.number(),
+		maxValue: v.number(),
+	}),
 })

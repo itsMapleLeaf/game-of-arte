@@ -10,8 +10,8 @@
 - [x] attribute dice roll button
 - [x] attribute descriptions
 - [x] show total EXP for the whole party and used EXP per-character
+- [x] clocks
 - [ ] dice roll button popover for using resilience
-- [ ] clocks
 - [ ] improved counter-style number input
 - [ ] toggle character visibility
 
@@ -24,3 +24,4 @@
 - [ ] confirmation modal for signing out
 - [ ] toasts
 - [ ] mobile responsive styles
+- [ ] redirect to first character
