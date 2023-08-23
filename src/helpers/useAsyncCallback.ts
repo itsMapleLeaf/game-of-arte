@@ -1,4 +1,5 @@
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import { useEffectEvent } from "./useEffectEvent.ts"
 
 type AsyncCallbackState<T> =
 	| { status: "idle" }
@@ -14,12 +15,29 @@ type UseAsyncCallbackOptions<T> = {
 
 export function useAsyncCallback<Args extends unknown[], Return>(
 	callback: (...args: Args) => Return | PromiseLike<Return>,
-	options: UseAsyncCallbackOptions<Awaited<Return>> = {},
+	options?: UseAsyncCallbackOptions<Awaited<Return>>,
 ) {
 	const [state, setState] = useState<AsyncCallbackState<Awaited<Return>>>({
 		status: "idle",
 	})
 	const latestToken = useRef<symbol>()
+
+	const handleStateChange = useEffectEvent(
+		(state: AsyncCallbackState<Awaited<Return>>) => {
+			if (state.status === "success") {
+				options?.onSuccess?.(state.data)
+				options?.onSettled?.()
+			}
+			if (state.status === "error") {
+				options?.onError?.(state.error)
+				options?.onSettled?.()
+			}
+		},
+	)
+
+	useEffect(() => {
+		handleStateChange(state)
+	}, [handleStateChange, state])
 
 	function run(...args: Args) {
 		const token = (latestToken.current = Symbol())
@@ -30,16 +48,10 @@ export function useAsyncCallback<Args extends unknown[], Return>(
 				const result = await callback(...args)
 				if (latestToken.current === token) {
 					setState({ status: "success", data: result })
-					options.onSuccess?.(result)
 				}
 			} catch (error) {
 				if (latestToken.current === token) {
 					setState({ status: "error", error })
-					options.onError?.(error)
-				}
-			} finally {
-				if (latestToken.current === token) {
-					options.onSettled?.()
 				}
 			}
 		})()
