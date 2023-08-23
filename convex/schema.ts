@@ -1,6 +1,9 @@
 import { defineSchema, defineTable } from "convex/server"
 import { v, type Validator } from "convex/values"
 
+export const nullish = <T>(validator: Validator<T>) =>
+	v.optional(v.union(validator, v.null()))
+
 export const playerDataValidator = () =>
 	v.any() as Validator<Record<string, string | number>>
 
