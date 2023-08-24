@@ -6,6 +6,7 @@ import {
 	LucideEyeOff,
 	LucideMoreVertical,
 	LucidePlus,
+	LucideTrash,
 	LucideUser,
 } from "lucide-react"
 import { startTransition, useTransition } from "react"
@@ -101,6 +102,7 @@ function CharacterMenu({
 			<MenuTrigger asChild>{children}</MenuTrigger>
 			<MenuPanel side="right" align="center">
 				<ToggleHiddenItem character={character} />
+				<DeleteItem character={character} />
 			</MenuPanel>
 		</Menu>
 	)
@@ -116,6 +118,19 @@ function ToggleHiddenItem({ character }: { character: Doc<"characters"> }) {
 		>
 			{character.hidden ? <LucideEye /> : <LucideEyeOff />}
 			{character.hidden ? "Show" : "Hide"}
+		</MenuItem>
+	)
+}
+
+function DeleteItem({ character }: { character: Doc<"characters"> }) {
+	const remove = useMutation(api.characters.remove)
+	return (
+		<MenuItem
+			onClick={() => {
+				void remove({ id: character._id })
+			}}
+		>
+			<LucideTrash /> Delete
 		</MenuItem>
 	)
 }
