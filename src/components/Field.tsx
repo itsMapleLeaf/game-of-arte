@@ -1,6 +1,7 @@
 import { LucideInfo } from "lucide-react"
 import { useId } from "react"
 import { renderSlot, type Slot } from "../helpers/slot.ts"
+import { type Spread } from "../helpers/types.ts"
 import {
 	field,
 	fieldDescription,
@@ -17,14 +18,17 @@ export function Field({
 	children = <input />,
 	containerClassName,
 	...props
-}: React.InputHTMLAttributes<HTMLInputElement> & {
-	label: string
-	labelTextVariant?: LabelTextVariant
-	description?: string
-	tooltip?: string
-	children?: Slot<React.InputHTMLAttributes<HTMLInputElement>>
-	containerClassName?: string
-}) {
+}: Spread<
+	React.InputHTMLAttributes<HTMLInputElement>,
+	{
+		label: string
+		labelTextVariant?: LabelTextVariant
+		description?: string
+		tooltip?: string
+		children?: Slot<React.InputHTMLAttributes<HTMLInputElement>>
+		containerClassName?: string
+	}
+>) {
 	const inputId = useId()
 	const descriptionId = useId()
 	const tooltipId = useId()
