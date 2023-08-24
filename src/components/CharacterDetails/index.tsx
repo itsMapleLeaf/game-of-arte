@@ -33,7 +33,7 @@ export function CharacterDetails({
 		<p>Character not found</p>
 	) : (
 		<div className="grid flex-1 content-start gap-3 self-start">
-			<div className={row()}>
+			<div className={row("fluid-cols-48")}>
 				<section className={column()}>
 					<h3 className={sectionHeading()}>Info</h3>
 					<NameInput character={character} />
@@ -124,7 +124,7 @@ export function CharacterDetails({
 				</section>
 			</div>
 
-			<div className={row()}>
+			<div className={row("fluid-cols-36 content-center")}>
 				{attributes.map(({ title, attributes }) => (
 					<div key={title} className={column("gap-4")}>
 						<h3 className={sectionHeading()}>{title}</h3>

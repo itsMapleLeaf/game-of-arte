@@ -34,6 +34,7 @@
 		"tailwind-merge": "^1.14.0"
 	},
 	"devDependencies": {
+		"@tailwindcss/container-queries": "^0.1.1",
 		"@total-typescript/ts-reset": "^0.5.1",
 		"@types/node": "^20.5.0",
 		"@types/react": "^18.2.20",

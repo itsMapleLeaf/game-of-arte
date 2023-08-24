@@ -1,3 +1,4 @@
+import containerQueries from "@tailwindcss/container-queries"
 import { type Config } from "tailwindcss"
 import colors from "tailwindcss/colors"
 import plugin from "tailwindcss/plugin"
@@ -22,6 +23,7 @@ export default {
 		},
 	},
 	plugins: [
+		containerQueries,
 		plugin(function customPreflight(api) {
 			api.addBase({
 				":focus": {
@@ -40,6 +42,16 @@ export default {
 					"--tw-ring-inset": "",
 				},
 			})
+		}),
+		plugin(function fluidCols(api) {
+			api.matchUtilities(
+				{
+					"fluid-cols": (value: string) => ({
+						"grid-template-columns": `repeat(auto-fit, minmax(${value}, 1fr))`,
+					}),
+				},
+				{ values: api.theme("width") },
+			)
 		}),
 		plugin(function size(api) {
 			api.matchUtilities(
