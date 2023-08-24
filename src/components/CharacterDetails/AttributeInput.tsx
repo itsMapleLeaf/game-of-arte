@@ -41,7 +41,7 @@ export function AttributeInput({
 				>
 					<LucideDices />
 				</PopoverTrigger>
-				<PopoverPanel side="bottom" align="center">
+				<PopoverPanel side="bottom" align="center" className="w-48">
 					<AttributeRollForm
 						character={character}
 						attributeName={attributeName}
