@@ -17,6 +17,7 @@ export function parseNonEmptyArray<T>(value: T[]): NonEmptyArray<T> {
 }
 
 export function toFiniteNumberOrUndefined(input: unknown): number | undefined {
+	if (input === "") return undefined
 	const number = Number(input)
 	return Number.isFinite(number) ? number : undefined
 }
