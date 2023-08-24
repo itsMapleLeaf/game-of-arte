@@ -35,13 +35,11 @@ export function AttributeInput({
 				className={input("text-center")}
 			/>
 			<Popover>
-				<PopoverTrigger>
-					<button
-						type="button"
-						className="rounded-md p-2 transition hover:bg-base-800"
-					>
-						<LucideDices />
-					</button>
+				<PopoverTrigger
+					type="button"
+					className="rounded-md p-2 transition hover:bg-base-800"
+				>
+					<LucideDices />
 				</PopoverTrigger>
 				<PopoverPanel side="bottom" align="center">
 					<AttributeRollForm
