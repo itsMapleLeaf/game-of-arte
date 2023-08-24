@@ -27,6 +27,7 @@ export default defineSchema({
 	}).index("by_discord_user_id", ["discordUserId"]),
 	characters: defineTable({
 		name: v.string(),
+		hidden: v.optional(v.boolean()),
 		data: playerDataValidator(),
 	}),
 	diceRolls: defineTable({

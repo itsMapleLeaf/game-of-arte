@@ -13,7 +13,7 @@ export type Roles = {
 	isSpectator: boolean
 }
 
-async function getRoles(ctx: QueryCtx): Promise<Roles> {
+export async function getRoles(ctx: QueryCtx): Promise<Roles> {
 	const user = await findUserByTokenIdentifier(ctx)
 	if (!user) {
 		return { isAdmin: false, isPlayer: false, isSpectator: true }

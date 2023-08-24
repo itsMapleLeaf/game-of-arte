@@ -11,10 +11,11 @@
 - [x] attribute descriptions
 - [x] show total EXP for the whole party and used EXP per-character
 - [x] clocks
-- [ ] toggle character visibility
+- [x] toggle character visibility
   - list characters under different headings for visible and hidden
   - only show hidden characters to admin
 - [ ] dice roll button popover for using resilience
+- [ ] hide any non-admin UI from non-admins
 
 # polish
 

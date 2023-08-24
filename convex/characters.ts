@@ -1,19 +1,32 @@
 import { mutation, query } from "convex/_generated/server"
 import { v } from "convex/values"
 import randimals from "randimals"
-import { requireAdmin, requirePlayerUser } from "./roles.ts"
+import { getRoles, requireAdmin, requirePlayerUser } from "./roles.ts"
 import { nullish, playerDataValidator } from "./schema.ts"
 
 export const list = query({
 	handler: async (ctx) => {
-		return await ctx.db.query("characters").collect()
+		const roles = await getRoles(ctx)
+		let query = ctx.db.query("characters")
+		if (!roles.isAdmin) {
+			query = query.filter((q) => q.neq(q.field("hidden"), true))
+		}
+		return await query.collect()
 	},
 })
 
 export const get = query({
 	args: { id: nullish(v.id("characters")) },
 	handler: async (ctx, args) => {
-		return args.id ? await ctx.db.get(args.id) : null
+		if (!args.id) return null
+
+		const character = await ctx.db.get(args.id)
+		if (!character) return null
+
+		const roles = await getRoles(ctx)
+		if (!roles.isAdmin && character.hidden) return null
+
+		return character
 	},
 })
 
@@ -30,10 +43,14 @@ export const create = mutation({
 })
 
 export const update = mutation({
-	args: { id: v.id("characters"), name: v.string() },
-	handler: async (ctx, args) => {
+	args: {
+		id: v.id("characters"),
+		name: v.optional(v.string()),
+		hidden: v.optional(v.boolean()),
+	},
+	handler: async (ctx, { id, ...args }) => {
 		await requirePlayerUser(ctx)
-		await ctx.db.patch(args.id, { name: args.name })
+		await ctx.db.patch(id, args)
 	},
 })
 
