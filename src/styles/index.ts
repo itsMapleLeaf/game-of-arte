@@ -16,7 +16,7 @@ export function textArea(...classes: ClassNameValue[]) {
 }
 
 export function field(...classes: ClassNameValue[]) {
-	return twMerge("flex flex-col gap-1 w-full min-w-0", ...classes)
+	return twMerge("flex flex-col gap-1 min-w-0", ...classes)
 }
 
 export function fieldDescription(...classes: ClassNameValue[]) {

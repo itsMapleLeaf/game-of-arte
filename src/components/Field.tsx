@@ -15,6 +15,7 @@ export function Field({
 	description,
 	tooltip,
 	children = <input />,
+	containerClassName,
 	...props
 }: React.InputHTMLAttributes<HTMLInputElement> & {
 	label: string
@@ -22,12 +23,13 @@ export function Field({
 	description?: string
 	tooltip?: string
 	children?: Slot<React.InputHTMLAttributes<HTMLInputElement>>
+	containerClassName?: string
 }) {
 	const inputId = useId()
 	const descriptionId = useId()
 	const tooltipId = useId()
 	return (
-		<div className={field()}>
+		<div className={field(containerClassName)}>
 			<div className="flex items-center gap-1">
 				<label htmlFor={inputId} className={labelText(labelTextVariant)}>
 					{label}
