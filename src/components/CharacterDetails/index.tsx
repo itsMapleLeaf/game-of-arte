@@ -4,15 +4,9 @@ import { useId } from "react"
 import ExpandingTextArea from "react-expanding-textarea"
 import { toFiniteNumberOrUndefined } from "../../helpers/index.ts"
 import { useQuerySuspense } from "../../helpers/useQuerySuspense.ts"
-import {
-	field,
-	fieldDescription,
-	input,
-	labelText,
-	textArea,
-} from "../../styles/index.ts"
+import { input, textArea } from "../../styles/index.ts"
 import { CounterInput } from "../CounterInput.tsx"
-import { Field } from "../Field.tsx"
+import { Field, field, fieldDescription, fieldLabel } from "../Field.tsx"
 import { AttributeInput } from "./AttributeInput.tsx"
 import { DataInput } from "./DataInput.tsx"
 import { ImageInput } from "./ImageInput.tsx"
@@ -75,7 +69,7 @@ export function CharacterDetails({
 						<DataInput character={character} dataKey="resilience">
 							{(dataInputProps) => (
 								<div className={field()}>
-									<p className={labelText()}>Resilience</p>
+									<p className={fieldLabel()}>Resilience</p>
 									<CounterInput
 										min={0}
 										value={toFiniteNumberOrUndefined(dataInputProps.value) ?? 2}
@@ -88,7 +82,7 @@ export function CharacterDetails({
 						<DataInput character={character} dataKey="physicalStress">
 							{(dataInputProps) => (
 								<div className={field()}>
-									<p className={labelText()}>Phys. Stress</p>
+									<p className={fieldLabel()}>Phys. Stress</p>
 									<CounterInput
 										min={0}
 										max={6}
@@ -102,7 +96,7 @@ export function CharacterDetails({
 						<DataInput character={character} dataKey="mentalStress">
 							{(dataInputProps) => (
 								<div className={field()}>
-									<p className={labelText()}>Ment. Stress</p>
+									<p className={fieldLabel()}>Ment. Stress</p>
 									<CounterInput
 										min={0}
 										max={6}
@@ -201,7 +195,7 @@ function ExperienceDisplay({ character }: { character: Doc<"characters"> }) {
 
 	return (
 		<div className={field()}>
-			<p id={labelId} className={labelText()}>
+			<p id={labelId} className={fieldLabel()}>
 				Experience
 			</p>
 			<p id={description} className={fieldDescription()}>

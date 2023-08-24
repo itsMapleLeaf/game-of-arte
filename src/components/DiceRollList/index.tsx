@@ -6,9 +6,8 @@ import { LucideDices, LucideHexagon } from "lucide-react"
 import { Virtuoso } from "react-virtuoso"
 import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
 import { useQuerySuspense } from "../../helpers/useQuerySuspense.ts"
-import { field, labelText } from "../../styles/index.ts"
 import { CounterInput } from "../CounterInput.tsx"
-import { Field } from "../Field.tsx"
+import { Field, field, fieldLabel } from "../Field.tsx"
 
 export function DiceRollList() {
 	return (
@@ -151,7 +150,7 @@ function DiceRollForm() {
 				</Field>
 			</div>
 			<div className={field()}>
-				<p className={labelText()}>Dice Count</p>
+				<p className={fieldLabel()}>Dice Count</p>
 				<CounterInput
 					name="count"
 					defaultValue={1}

@@ -113,7 +113,7 @@ function ClockEditor({ clock }: { clock: Doc<"clocks"> }) {
 	return (
 		<div className="flex flex-col gap-2 p-3">
 			<div className="flex gap-2">
-				<Field label="Name" labelTextVariant="sm" containerClassName="flex-1">
+				<Field label="Name" labelVariant="sm" containerClassName="flex-1">
 					<input
 						value={clock.name}
 						onChange={(event) => {
@@ -126,7 +126,7 @@ function ClockEditor({ clock }: { clock: Doc<"clocks"> }) {
 					/>
 				</Field>
 
-				<Field label="Ticks" labelTextVariant="sm">
+				<Field label="Ticks" labelVariant="sm">
 					<input
 						type="number"
 						value={clock.maxValue}

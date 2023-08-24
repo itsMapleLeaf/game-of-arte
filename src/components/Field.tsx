@@ -1,18 +1,15 @@
 import { LucideInfo } from "lucide-react"
 import { useId } from "react"
+import { twMerge, type ClassNameValue } from "tailwind-merge"
 import { renderSlot, type Slot } from "../helpers/slot.ts"
 import { type Spread } from "../helpers/types.ts"
-import {
-	field,
-	fieldDescription,
-	labelText,
-	type LabelTextVariant,
-} from "../styles/index.ts"
 import { panel } from "../styles/panel.ts"
+
+export type FieldLabelVariant = "sm" | "base"
 
 export function Field({
 	label,
-	labelTextVariant,
+	labelVariant,
 	description,
 	tooltip,
 	children = <input />,
@@ -22,7 +19,7 @@ export function Field({
 	React.InputHTMLAttributes<HTMLInputElement>,
 	{
 		label: string
-		labelTextVariant?: LabelTextVariant
+		labelVariant?: FieldLabelVariant
 		description?: string
 		tooltip?: string
 		children?: Slot<React.InputHTMLAttributes<HTMLInputElement>>
@@ -35,7 +32,7 @@ export function Field({
 	return (
 		<div className={field(containerClassName)}>
 			<div className="flex items-center gap-1">
-				<label htmlFor={inputId} className={labelText(labelTextVariant)}>
+				<label htmlFor={inputId} className={fieldLabel(labelVariant)}>
 					{label}
 				</label>
 				{tooltip && (
@@ -71,4 +68,23 @@ export function Field({
 			})}
 		</div>
 	)
+}
+
+export function field(...classes: ClassNameValue[]) {
+	return twMerge("flex flex-col gap-1 min-w-0", ...classes)
+}
+
+export function fieldLabel(
+	variant: FieldLabelVariant = "base",
+	...classes: ClassNameValue[]
+) {
+	return twMerge(
+		"font-medium",
+		variant === "sm" ? "text-sm/none" : "text-base/none",
+		...classes,
+	)
+}
+
+export function fieldDescription(...classes: ClassNameValue[]) {
+	return twMerge("text-sm opacity-75", ...classes)
 }
