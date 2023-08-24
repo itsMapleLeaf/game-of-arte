@@ -6,7 +6,7 @@ import {
 	type OptionalRestArgs,
 } from "convex/server"
 import { LRUCache } from "lru-cache"
-import { useLayoutEffect, useState } from "react"
+import { useEffect, useLayoutEffect, useState } from "react"
 import { useMemoValue } from "./useMemoValue.ts"
 
 const cache = new LRUCache<string, NonNullable<unknown>>({
@@ -70,6 +70,11 @@ export function useQuerySuspense<Query extends FunctionReference<"query">>(
 	)
 
 	const memoArgs = useMemoValue(args)
+
+	useEffect(() => {
+		const data = getQueryCacheData(memoQuery, memoArgs)
+		if (data !== undefined) setData(data)
+	}, [memoArgs, memoQuery])
 
 	useLayoutEffect(() => {
 		const watch = convex.watchQuery(memoQuery, ...memoArgs)
