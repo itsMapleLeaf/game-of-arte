@@ -34,7 +34,7 @@ export function DataInput<ExtraProps extends object>({
 
 	return renderSlot(children, {
 		...props,
-		value: character.data[dataKey],
+		value: character.data[dataKey] ?? "",
 		onChange: (event) => {
 			void update({
 				id: character._id,
