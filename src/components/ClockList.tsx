@@ -10,9 +10,10 @@ import { useQuerySuspense } from "../helpers/useQuerySuspense.ts"
 import { Field } from "./Field.tsx"
 
 export function ClockList() {
+	const roles = useQuerySuspense(api.roles.get)
 	return (
 		<div className="flex h-full flex-col divide-y divide-base-800">
-			<AddClockButton />
+			{roles.isAdmin && <AddClockButton />}
 			<ClockItems />
 		</div>
 	)
@@ -47,6 +48,8 @@ function ClockItems() {
 }
 
 function ClockEditor({ clock }: { clock: Doc<"clocks"> }) {
+	const roles = useQuerySuspense(api.roles.get)
+
 	const update = useMutation(api.clocks.update).withOptimisticUpdate(
 		(store, args) => {
 			const clocks = store.getQuery(api.clocks.list) ?? []
@@ -108,43 +111,47 @@ function ClockEditor({ clock }: { clock: Doc<"clocks"> }) {
 	const valueId = useId()
 
 	return (
-		<div className="grid grid-cols-[1fr,auto,auto] gap-2 p-2">
-			<Field label="Name" labelTextVariant="sm">
-				<input
-					value={clock.name}
-					onChange={(event) => {
-						void update({
-							id: clock._id,
-							name: event.currentTarget.value,
-						})
-					}}
-					className="min-w-0 rounded-md bg-black/25 p-2 leading-none transition focus:bg-black/50"
-				/>
-			</Field>
+		<div className="flex flex-col gap-2 p-3">
+			<div className="flex gap-2">
+				<Field label="Name" labelTextVariant="sm" containerClassName="flex-1">
+					<input
+						value={clock.name}
+						onChange={(event) => {
+							void update({
+								id: clock._id,
+								name: event.currentTarget.value,
+							})
+						}}
+						className="min-w-0 rounded-md bg-black/25 p-2 leading-none transition focus:bg-black/50"
+					/>
+				</Field>
 
-			<Field label="Ticks" labelTextVariant="sm">
-				<input
-					type="number"
-					value={clock.maxValue}
-					onChange={(event) => {
-						void update({
-							id: clock._id,
-							maxValue: event.currentTarget.valueAsNumber,
-						})
-					}}
-					className="w-16 min-w-0 rounded-md bg-black/25 px-3 py-2 leading-none transition focus:bg-black/50"
-				/>
-			</Field>
+				<Field label="Ticks" labelTextVariant="sm">
+					<input
+						type="number"
+						value={clock.maxValue}
+						onChange={(event) => {
+							void update({
+								id: clock._id,
+								maxValue: event.currentTarget.valueAsNumber,
+							})
+						}}
+						className="w-16 rounded-md bg-black/25 px-3 py-2 leading-none transition focus:bg-black/50"
+					/>
+				</Field>
 
-			<button
-				className="self-end p-1.5 opacity-75 transition hover:opacity-100"
-				onClick={() => {
-					void remove({ id: clock._id })
-				}}
-			>
-				<LucideX />
-				<span className="sr-only">Remove</span>
-			</button>
+				{roles.isAdmin && (
+					<button
+						className="-mx-1.5 self-end p-1.5 opacity-75 transition hover:opacity-100"
+						onClick={() => {
+							void remove({ id: clock._id })
+						}}
+					>
+						<LucideX />
+						<span className="sr-only">Remove</span>
+					</button>
+				)}
+			</div>
 
 			<div className="relative col-span-full rounded-md">
 				<input
@@ -164,7 +171,7 @@ function ClockEditor({ clock }: { clock: Doc<"clocks"> }) {
 				<label
 					htmlFor={valueId}
 					ref={labelRef}
-					className="ring-no-inset group relative flex h-8 w-full touch-none flex-row rounded-md border-2 border-accent-500 ring-accent-400 focus-visible:ring-2"
+					className="group relative flex h-8 w-full touch-none flex-row rounded-md border-2 border-accent-500 ring-accent-400 ring-no-inset focus-visible:ring-2"
 					onPointerDown={(event) => {
 						event.preventDefault()
 						draggingRef.current = true

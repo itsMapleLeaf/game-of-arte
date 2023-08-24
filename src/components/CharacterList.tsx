@@ -22,7 +22,7 @@ export function CharacterList() {
 	const roles = useQuerySuspense(api.roles.get)
 	return (
 		<div className="flex h-full flex-col divide-y divide-base-800">
-			<NewCharacterButton />
+			{roles.isAdmin && <NewCharacterButton />}
 			<div className="min-h-0 flex-1 overflow-y-auto">
 				<CharacterListItems
 					characters={characters.filter((character) => !character.hidden)}

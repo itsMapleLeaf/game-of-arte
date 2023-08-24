@@ -15,7 +15,7 @@
   - list characters under different headings for visible and hidden
   - only show hidden characters to admin
 - [ ] dice roll button popover for using resilience
-- [ ] hide any non-admin UI from non-admins
+- [x] hide any non-admin UI from non-admins
 
 # polish
 
