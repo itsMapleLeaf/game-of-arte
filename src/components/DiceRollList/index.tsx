@@ -6,6 +6,8 @@ import { LucideDices, LucideHexagon } from "lucide-react"
 import { Virtuoso } from "react-virtuoso"
 import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
 import { useQuerySuspense } from "../../helpers/useQuerySuspense.ts"
+import { field, labelText } from "../../styles/index.ts"
+import { CounterInput } from "../CounterInput.tsx"
 import { Field } from "../Field.tsx"
 
 export function DiceRollList() {
@@ -46,9 +48,7 @@ function DiceRollDetails({ roll }: { roll: DiceRollListItem }) {
 
 	return (
 		<div className="grid content-between gap-2 border-t border-base-800 px-2 py-3">
-			{roll.label && (
-				<h2 className="text-lg font-light leading-none">{roll.label}</h2>
-			)}
+			{roll.label && <h2 className="text-lg/tight font-light">{roll.label}</h2>}
 			<ul className="-mx-1 flex flex-wrap items-center">
 				{dice.map((die, index) =>
 					isAction ? (
@@ -150,15 +150,15 @@ function DiceRollForm() {
 					/>
 				</Field>
 			</div>
-			<Field label="Count">
-				<input
-					type="number"
+			<div className={field()}>
+				<p className={labelText()}>Dice Count</p>
+				<CounterInput
 					name="count"
 					defaultValue={1}
 					min={1}
-					className="h-10 min-w-0 rounded bg-black/50 p-2 text-center leading-none"
+					className="h-10 border-0 bg-black/50"
 				/>
-			</Field>
+			</div>
 			<button
 				type="submit"
 				className="flex h-10 items-center gap-2 self-end rounded bg-black/50 px-3"

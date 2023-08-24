@@ -6,7 +6,7 @@ import { startTransition, useState } from "react"
 import { toFiniteNumberOrUndefined } from "../../helpers/index.ts"
 import { useAppParams } from "../../helpers/useAppParams.ts"
 import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
-import { input } from "../../styles/index.ts"
+import { CounterInput, type CounterInputProps } from "../CounterInput.tsx"
 import { Field } from "../Field.tsx"
 import {
 	Popover,
@@ -19,21 +19,16 @@ export function AttributeInput({
 	character,
 	attributeName,
 	...props
-}: React.InputHTMLAttributes<HTMLInputElement> & {
+}: CounterInputProps & {
 	attributeName: string
 	character: Doc<"characters">
 }) {
 	const value = toFiniteNumberOrUndefined(props.value) ?? 1
 	return (
-		<div className="flex gap-2">
-			<input
-				{...props}
-				value={value}
-				type="number"
-				min={1}
-				step={1}
-				className={input("text-center")}
-			/>
+		<div className="flex items-center gap-2">
+			<div className="flex-1">
+				<CounterInput {...props} value={value} min={1} />
+			</div>
 			<Popover>
 				<PopoverTrigger
 					type="button"
@@ -99,16 +94,11 @@ function AttributeRollForm({
 	return (
 		<div className="grid gap-2 p-2">
 			<Field label="Use Resilience">
-				<input
-					type="number"
+				<CounterInput
 					min={0}
 					max={availableResilience}
-					step={1}
-					className={input("text-center")}
 					value={resilienceToUse}
-					onChange={(e) => {
-						setResilienceToUse(e.currentTarget.valueAsNumber)
-					}}
+					onChange={setResilienceToUse}
 				/>
 			</Field>
 			<PopoverClose

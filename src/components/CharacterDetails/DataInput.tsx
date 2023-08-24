@@ -15,6 +15,7 @@ export function DataInput<ExtraProps extends object>({
 		Omit<ExtraProps, "character" | "dataKey" | "children"> & {
 			value: string | number | undefined
 			onChange: (event: React.ChangeEvent<{ value: string }>) => void
+			onChangeValue: (value: string | number) => void
 		}
 	>
 }) {
@@ -38,6 +39,12 @@ export function DataInput<ExtraProps extends object>({
 			void update({
 				id: character._id,
 				data: { [dataKey]: event.currentTarget.value },
+			})
+		},
+		onChangeValue: (value) => {
+			void update({
+				id: character._id,
+				data: { [dataKey]: value },
 			})
 		},
 	})

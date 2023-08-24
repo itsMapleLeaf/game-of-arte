@@ -11,12 +11,12 @@ import {
 	labelText,
 	textArea,
 } from "../../styles/index.ts"
+import { CounterInput } from "../CounterInput.tsx"
 import { Field } from "../Field.tsx"
 import { AttributeInput } from "./AttributeInput.tsx"
 import { DataInput } from "./DataInput.tsx"
 import { ImageInput } from "./ImageInput.tsx"
 import { NameInput } from "./NameInput.tsx"
-import { NumberInput } from "./NumberInput.tsx"
 import { attributes } from "./attributes.ts"
 import { column, row, sectionHeading } from "./styles.ts"
 
@@ -55,21 +55,44 @@ export function CharacterDetails({
 					<h3 className={sectionHeading()}>Status</h3>
 					<div className={row("items-end gap-2")}>
 						<DataInput character={character} dataKey="resilience">
-							<Field label="Resilience">
-								<NumberInput defaultValue={2} min={0} />
-							</Field>
+							{(dataInputProps) => (
+								<div className={field()}>
+									<p className={labelText()}>Resilience</p>
+									<CounterInput
+										min={0}
+										value={toFiniteNumberOrUndefined(dataInputProps.value) ?? 2}
+										onChange={dataInputProps.onChangeValue}
+									/>
+								</div>
+							)}
 						</DataInput>
 
 						<DataInput character={character} dataKey="physicalStress">
-							<Field label="Phys. Stress">
-								<NumberInput min={0} max={6} />
-							</Field>
+							{(dataInputProps) => (
+								<div className={field()}>
+									<p className={labelText()}>Phys. Stress</p>
+									<CounterInput
+										min={0}
+										max={6}
+										value={toFiniteNumberOrUndefined(dataInputProps.value) ?? 0}
+										onChange={dataInputProps.onChangeValue}
+									/>
+								</div>
+							)}
 						</DataInput>
 
 						<DataInput character={character} dataKey="mentalStress">
-							<Field label="Ment. Stress">
-								<NumberInput min={0} max={6} />
-							</Field>
+							{(dataInputProps) => (
+								<div className={field()}>
+									<p className={labelText()}>Ment. Stress</p>
+									<CounterInput
+										min={0}
+										max={6}
+										value={toFiniteNumberOrUndefined(dataInputProps.value) ?? 0}
+										onChange={dataInputProps.onChangeValue}
+									/>
+								</div>
+							)}
 						</DataInput>
 					</div>
 
@@ -117,12 +140,20 @@ export function CharacterDetails({
 									character={character}
 									dataKey={dataKey}
 								>
-									<Field label={name} tooltip={description}>
-										<AttributeInput
-											character={character}
-											attributeName={name}
-										/>
-									</Field>
+									{(dataInputProps) => (
+										<div className={field()}>
+											<p className={labelText()}>{name}</p>
+											<p className={fieldDescription()}>{description}</p>
+											<AttributeInput
+												value={
+													toFiniteNumberOrUndefined(dataInputProps.value) ?? 1
+												}
+												onChange={dataInputProps.onChangeValue}
+												character={character}
+												attributeName={name}
+											/>
+										</div>
+									)}
 								</DataInput>
 							))}
 					</div>

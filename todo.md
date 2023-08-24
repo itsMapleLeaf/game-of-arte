@@ -19,7 +19,7 @@
 
 # polish
 
-- [ ] improved counter-style number input
+- [x] improved counter-style number input
 - [ ] generic world data, similar to character data
 - [ ] toggle clock visibility
 - [x] show current character in document title
