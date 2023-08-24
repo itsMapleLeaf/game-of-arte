@@ -10,7 +10,7 @@ export function input(...classes: ClassNameValue[]) {
 
 export function textArea(...classes: ClassNameValue[]) {
 	return panel(
-		"max-h-64 w-full min-w-0 rounded-md border px-3 py-2 leading-6",
+		"w-full min-w-0 rounded-md border px-3 py-2 leading-6",
 		...classes,
 	)
 }

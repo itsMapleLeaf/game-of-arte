@@ -101,13 +101,13 @@ export function CharacterDetails({
 							label="Condition"
 							description="Write specifics about the stress they've taken."
 						>
-							<ExpandingTextArea className={textArea()} />
+							<ExpandingTextArea className={textArea("max-h-64")} />
 						</Field>
 					</DataInput>
 
 					<DataInput character={character} dataKey="inventory">
 						<Field label="Inventory" description="What are you carrying?">
-							<ExpandingTextArea className={textArea()} />
+							<ExpandingTextArea className={textArea("max-h-64")} />
 						</Field>
 					</DataInput>
 
@@ -116,7 +116,7 @@ export function CharacterDetails({
 							label="Notes"
 							description="Write anything else we should know, temporary or otherwise. This is public!"
 						>
-							<ExpandingTextArea className={textArea()} />
+							<ExpandingTextArea className={textArea("max-h-64")} />
 						</Field>
 					</DataInput>
 
