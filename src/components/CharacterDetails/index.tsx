@@ -53,6 +53,24 @@ export function CharacterDetails({
 
 				<section className={column()}>
 					<h3 className={sectionHeading()}>Status</h3>
+
+					<DataInput character={character} dataKey="notes">
+						<Field
+							label="Notes"
+							description="Write anything else we should know, temporary or otherwise. This is public!"
+						>
+							<ExpandingTextArea className={textArea("max-h-64")} />
+						</Field>
+					</DataInput>
+
+					<DataInput character={character} dataKey="inventory">
+						<Field label="Inventory" description="What are you carrying?">
+							<ExpandingTextArea className={textArea("max-h-64")} />
+						</Field>
+					</DataInput>
+
+					<ExperienceDisplay character={character} />
+
 					<div className={row("items-end gap-2")}>
 						<DataInput character={character} dataKey="resilience">
 							{(dataInputProps) => (
@@ -104,23 +122,6 @@ export function CharacterDetails({
 							<ExpandingTextArea className={textArea("max-h-64")} />
 						</Field>
 					</DataInput>
-
-					<DataInput character={character} dataKey="inventory">
-						<Field label="Inventory" description="What are you carrying?">
-							<ExpandingTextArea className={textArea("max-h-64")} />
-						</Field>
-					</DataInput>
-
-					<DataInput character={character} dataKey="notes">
-						<Field
-							label="Notes"
-							description="Write anything else we should know, temporary or otherwise. This is public!"
-						>
-							<ExpandingTextArea className={textArea("max-h-64")} />
-						</Field>
-					</DataInput>
-
-					<ExperienceDisplay character={character} />
 				</section>
 			</div>
 
