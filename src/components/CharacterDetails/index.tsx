@@ -140,20 +140,30 @@ export function CharacterDetails({
 									character={character}
 									dataKey={dataKey}
 								>
-									{(dataInputProps) => (
-										<div className={field()}>
-											<p className={labelText()}>{name}</p>
-											<p className={fieldDescription()}>{description}</p>
-											<AttributeInput
-												value={
-													toFiniteNumberOrUndefined(dataInputProps.value) ?? 1
-												}
-												onChange={dataInputProps.onChangeValue}
-												character={character}
-												attributeName={name}
-											/>
-										</div>
-									)}
+									{(dataInputProps) => {
+										const value =
+											toFiniteNumberOrUndefined(dataInputProps.value) ?? 1
+										return (
+											<div
+												data-highlight={value > 1}
+												className="transition-colors data-[highlight=true]:text-accent-300"
+											>
+												<Field label={name} tooltip={description}>
+													{(fieldProps) => (
+														<div className="text-white">
+															<AttributeInput
+																name={fieldProps.name}
+																value={value}
+																onChange={dataInputProps.onChangeValue}
+																character={character}
+																attributeName={name}
+															/>
+														</div>
+													)}
+												</Field>
+											</div>
+										)
+									}}
 								</DataInput>
 							))}
 					</div>
