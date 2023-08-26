@@ -19,6 +19,9 @@
 
 # polish
 
+- toasts
+  - [ ] errors
+  - [ ] rolling dice: "X resilience has been used"
 - [x] improved counter-style number input
 - [ ] generic world data, similar to character data
 - [ ] toggle clock visibility
@@ -26,6 +29,5 @@
 - [ ] readonly state for spectators
 - [ ] remove button on dice rolls
 - [ ] confirmation modal for signing out
-- [ ] toasts
 - [ ] mobile responsive styles
 - [ ] redirect to first character
