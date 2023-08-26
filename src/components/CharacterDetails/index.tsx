@@ -74,7 +74,7 @@ export function CharacterDetails({
 							<DataTextArea
 								character={character}
 								dataKey="notes"
-								className={textArea()}
+								className={textArea("max-h-40")}
 							/>
 						</FieldInput>
 					</Field>
@@ -86,7 +86,7 @@ export function CharacterDetails({
 							<DataTextArea
 								character={character}
 								dataKey="inventory"
-								className={textArea()}
+								className={textArea("max-h-40")}
 							/>
 						</FieldInput>
 					</Field>
@@ -136,7 +136,7 @@ export function CharacterDetails({
 							<DataTextArea
 								character={character}
 								dataKey="condition"
-								className={textArea("max-h-64")}
+								className={textArea("max-h-40")}
 							/>
 						</FieldInput>
 					</Field>
@@ -175,7 +175,7 @@ export function CharacterDetails({
 				<DataTextArea
 					character={character}
 					dataKey="background"
-					rows={5}
+					rows={3}
 					className={textArea()}
 				/>
 			</section>
