@@ -3,48 +3,72 @@ import { type Doc } from "convex/_generated/dataModel.js"
 import { useMutation } from "convex/react"
 import { LucideDices } from "lucide-react"
 import { startTransition, useState } from "react"
+import { twMerge } from "tailwind-merge"
 import { toFiniteNumberOrUndefined } from "../../helpers/index.ts"
 import { useAppParams } from "../../helpers/useAppParams.ts"
 import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
 import { CounterInput, type CounterInputProps } from "../CounterInput.tsx"
-import { Field } from "../Field.tsx"
+import { Field, FieldLabelText, FieldLabelTooltip } from "../Field.tsx"
 import {
 	Popover,
 	PopoverClose,
 	PopoverPanel,
 	PopoverTrigger,
 } from "../Popover.tsx"
+import { useCharacterDataValue } from "./useCharacterDataValue.ts"
 
 export function AttributeInput({
 	character,
+	dataKey,
 	attributeName,
+	attributeDescription,
 	...props
 }: CounterInputProps & {
-	attributeName: string
 	character: Doc<"characters">
+	dataKey: string
+	attributeName: string
+	attributeDescription: string
 }) {
-	const value = toFiniteNumberOrUndefined(props.value) ?? 1
+	const [valueRaw, setValue] = useCharacterDataValue(character, dataKey)
+	const value = toFiniteNumberOrUndefined(valueRaw) ?? 1
 	return (
-		<div className="flex items-center gap-2">
-			<div className="flex-1">
-				<CounterInput {...props} value={value} min={1} />
+		<Field>
+			<div
+				className={twMerge(
+					"transition-colors",
+					value > 1 ? "text-accent-400" : "",
+				)}
+			>
+				<FieldLabelTooltip content={attributeDescription}>
+					<FieldLabelText>{attributeName}</FieldLabelText>
+				</FieldLabelTooltip>
 			</div>
-			<Popover>
-				<PopoverTrigger
-					type="button"
-					className="rounded-md p-2 transition hover:bg-base-800"
-				>
-					<LucideDices />
-				</PopoverTrigger>
-				<PopoverPanel side="bottom" align="center" className="w-48">
-					<AttributeRollForm
-						character={character}
-						attributeName={attributeName}
-						attributeValue={value}
+			<div className="flex items-center gap-2">
+				<div className="flex-1">
+					<CounterInput
+						{...props}
+						value={toFiniteNumberOrUndefined(value) ?? 1}
+						onChange={setValue}
+						min={1}
 					/>
-				</PopoverPanel>
-			</Popover>
-		</div>
+				</div>
+				<Popover>
+					<PopoverTrigger
+						type="button"
+						className="rounded-md p-2 transition hover:bg-base-800"
+					>
+						<LucideDices />
+					</PopoverTrigger>
+					<PopoverPanel side="bottom" align="center" className="w-48">
+						<AttributeRollForm
+							character={character}
+							attributeName={attributeName}
+							attributeValue={toFiniteNumberOrUndefined(value) ?? 1}
+						/>
+					</PopoverPanel>
+				</Popover>
+			</div>
+		</Field>
 	)
 }
 
@@ -93,7 +117,8 @@ function AttributeRollForm({
 
 	return (
 		<div className="grid gap-2 p-2">
-			<Field label="Use Resilience">
+			<Field>
+				<FieldLabelText>Use Resilience</FieldLabelText>
 				<CounterInput
 					min={0}
 					max={availableResilience}

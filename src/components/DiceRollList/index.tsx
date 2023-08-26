@@ -7,7 +7,7 @@ import { Virtuoso } from "react-virtuoso"
 import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
 import { useQuerySuspense } from "../../helpers/useQuerySuspense.ts"
 import { CounterInput } from "../CounterInput.tsx"
-import { Field, field, fieldLabel } from "../Field.tsx"
+import { Field, FieldInput, FieldLabel, FieldLabelText } from "../Field.tsx"
 
 export function DiceRollList() {
 	return (
@@ -141,23 +141,24 @@ function DiceRollForm() {
 			}}
 		>
 			<div className="col-span-2">
-				<Field label="Label">
-					<input
+				<Field>
+					<FieldLabel>Label</FieldLabel>
+					<FieldInput
 						name="label"
 						className="h-10 min-w-0 rounded bg-black/50 px-3 leading-none"
 						placeholder="Fortune: Escape"
 					/>
 				</Field>
 			</div>
-			<div className={field()}>
-				<p className={fieldLabel()}>Dice Count</p>
+			<Field>
+				<FieldLabelText>Dice Count</FieldLabelText>
 				<CounterInput
 					name="count"
 					defaultValue={1}
 					min={1}
 					className="h-10 border-0 bg-black/50"
 				/>
-			</div>
+			</Field>
 			<button
 				type="submit"
 				className="flex h-10 items-center gap-2 self-end rounded bg-black/50 px-3"

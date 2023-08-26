@@ -7,7 +7,7 @@ import { parseNonNil } from "../helpers/errors.ts"
 import { clamp } from "../helpers/index.ts"
 import { range } from "../helpers/range.ts"
 import { useQuerySuspense } from "../helpers/useQuerySuspense.ts"
-import { Field } from "./Field.tsx"
+import { Field, FieldInput, FieldLabel } from "./Field.tsx"
 
 export function ClockList() {
 	const roles = useQuerySuspense(api.roles.get)
@@ -113,8 +113,9 @@ function ClockEditor({ clock }: { clock: Doc<"clocks"> }) {
 	return (
 		<div className="flex flex-col gap-2 p-3">
 			<div className="flex gap-2">
-				<Field label="Name" labelVariant="sm" containerClassName="flex-1">
-					<input
+				<Field className="flex-1">
+					<FieldLabel size="sm">Name</FieldLabel>
+					<FieldInput
 						value={clock.name}
 						onChange={(event) => {
 							void update({
@@ -126,8 +127,9 @@ function ClockEditor({ clock }: { clock: Doc<"clocks"> }) {
 					/>
 				</Field>
 
-				<Field label="Ticks" labelVariant="sm">
-					<input
+				<Field>
+					<FieldLabel size="sm">Ticks</FieldLabel>
+					<FieldInput
 						type="number"
 						value={clock.maxValue}
 						onChange={(event) => {

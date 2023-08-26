@@ -1,15 +1,22 @@
 import { api } from "convex/_generated/api"
 import { type Doc, type Id } from "convex/_generated/dataModel"
-import { useId } from "react"
-import ExpandingTextArea from "react-expanding-textarea"
 import { toFiniteNumberOrUndefined } from "../../helpers/index.ts"
 import { useQuerySuspense } from "../../helpers/useQuerySuspense.ts"
 import { input, textArea } from "../../styles/index.ts"
-import { CounterInput } from "../CounterInput.tsx"
-import { Field, field, fieldDescription, fieldLabel } from "../Field.tsx"
+import {
+	Field,
+	FieldDescription,
+	FieldInput,
+	FieldLabel,
+	FieldLabelText,
+} from "../Field.tsx"
 import { AttributeInput } from "./AttributeInput.tsx"
-import { DataInput } from "./DataInput.tsx"
-import { ImageInput } from "./ImageInput.tsx"
+import {
+	DataCounterInput,
+	DataImageInput,
+	DataInput,
+	DataTextArea,
+} from "./DataInput.tsx"
 import { NameInput } from "./NameInput.tsx"
 import { attributes } from "./attributes.ts"
 import { column, row, sectionHeading } from "./styles.ts"
@@ -30,96 +37,113 @@ export function CharacterDetails({
 			<div className={row("fluid-cols-48")}>
 				<section className={column()}>
 					<h3 className={sectionHeading()}>Info</h3>
+
 					<NameInput character={character} />
-					<DataInput character={character} dataKey="pronouns">
-						<Field
-							label="Pronouns"
-							description="How do they identify?"
-							className={input()}
-						/>
-					</DataInput>
-					<DataInput character={character} dataKey="image">
-						<Field label="Reference Image">
-							<ImageInput />
-						</Field>
-					</DataInput>
+
+					<Field>
+						<FieldLabel>Pronouns</FieldLabel>
+						<FieldDescription>How do they identify?</FieldDescription>
+						<FieldInput asChild>
+							<DataInput
+								character={character}
+								dataKey="pronouns"
+								className={input()}
+							/>
+						</FieldInput>
+					</Field>
+
+					<Field>
+						<FieldLabel>Reference Image</FieldLabel>
+						<FieldDescription>What do they look like?</FieldDescription>
+						<FieldInput asChild>
+							<DataImageInput character={character} dataKey="image" />
+						</FieldInput>
+					</Field>
 				</section>
 
 				<section className={column()}>
 					<h3 className={sectionHeading()}>Status</h3>
 
-					<DataInput character={character} dataKey="notes">
-						<Field
-							label="Notes"
-							description="Write anything else we should know, temporary or otherwise. This is public!"
-						>
-							<ExpandingTextArea className={textArea("max-h-64")} />
-						</Field>
-					</DataInput>
+					<Field>
+						<FieldLabel>Notes</FieldLabel>
+						<FieldDescription>
+							Write anything else we should know, temporary or otherwise. This
+							is public!
+						</FieldDescription>
+						<FieldInput asChild>
+							<DataTextArea
+								character={character}
+								dataKey="notes"
+								className={textArea()}
+							/>
+						</FieldInput>
+					</Field>
 
-					<DataInput character={character} dataKey="inventory">
-						<Field label="Inventory" description="What are you carrying?">
-							<ExpandingTextArea className={textArea("max-h-64")} />
-						</Field>
-					</DataInput>
+					<Field>
+						<FieldLabel>Inventory</FieldLabel>
+						<FieldDescription>What are you carrying?</FieldDescription>
+						<FieldInput asChild>
+							<DataTextArea
+								character={character}
+								dataKey="inventory"
+								className={textArea()}
+							/>
+						</FieldInput>
+					</Field>
 
 					<ExperienceDisplay character={character} />
 
 					<div className={row("items-end gap-2")}>
-						<DataInput character={character} dataKey="resilience">
-							{(dataInputProps) => (
-								<div className={field()}>
-									<p className={fieldLabel()}>Resilience</p>
-									<CounterInput
-										min={0}
-										value={toFiniteNumberOrUndefined(dataInputProps.value) ?? 2}
-										onChange={dataInputProps.onChangeValue}
-									/>
-								</div>
-							)}
-						</DataInput>
+						<Field>
+							<FieldLabelText>Resilience</FieldLabelText>
+							<DataCounterInput
+								character={character}
+								dataKey="resilience"
+								min={0}
+								defaultValue={2}
+							/>
+						</Field>
 
-						<DataInput character={character} dataKey="physicalStress">
-							{(dataInputProps) => (
-								<div className={field()}>
-									<p className={fieldLabel()}>Phys. Stress</p>
-									<CounterInput
-										min={0}
-										max={6}
-										value={toFiniteNumberOrUndefined(dataInputProps.value) ?? 0}
-										onChange={dataInputProps.onChangeValue}
-									/>
-								</div>
-							)}
-						</DataInput>
+						<Field>
+							<FieldLabelText>Phys. Stress</FieldLabelText>
+							<DataCounterInput
+								character={character}
+								dataKey="physicalStress"
+								min={0}
+								max={6}
+								defaultValue={0}
+							/>
+						</Field>
 
-						<DataInput character={character} dataKey="mentalStress">
-							{(dataInputProps) => (
-								<div className={field()}>
-									<p className={fieldLabel()}>Ment. Stress</p>
-									<CounterInput
-										min={0}
-										max={6}
-										value={toFiniteNumberOrUndefined(dataInputProps.value) ?? 0}
-										onChange={dataInputProps.onChangeValue}
-									/>
-								</div>
-							)}
-						</DataInput>
+						<Field>
+							<FieldLabelText>Ment. Stress</FieldLabelText>
+							<DataCounterInput
+								character={character}
+								dataKey="mentalStress"
+								min={0}
+								max={6}
+								defaultValue={0}
+							/>
+						</Field>
 					</div>
 
-					<DataInput character={character} dataKey="condition">
-						<Field
-							label="Condition"
-							description="Write specifics about the stress they've taken."
-						>
-							<ExpandingTextArea className={textArea("max-h-64")} />
-						</Field>
-					</DataInput>
+					<Field>
+						<FieldLabel>Condition</FieldLabel>
+						<FieldDescription>
+							{`Write specifics about the stress they've taken.`}
+						</FieldDescription>
+						<FieldInput asChild>
+							<DataTextArea
+								character={character}
+								dataKey="condition"
+								className={textArea("max-h-64")}
+							/>
+						</FieldInput>
+					</Field>
 				</section>
 			</div>
 
-			<div className={row("fluid-cols-36 content-center")}>
+			<div className={row("content-center fluid-cols-36")}>
 				{attributes.map(({ title, attributes }) => (
 					<div key={title} className={column("gap-4")}>
 						<h3 className={sectionHeading()}>{title}</h3>
@@ -130,36 +154,13 @@ export function CharacterDetails({
 								dataKey: item.dataKey ?? item.name.toLowerCase(),
 							}))
 							.map(({ name, description, dataKey }) => (
-								<DataInput
+								<AttributeInput
 									key={dataKey}
 									character={character}
 									dataKey={dataKey}
-								>
-									{(dataInputProps) => {
-										const value =
-											toFiniteNumberOrUndefined(dataInputProps.value) ?? 1
-										return (
-											<div
-												data-highlight={value > 1}
-												className="transition-colors data-[highlight=true]:text-accent-300"
-											>
-												<Field label={name} tooltip={description}>
-													{(fieldProps) => (
-														<div className="text-white">
-															<AttributeInput
-																name={fieldProps.name}
-																value={value}
-																onChange={dataInputProps.onChangeValue}
-																character={character}
-																attributeName={name}
-															/>
-														</div>
-													)}
-												</Field>
-											</div>
-										)
-									}}
-								</DataInput>
+									attributeName={name}
+									attributeDescription={description}
+								/>
 							))}
 					</div>
 				))}
@@ -171,9 +172,12 @@ export function CharacterDetails({
 					{`Write your character's backstory. Doesn't have to be too long. Unless you want it
 					to be!`}
 				</p>
-				<DataInput character={character} dataKey="background">
-					<ExpandingTextArea rows={5} className={textArea()} />
-				</DataInput>
+				<DataTextArea
+					character={character}
+					dataKey="background"
+					rows={5}
+					className={textArea()}
+				/>
 			</section>
 		</div>
 	)
@@ -190,26 +194,19 @@ function ExperienceDisplay({ character }: { character: Doc<"characters"> }) {
 		})
 		.reduce((sum, value) => sum + value - 1, 0)
 
-	const labelId = useId()
-	const description = useId()
-
 	return (
-		<div className={field()}>
-			<p id={labelId} className={fieldLabel()}>
-				Experience
-			</p>
-			<p id={description} className={fieldDescription()}>
-				Spend these points on attributes!
-			</p>
-			<p
-				aria-labelledby={labelId}
-				aria-describedby={description}
-				data-negative={usedExperience > world.experience}
-				className={input("data-[negative=true]:text-error-400")}
-			>
-				{world.experience - usedExperience} <span aria-label="out of">/</span>{" "}
-				{world.experience}
-			</p>
-		</div>
+		<Field>
+			<FieldLabelText>Experience</FieldLabelText>
+			<FieldDescription>Spend these points on attributes!</FieldDescription>
+			<FieldInput asChild>
+				<p
+					data-negative={usedExperience > world.experience}
+					className={input("data-[negative=true]:text-error-400")}
+				>
+					{world.experience - usedExperience} <span aria-label="out of">/</span>{" "}
+					{world.experience}
+				</p>
+			</FieldInput>
+		</Field>
 	)
 }
