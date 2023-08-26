@@ -91,29 +91,23 @@ function AttributeRollForm({
 
 	const diceCount = attributeValue + resilienceToUse
 
-	const [submit] = useAsyncCallback(
-		async () => {
-			await roll({
-				label:
-					`${character.name}: ${attributeName}` +
-					(resilienceToUse > 0 ? ` (+${resilienceToUse})` : ""),
-				type: "action",
-				dice: [{ count: diceCount, sides: 12 }],
-				characterId: character._id,
-			})
-			await updateCharacterData({
-				id: character._id,
-				data: { resilience: availableResilience - resilienceToUse },
-			})
-		},
-		{
-			onSuccess: () => {
-				startTransition(() => {
-					appParams.tab.push("dice")
-				})
-			},
-		},
-	)
+	const [submit] = useAsyncCallback(async () => {
+		await roll({
+			label:
+				`${character.name}: ${attributeName}` +
+				(resilienceToUse > 0 ? ` (+${resilienceToUse})` : ""),
+			type: "action",
+			dice: [{ count: diceCount, sides: 12 }],
+			characterId: character._id,
+		})
+		await updateCharacterData({
+			id: character._id,
+			data: { resilience: availableResilience - resilienceToUse },
+		})
+		startTransition(() => {
+			appParams.tab.push("dice")
+		})
+	})
 
 	return (
 		<div className="grid gap-2 p-2">
