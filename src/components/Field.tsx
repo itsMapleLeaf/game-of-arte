@@ -74,24 +74,17 @@ export const FieldLabel = autoRef(function FieldLabel({
 })
 
 export const FieldLabelText = autoRef(function FieldLabelText({
-	children,
 	asChild,
-	ref,
-}: {
-	children: ReactNode
-	asChild?: boolean
-	ref?: ForwardedRef<HTMLParagraphElement>
-}) {
+	...props
+}: ComponentPropsWithRef<"p"> & { asChild?: boolean }) {
 	const context = useFieldProvider()
 	const Component = asChild ? Slot : "p"
 	return (
 		<Component
 			id={context.labelId}
-			className="text-base/none font-medium"
-			ref={ref}
-		>
-			{children}
-		</Component>
+			{...props}
+			className={twMerge("text-base/none font-medium", props.className)}
+		/>
 	)
 })
 
