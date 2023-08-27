@@ -22,8 +22,8 @@
 - [x] assigning characters to players
 - [x] notes and inventory should be private to the assigned player and admin
 - [x] characters should start out hidden by default
-- [ ] on roll popovers, give the option of obscuring the name (or just entering any alternate label?)
-- [ ] on roll popovers, add an additional counter for arbitrary modifiers
+- [x] on roll popovers, give the option of obscuring the name (or just entering any alternate label?)
+- [x] on roll popovers, add an additional counter for arbitrary modifiers
 - toasts
   - [ ] errors
   - [ ] rolling dice: "X resilience has been used"

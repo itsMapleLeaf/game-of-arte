@@ -6,9 +6,16 @@ import { startTransition, useState } from "react"
 import { twMerge } from "tailwind-merge"
 import { toFiniteNumberOrUndefined } from "../../helpers/index.ts"
 import { useAppParams } from "../../helpers/useAppParams.ts"
-import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
+import { input } from "../../styles/index.ts"
+import { AsyncButton } from "../AsyncButton.tsx"
 import { CounterInput, type CounterInputProps } from "../CounterInput.tsx"
-import { Field, FieldLabelText, FieldLabelTooltip } from "../Field.tsx"
+import {
+	Field,
+	FieldInput,
+	FieldLabel,
+	FieldLabelText,
+	FieldLabelTooltip,
+} from "../Field.tsx"
 import {
 	Popover,
 	PopoverClose,
@@ -59,7 +66,7 @@ export function AttributeInput({
 					>
 						<LucideDices />
 					</PopoverTrigger>
-					<PopoverPanel side="bottom" align="center" className="w-48">
+					<PopoverPanel side="bottom" align="center">
 						<AttributeRollForm
 							character={character}
 							attributeName={attributeName}
@@ -84,18 +91,27 @@ function AttributeRollForm({
 	const appParams = useAppParams()
 	const roll = useMutation(api.diceRolls.roll)
 	const updateCharacterData = useMutation(api.characters.updateData)
+	const [label, setLabel] = useState("")
 	const [resilienceToUse, setResilienceToUse] = useState(0)
+	const [modifier, setModifier] = useState(0)
 
 	const availableResilience =
 		toFiniteNumberOrUndefined(character.data.resilience) ?? 0
 
-	const diceCount = attributeValue + resilienceToUse
+	const totalModifier = modifier + resilienceToUse
 
-	const [submit] = useAsyncCallback(async () => {
+	const diceCount = attributeValue + totalModifier
+
+	const defaultLabel = [
+		`${character.name}: ${attributeName}`,
+		totalModifier > 0 && `(+${totalModifier})`,
+	]
+		.filter(Boolean)
+		.join(" ")
+
+	async function submit() {
 		await roll({
-			label:
-				`${character.name}: ${attributeName}` +
-				(resilienceToUse > 0 ? ` (+${resilienceToUse})` : ""),
+			label: label || defaultLabel,
 			type: "action",
 			dice: [{ count: diceCount, sides: 12 }],
 			characterId: character._id,
@@ -107,10 +123,25 @@ function AttributeRollForm({
 		startTransition(() => {
 			appParams.tab.push("dice")
 		})
-	})
+	}
 
 	return (
-		<div className="grid gap-2 p-2">
+		<div className="grid w-56 gap-2 p-2">
+			<Field>
+				<FieldLabel>Label</FieldLabel>
+				<FieldInput
+					className={input()}
+					placeholder={defaultLabel}
+					value={label}
+					onChange={(event) => {
+						setLabel(event.currentTarget.value)
+					}}
+				/>
+			</Field>
+			<Field>
+				<FieldLabelText>Modifier</FieldLabelText>
+				<CounterInput min={0} value={modifier} onChange={setModifier} />
+			</Field>
 			<Field>
 				<FieldLabelText>Use Resilience</FieldLabelText>
 				<CounterInput
@@ -120,11 +151,13 @@ function AttributeRollForm({
 					onChange={setResilienceToUse}
 				/>
 			</Field>
-			<PopoverClose
-				className="flex items-center gap-2 rounded-md border border-base-800 p-2 transition hover:bg-base-800"
-				onClick={submit}
-			>
-				<LucideDices /> Roll {diceCount} {diceCount === 1 ? "die" : "dice"}
+			<PopoverClose asChild>
+				<AsyncButton
+					className="flex w-full items-center gap-2 rounded-md border border-base-800 p-2 transition hover:bg-base-800"
+					onClick={submit}
+				>
+					<LucideDices /> Roll {diceCount} {diceCount === 1 ? "die" : "dice"}
+				</AsyncButton>
 			</PopoverClose>
 		</div>
 	)
