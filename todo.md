@@ -19,6 +19,9 @@
 
 # polish
 
+- [ ] characters should start out hidden by default
+- [ ] on roll popovers, give the option of obscuring the name (or just entering any alternate label?)
+- [ ] notes and inventory should be private to the assigned player and admin
 - toasts
   - [ ] errors
   - [ ] rolling dice: "X resilience has been used"
