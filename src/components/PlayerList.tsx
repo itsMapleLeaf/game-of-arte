@@ -7,6 +7,7 @@ import { useSpinDelay } from "spin-delay"
 import { parseNonNil } from "../helpers/errors.ts"
 import { useAsyncCallback } from "../helpers/useAsyncCallback.ts"
 import { useQuerySuspense } from "../helpers/useQuerySuspense.ts"
+import { AsyncButton } from "./AsyncButton.tsx"
 import { LoadingSpinner } from "./LoadingPlaceholder.tsx"
 
 export function PlayerList() {
@@ -17,7 +18,7 @@ export function PlayerList() {
 			{players.length === 0 ? (
 				<p className="p-3">No players have been added yet.</p>
 			) : (
-				<ul className="min-h-0 flex-1 overflow-y-auto">
+				<ul className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-3">
 					{players.map((player) => (
 						<li key={player._id}>
 							<PlayerListItem player={player} />
@@ -71,26 +72,33 @@ function PlayerListItem({
 }: {
 	player: Doc<"players"> & { name: string | undefined }
 }) {
-	const [removePlayer, state] = useAsyncCallback(
-		useMutation(api.players.remove),
-	)
-	const isLoading = useSpinDelay(state.isLoading)
+	const removePlayer = useMutation(api.players.remove)
 
 	return (
-		<div className="flex items-center">
-			<p className="flex-1 px-3 py-2 leading-tight">
-				{player.name ?? <span className="opacity-75">Unknown</span>} (
-				{player.discordUserId})
-			</p>
-			<button
-				className="p-2 opacity-50 transition hover:opacity-100"
-				onClick={() => {
-					removePlayer({ id: player._id })
-				}}
-			>
-				{isLoading ? <LoadingSpinner /> : <LucideX />}
-				<span className="sr-only">Remove Player</span>
-			</button>
-		</div>
+		<section className="flex flex-col gap-2">
+			<h2 className="text-xl/tight font-light">
+				{player.name ?? <span className="opacity-75">Unknown</span>}
+			</h2>
+
+			<dl className="grid gap-1.5">
+				<div>
+					<dt className="text-sm/snug font-medium uppercase text-base-400">
+						Discord ID
+					</dt>
+					<dd className="leading-snug">{player.discordUserId}</dd>
+				</div>
+			</dl>
+
+			<footer className="flex gap-2">
+				<AsyncButton
+					className={
+						"flex items-center gap-1 rounded border border-base-600 bg-base-700/50 p-1.5 text-sm leading-none transition hover:bg-base-800"
+					}
+					onClick={() => removePlayer({ id: player._id })}
+				>
+					<LucideX className="-mx-0.5 h-[1em] w-[1em]" /> Remove
+				</AsyncButton>
+			</footer>
+		</section>
 	)
 }
