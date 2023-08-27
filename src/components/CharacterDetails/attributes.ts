@@ -35,8 +35,9 @@ export const attributes: CharacterAttributeColumn[] = [
 					"Doing tasks that require great precision and/or attention to detail.",
 			},
 			{
-				name: "Focus",
-				description: "Avoiding distraction or possession.",
+				name: "Resolve",
+				description:
+					"Withstanding mentally taxing or scarring situations, keeping course with your intentions.",
 			},
 			{
 				name: "Intuition",
