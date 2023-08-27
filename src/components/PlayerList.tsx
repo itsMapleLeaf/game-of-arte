@@ -9,6 +9,7 @@ import { useAsyncCallback } from "../helpers/useAsyncCallback.ts"
 import { useQuerySuspense } from "../helpers/useQuerySuspense.ts"
 import { AsyncButton } from "./AsyncButton.tsx"
 import { LoadingSpinner } from "./LoadingPlaceholder.tsx"
+import { Menu, MenuItem, MenuPanel, MenuTrigger } from "./Menu.tsx"
 
 export function PlayerList() {
 	const players = useQuerySuspense(api.players.list)
@@ -72,6 +73,9 @@ function PlayerListItem({
 }: {
 	player: Doc<"players"> & { name: string | undefined }
 }) {
+	const character = useQuerySuspense(api.characters.get, {
+		id: player.ownedCharacterId,
+	})
 	const removePlayer = useMutation(api.players.remove)
 
 	return (
@@ -87,18 +91,60 @@ function PlayerListItem({
 					</dt>
 					<dd className="leading-snug">{player.discordUserId}</dd>
 				</div>
+				{character && (
+					<div>
+						<dt className="text-sm/snug font-medium uppercase text-base-400">
+							Character
+						</dt>
+						<dd className="leading-snug">{character.name}</dd>
+					</div>
+				)}
 			</dl>
 
-			<footer className="flex gap-2">
+			<footer className="flex flex-wrap gap-2">
 				<AsyncButton
-					className={
-						"flex items-center gap-1 rounded border border-base-600 bg-base-700/50 p-1.5 text-sm leading-none transition hover:bg-base-800"
-					}
+					className="flex items-center gap-1 rounded border border-base-600 bg-base-700/50 p-1.5 text-sm leading-none transition hover:bg-base-800"
 					onClick={() => removePlayer({ id: player._id })}
 				>
-					<LucideX className="-mx-0.5 h-[1em] w-[1em]" /> Remove
+					<LucideX className="-mx-0.5 s-4" /> Remove
 				</AsyncButton>
+				<SetCharacterMenu player={player} />
 			</footer>
 		</section>
+	)
+}
+
+function SetCharacterMenu({ player }: { player: Doc<"players"> }) {
+	const characters = useQuerySuspense(api.characters.list)
+	const updatePlayer = useMutation(api.players.update)
+
+	return (
+		<Menu>
+			<MenuTrigger className="flex items-center gap-1 rounded border border-base-600 bg-base-700/50 p-1.5 text-sm leading-none transition hover:bg-base-800">
+				<LucideUserPlus className="s-4" /> Set Character
+			</MenuTrigger>
+			<MenuPanel
+				side="bottom"
+				align="center"
+				className="max-h-64 max-w-48 overflow-y-auto"
+			>
+				{characters
+					.toSorted((a, b) => a.name.localeCompare(b.name))
+					.map((character) => (
+						<MenuItem key={character._id} asChild>
+							<AsyncButton
+								onClick={() =>
+									updatePlayer({
+										id: player._id,
+										ownedCharacterId: character._id,
+									})
+								}
+							>
+								{character.name}
+							</AsyncButton>
+						</MenuItem>
+					))}
+			</MenuPanel>
+		</Menu>
 	)
 }

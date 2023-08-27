@@ -1,6 +1,21 @@
 import { v } from "convex/values"
 import { mutation, query } from "./_generated/server.js"
 import { requireAdmin } from "./roles.ts"
+import { findUserByTokenIdentifier } from "./users.ts"
+
+export const self = query({
+	handler: async (ctx) => {
+		const user = await findUserByTokenIdentifier(ctx)
+		if (!user) return null
+
+		return await ctx.db
+			.query("players")
+			.withIndex("by_discord_user_id", (q) =>
+				q.eq("discordUserId", user.discordUserId),
+			)
+			.first()
+	},
+})
 
 export const list = query({
 	handler: async (ctx) => {
@@ -48,6 +63,17 @@ export const add = mutation({
 		await ctx.db.insert("players", {
 			discordUserId: args.discordUserId,
 		})
+	},
+})
+
+export const update = mutation({
+	args: {
+		id: v.id("players"),
+		ownedCharacterId: v.optional(v.id("characters")),
+	},
+	handler: async (ctx, { id, ...args }) => {
+		await requireAdmin(ctx)
+		await ctx.db.patch(id, args)
 	},
 })
 

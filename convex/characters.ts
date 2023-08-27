@@ -3,6 +3,7 @@ import { v } from "convex/values"
 import randimals from "randimals"
 import { getRoles, requireAdmin, requirePlayerUser } from "./roles.ts"
 import { nullish, playerDataValidator } from "./schema.ts"
+import { findUserByTokenIdentifier } from "./users.ts"
 
 export const list = query({
 	handler: async (ctx) => {
@@ -16,17 +17,33 @@ export const list = query({
 })
 
 export const get = query({
-	args: { id: nullish(v.id("characters")) },
+	args: {
+		id: nullish(v.id("characters")),
+	},
 	handler: async (ctx, args) => {
 		if (!args.id) return null
 
-		const character = await ctx.db.get(args.id)
-		if (!character) return null
+		const [character, roles] = await Promise.all([
+			ctx.db.get(args.id),
+			getRoles(ctx),
+		])
 
-		const roles = await getRoles(ctx)
+		if (!character) return null
 		if (!roles.isAdmin && character.hidden) return null
 
-		return character
+		const [ownerPlayer, user] = await Promise.all([
+			ctx.db
+				.query("players")
+				.filter((q) => q.eq(q.field("ownedCharacterId"), args.id))
+				.first(),
+			findUserByTokenIdentifier(ctx),
+		])
+
+		return {
+			...character,
+			isOwner:
+				ownerPlayer?.discordUserId === user?.discordUserId || roles.isAdmin,
+		}
 	},
 })
 

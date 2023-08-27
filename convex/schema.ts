@@ -19,17 +19,22 @@ export default defineSchema({
 	})
 		.index("by_token_identifier", ["tokenIdentifier"])
 		.index("by_discord_user_id", ["discordUserId"]),
+
 	worlds: defineTable({
 		experience: v.number(),
 	}),
+
 	players: defineTable({
 		discordUserId: v.string(),
+		ownedCharacterId: v.optional(v.id("characters")),
 	}).index("by_discord_user_id", ["discordUserId"]),
+
 	characters: defineTable({
 		name: v.string(),
 		hidden: v.optional(v.boolean()),
 		data: playerDataValidator(),
 	}),
+
 	diceRolls: defineTable({
 		type: v.optional(v.literal("action")),
 		label: v.optional(v.string()),
@@ -38,6 +43,7 @@ export default defineSchema({
 		dice: diceSchema,
 		resilienceCollected: v.optional(v.boolean()),
 	}),
+
 	clocks: defineTable({
 		name: v.string(),
 		value: v.number(),

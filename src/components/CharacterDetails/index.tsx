@@ -64,32 +64,36 @@ export function CharacterDetails({
 				<section className={column()}>
 					<h3 className={sectionHeading()}>Status</h3>
 
-					<Field>
-						<FieldLabel>Notes</FieldLabel>
-						<FieldDescription>
-							Write anything else we should know, temporary or otherwise. This
-							is public!
-						</FieldDescription>
-						<FieldInput asChild>
-							<DataTextArea
-								character={character}
-								dataKey="notes"
-								className={textArea("max-h-40")}
-							/>
-						</FieldInput>
-					</Field>
+					{character.isOwner && (
+						<Field>
+							<FieldLabel>Notes</FieldLabel>
+							<FieldDescription>
+								Anything else important about the character. Only you can see
+								this.
+							</FieldDescription>
+							<FieldInput asChild>
+								<DataTextArea
+									character={character}
+									dataKey="notes"
+									className={textArea("max-h-40")}
+								/>
+							</FieldInput>
+						</Field>
+					)}
 
-					<Field>
-						<FieldLabel>Inventory</FieldLabel>
-						<FieldDescription>What are you carrying?</FieldDescription>
-						<FieldInput asChild>
-							<DataTextArea
-								character={character}
-								dataKey="inventory"
-								className={textArea("max-h-40")}
-							/>
-						</FieldInput>
-					</Field>
+					{character.isOwner && (
+						<Field>
+							<FieldLabel>Inventory</FieldLabel>
+							<FieldDescription>What are you carrying?</FieldDescription>
+							<FieldInput asChild>
+								<DataTextArea
+									character={character}
+									dataKey="inventory"
+									className={textArea("max-h-40")}
+								/>
+							</FieldInput>
+						</Field>
+					)}
 
 					<ExperienceDisplay character={character} />
 
