@@ -53,6 +53,7 @@ export const create = mutation({
 		await requireAdmin(ctx)
 		const id = await ctx.db.insert("characters", {
 			name: args.name ?? randimals(),
+			hidden: true,
 			data: {},
 		})
 		return { _id: id }
