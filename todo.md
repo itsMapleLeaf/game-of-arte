@@ -19,8 +19,10 @@
 
 # polish
 
+- [ ] assigning characters to players
 - [ ] characters should start out hidden by default
 - [ ] on roll popovers, give the option of obscuring the name (or just entering any alternate label?)
+- [ ] on roll popovers, add an additional counter for arbitrary modifiers
 - [ ] notes and inventory should be private to the assigned player and admin
 - toasts
   - [ ] errors
