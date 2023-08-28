@@ -30,6 +30,18 @@ export function CharacterDetails({
 		id: characterId,
 	})
 
+	function getStressModifier(
+		character: Doc<"characters">,
+		attributeSectionTitle: string,
+	): number {
+		const stressValue =
+			attributeSectionTitle === "Physical"
+				? character.data.physicalStress
+				: character.data.mentalStress
+
+		return (toFiniteNumberOrUndefined(stressValue) ?? 0) * -1
+	}
+
 	return !character ? (
 		<p>Character not found</p>
 	) : (
@@ -158,6 +170,7 @@ export function CharacterDetails({
 								dataKey={dataKey}
 								attributeName={name}
 								attributeDescription={description}
+								stressModifier={getStressModifier(character, title)}
 							/>
 						))}
 					</div>

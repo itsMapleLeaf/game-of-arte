@@ -29,12 +29,14 @@ export function AttributeInput({
 	dataKey,
 	attributeName,
 	attributeDescription,
+	stressModifier,
 	...props
 }: CounterInputProps & {
 	character: Doc<"characters">
 	dataKey: string
 	attributeName: string
 	attributeDescription: string
+	stressModifier: number
 }) {
 	const [valueRaw, setValue] = useCharacterDataValue(character, dataKey)
 	const value = toFiniteNumberOrUndefined(valueRaw) ?? 1
@@ -71,6 +73,7 @@ export function AttributeInput({
 							character={character}
 							attributeName={attributeName}
 							attributeValue={toFiniteNumberOrUndefined(value) ?? 1}
+							stressModifier={stressModifier}
 						/>
 					</PopoverPanel>
 				</Popover>
@@ -83,10 +86,12 @@ function AttributeRollForm({
 	character,
 	attributeName,
 	attributeValue,
+	stressModifier,
 }: {
 	character: Doc<"characters">
 	attributeName: string
 	attributeValue: number
+	stressModifier: number
 }) {
 	const appParams = useAppParams()
 	const roll = useMutation(api.diceRolls.roll)
@@ -98,13 +103,14 @@ function AttributeRollForm({
 	const availableResilience =
 		toFiniteNumberOrUndefined(character.data.resilience) ?? 0
 
-	const totalModifier = modifier + resilienceToUse
-
-	const diceCount = attributeValue + totalModifier
+	const totalModifier = modifier + resilienceToUse + stressModifier
+	const diceCount = Math.max(attributeValue + totalModifier, 1)
+	const isModified =
+		modifier !== 0 || resilienceToUse !== 0 || stressModifier !== 0
 
 	const defaultLabel = [
 		`${character.name}: ${attributeName}`,
-		totalModifier > 0 && `(+${totalModifier})`,
+		isModified && `(${formatSigned(totalModifier)})`,
 	]
 		.filter(Boolean)
 		.join(" ")
@@ -156,6 +162,13 @@ function AttributeRollForm({
 				</Field>
 			)}
 
+			<Field>
+				<FieldLabelText>Stress Modifier</FieldLabelText>
+				<FieldInput asChild>
+					<p className={input("text-center")}>{stressModifier}</p>
+				</FieldInput>
+			</Field>
+
 			<PopoverClose asChild>
 				<AsyncButton
 					className="flex w-full items-center gap-2 rounded-md border border-base-800 p-2 transition hover:bg-base-800"
@@ -166,4 +179,8 @@ function AttributeRollForm({
 			</PopoverClose>
 		</div>
 	)
+}
+
+function formatSigned(number: number) {
+	return number >= 0 ? `+${number}` : `${number}`
 }

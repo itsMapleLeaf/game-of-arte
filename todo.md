@@ -16,7 +16,7 @@
   - only show hidden characters to admin
 - [x] dice roll button popover for using resilience
 - [x] hide any non-admin UI from non-admins
-- [ ] show and apply roll modifiers from stress
+- [x] show and apply roll modifiers from stress
 
 # polish
 
