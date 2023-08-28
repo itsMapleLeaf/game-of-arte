@@ -128,22 +128,20 @@ function SetCharacterMenu({ player }: { player: Doc<"players"> }) {
 				align="center"
 				className="max-h-64 max-w-48 overflow-y-auto"
 			>
-				{characters
-					.toSorted((a, b) => a.name.localeCompare(b.name))
-					.map((character) => (
-						<MenuItem key={character._id} asChild>
-							<AsyncButton
-								onClick={() =>
-									updatePlayer({
-										id: player._id,
-										ownedCharacterId: character._id,
-									})
-								}
-							>
-								{character.name}
-							</AsyncButton>
-						</MenuItem>
-					))}
+				{characters.map((character) => (
+					<MenuItem key={character._id} asChild>
+						<AsyncButton
+							onClick={() =>
+								updatePlayer({
+									id: player._id,
+									ownedCharacterId: character._id,
+								})
+							}
+						>
+							{character.name}
+						</AsyncButton>
+					</MenuItem>
+				))}
 			</MenuPanel>
 		</Menu>
 	)

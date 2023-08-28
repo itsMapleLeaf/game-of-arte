@@ -53,20 +53,18 @@ function CharacterListItems({
 		<p className="px-3 py-2 opacity-75">No characters found.</p>
 	) : (
 		<ul>
-			{characters
-				.sort((a, b) => a.name.localeCompare(b.name))
-				.map((character) => (
-					<li key={character._id} className="group relative">
-						<CharacterLink character={character} />
-						{roles.isAdmin && (
-							<CharacterMenu character={character}>
-								<button className="absolute inset-y-0 right-0 flex items-center p-2 opacity-0 transition hover:!opacity-100 group-hover:opacity-50">
-									<LucideMoreVertical className="s-5" />
-								</button>
-							</CharacterMenu>
-						)}
-					</li>
-				))}
+			{characters.map((character) => (
+				<li key={character._id} className="group relative">
+					<CharacterLink character={character} />
+					{roles.isAdmin && (
+						<CharacterMenu character={character}>
+							<button className="absolute inset-y-0 right-0 flex items-center p-2 opacity-0 transition hover:!opacity-100 group-hover:opacity-50">
+								<LucideMoreVertical className="s-5" />
+							</button>
+						</CharacterMenu>
+					)}
+				</li>
+			))}
 		</ul>
 	)
 }

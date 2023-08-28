@@ -1,6 +1,7 @@
 import { mutation, query } from "convex/_generated/server"
 import { v } from "convex/values"
 import randimals from "randimals"
+import { compareKey } from "../src/helpers/index.ts"
 import { getRoles, requireAdmin, requirePlayerUser } from "./roles.ts"
 import { nullish, playerDataValidator } from "./schema.ts"
 import { findUserByTokenIdentifier } from "./users.ts"
@@ -12,7 +13,8 @@ export const list = query({
 		if (!roles.isAdmin) {
 			query = query.filter((q) => q.neq(q.field("hidden"), true))
 		}
-		return await query.collect()
+		const characters = await query.collect()
+		return characters.toSorted(compareKey("name"))
 	},
 })
 
