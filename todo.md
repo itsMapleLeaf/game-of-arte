@@ -19,6 +19,7 @@
 
 # polish
 
+- [ ] for each player, make their character stand out in the character list
 - [x] assigning characters to players
 - [x] notes and inventory should be private to the assigned player and admin
 - [x] characters should start out hidden by default
