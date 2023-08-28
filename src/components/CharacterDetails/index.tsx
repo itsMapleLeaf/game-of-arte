@@ -151,21 +151,15 @@ export function CharacterDetails({
 				{attributes.map(({ title, attributes }) => (
 					<div key={title} className={column("gap-4")}>
 						<h3 className={sectionHeading()}>{title}</h3>
-						{attributes
-							.toSorted((a, b) => a.name.localeCompare(b.name))
-							.map((item) => ({
-								...item,
-								dataKey: item.dataKey ?? item.name.toLowerCase(),
-							}))
-							.map(({ name, description, dataKey }) => (
-								<AttributeInput
-									key={dataKey}
-									character={character}
-									dataKey={dataKey}
-									attributeName={name}
-									attributeDescription={description}
-								/>
-							))}
+						{attributes.map(({ name, description, dataKey }) => (
+							<AttributeInput
+								key={dataKey}
+								character={character}
+								dataKey={dataKey}
+								attributeName={name}
+								attributeDescription={description}
+							/>
+						))}
 					</div>
 				))}
 			</div>
@@ -193,8 +187,7 @@ function ExperienceDisplay({ character }: { character: Doc<"characters"> }) {
 	const usedExperience = attributes
 		.flatMap((group) => group.attributes)
 		.map((attribute) => {
-			const key = attribute.dataKey ?? attribute.name.toLowerCase()
-			return toFiniteNumberOrUndefined(character.data[key]) ?? 1
+			return toFiniteNumberOrUndefined(character.data[attribute.dataKey]) ?? 1
 		})
 		.reduce((sum, value) => sum + value - 1, 0)
 

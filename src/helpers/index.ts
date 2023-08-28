@@ -25,3 +25,9 @@ export function toFiniteNumberOrUndefined(input: unknown): number | undefined {
 export function clamp(value: number, min: number, max: number) {
 	return value > max ? max : value < min ? min : value
 }
+
+export function compareKey<K extends PropertyKey>(key: K) {
+	return function compare(a: Record<K, string>, b: Record<K, string>) {
+		return a[key].localeCompare(b[key])
+	}
+}

@@ -1,7 +1,23 @@
+import { compareKey } from "../../helpers/index.ts"
+import { type PartialKeys } from "../../helpers/types.ts"
+
+export type CharacterAttribute = {
+	name: string
+	description: string
+	dataKey: string
+}
+
 export type CharacterAttributeColumn = {
 	title: string
-	attributes: Array<{ name: string; description: string; dataKey?: string }>
+	attributes: CharacterAttribute[]
 }
+
+const setDefaultDataKey = (
+	attribute: PartialKeys<CharacterAttribute, "dataKey">,
+): CharacterAttribute => ({
+	...attribute,
+	dataKey: attribute.dataKey ?? attribute.name.toLowerCase(),
+})
 
 export const attributes: CharacterAttributeColumn[] = [
 	{
@@ -24,7 +40,9 @@ export const attributes: CharacterAttributeColumn[] = [
 				description:
 					"Solving problems with raw physical prowess and brute force.",
 			},
-		],
+		]
+			.map(setDefaultDataKey)
+			.toSorted(compareKey("name")),
 	},
 	{
 		title: "Mental",
@@ -49,7 +67,9 @@ export const attributes: CharacterAttributeColumn[] = [
 				description:
 					"Seeing, hearing, or otherwise detecting the presence of things.",
 			},
-		],
+		]
+			.map(setDefaultDataKey)
+			.toSorted(compareKey("name")),
 	},
 	{
 		title: "Social",
@@ -86,7 +106,9 @@ export const attributes: CharacterAttributeColumn[] = [
 				name: "Comfort",
 				description: "Calming others with a gentle aura.",
 			},
-		],
+		]
+			.map(setDefaultDataKey)
+			.toSorted(compareKey("name")),
 	},
 	{
 		title: "Knowledge",
@@ -117,6 +139,8 @@ export const attributes: CharacterAttributeColumn[] = [
 				name: "Tech",
 				description: "Mechanical contraptions and architecture.",
 			},
-		],
+		]
+			.map(setDefaultDataKey)
+			.toSorted(compareKey("name")),
 	},
 ]

@@ -7,3 +7,5 @@ export type Spread<A extends object, B extends object> = Omit<A, keyof B> & B
 export type Simplify<T> = { [K in keyof T]: T[K] } & NonNullable<unknown>
 
 export type Nullish<T> = T | null | undefined
+
+export type PartialKeys<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>
