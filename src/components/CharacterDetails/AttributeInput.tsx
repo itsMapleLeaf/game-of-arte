@@ -138,19 +138,24 @@ function AttributeRollForm({
 					}}
 				/>
 			</Field>
+
 			<Field>
 				<FieldLabelText>Modifier</FieldLabelText>
 				<CounterInput value={modifier} onChange={setModifier} />
 			</Field>
-			<Field>
-				<FieldLabelText>Use Resilience</FieldLabelText>
-				<CounterInput
-					min={0}
-					max={availableResilience}
-					value={resilienceToUse}
-					onChange={setResilienceToUse}
-				/>
-			</Field>
+
+			{availableResilience > 0 && (
+				<Field>
+					<FieldLabelText>Use Resilience</FieldLabelText>
+					<CounterInput
+						min={0}
+						max={availableResilience}
+						value={resilienceToUse}
+						onChange={setResilienceToUse}
+					/>
+				</Field>
+			)}
+
 			<PopoverClose asChild>
 				<AsyncButton
 					className="flex w-full items-center gap-2 rounded-md border border-base-800 p-2 transition hover:bg-base-800"
