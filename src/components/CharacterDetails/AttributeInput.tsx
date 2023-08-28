@@ -140,7 +140,7 @@ function AttributeRollForm({
 			</Field>
 			<Field>
 				<FieldLabelText>Modifier</FieldLabelText>
-				<CounterInput min={0} value={modifier} onChange={setModifier} />
+				<CounterInput value={modifier} onChange={setModifier} />
 			</Field>
 			<Field>
 				<FieldLabelText>Use Resilience</FieldLabelText>
