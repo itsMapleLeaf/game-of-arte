@@ -16,10 +16,10 @@
   - only show hidden characters to admin
 - [x] dice roll button popover for using resilience
 - [x] hide any non-admin UI from non-admins
+- [ ] show and apply roll modifiers from stress
 
 # polish
 
-- [ ] show and apply roll modifiers from stress
 - [x] allow arbitrary modifiers to be negative
 - [ ] for each player, make their character stand out in the character list
 - [x] assigning characters to players
