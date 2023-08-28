@@ -162,12 +162,14 @@ function AttributeRollForm({
 				</Field>
 			)}
 
-			<Field>
-				<FieldLabelText>Stress Modifier</FieldLabelText>
-				<FieldInput asChild>
-					<p className={input("text-center")}>{stressModifier}</p>
-				</FieldInput>
-			</Field>
+			{stressModifier !== 0 && (
+				<Field>
+					<FieldLabelText>Stress Modifier</FieldLabelText>
+					<FieldInput asChild>
+						<p className={input("text-center")}>{stressModifier}</p>
+					</FieldInput>
+				</Field>
+			)}
 
 			<PopoverClose asChild>
 				<AsyncButton
