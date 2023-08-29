@@ -125,7 +125,7 @@ export const attributes: CharacterAttributeColumn[] = [
 			{
 				name: "Nature",
 				description:
-					"Plants, creatures, weather, and other natural terrestrial subjects, as well as survival.",
+					"Plants, creatures, weather, spirits, and other natural terrestrial subjects, as well as survival.",
 			},
 			{
 				name: "Sorcery",
@@ -133,7 +133,7 @@ export const attributes: CharacterAttributeColumn[] = [
 			},
 			{
 				name: "Taboo",
-				description: "Spirits, demons, and curses.",
+				description: "Demons, curses, and other such occultic matters.",
 			},
 			{
 				name: "Tech",
