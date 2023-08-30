@@ -2,15 +2,16 @@
 	"type": "module",
 	"private": true,
 	"scripts": {
-		"prepare": "convex codegen",
-		"dev": "run-p --print-label --race dev:*",
+		"prepare": "husky install",
+		"codegen": "convex codegen",
+		"dev": "pnpm codegen && run-p --print-label --race dev:*",
 		"dev:convex": "convex dev",
 		"dev:vite": "vite dev",
-		"build": "vite build",
+		"build": "pnpm codegen && vite build",
 		"preview": "vite preview",
 		"lint": "biome check .",
 		"format": "biome format --write .",
-		"typecheck": "tsc -b",
+		"typecheck": "pnpm codegen && tsc -b",
 		"validate-env": "tsx scripts/validate-env.ts"
 	},
 	"dependencies": {
@@ -50,7 +51,8 @@
 		"tsx": "^3.12.7",
 		"typescript": "^5.2.2",
 		"vite": "^4.4.2",
-		"vite-tsconfig-paths": "^4.2.0"
+		"vite-tsconfig-paths": "^4.2.0",
+		"husky": "^8.0.0"
 	},
 	"pnpm": {
 		"patchedDependencies": {
