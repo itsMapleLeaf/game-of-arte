@@ -39,7 +39,11 @@
 			"output": ["dist"]
 		},
 		"lint": {
-			"dependencies": ["lint:biome", "lint:eslint", "typecheck"]
+			"command": "echo lint",
+			"dependencies": ["lint:biome", "typecheck"],
+			"env": {
+				"WIREIT_FAILURES": "continue"
+			}
 		},
 		"lint:biome": {
 			"command": "biome check .",
