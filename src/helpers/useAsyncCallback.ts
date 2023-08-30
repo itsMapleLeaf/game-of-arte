@@ -40,7 +40,8 @@ export function useAsyncCallback<Args extends unknown[], Return>(
 	}, [handleStateChange, state])
 
 	function run(...args: Args) {
-		const token = (latestToken.current = Symbol())
+		const token = Symbol()
+		latestToken.current = token
 		setState({ status: "loading" })
 
 		void (async () => {

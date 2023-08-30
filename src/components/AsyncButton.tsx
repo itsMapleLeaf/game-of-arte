@@ -24,6 +24,7 @@ export const AsyncButton = autoRef(function AsyncButton({
 	)
 	return (
 		<button
+			type="button"
 			{...props}
 			onClick={handleClick}
 			disabled={props.disabled ?? state.isLoading}

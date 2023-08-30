@@ -1,5 +1,5 @@
 import { defineSchema, defineTable } from "convex/server"
-import { v, type Validator } from "convex/values"
+import { type Validator, v } from "convex/values"
 
 export const nullish = <T>(validator: Validator<T>) =>
 	v.optional(v.union(validator, v.null()))

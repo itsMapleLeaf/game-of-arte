@@ -66,7 +66,10 @@ function CharacterListItems({
 						<CharacterLink character={character} />
 						{roles.isAdmin && (
 							<CharacterMenu character={character}>
-								<button className="absolute inset-y-0 right-0 flex items-center p-2 opacity-0 transition hover:!opacity-100 group-hover:opacity-50">
+								<button
+									type="button"
+									className="absolute inset-y-0 right-0 flex items-center p-2 opacity-0 transition hover:!opacity-100 group-hover:opacity-50"
+								>
 									<LucideMoreVertical className="s-5" />
 								</button>
 							</CharacterMenu>
@@ -84,6 +87,7 @@ function CharacterLink({ character }: { character: Doc<"characters"> }) {
 	const appParams = useAppParams()
 	return (
 		<button
+			type="button"
 			className={twMerge(
 				"flex w-full gap-2 p-2 transition",
 				appParams.characterId.current === character._id
@@ -163,6 +167,7 @@ function NewCharacterButton() {
 
 	return (
 		<button
+			type="button"
 			className="flex gap-2 p-2 opacity-75 transition hover:bg-base-800 hover:opacity-100 disabled:opacity-50"
 			onClick={() => {
 				handleClick({})

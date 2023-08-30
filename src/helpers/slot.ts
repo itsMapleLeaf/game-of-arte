@@ -1,4 +1,4 @@
-import { cloneElement, isValidElement, type ReactNode } from "react"
+import { type ReactNode, cloneElement, isValidElement } from "react"
 
 export type Slot<Props extends object> =
 	| React.ReactElement<Props>

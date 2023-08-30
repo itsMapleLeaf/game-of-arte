@@ -1,4 +1,4 @@
-import { forwardRef, type ForwardedRef, type ReactNode } from "react"
+import { type ForwardedRef, type ReactNode, forwardRef } from "react"
 
 export function autoRef<Props, RefValue>(
 	component: (props: Props & { ref: ForwardedRef<RefValue> }) => ReactNode,

@@ -10,10 +10,11 @@ import { App } from "./components/App.tsx"
 import { AppTitle } from "./components/AppTitle.tsx"
 import { Identify } from "./components/Identify.tsx"
 import { LoadingSuspense } from "./components/LoadingPlaceholder.tsx"
+import { parseNonNil } from "./helpers/errors.ts"
 
 const convex = new ConvexReactClient(import.meta.env.VITE_PUBLIC_CONVEX_URL)
 
-createRoot(document.querySelector("#root")!).render(
+createRoot(parseNonNil(document.querySelector("#root"))).render(
 	<ClerkProvider
 		publishableKey={import.meta.env.VITE_PUBLIC_CLERK_PUBLISHABLE_KEY}
 	>

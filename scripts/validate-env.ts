@@ -1,7 +1,7 @@
-import chalk from "chalk"
 import { readFile } from "node:fs/promises"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
+import chalk from "chalk"
 import { parseNonNil } from "../src/helpers/errors.ts"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))

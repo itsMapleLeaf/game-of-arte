@@ -77,6 +77,7 @@ export function SideNav() {
 				{views.map((view) => (
 					<button
 						key={view.title}
+						type="button"
 						data-active={view.id === current.id}
 						className="flex items-center justify-center gap-3 p-3 opacity-40 transition first:rounded-tl-md last:rounded-tr-md hover:bg-base-800 hover:opacity-70 data-[active=true]:opacity-100"
 						onClick={() => {

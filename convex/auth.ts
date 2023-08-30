@@ -33,8 +33,20 @@ export const identify = action({
 			throw new Error("Discord account not found")
 		}
 
+		const name =
+			identity.name || identity.nickname || identity.preferredUsername
+
+		if (!name) {
+			console.warn("User has no name", {
+				name: identity.name,
+				nickname: identity.nickname,
+				preferredUsername: identity.preferredUsername,
+				tokenIdentifier: identity.tokenIdentifier,
+			})
+		}
+
 		await ctx.runMutation(internal.users.update, {
-			name: identity.name!,
+			name: name ?? "unnamed",
 			tokenIdentifier: identity.tokenIdentifier,
 			discordUserId: discordAccount.provider_user_id,
 		})

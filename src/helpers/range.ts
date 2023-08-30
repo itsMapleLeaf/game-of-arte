@@ -1,7 +1,9 @@
 type RangeArgs = [length: number] | [start: number, end: number, step?: number]
 
 export function range(...args: RangeArgs): number[] {
-	let start, end, step
+	let start
+	let end
+	let step
 	if (args.length === 1) {
 		start = 0
 		end = args[0]

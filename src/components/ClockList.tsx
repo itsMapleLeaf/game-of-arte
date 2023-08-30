@@ -23,6 +23,7 @@ function AddClockButton() {
 	const add = useMutation(api.clocks.add)
 	return (
 		<button
+			type="button"
 			className="flex gap-2 p-2 opacity-75 transition hover:bg-base-800 hover:opacity-100"
 			onClick={() => {
 				void add()
@@ -144,6 +145,7 @@ function ClockEditor({ clock }: { clock: Doc<"clocks"> }) {
 
 				{roles.isAdmin && (
 					<button
+						type="button"
 						className="-mx-1.5 self-end p-1.5 opacity-75 transition hover:opacity-100"
 						onClick={() => {
 							void remove({ id: clock._id })

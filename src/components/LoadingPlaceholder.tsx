@@ -1,5 +1,5 @@
 import { LucideLoader2, type LucideProps } from "lucide-react"
-import { Suspense, type ReactNode } from "react"
+import { type ReactNode, Suspense } from "react"
 import { twMerge } from "tailwind-merge"
 
 export function LoadingSpinner(props: LucideProps) {

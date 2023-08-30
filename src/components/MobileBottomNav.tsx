@@ -2,10 +2,10 @@ import { SignInButton, SignOutButton, useUser } from "@clerk/clerk-react"
 import {
 	LucideClock,
 	LucideDices,
+	type LucideIcon,
 	LucideLoader2,
 	LucideLogIn,
 	LucideUsers,
-	type LucideIcon,
 } from "lucide-react"
 import { twMerge } from "tailwind-merge"
 import { panel } from "../styles/panel.ts"
@@ -48,13 +48,13 @@ function AuthButton() {
 		/>
 	) : user ? (
 		<SignOutButton>
-			<button>
+			<button type="button">
 				<TabContent icon={user.imageUrl} label="Sign Out" />
 			</button>
 		</SignOutButton>
 	) : (
 		<SignInButton>
-			<button>
+			<button type="button">
 				<TabContent icon={LucideLogIn} label="Sign In" />
 			</button>
 		</SignInButton>
@@ -73,7 +73,11 @@ function TabContent({
 	return (
 		<div className="flex flex-col items-center gap-1 py-2.5 text-center text-xs font-medium leading-none">
 			{typeof Icon === "string" ? (
-				<img src={Icon} className={twMerge("rounded-full s-6", iconClass)} />
+				<img
+					src={Icon}
+					alt=""
+					className={twMerge("rounded-full s-6", iconClass)}
+				/>
 			) : (
 				<Icon className={twMerge("s-6", iconClass)} />
 			)}

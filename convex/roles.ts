@@ -1,4 +1,4 @@
-import { query, type QueryCtx } from "./_generated/server.js"
+import { type QueryCtx, query } from "./_generated/server.js"
 import { findUserByTokenIdentifier } from "./users.ts"
 
 export const get = query({

@@ -1,4 +1,4 @@
-import { twMerge, type ClassNameValue } from "tailwind-merge"
+import { type ClassNameValue, twMerge } from "tailwind-merge"
 
 export const row = (...classes: ClassNameValue[]) =>
 	twMerge("grid fluid-cols-24 gap-3", ...classes)
