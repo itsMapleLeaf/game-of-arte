@@ -12,6 +12,7 @@
 		"lint": "biome check .",
 		"format": "biome format --write .",
 		"typecheck": "pnpm codegen && tsc -b",
+		"pre-push": "run-p --print-label --continue-on-error lint typecheck",
 		"validate-env": "tsx scripts/validate-env.ts"
 	},
 	"dependencies": {
