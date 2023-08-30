@@ -25,8 +25,8 @@ function DiceRollItems() {
 	return (
 		<Virtuoso
 			data={rolls}
-			computeItemKey={(index, roll) => roll._id}
-			itemContent={(index, roll) => <DiceRollDetails roll={roll} />}
+			computeItemKey={(_index, roll) => roll._id}
+			itemContent={(_index, roll) => <DiceRollDetails roll={roll} />}
 			initialTopMostItemIndex={rolls.length - 1}
 			followOutput
 			alignToBottom

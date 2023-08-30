@@ -7,9 +7,16 @@
 		"enabled": true,
 		"rules": {
 			"recommended": true,
+			"correctness": {
+				"noUnusedVariables": "warn"
+			},
 			"nursery": {
 				"useGroupedTypeImport": "warn",
 				"useHookAtTopLevel": "error"
+			},
+			"style": {
+				"noNegationElse": "warn",
+				"useSingleCaseStatement": "warn"
 			}
 		}
 	},

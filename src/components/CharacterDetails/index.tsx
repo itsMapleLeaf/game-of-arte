@@ -37,9 +37,12 @@ const getStressModifier = (
 
 export function CharacterDetails() {
 	const character = useCurrentCharacter()
-	return !character ? (
-		<p>No characters found.</p>
-	) : (
+
+	if (!character) {
+		return <p>No characters found.</p>
+	}
+
+	return (
 		<div className="grid flex-1 content-start gap-3 self-start">
 			<div className={row("fluid-cols-48")}>
 				<section className={column()}>

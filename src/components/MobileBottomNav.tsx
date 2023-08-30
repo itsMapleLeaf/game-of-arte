@@ -40,24 +40,33 @@ export function MobileBottomNav() {
 
 function AuthButton() {
 	const { user, isLoaded } = useUser()
-	return !isLoaded ? (
-		<TabContent
-			icon={LucideLoader2}
-			iconClass="animate-spin"
-			label="Loading..."
-		/>
-	) : user ? (
+
+	if (!isLoaded) {
+		return (
+			<TabContent
+				icon={LucideLoader2}
+				iconClass="animate-spin"
+				label="Loading..."
+			/>
+		)
+	}
+
+	if (!user) {
+		return (
+			<SignInButton>
+				<button type="button">
+					<TabContent icon={LucideLogIn} label="Sign In" />
+				</button>
+			</SignInButton>
+		)
+	}
+
+	return (
 		<SignOutButton>
 			<button type="button">
 				<TabContent icon={user.imageUrl} label="Sign Out" />
 			</button>
 		</SignOutButton>
-	) : (
-		<SignInButton>
-			<button type="button">
-				<TabContent icon={LucideLogIn} label="Sign In" />
-			</button>
-		</SignInButton>
 	)
 }
 

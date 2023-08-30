@@ -55,6 +55,7 @@ export function useQuerySuspense<Query extends FunctionReference<"query">>(
 				return
 			}
 
+			// rome-ignore lint/correctness/noUnusedVariables: false positive
 			const unsubscribe = watch.onUpdate(() => {
 				const result = watch.localQueryResult()
 				if (result === undefined) {
