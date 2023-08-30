@@ -4,9 +4,7 @@ import { action } from "./_generated/server.js"
 export const identify = action({
 	handler: async (ctx) => {
 		const identity = await ctx.auth.getUserIdentity()
-		if (!identity) {
-			throw new Error("Unauthorized")
-		}
+		if (!identity) return null
 
 		const response = await fetch(
 			`https://api.clerk.com/v1/users/${identity.subject}`,
