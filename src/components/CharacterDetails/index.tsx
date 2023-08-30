@@ -15,6 +15,7 @@ import {
 	DataCounterInput,
 	DataImageInput,
 	DataInput,
+	DataSelectInput,
 	DataTextArea,
 } from "./DataInput.tsx"
 import { NameInput } from "./NameInput.tsx"
@@ -69,6 +70,27 @@ export function CharacterDetails({
 						<FieldDescription>What do they look like?</FieldDescription>
 						<FieldInput asChild>
 							<DataImageInput character={character} dataKey="image" />
+						</FieldInput>
+					</Field>
+
+					<Field>
+						<FieldLabel>Archetype</FieldLabel>
+						<FieldDescription>The backbone of your character.</FieldDescription>
+						<FieldInput asChild>
+							<DataSelectInput
+								character={character}
+								dataKey="archetype"
+								className={input("py-0")}
+							>
+								<option disabled value="">
+									Select an archetype
+								</option>
+								{attributes.map((category) => (
+									<option key={category.id} value={category.archetypeId}>
+										{category.archetypeName}
+									</option>
+								))}
+							</DataSelectInput>
 						</FieldInput>
 					</Field>
 				</section>
@@ -160,9 +182,16 @@ export function CharacterDetails({
 			</div>
 
 			<div className={row("content-center fluid-cols-36")}>
-				{attributes.map(({ title, attributes }) => (
+				{attributes.map(({ title, attributes, archetypeId }) => (
 					<div key={title} className={column("gap-4")}>
-						<h3 className={sectionHeading()}>{title}</h3>
+						<h3
+							className={sectionHeading(
+								"transition-colors",
+								character.data.archetype === archetypeId && "text-accent-400",
+							)}
+						>
+							{title}
+						</h3>
 						{attributes.map(({ name, description, dataKey }) => (
 							<AttributeInput
 								key={dataKey}
@@ -171,6 +200,7 @@ export function CharacterDetails({
 								attributeName={name}
 								attributeDescription={description}
 								stressModifier={getStressModifier(character, title)}
+								isArchetypeAttribute={character.data.archetype === archetypeId}
 							/>
 						))}
 					</div>

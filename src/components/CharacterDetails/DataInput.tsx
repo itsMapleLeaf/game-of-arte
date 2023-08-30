@@ -84,3 +84,23 @@ export function DataImageInput({
 		/>
 	)
 }
+
+export function DataSelectInput({
+	character,
+	dataKey,
+	...props
+}: Spread<
+	ComponentPropsWithoutRef<"select">,
+	{ character: Doc<"characters">; dataKey: string }
+>) {
+	const [value, setValue] = useCharacterDataValue(character, dataKey)
+	return (
+		<select
+			{...props}
+			value={String(value ?? "")}
+			onChange={(event) => {
+				setValue(event.currentTarget.value)
+			}}
+		/>
+	)
+}

@@ -4,7 +4,8 @@ import { useMutation } from "convex/react"
 import { LucideDices } from "lucide-react"
 import { startTransition, useState } from "react"
 import { twMerge } from "tailwind-merge"
-import { toFiniteNumberOrUndefined } from "../../helpers/index.ts"
+import { raise } from "../../helpers/errors.ts"
+import { clamp, toFiniteNumberOrUndefined } from "../../helpers/index.ts"
 import { useAppParams } from "../../helpers/useAppParams.ts"
 import { input } from "../../styles/index.ts"
 import { AsyncButton } from "../AsyncButton.tsx"
@@ -30,6 +31,7 @@ export function AttributeInput({
 	attributeName,
 	attributeDescription,
 	stressModifier,
+	isArchetypeAttribute,
 	...props
 }: CounterInputProps & {
 	character: Doc<"characters">
@@ -37,9 +39,10 @@ export function AttributeInput({
 	attributeName: string
 	attributeDescription: string
 	stressModifier: number
+	isArchetypeAttribute: boolean
 }) {
 	const [valueRaw, setValue] = useCharacterDataValue(character, dataKey)
-	const value = toFiniteNumberOrUndefined(valueRaw) ?? 1
+	const value = clamp(toFiniteNumberOrUndefined(valueRaw) ?? 1, 1, 5)
 	return (
 		<Field>
 			<div
@@ -59,6 +62,7 @@ export function AttributeInput({
 						value={toFiniteNumberOrUndefined(value) ?? 1}
 						onChange={setValue}
 						min={1}
+						max={5}
 					/>
 				</div>
 				<Popover>
@@ -74,6 +78,7 @@ export function AttributeInput({
 							attributeName={attributeName}
 							attributeValue={toFiniteNumberOrUndefined(value) ?? 1}
 							stressModifier={stressModifier}
+							isArchetypeAttribute={isArchetypeAttribute}
 						/>
 					</PopoverPanel>
 				</Popover>
@@ -87,11 +92,13 @@ function AttributeRollForm({
 	attributeName,
 	attributeValue,
 	stressModifier,
+	isArchetypeAttribute,
 }: {
 	character: Doc<"characters">
 	attributeName: string
 	attributeValue: number
 	stressModifier: number
+	isArchetypeAttribute: boolean
 }) {
 	const appParams = useAppParams()
 	const roll = useMutation(api.diceRolls.roll)
@@ -103,8 +110,20 @@ function AttributeRollForm({
 	const availableResilience =
 		toFiniteNumberOrUndefined(character.data.resilience) ?? 0
 
-	const totalModifier = modifier + resilienceToUse + stressModifier
-	const diceCount = Math.max(attributeValue + totalModifier, 1)
+	const totalModifier =
+		modifier + resilienceToUse + stressModifier + (isArchetypeAttribute ? 2 : 0)
+
+	const baseDiceCount =
+		{
+			1: 1,
+			2: 2,
+			3: 4,
+			4: 7,
+			5: 12,
+		}[attributeValue] ?? raise(`Invalid attribute value ${attributeValue}`)
+
+	const diceCount = Math.max(baseDiceCount + totalModifier, 1)
+
 	const isModified =
 		modifier !== 0 || resilienceToUse !== 0 || stressModifier !== 0
 
@@ -162,14 +181,36 @@ function AttributeRollForm({
 				</Field>
 			)}
 
-			{stressModifier !== 0 && (
-				<Field>
-					<FieldLabelText>Stress Modifier</FieldLabelText>
-					<FieldInput asChild>
-						<p className={input("text-center")}>{stressModifier}</p>
-					</FieldInput>
-				</Field>
-			)}
+			<dl className="tabular-nums">
+				<div className="flex flex-row gap-1">
+					<dt className="flex-1 opacity-70">Base Roll</dt>
+					<dd>{baseDiceCount}</dd>
+				</div>
+				{stressModifier !== 0 && (
+					<div className="flex flex-row gap-1">
+						<dt className="flex-1 opacity-70">Stress</dt>
+						<dd>{formatSigned(stressModifier)}</dd>
+					</div>
+				)}
+				{isArchetypeAttribute && (
+					<div className="flex flex-row gap-1">
+						<dt className="flex-1 opacity-70">Archetype</dt>
+						<dd>+2</dd>
+					</div>
+				)}
+				{modifier !== 0 && (
+					<div className="flex flex-row gap-1">
+						<dt className="flex-1 opacity-70">Manual</dt>
+						<dd>{formatSigned(modifier)}</dd>
+					</div>
+				)}
+				{resilienceToUse > 0 && (
+					<div className="flex flex-row gap-1">
+						<dt className="flex-1 opacity-70">Resilience</dt>
+						<dd>{formatSigned(resilienceToUse)}</dd>
+					</div>
+				)}
+			</dl>
 
 			<PopoverClose asChild>
 				<AsyncButton

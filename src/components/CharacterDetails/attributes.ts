@@ -1,27 +1,37 @@
 import { compareKey } from "../../helpers/index.ts"
-import { type PartialKeys } from "../../helpers/types.ts"
 
-export type CharacterAttribute = {
-	name: string
-	description: string
-	dataKey: string
-}
+export type CharacterAttributeColumn = ReturnType<typeof defineAttributeColumn>
 
-export type CharacterAttributeColumn = {
+export type CharacterAttribute = CharacterAttributeColumn["attributes"][number]
+
+function defineAttributeColumn(input: {
+	id?: string
 	title: string
-	attributes: CharacterAttribute[]
+	archetypeId?: string
+	archetypeName: string
+	attributes: Array<{
+		name: string
+		description: string
+		dataKey?: string
+	}>
+}) {
+	return {
+		...input,
+		id: input.id ?? input.title.toLowerCase(),
+		archetypeId: input.archetypeId ?? input.archetypeName.toLowerCase(),
+		attributes: input.attributes
+			.toSorted(compareKey("name"))
+			.map((attribute) => ({
+				...attribute,
+				dataKey: attribute.dataKey ?? attribute.name.toLowerCase(),
+			})),
+	}
 }
 
-const setDefaultDataKey = (
-	attribute: PartialKeys<CharacterAttribute, "dataKey">,
-): CharacterAttribute => ({
-	...attribute,
-	dataKey: attribute.dataKey ?? attribute.name.toLowerCase(),
-})
-
-export const attributes: CharacterAttributeColumn[] = [
-	{
+export const attributes = [
+	defineAttributeColumn({
 		title: "Physical",
+		archetypeName: "Athlete",
 		attributes: [
 			{
 				name: "Agility",
@@ -40,12 +50,11 @@ export const attributes: CharacterAttributeColumn[] = [
 				description:
 					"Solving problems with raw physical prowess and brute force.",
 			},
-		]
-			.map(setDefaultDataKey)
-			.toSorted(compareKey("name")),
-	},
-	{
+		],
+	}),
+	defineAttributeColumn({
 		title: "Mental",
+		archetypeName: "Strategist",
 		attributes: [
 			{
 				name: "Dexterity",
@@ -67,12 +76,11 @@ export const attributes: CharacterAttributeColumn[] = [
 				description:
 					"Seeing, hearing, or otherwise detecting the presence of things.",
 			},
-		]
-			.map(setDefaultDataKey)
-			.toSorted(compareKey("name")),
-	},
-	{
+		],
+	}),
+	defineAttributeColumn({
 		title: "Social",
+		archetypeName: "Empath",
 		attributes: [
 			{
 				name: "Charm",
@@ -106,12 +114,11 @@ export const attributes: CharacterAttributeColumn[] = [
 				name: "Comfort",
 				description: "Calming others with a gentle aura.",
 			},
-		]
-			.map(setDefaultDataKey)
-			.toSorted(compareKey("name")),
-	},
-	{
+		],
+	}),
+	defineAttributeColumn({
 		title: "Knowledge",
+		archetypeName: "Scholar",
 		attributes: [
 			{
 				name: "Alchemy",
@@ -139,8 +146,6 @@ export const attributes: CharacterAttributeColumn[] = [
 				name: "Tech",
 				description: "Mechanical contraptions and architecture.",
 			},
-		]
-			.map(setDefaultDataKey)
-			.toSorted(compareKey("name")),
-	},
+		],
+	}),
 ]
