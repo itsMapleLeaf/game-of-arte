@@ -1,4 +1,3 @@
-import { AppParams } from "../helpers/useAppParams.ts"
 import { container } from "../styles/container.ts"
 import { AuthButton } from "./AuthButton.tsx"
 import { CharacterDetails } from "./CharacterDetails/index.tsx"
@@ -15,15 +14,9 @@ export function App() {
 			</header>
 			<div className="flex flex-1 gap-4">
 				<SideNav />
-				<AppParams>
-					{({ characterId }) =>
-						characterId.current && (
-							<LoadingSuspense className="flex-1 justify-start">
-								<CharacterDetails characterId={characterId.current} />
-							</LoadingSuspense>
-						)
-					}
-				</AppParams>
+				<LoadingSuspense className="flex-1 justify-start">
+					<CharacterDetails />
+				</LoadingSuspense>
 			</div>
 		</div>
 	)

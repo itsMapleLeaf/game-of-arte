@@ -14,6 +14,7 @@ import { useSpinDelay } from "spin-delay"
 import { twMerge } from "tailwind-merge"
 import { useAppParams } from "../helpers/useAppParams.ts"
 import { useAsyncCallback } from "../helpers/useAsyncCallback.ts"
+import { useCurrentCharacter } from "../helpers/useCurrentCharacter.ts"
 import { useQuerySuspense } from "../helpers/useQuerySuspense.ts"
 import { LoadingSpinner } from "./LoadingPlaceholder.tsx"
 import { Menu, MenuItem, MenuPanel, MenuTrigger } from "./Menu.tsx"
@@ -81,6 +82,7 @@ function CharacterListItems({
 }
 
 function CharacterLink({ character }: { character: Doc<"characters"> }) {
+	const currentCharacter = useCurrentCharacter()
 	const player = useQuerySuspense(api.players.self)
 	const [isPending, startTransition] = useTransition()
 	const isPendingDelayed = useSpinDelay(isPending)
@@ -90,7 +92,7 @@ function CharacterLink({ character }: { character: Doc<"characters"> }) {
 			type="button"
 			className={twMerge(
 				"flex w-full gap-2 p-2 transition",
-				appParams.characterId.current === character._id
+				currentCharacter?._id === character._id
 					? "bg-base-800 opacity-100"
 					: "opacity-60 hover:opacity-100",
 				player?.ownedCharacterId === character._id && "text-accent-300",

@@ -1,6 +1,7 @@
 import { api } from "convex/_generated/api"
-import type { Doc, Id } from "convex/_generated/dataModel"
+import type { Doc } from "convex/_generated/dataModel"
 import { toFiniteNumberOrUndefined } from "../../helpers/index.ts"
+import { useCurrentCharacter } from "../../helpers/useCurrentCharacter.ts"
 import { useQuerySuspense } from "../../helpers/useQuerySuspense.ts"
 import { input, textArea } from "../../styles/index.ts"
 import {
@@ -22,29 +23,22 @@ import { NameInput } from "./NameInput.tsx"
 import { attributes } from "./attributes.ts"
 import { column, row, sectionHeading } from "./styles.ts"
 
-export function CharacterDetails({
-	characterId,
-}: {
-	characterId: Id<"characters">
-}) {
-	const character = useQuerySuspense(api.characters.get, {
-		id: characterId,
-	})
+const getStressModifier = (
+	character: Doc<"characters">,
+	attributeSectionTitle: string,
+): number => {
+	const stressValue =
+		attributeSectionTitle === "Physical"
+			? character.data.physicalStress
+			: character.data.mentalStress
 
-	function getStressModifier(
-		character: Doc<"characters">,
-		attributeSectionTitle: string,
-	): number {
-		const stressValue =
-			attributeSectionTitle === "Physical"
-				? character.data.physicalStress
-				: character.data.mentalStress
+	return (toFiniteNumberOrUndefined(stressValue) ?? 0) * -1
+}
 
-		return (toFiniteNumberOrUndefined(stressValue) ?? 0) * -1
-	}
-
+export function CharacterDetails() {
+	const character = useCurrentCharacter()
 	return !character ? (
-		<p>Character not found</p>
+		<p>No characters found.</p>
 	) : (
 		<div className="grid flex-1 content-start gap-3 self-start">
 			<div className={row("fluid-cols-48")}>
