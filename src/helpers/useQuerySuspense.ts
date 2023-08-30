@@ -1,4 +1,9 @@
-import { useConvex, useQueries, useQuery } from "convex/react"
+import {
+	RequestForQueries,
+	useConvex,
+	useQueries,
+	useQuery,
+} from "convex/react"
 import {
 	type FunctionReference,
 	type FunctionReturnType,
@@ -7,7 +12,6 @@ import {
 } from "convex/server"
 import isEqual from "fast-deep-equal"
 import { LRUCache } from "lru-cache"
-import { RequestForQueries } from "../../node_modules/.pnpm/convex@1.1.1_@clerk+clerk-react@4.24.0_react-dom@18.2.0_react@18.2.0/node_modules/convex/src/react/use_queries"
 import { useMemoValue } from "./useMemoValue.ts"
 
 const cache = new LRUCache<string, NonNullable<unknown>>({
