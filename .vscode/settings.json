@@ -3,11 +3,12 @@
 	"javascript.preferences.importModuleSpecifierEnding": "js",
 	"typescript.preferences.importModuleSpecifierEnding": "js",
 	"editor.defaultFormatter": "biomejs.biome",
-	"eslint.enable": false,
+	"eslint.enable": true,
 	"editor.formatOnSave": true,
 	"editor.codeActionsOnSave": {
+		"source.removeUnusedImports": true,
 		"source.organizeImports": false,
 		"source.organizeImports.biome": true,
-		"quickfix.biome": true
+		"source.fixAll": true
 	}
 }
