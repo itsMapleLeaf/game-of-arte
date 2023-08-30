@@ -13,6 +13,9 @@
 			}
 		}
 	},
+	"formatter": {
+		"formatWithErrors": true
+	},
 	"files": {
 		"ignore": [".vercel", "convex/_generated", "dist"]
 	},
