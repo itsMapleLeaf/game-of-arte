@@ -8,7 +8,6 @@ import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 import { App } from "./components/App.tsx"
 import { AppTitle } from "./components/AppTitle.tsx"
-import { AssignedCharacterRedirect } from "./components/AssignedCharacterRedirect.tsx"
 import { AuthGuard } from "./components/AuthGuard.tsx"
 import { LoadingSuspense } from "./components/LoadingPlaceholder.tsx"
 import { parseNonNil } from "./helpers/errors.ts"
@@ -23,7 +22,6 @@ createRoot(parseNonNil(document.querySelector("#root"))).render(
 			<StrictMode>
 				<AuthGuard>
 					<AppTitle />
-					<AssignedCharacterRedirect />
 					<LoadingSuspense className="fixed inset-0">
 						<App />
 					</LoadingSuspense>
