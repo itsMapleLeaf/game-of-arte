@@ -39,7 +39,7 @@ export function useAsyncCallback<Args extends unknown[], Return>(
 		handleStateChange(state)
 	}, [handleStateChange, state])
 
-	function run(...args: Args) {
+	const run = useEffectEvent((...args: Args) => {
 		const token = Symbol()
 		latestToken.current = token
 		setState({ status: "loading" })
@@ -56,7 +56,7 @@ export function useAsyncCallback<Args extends unknown[], Return>(
 				}
 			}
 		})()
-	}
+	})
 
 	let computedState
 	if (state.status === "idle") {
