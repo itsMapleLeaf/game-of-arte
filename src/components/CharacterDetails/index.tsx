@@ -66,14 +66,6 @@ export function CharacterDetails({
 					</Field>
 
 					<Field>
-						<FieldLabel>Reference Image</FieldLabel>
-						<FieldDescription>What do they look like?</FieldDescription>
-						<FieldInput asChild>
-							<DataImageInput character={character} dataKey="image" />
-						</FieldInput>
-					</Field>
-
-					<Field>
 						<FieldLabel>Archetype</FieldLabel>
 						<FieldDescription>The backbone of your character.</FieldDescription>
 						<FieldInput asChild>
@@ -93,79 +85,80 @@ export function CharacterDetails({
 							</DataSelectInput>
 						</FieldInput>
 					</Field>
+
+					<Field>
+						<FieldLabel>Reference Image</FieldLabel>
+						<FieldDescription>What do they look like?</FieldDescription>
+						<FieldInput asChild>
+							<DataImageInput character={character} dataKey="image" />
+						</FieldInput>
+					</Field>
 				</section>
 
 				<section className={column()}>
 					<h3 className={sectionHeading()}>Status</h3>
 
-					{character.isOwner && (
-						<Field>
-							<FieldLabel>Notes</FieldLabel>
-							<FieldDescription>
-								Anything else important about the character. Only you can see
-								this.
-							</FieldDescription>
-							<FieldInput asChild>
-								<DataTextArea
-									character={character}
-									dataKey="notes"
-									className={textArea("max-h-40")}
-								/>
-							</FieldInput>
-						</Field>
-					)}
+					<Field>
+						<FieldLabel>Notes</FieldLabel>
+						<FieldDescription>
+							Anything else important about the character.
+						</FieldDescription>
+						<FieldInput asChild>
+							<DataTextArea
+								character={character}
+								dataKey="notes"
+								className={textArea("max-h-40")}
+							/>
+						</FieldInput>
+					</Field>
 
-					{character.isOwner && (
-						<Field>
-							<FieldLabel>Inventory</FieldLabel>
-							<FieldDescription>What are you carrying?</FieldDescription>
-							<FieldInput asChild>
-								<DataTextArea
-									character={character}
-									dataKey="inventory"
-									className={textArea("max-h-40")}
-								/>
-							</FieldInput>
-						</Field>
-					)}
+					<Field>
+						<FieldLabel>Inventory</FieldLabel>
+						<FieldDescription>What are you carrying?</FieldDescription>
+						<FieldInput asChild>
+							<DataTextArea
+								character={character}
+								dataKey="inventory"
+								className={textArea("max-h-40")}
+							/>
+						</FieldInput>
+					</Field>
 
 					<ExperienceDisplay character={character} />
 
-					{character.isOwner && (
-						<div className={row("items-end gap-2")}>
-							<Field>
-								<FieldLabelText>Resilience</FieldLabelText>
-								<DataCounterInput
-									character={character}
-									dataKey="resilience"
-									min={0}
-									defaultValue={2}
-								/>
-							</Field>
+					<div className={row("items-end gap-2")}>
+						<Field>
+							<FieldLabelText>Resilience</FieldLabelText>
+							<DataCounterInput
+								character={character}
+								dataKey="resilience"
+								min={0}
+								defaultValue={2}
+							/>
+						</Field>
 
-							<Field>
-								<FieldLabelText>Phys. Stress</FieldLabelText>
-								<DataCounterInput
-									character={character}
-									dataKey="physicalStress"
-									min={0}
-									max={6}
-									defaultValue={0}
-								/>
-							</Field>
+						<Field>
+							<FieldLabelText>Phys. Stress</FieldLabelText>
+							<DataCounterInput
+								character={character}
+								dataKey="physicalStress"
+								min={0}
+								max={6}
+								defaultValue={0}
+							/>
+						</Field>
 
-							<Field>
-								<FieldLabelText>Ment. Stress</FieldLabelText>
-								<DataCounterInput
-									character={character}
-									dataKey="mentalStress"
-									min={0}
-									max={6}
-									defaultValue={0}
-								/>
-							</Field>
-						</div>
-					)}
+						<Field>
+							<FieldLabelText>Ment. Stress</FieldLabelText>
+							<DataCounterInput
+								character={character}
+								dataKey="mentalStress"
+								min={0}
+								max={6}
+								defaultValue={0}
+							/>
+						</Field>
+					</div>
 
 					<Field>
 						<FieldLabel>Condition</FieldLabel>
