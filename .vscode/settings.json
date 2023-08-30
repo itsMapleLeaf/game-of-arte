@@ -1,0 +1,13 @@
+{
+	"typescript.tsdk": "node_modules\\typescript\\lib",
+	"javascript.preferences.importModuleSpecifierEnding": "js",
+	"typescript.preferences.importModuleSpecifierEnding": "js",
+	"editor.defaultFormatter": "biomejs.biome",
+	"eslint.enable": false,
+	"editor.formatOnSave": true,
+	"editor.codeActionsOnSave": {
+		"source.organizeImports": false,
+		"source.organizeImports.biome": true,
+		"quickfix.biome": true
+	}
+}
