@@ -12,11 +12,7 @@ export function useCurrentCharacter() {
 	const assignedCharacter = useQuerySuspense(api.characters.getOwned)
 
 	if (!characterId) {
-		return assignedCharacter
-	}
-
-	if (!loadedCharacter) {
-		return characters[0]
+		return assignedCharacter ?? characters[0]
 	}
 
 	return loadedCharacter
