@@ -7,10 +7,13 @@ import { Field, FieldDescription, FieldInput, FieldLabel } from "../Field.tsx"
 export function NameInput({ character }: { character: Doc<"characters"> }) {
 	const update = useMutation(api.characters.update).withOptimisticUpdate(
 		(store, args) => {
+			const current = store.getQuery(api.characters.get, { id: args.id })
+			if (!current) return
+
 			store.setQuery(
 				api.characters.get,
 				{ id: character._id },
-				{ ...character, name: args.name ?? character.name },
+				{ ...current, name: args.name ?? current.name },
 			)
 		},
 	)
