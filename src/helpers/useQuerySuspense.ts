@@ -49,6 +49,14 @@ export function useQuerySuspense<Query extends FunctionReference<"query">>(
 		// eslint-disable-next-line @typescript-eslint/no-throw-literal
 		throw new Promise<void>((resolve) => {
 			const watch = convex.watchQuery(query, ...args)
+
+			const result = watch.localQueryResult()
+			if (result !== undefined) {
+				setQueryCacheData(query, args, result)
+				resolve()
+				return
+			}
+
 			const unsubscribe = watch.onUpdate(() => {
 				const result = watch.localQueryResult()
 				if (result === undefined) {
