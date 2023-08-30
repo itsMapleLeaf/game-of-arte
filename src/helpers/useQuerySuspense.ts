@@ -24,7 +24,6 @@ function getQueryCacheData<Query extends FunctionReference<"query">>(
 	query: Query,
 	args: OptionalRestArgs<Query>,
 ) {
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 	return cache.get(getCacheKey(query, args)) as
 		| FunctionReturnType<Query>
 		| undefined
@@ -46,7 +45,6 @@ export function useQuerySuspense<Query extends FunctionReference<"query">>(
 	const cacheData = getQueryCacheData(query, args)
 
 	if (cacheData === undefined) {
-		// eslint-disable-next-line @typescript-eslint/no-throw-literal
 		throw new Promise<void>((resolve) => {
 			const watch = convex.watchQuery(query, ...args)
 
@@ -96,6 +94,5 @@ export function useQuerySuspense<Query extends FunctionReference<"query">>(
 		})
 	}, [convex, memoQuery, memoArgs])
 
-	// eslint-disable-next-line @typescript-eslint/no-unsafe-return
 	return data
 }
