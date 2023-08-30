@@ -49,22 +49,30 @@ function CharacterListItems({
 	characters: Array<Doc<"characters">>
 }) {
 	const roles = useQuerySuspense(api.roles.get)
+	const player = useQuerySuspense(api.players.self)
+
 	return characters.length === 0 ? (
 		<p className="px-3 py-2 opacity-75">No characters found.</p>
 	) : (
 		<ul>
-			{characters.map((character) => (
-				<li key={character._id} className="group relative">
-					<CharacterLink character={character} />
-					{roles.isAdmin && (
-						<CharacterMenu character={character}>
-							<button className="absolute inset-y-0 right-0 flex items-center p-2 opacity-0 transition hover:!opacity-100 group-hover:opacity-50">
-								<LucideMoreVertical className="s-5" />
-							</button>
-						</CharacterMenu>
-					)}
-				</li>
-			))}
+			{characters
+				.toSorted(
+					(a, b) =>
+						Number(player?.ownedCharacterId === b._id) -
+						Number(player?.ownedCharacterId === a._id),
+				)
+				.map((character) => (
+					<li key={character._id} className="group relative">
+						<CharacterLink character={character} />
+						{roles.isAdmin && (
+							<CharacterMenu character={character}>
+								<button className="absolute inset-y-0 right-0 flex items-center p-2 opacity-0 transition hover:!opacity-100 group-hover:opacity-50">
+									<LucideMoreVertical className="s-5" />
+								</button>
+							</CharacterMenu>
+						)}
+					</li>
+				))}
 		</ul>
 	)
 }
