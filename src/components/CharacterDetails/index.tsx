@@ -131,39 +131,41 @@ export function CharacterDetails({
 
 					<ExperienceDisplay character={character} />
 
-					<div className={row("items-end gap-2")}>
-						<Field>
-							<FieldLabelText>Resilience</FieldLabelText>
-							<DataCounterInput
-								character={character}
-								dataKey="resilience"
-								min={0}
-								defaultValue={2}
-							/>
-						</Field>
+					{character.isOwner && (
+						<div className={row("items-end gap-2")}>
+							<Field>
+								<FieldLabelText>Resilience</FieldLabelText>
+								<DataCounterInput
+									character={character}
+									dataKey="resilience"
+									min={0}
+									defaultValue={2}
+								/>
+							</Field>
 
-						<Field>
-							<FieldLabelText>Phys. Stress</FieldLabelText>
-							<DataCounterInput
-								character={character}
-								dataKey="physicalStress"
-								min={0}
-								max={6}
-								defaultValue={0}
-							/>
-						</Field>
+							<Field>
+								<FieldLabelText>Phys. Stress</FieldLabelText>
+								<DataCounterInput
+									character={character}
+									dataKey="physicalStress"
+									min={0}
+									max={6}
+									defaultValue={0}
+								/>
+							</Field>
 
-						<Field>
-							<FieldLabelText>Ment. Stress</FieldLabelText>
-							<DataCounterInput
-								character={character}
-								dataKey="mentalStress"
-								min={0}
-								max={6}
-								defaultValue={0}
-							/>
-						</Field>
-					</div>
+							<Field>
+								<FieldLabelText>Ment. Stress</FieldLabelText>
+								<DataCounterInput
+									character={character}
+									dataKey="mentalStress"
+									min={0}
+									max={6}
+									defaultValue={0}
+								/>
+							</Field>
+						</div>
+					)}
 
 					<Field>
 						<FieldLabel>Condition</FieldLabel>
