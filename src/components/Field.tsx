@@ -18,10 +18,7 @@ function useFieldProvider() {
 	const labelId = useId()
 	const inputId = useId()
 	const descriptionId = useId()
-	return useMemo(
-		() => ({ labelId, inputId, descriptionId }),
-		[descriptionId, inputId, labelId],
-	)
+	return useMemo(() => ({ labelId, inputId, descriptionId }), [])
 }
 
 const FieldContext = createContext<ReturnType<typeof useFieldProvider>>({

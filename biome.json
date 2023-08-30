@@ -12,7 +12,8 @@
 			},
 			"nursery": {
 				"useGroupedTypeImport": "warn",
-				"useHookAtTopLevel": "error"
+				"useHookAtTopLevel": "error",
+				"useExhaustiveDependencies": "error"
 			},
 			"style": {
 				"noNegationElse": "warn",

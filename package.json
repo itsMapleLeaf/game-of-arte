@@ -53,14 +53,6 @@
 			],
 			"output": []
 		},
-		"lint:eslint": {
-			"command": "eslint . --report-unused-disable-directives",
-			"files": [
-				"**/*.{js,cjs,mjs,ts,tsx}",
-				"!{node_modules,dist,convex/_generated}"
-			],
-			"output": []
-		},
 		"typecheck": {
 			"command": "tsc -b",
 			"dependencies": ["codegen"],
@@ -104,14 +96,10 @@
 		"@types/node": "20.5.7",
 		"@types/react": "18.2.21",
 		"@types/react-dom": "18.2.7",
-		"@typescript-eslint/eslint-plugin": "6.5.0",
-		"@typescript-eslint/parser": "6.5.0",
 		"@vitejs/plugin-react": "4.0.4",
 		"autoprefixer": "10.4.15",
 		"chalk": "5.3.0",
 		"convex": "1.1.1",
-		"eslint": "8.48.0",
-		"eslint-plugin-react-hooks": "4.6.0",
 		"husky": "8.0.3",
 		"npm-run-all": "4.1.5",
 		"postcss": "8.4.29",
@@ -127,24 +115,5 @@
 		"patchedDependencies": {
 			"randimals@2.0.3": "patches/randimals@2.0.3.patch"
 		}
-	},
-	"eslintConfig": {
-		"root": true,
-		"extends": ["plugin:react-hooks/recommended"],
-		"parser": "@typescript-eslint/parser",
-		"plugins": ["@typescript-eslint"],
-		"parserOptions": {
-			"ecmaVersion": "latest",
-			"sourceType": "module",
-			"ecmaFeatures": {
-				"jsx": true
-			}
-		},
-		"overrides": [
-			{
-				"files": ["*.{ts,tsx}"]
-			}
-		],
-		"ignorePatterns": ["node_modules", "dist", "convex/_generated"]
 	}
 }

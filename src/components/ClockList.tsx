@@ -214,5 +214,5 @@ function useWindowEvent<T extends keyof WindowEventMap>(
 		return () => {
 			window.removeEventListener(event, listener, options)
 		}
-	})
+	}, [event, listener, options])
 }
