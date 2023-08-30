@@ -1,4 +1,4 @@
-import { useConvex } from "convex/react"
+import { useConvex, useQuery } from "convex/react"
 import {
 	type FunctionReference,
 	type FunctionReturnType,
@@ -6,8 +6,6 @@ import {
 	getFunctionName,
 } from "convex/server"
 import { LRUCache } from "lru-cache"
-import { useEffect, useLayoutEffect, useState } from "react"
-import { useMemoValue } from "./useMemoValue.ts"
 
 const cache = new LRUCache<string, NonNullable<unknown>>({
 	max: 100,
@@ -40,7 +38,7 @@ function setQueryCacheData<Query extends FunctionReference<"query">>(
 export function useQuerySuspense<Query extends FunctionReference<"query">>(
 	query: Query,
 	...args: OptionalRestArgs<Query>
-) {
+): FunctionReturnType<Query> {
 	const convex = useConvex()
 	const cacheData = getQueryCacheData(query, args)
 
@@ -69,31 +67,6 @@ export function useQuerySuspense<Query extends FunctionReference<"query">>(
 		})
 	}
 
-	const [data, setData] = useState(cacheData)
-
-	const memoQuery = useMemoValue(
-		query,
-		(a, b) => getFunctionName(a) === getFunctionName(b),
-	)
-
-	const memoArgs = useMemoValue(args)
-
-	useEffect(() => {
-		const data = getQueryCacheData(memoQuery, memoArgs)
-		if (data !== undefined) setData(data)
-	}, [memoArgs, memoQuery])
-
-	useLayoutEffect(() => {
-		const watch = convex.watchQuery(memoQuery, ...memoArgs)
-		return watch.onUpdate(() => {
-			const result = watch.localQueryResult()
-			if (result === undefined) {
-				throw new Error("No query result")
-			}
-			setData(result)
-			setQueryCacheData(memoQuery, memoArgs, result)
-		})
-	}, [convex, memoQuery, memoArgs])
-
-	return data
+	const queryData = useQuery(query, ...args)
+	return queryData === undefined ? cacheData : queryData
 }
