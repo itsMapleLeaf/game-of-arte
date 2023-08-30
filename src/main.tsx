@@ -23,8 +23,8 @@ createRoot(parseNonNil(document.querySelector("#root"))).render(
 			<StrictMode>
 				<AuthGuard>
 					<AppTitle />
+					<AssignedCharacterRedirect />
 					<LoadingSuspense className="fixed inset-0">
-						<AssignedCharacterRedirect />
 						<App />
 					</LoadingSuspense>
 				</AuthGuard>

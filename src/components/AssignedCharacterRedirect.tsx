@@ -1,11 +1,11 @@
 import { api } from "convex/_generated/api.js"
+import { useQuery } from "convex/react"
 import { useEffect } from "react"
 import { useAppParams } from "../helpers/useAppParams.ts"
 import { useEffectEvent } from "../helpers/useEffectEvent.ts"
-import { useQuerySuspense } from "../helpers/useQuerySuspense.ts"
 
 export function AssignedCharacterRedirect() {
-	const assignedCharacter = useQuerySuspense(api.characters.getOwned)
+	const assignedCharacter = useQuery(api.characters.getOwned)
 	const params = useAppParams()
 	const characterId = params.characterId.current
 
