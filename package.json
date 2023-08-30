@@ -9,7 +9,7 @@
 		"dev:vite": "vite dev",
 		"build": "pnpm codegen && vite build",
 		"preview": "vite preview",
-		"lint": "biome check . && eslint .",
+		"lint": "biome check . && eslint --report-unused-disable-directives .",
 		"format": "biome check --apply .",
 		"format-unsafe": "biome check --apply-unsafe .",
 		"typecheck": "pnpm codegen && tsc -b",
@@ -67,6 +67,15 @@
 		"root": true,
 		"extends": ["plugin:react-hooks/recommended"],
 		"parser": "@typescript-eslint/parser",
+		"plugins": ["@typescript-eslint"],
+		"parserOptions": {
+			"ecmaVersion": "latest",
+			"sourceType": "module",
+			"ecmaFeatures": {
+				"jsx": true
+			}
+		},
+		"overrides": [{ "files": ["*.{ts,tsx}"] }],
 		"ignorePatterns": ["node_modules", "dist", "convex/_generated"]
 	}
 }
