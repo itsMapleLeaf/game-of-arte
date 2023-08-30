@@ -67,7 +67,10 @@ export function CharacterDetails({
 
 					<Field>
 						<FieldLabel>Archetype</FieldLabel>
-						<FieldDescription>The backbone of your character.</FieldDescription>
+						<FieldDescription>
+							The backbone of your character. Gives +2 dice to the corresponding
+							attribute category.
+						</FieldDescription>
 						<FieldInput asChild>
 							<DataSelectInput
 								character={character}
