@@ -1,0 +1,8 @@
+{
+	"recommendations": [
+		"biomejs.biome",
+		"mikestead.dotenv",
+		"kuscamara.remove-unused-imports",
+		"bradlc.vscode-tailwindcss"
+	]
+}
