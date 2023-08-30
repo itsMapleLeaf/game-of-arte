@@ -3,18 +3,78 @@
 	"private": true,
 	"scripts": {
 		"prepare": "husky install",
-		"codegen": "convex codegen",
-		"dev": "pnpm codegen && run-p --print-label --race dev:*",
-		"dev:convex": "convex dev",
-		"dev:vite": "vite dev",
-		"build": "pnpm codegen && vite build",
-		"preview": "vite preview",
-		"lint": "biome check . && eslint --report-unused-disable-directives .",
+		"codegen": "wireit",
+		"dev": "wireit",
+		"build": "wireit",
+		"preview": "wireit",
+		"lint": "wireit",
 		"format": "biome check --apply .",
 		"format-unsafe": "biome check --apply-unsafe .",
-		"typecheck": "pnpm codegen && tsc -b",
-		"pre-push": "run-p --print-label --continue-on-error lint typecheck",
 		"validate-env": "tsx scripts/validate-env.ts"
+	},
+	"wireit": {
+		"dev": {
+			"dependencies": ["dev:vite", "dev:convex"]
+		},
+		"dev:vite": {
+			"command": "vite dev",
+			"service": true
+		},
+		"dev:convex": {
+			"command": "convex dev",
+			"service": true
+		},
+		"build": {
+			"command": "vite build",
+			"dependencies": ["codegen"],
+			"files": [
+				"index.html",
+				"src",
+				"public",
+				"convex/_generated",
+				"vite.config.ts",
+				"tailwind.config.ts",
+				"postcss.config.cjs"
+			],
+			"output": ["dist"]
+		},
+		"lint": {
+			"dependencies": ["lint:biome", "lint:eslint", "typecheck"]
+		},
+		"lint:biome": {
+			"command": "biome check .",
+			"files": [
+				"**/*.{js,cjs,mjs,ts,tsx,json}",
+				"!{node_modules,dist,convex/_generated}"
+			],
+			"output": []
+		},
+		"lint:eslint": {
+			"command": "eslint . --report-unused-disable-directives",
+			"files": [
+				"**/*.{js,cjs,mjs,ts,tsx}",
+				"!{node_modules,dist,convex/_generated}"
+			],
+			"output": []
+		},
+		"typecheck": {
+			"command": "tsc -b",
+			"dependencies": ["codegen"],
+			"files": [
+				"**/*.{js,cjs,mjs,ts,tsx}",
+				"!{node_modules,dist,convex/_generated}"
+			],
+			"output": []
+		},
+		"preview": {
+			"command": "vite preview",
+			"dependencies": ["build"]
+		},
+		"codegen": {
+			"command": "convex codegen",
+			"files": ["convex", "!convex/_generated"],
+			"output": ["convex/_generated"]
+		}
 	},
 	"dependencies": {
 		"@clerk/clerk-react": "4.24.0",
@@ -56,7 +116,8 @@
 		"tsx": "3.12.7",
 		"typescript": "5.2.2",
 		"vite": "4.4.9",
-		"vite-tsconfig-paths": "4.2.0"
+		"vite-tsconfig-paths": "4.2.0",
+		"wireit": "0.10.0"
 	},
 	"pnpm": {
 		"patchedDependencies": {
@@ -75,7 +136,11 @@
 				"jsx": true
 			}
 		},
-		"overrides": [{ "files": ["*.{ts,tsx}"] }],
+		"overrides": [
+			{
+				"files": ["*.{ts,tsx}"]
+			}
+		],
 		"ignorePatterns": ["node_modules", "dist", "convex/_generated"]
 	}
 }
