@@ -1,8 +1,8 @@
 import containerQueries from "@tailwindcss/container-queries"
-import { type Config } from "tailwindcss"
+import type { Config } from "tailwindcss"
 import colors from "tailwindcss/colors"
 import plugin from "tailwindcss/plugin"
-import { type KeyValuePair } from "tailwindcss/types/config"
+import type { KeyValuePair } from "tailwindcss/types/config"
 
 export default {
 	content: ["./src/**/*.{ts,tsx}", "./index.html"],

@@ -1,6 +1,6 @@
 import { v } from "convex/values"
 import { toFiniteNumberOrUndefined } from "../src/helpers/index.ts"
-import { type Doc } from "./_generated/dataModel"
+import type { Doc } from "./_generated/dataModel"
 import { mutation, query } from "./_generated/server.js"
 import { requireAdmin, requirePlayerUser } from "./roles.ts"
 

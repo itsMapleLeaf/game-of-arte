@@ -1,6 +1,6 @@
 import { api } from "convex/_generated/api.js"
-import { type Id } from "convex/_generated/dataModel.js"
-import { type DiceRollListItem } from "convex/diceRolls.ts"
+import type { Id } from "convex/_generated/dataModel.js"
+import type { DiceRollListItem } from "convex/diceRolls.ts"
 import { useMutation } from "convex/react"
 import { LucideDices, LucideHexagon } from "lucide-react"
 import { Virtuoso } from "react-virtuoso"

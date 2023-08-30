@@ -1,4 +1,4 @@
-import { type Spread } from "../../helpers/types.ts"
+import type { Spread } from "../../helpers/types.ts"
 import { input } from "../../styles/index.ts"
 
 export function NumberInput({

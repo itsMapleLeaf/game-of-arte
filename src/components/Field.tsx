@@ -11,7 +11,7 @@ import {
 } from "react"
 import { twMerge } from "tailwind-merge"
 import { autoRef } from "../helpers/autoRef.ts"
-import { type Spread } from "../helpers/types.ts"
+import type { Spread } from "../helpers/types.ts"
 import { panel } from "../styles/panel.ts"
 
 function useFieldProvider() {

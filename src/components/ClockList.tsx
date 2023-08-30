@@ -1,5 +1,5 @@
 import { api } from "convex/_generated/api.js"
-import { type Doc } from "convex/_generated/dataModel.js"
+import type { Doc } from "convex/_generated/dataModel.js"
 import { useMutation } from "convex/react"
 import { LucidePlus, LucideX } from "lucide-react"
 import { useEffect, useId, useRef } from "react"

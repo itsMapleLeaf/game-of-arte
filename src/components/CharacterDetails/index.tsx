@@ -1,5 +1,5 @@
 import { api } from "convex/_generated/api"
-import { type Doc, type Id } from "convex/_generated/dataModel"
+import type { Doc, Id } from "convex/_generated/dataModel"
 import { toFiniteNumberOrUndefined } from "../../helpers/index.ts"
 import { useQuerySuspense } from "../../helpers/useQuerySuspense.ts"
 import { input, textArea } from "../../styles/index.ts"
