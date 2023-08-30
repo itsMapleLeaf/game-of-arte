@@ -11,6 +11,7 @@
 		"preview": "vite preview",
 		"lint": "biome check .",
 		"format": "biome check --apply .",
+		"format-unsafe": "biome check --apply-unsafe .",
 		"typecheck": "pnpm codegen && tsc -b",
 		"pre-push": "run-p --print-label --continue-on-error lint typecheck",
 		"validate-env": "tsx scripts/validate-env.ts"
