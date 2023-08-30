@@ -2,7 +2,7 @@
 	"type": "module",
 	"private": true,
 	"scripts": {
-		"prepare": "convex codegen",
+		"prepare": "convex codegen && husky install",
 		"dev": "run-p --print-label --race dev:*",
 		"dev:convex": "convex dev",
 		"dev:vite": "vite dev",
@@ -59,7 +59,8 @@
 		"tsx": "^3.12.7",
 		"typescript": "^5.2.2",
 		"vite": "^4.4.2",
-		"vite-tsconfig-paths": "^4.2.0"
+		"vite-tsconfig-paths": "^4.2.0",
+		"husky": "^8.0.0"
 	},
 	"pnpm": {
 		"patchedDependencies": {
