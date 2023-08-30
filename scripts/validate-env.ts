@@ -22,7 +22,7 @@ const missing = variables.filter((variable) => !process.env[variable])
 if (missing.length) {
 	const missingList = missing.map((variable) => ` • ${variable}`).join("\n")
 	console.error(
-		chalk.redBright`❌ Missing environment variables:\n` + missingList,
+		`${chalk.redBright`❌ Missing environment variables:\n`}${missingList}`,
 	)
 	process.exit(1)
 }
