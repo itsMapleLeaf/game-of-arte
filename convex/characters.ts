@@ -49,6 +49,23 @@ export const get = query({
 	},
 })
 
+export const getOwned = query({
+	handler: async (ctx) => {
+		const user = await findUserByTokenIdentifier(ctx)
+		if (!user) return null
+
+		const player = await ctx.db
+			.query("players")
+			.withIndex("by_discord_user_id", (q) =>
+				q.eq("discordUserId", user.discordUserId),
+			)
+			.first()
+		if (!player?.ownedCharacterId) return null
+
+		return await ctx.db.get(player.ownedCharacterId)
+	},
+})
+
 export const create = mutation({
 	args: { name: v.optional(v.string()) },
 	handler: async (ctx, args) => {

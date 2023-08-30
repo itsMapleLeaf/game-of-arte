@@ -8,6 +8,7 @@ import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
 import { App } from "./components/App.tsx"
 import { AppTitle } from "./components/AppTitle.tsx"
+import { AssignedCharacterRedirect } from "./components/AssignedCharacterRedirect.tsx"
 import { Identify } from "./components/Identify.tsx"
 import { LoadingSuspense } from "./components/LoadingPlaceholder.tsx"
 import { parseNonNil } from "./helpers/errors.ts"
@@ -23,6 +24,7 @@ createRoot(parseNonNil(document.querySelector("#root"))).render(
 				<Identify />
 				<AppTitle />
 				<LoadingSuspense className="fixed inset-0">
+					<AssignedCharacterRedirect />
 					<App />
 				</LoadingSuspense>
 			</StrictMode>
