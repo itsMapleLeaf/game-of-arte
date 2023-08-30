@@ -11,114 +11,114 @@ patchedDependencies:
 
 dependencies:
   '@clerk/clerk-react':
-    specifier: ^4.24.0
+    specifier: 4.24.0
     version: 4.24.0(react@18.2.0)
   '@fontsource-variable/rubik':
-    specifier: ^5.0.10
+    specifier: 5.0.10
     version: 5.0.10
   '@radix-ui/react-dropdown-menu':
-    specifier: ^2.0.5
+    specifier: 2.0.5
     version: 2.0.5(@types/react-dom@18.2.7)(@types/react@18.2.21)(react-dom@18.2.0)(react@18.2.0)
   '@radix-ui/react-popover':
-    specifier: ^1.0.6
+    specifier: 1.0.6
     version: 1.0.6(@types/react-dom@18.2.7)(@types/react@18.2.21)(react-dom@18.2.0)(react@18.2.0)
   '@radix-ui/react-slot':
-    specifier: ^1.0.2
+    specifier: 1.0.2
     version: 1.0.2(@types/react@18.2.21)(react@18.2.0)
   fast-deep-equal:
-    specifier: ^3.1.3
+    specifier: 3.1.3
     version: 3.1.3
   history:
-    specifier: ^5.3.0
+    specifier: 5.3.0
     version: 5.3.0
   lru-cache:
-    specifier: ^10.0.1
+    specifier: 10.0.1
     version: 10.0.1
   lucide-react:
-    specifier: ^0.272.0
+    specifier: 0.272.0
     version: 0.272.0(react@18.2.0)
   react:
-    specifier: ^18.2.0
+    specifier: 18.2.0
     version: 18.2.0
   react-dom:
-    specifier: ^18.2.0
+    specifier: 18.2.0
     version: 18.2.0(react@18.2.0)
   react-expanding-textarea:
-    specifier: ^2.3.6
+    specifier: 2.3.6
     version: 2.3.6(react@18.2.0)
   react-virtuoso:
-    specifier: ^4.5.0
+    specifier: 4.5.0
     version: 4.5.0(react-dom@18.2.0)(react@18.2.0)
   spin-delay:
-    specifier: ^1.2.0
+    specifier: 1.2.0
     version: 1.2.0(react@18.2.0)
   tailwind-merge:
-    specifier: ^1.14.0
+    specifier: 1.14.0
     version: 1.14.0
 
 devDependencies:
   '@biomejs/biome':
-    specifier: ^1.0.0
+    specifier: 1.0.0
     version: 1.0.0
   '@tailwindcss/container-queries':
-    specifier: ^0.1.1
+    specifier: 0.1.1
     version: 0.1.1(tailwindcss@3.3.3)
   '@total-typescript/ts-reset':
-    specifier: ^0.5.1
+    specifier: 0.5.1
     version: 0.5.1
   '@types/node':
-    specifier: ^20.5.7
+    specifier: 20.5.7
     version: 20.5.7
   '@types/react':
-    specifier: ^18.2.21
+    specifier: 18.2.21
     version: 18.2.21
   '@types/react-dom':
-    specifier: ^18.2.7
+    specifier: 18.2.7
     version: 18.2.7
   '@typescript-eslint/eslint-plugin':
-    specifier: ^6.5.0
+    specifier: 6.5.0
     version: 6.5.0(@typescript-eslint/parser@6.5.0)(eslint@8.48.0)(typescript@5.2.2)
   '@typescript-eslint/parser':
-    specifier: ^6.5.0
+    specifier: 6.5.0
     version: 6.5.0(eslint@8.48.0)(typescript@5.2.2)
   '@vitejs/plugin-react':
-    specifier: ^4.0.4
+    specifier: 4.0.4
     version: 4.0.4(vite@4.4.9)
   autoprefixer:
-    specifier: ^10.4.14
+    specifier: 10.4.15
     version: 10.4.15(postcss@8.4.29)
   chalk:
-    specifier: ^5.3.0
+    specifier: 5.3.0
     version: 5.3.0
   convex:
-    specifier: ^1.1.1
+    specifier: 1.1.1
     version: 1.1.1(@clerk/clerk-react@4.24.0)(react-dom@18.2.0)(react@18.2.0)
   husky:
-    specifier: ^8.0.0
+    specifier: 8.0.3
     version: 8.0.3
   npm-run-all:
-    specifier: ^4.1.5
+    specifier: 4.1.5
     version: 4.1.5
   postcss:
-    specifier: ^8.4.29
+    specifier: 8.4.29
     version: 8.4.29
   randimals:
-    specifier: ^2.0.3
+    specifier: 2.0.3
     version: 2.0.3(patch_hash=egwc6h6tpixtyqfzmgmafb5h3a)
   tailwindcss:
-    specifier: ^3.3.2
+    specifier: 3.3.3
     version: 3.3.3
   tsx:
-    specifier: ^3.12.7
+    specifier: 3.12.7
     version: 3.12.7
   typescript:
-    specifier: ^5.2.2
+    specifier: 5.2.2
     version: 5.2.2
   vite:
-    specifier: ^4.4.2
+    specifier: 4.4.9
     version: 4.4.9(@types/node@20.5.7)
   vite-tsconfig-paths:
-    specifier: ^4.2.0
+    specifier: 4.2.0
     version: 4.2.0(typescript@5.2.2)(vite@4.4.9)
 
 packages:
@@ -945,8 +945,8 @@ packages:
     resolution: {integrity: sha512-R0LkqHa5VCO3YgLaTRqy/J/H1/Q6CgIfu+uFCb8a6qFdui0iLxbFh2BQv5lshrKBpZP8IUbNMAb/A1P2r/tq5Q==}
     dev: false
 
-  /@humanwhocodes/config-array@0.11.10:
-    resolution: {integrity: sha512-KVVjQmNUepDVGXNuoRRdmmEjruj0KfiGSbS8LVc12LMsWDQzRXJ0qdhN8L8uUigKpfEHRhlaQFY0ib1tnUbNeQ==}
+  /@humanwhocodes/config-array@0.11.11:
+    resolution: {integrity: sha512-N2brEuAadi0CcdeMXUkhbZB84eskAc8MEX1By6qEchoVywSgXPIjou4rYsl0V3Hj0ZnuGycGCjdNgockbzeWNA==}
     engines: {node: '>=10.10.0'}
     dependencies:
       '@humanwhocodes/object-schema': 1.2.1
@@ -1807,8 +1807,8 @@ packages:
       postcss: ^8.1.0
     dependencies:
       browserslist: 4.21.10
-      caniuse-lite: 1.0.30001520
-      fraction.js: 4.2.0
+      caniuse-lite: 1.0.30001524
+      fraction.js: 4.3.1
       normalize-range: 0.1.2
       picocolors: 1.0.0
       postcss: 8.4.29
@@ -1848,8 +1848,8 @@ packages:
     engines: {node: ^6 || ^7 || ^8 || ^9 || ^10 || ^11 || ^12 || >=13.7}
     hasBin: true
     dependencies:
-      caniuse-lite: 1.0.30001520
-      electron-to-chromium: 1.4.490
+      caniuse-lite: 1.0.30001524
+      electron-to-chromium: 1.4.505
       node-releases: 2.0.13
       update-browserslist-db: 1.0.11(browserslist@4.21.10)
     dev: true
@@ -1882,8 +1882,8 @@ packages:
     engines: {node: '>= 6'}
     dev: true
 
-  /caniuse-lite@1.0.30001520:
-    resolution: {integrity: sha512-tahF5O9EiiTzwTUqAeFjIZbn4Dnqxzz7ktrgGlMYNLH43Ul26IgTMH/zvL3DG0lZxBYnlT04axvInszUsZULdA==}
+  /caniuse-lite@1.0.30001524:
+    resolution: {integrity: sha512-Jj917pJtYg9HSJBF95HVX3Cdr89JUyLT4IZ8SvM5aDRni95swKgYi3TgYLH5hnGfPE/U1dg6IfZ50UsIlLkwSA==}
     dev: true
 
   /capital-case@1.0.4:
@@ -2113,8 +2113,8 @@ packages:
       tslib: 2.6.2
     dev: true
 
-  /electron-to-chromium@1.4.490:
-    resolution: {integrity: sha512-6s7NVJz+sATdYnIwhdshx/N/9O6rvMxmhVoDSDFdj6iA45gHR8EQje70+RYsF4GeB+k0IeNSBnP7yG9ZXJFr7A==}
+  /electron-to-chromium@1.4.505:
+    resolution: {integrity: sha512-0A50eL5BCCKdxig2SsCXhpuztnB9PfUgRMojj5tMvt8O54lbwz3t6wNgnpiTRosw5QjlJB7ixhVyeg8daLQwSQ==}
     dev: true
 
   /error-ex@1.3.2:
@@ -2283,7 +2283,7 @@ packages:
       '@eslint-community/regexpp': 4.8.0
       '@eslint/eslintrc': 2.1.2
       '@eslint/js': 8.48.0
-      '@humanwhocodes/config-array': 0.11.10
+      '@humanwhocodes/config-array': 0.11.11
       '@humanwhocodes/module-importer': 1.0.1
       '@nodelib/fs.walk': 1.2.8
       ajv: 6.12.6
@@ -2426,8 +2426,8 @@ packages:
       is-callable: 1.2.7
     dev: true
 
-  /fraction.js@4.2.0:
-    resolution: {integrity: sha512-MhLuK+2gUcnZe8ZHlaaINnQLl0xRIGRfcGk2yl8xoQAfHrSsL3rYu6FCmBdkdbhc9EPlwyGHewaRsvwRMJtAlA==}
+  /fraction.js@4.3.1:
+    resolution: {integrity: sha512-nx0cki48JBA6ThPeUpeKCNpdhEl/9bRS+dAEYnRUod+Z1jhFfC3K/mBLorZZntqHM+GTH3/dkkpfoT3QITYe7g==}
     dev: true
 
   /fs.realpath@1.0.0:
@@ -2826,8 +2826,8 @@ packages:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
     dev: true
 
-  /jiti@1.19.1:
-    resolution: {integrity: sha512-oVhqoRDaBXf7sjkll95LHVS6Myyyb1zaunVwk4Z0+WPSW4gjS0pl01zYKHScTuyEhQsFxV5L4DR5r+YqSyqyyg==}
+  /jiti@1.19.3:
+    resolution: {integrity: sha512-5eEbBDQT/jF1xg6l36P+mWGGoH9Spuy0PCdSr2dtWRDGC6ph/w9ZCL4lmESW8f8F7MwT3XKescfP0wnZWAKL9w==}
     hasBin: true
     dev: true
 
@@ -3266,7 +3266,7 @@ packages:
     dependencies:
       lilconfig: 2.1.0
       postcss: 8.4.29
-      yaml: 2.3.1
+      yaml: 2.3.2
     dev: true
 
   /postcss-nested@6.0.1(postcss@8.4.29):
@@ -3340,7 +3340,7 @@ packages:
       fast-shallow-equal: 1.0.0
       react: 18.2.0
       react-with-forwarded-ref: 0.3.5(react@18.2.0)
-      tslib: 2.4.1
+      tslib: 2.6.2
     dev: false
 
   /react-refresh@0.14.0:
@@ -3417,7 +3417,7 @@ packages:
       react: ^16.3.0 || ^17.0.0 || ^18.0.0
     dependencies:
       react: 18.2.0
-      tslib: 2.4.1
+      tslib: 2.6.2
     dev: false
 
   /react@18.2.0:
@@ -3491,8 +3491,8 @@ packages:
       glob: 7.2.3
     dev: true
 
-  /rollup@3.28.0:
-    resolution: {integrity: sha512-d7zhvo1OUY2SXSM6pfNjgD5+d0Nz87CUp4mt8l/GgVP3oBsPwzNvSzyu1me6BSG9JIgWNTVcafIXBIyM8yQ3yw==}
+  /rollup@3.28.1:
+    resolution: {integrity: sha512-R9OMQmIHJm9znrU3m3cpE8uhN0fGdXiawME7aZIpQqvpS/85+Vt1Hq1/yVIcYfOmaQiHjvXkQAoJukvLpau6Yw==}
     engines: {node: '>=14.18.0', npm: '>=8.0.0'}
     hasBin: true
     optionalDependencies:
@@ -3758,7 +3758,7 @@ packages:
       fast-glob: 3.3.1
       glob-parent: 6.0.2
       is-glob: 4.0.3
-      jiti: 1.19.1
+      jiti: 1.19.3
       lilconfig: 2.1.0
       micromatch: 4.0.5
       normalize-path: 3.0.0
@@ -4043,7 +4043,7 @@ packages:
       '@types/node': 20.5.7
       esbuild: 0.18.20
       postcss: 8.4.29
-      rollup: 3.28.0
+      rollup: 3.28.1
     optionalDependencies:
       fsevents: 2.3.3
     dev: true
@@ -4107,8 +4107,8 @@ packages:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
     dev: true
 
-  /yaml@2.3.1:
-    resolution: {integrity: sha512-2eHWfjaoXgTBC2jNM1LRef62VQa0umtvRiDSk6HSzW7RvS5YtkabJrwYLLEKWBc8a5U2PTSCs+dJjUTJdlHsWQ==}
+  /yaml@2.3.2:
+    resolution: {integrity: sha512-N/lyzTPaJasoDmfV7YTrYCI0G/3ivm/9wdG0aHuheKowWQwGTsK0Eoiw6utmzAnI6pkJa0DUVygvp3spqqEKXg==}
     engines: {node: '>= 14'}
     dev: true
 
