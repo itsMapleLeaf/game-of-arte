@@ -21,11 +21,13 @@
 			}
 		}
 	},
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true
+	},
 	"formatter": {
 		"formatWithErrors": true
-	},
-	"files": {
-		"ignore": [".vercel", "convex/_generated", "dist"]
 	},
 	"javascript": {
 		"formatter": {

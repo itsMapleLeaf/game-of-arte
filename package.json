@@ -39,18 +39,18 @@
 			"output": ["dist"]
 		},
 		"lint": {
-			"command": "echo lint",
-			"dependencies": ["lint:biome", "typecheck"],
-			"env": {
-				"WIREIT_FAILURES": "continue"
-			}
+			"dependencies": ["biome-check", "typecheck"]
 		},
-		"lint:biome": {
+		"biome-check": {
 			"command": "biome check .",
 			"files": [
 				"**/*.{js,cjs,mjs,ts,tsx,json}",
+				".gitignore",
 				"!{node_modules,dist,convex/_generated}"
 			],
+			"env": {
+				"WIREIT_FAILURES": "continue"
+			},
 			"output": []
 		},
 		"typecheck": {
@@ -60,6 +60,9 @@
 				"**/*.{js,cjs,mjs,ts,tsx}",
 				"!{node_modules,dist,convex/_generated}"
 			],
+			"env": {
+				"WIREIT_FAILURES": "continue"
+			},
 			"output": []
 		},
 		"preview": {
