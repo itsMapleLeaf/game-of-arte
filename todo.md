@@ -38,4 +38,4 @@
 - [ ] remove button on dice rolls
 - [ ] confirmation modal for signing out
 - [ ] mobile responsive styles
-- [ ] redirect to first character
+- [x] redirect to first character
