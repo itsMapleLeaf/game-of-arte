@@ -1,37 +1,4 @@
 {
-	"$schema": "https://biomejs.dev/schemas/1.0.0/schema.json",
-	"organizeImports": {
-		"enabled": true
-	},
-	"linter": {
-		"enabled": true,
-		"rules": {
-			"recommended": true,
-			"correctness": {
-				"noUnusedVariables": "warn"
-			},
-			"nursery": {
-				"useGroupedTypeImport": "warn",
-				"useHookAtTopLevel": "error",
-				"useExhaustiveDependencies": "error"
-			},
-			"style": {
-				"noNegationElse": "warn",
-				"useSingleCaseStatement": "warn"
-			}
-		}
-	},
-	"vcs": {
-		"enabled": true,
-		"clientKind": "git",
-		"useIgnoreFile": true
-	},
-	"formatter": {
-		"formatWithErrors": true
-	},
-	"javascript": {
-		"formatter": {
-			"semicolons": "asNeeded"
-		}
-	}
+	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+	"extends": ["./node_modules/@itsmapleleaf/configs/biome.json"]
 }

@@ -39,9 +39,9 @@
 			"output": ["dist"]
 		},
 		"lint": {
-			"dependencies": ["biome-check", "typecheck"]
+			"dependencies": ["lint:biome", "lint:types"]
 		},
-		"biome-check": {
+		"lint:biome": {
 			"command": "biome check .",
 			"files": [
 				"**/*.{js,cjs,mjs,ts,tsx,json}",
@@ -53,7 +53,7 @@
 			},
 			"output": []
 		},
-		"typecheck": {
+		"lint:types": {
 			"command": "tsc -b",
 			"dependencies": ["codegen"],
 			"files": [
@@ -95,6 +95,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.0.0",
+		"@itsmapleleaf/configs": "github:itsMapleLeaf/configs",
 		"@tailwindcss/container-queries": "0.1.1",
 		"@total-typescript/ts-reset": "0.5.1",
 		"@types/node": "20.5.9",
