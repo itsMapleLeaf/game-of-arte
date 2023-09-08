@@ -52,14 +52,14 @@ function DiceRollDetails({ roll }: { roll: DiceRollListItem }) {
 				{dice.map((die, index) =>
 					isAction ? (
 						<Diecon
-							// rome-ignore lint/suspicious/noArrayIndexKey: no better key to use
+							// biome-ignore lint/suspicious/noArrayIndexKey: no better key to use
 							key={index}
 							result={die.result}
 							success={die.result === 10 || die.result === 11}
 							crit={die.result === 12}
 						/>
 					) : (
-						// rome-ignore lint/suspicious/noArrayIndexKey: no better key to use
+						// biome-ignore lint/suspicious/noArrayIndexKey: no better key to use
 						<Diecon key={index} result={die.result} />
 					),
 				)}
