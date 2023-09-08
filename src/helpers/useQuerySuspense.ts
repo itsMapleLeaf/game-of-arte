@@ -1,5 +1,5 @@
 import {
-	RequestForQueries,
+	type RequestForQueries,
 	useConvex,
 	useQueries,
 	useQuery,

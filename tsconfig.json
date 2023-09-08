@@ -1,23 +1,9 @@
 {
+	"extends": "@itsmapleleaf/configs/tsconfig",
 	"compilerOptions": {
-		"allowImportingTsExtensions": true,
-		"allowJs": true,
-		"checkJs": true,
-		"esModuleInterop": true,
-		"forceConsistentCasingInFileNames": true,
-		"isolatedModules": true,
-		"jsx": "react-jsx",
-		"module": "ESNext",
-		"moduleResolution": "Bundler",
-		"noEmit": true,
-		"noUncheckedIndexedAccess": true,
 		"paths": {
 			"convex/*": ["./convex/*"]
-		},
-		"resolveJsonModule": true,
-		"skipLibCheck": true,
-		"strict": true,
-		"target": "ESNext"
+		}
 	},
 	"exclude": ["node_modules", "dist", "convex/_generated"]
 }
