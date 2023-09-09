@@ -130,8 +130,8 @@ export const attributes = [
 				description: "Celestial bodies and the mysterious ways they work.",
 			},
 			{
-				name: "Culture",
-				description: "The history of Arte, its geography, and cultural norms.",
+				name: "World",
+				description: "Knowledge of Arte, its history, cultures, and geography.",
 			},
 			{
 				name: "Nature",
