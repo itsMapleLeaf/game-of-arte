@@ -31,3 +31,7 @@ export function compareKey<K extends PropertyKey>(key: K) {
 		return a[key].localeCompare(b[key])
 	}
 }
+
+export function randomItem<T>(items: [...T[]]) {
+	return items[Math.floor(Math.random() * items.length)]
+}

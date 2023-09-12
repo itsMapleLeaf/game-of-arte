@@ -1,9 +1,13 @@
 import { api } from "convex/_generated/api"
 import type { Doc } from "convex/_generated/dataModel"
-import { toFiniteNumberOrUndefined } from "../../helpers/index.ts"
+import { useMutation } from "convex/react"
+import { parseNonNil } from "../../helpers/errors.ts"
+import { randomItem, toFiniteNumberOrUndefined } from "../../helpers/index.ts"
 import { useCurrentCharacter } from "../../helpers/useCurrentCharacter.ts"
 import { useQuerySuspense } from "../../helpers/useQuerySuspense.ts"
 import { input, textArea } from "../../styles/index.ts"
+import { panel } from "../../styles/panel.ts"
+import { ConfirmDialog } from "../ConfirmDialog.tsx"
 import {
 	Field,
 	FieldDescription,
@@ -222,25 +226,65 @@ export function CharacterDetails() {
 function ExperienceDisplay({ character }: { character: Doc<"characters"> }) {
 	const world = useQuerySuspense(api.world.get)
 
-	const usedExperience = attributes
-		.flatMap((group) => group.attributes)
+	const allAttributes = attributes.flatMap((group) => group.attributes)
+
+	const usedExperience = allAttributes
 		.map((attribute) => {
 			return toFiniteNumberOrUndefined(character.data[attribute.dataKey]) ?? 1
 		})
 		.reduce((sum, value) => sum + value - 1, 0)
+
+	const updateCharacterData = useMutation(api.characters.updateData)
+
+	const randomizeStats = () => {
+		const newStats = Object.fromEntries(
+			allAttributes.map((attribute) => [attribute.dataKey, 1]),
+		)
+
+		for (let i = 0; i < world.experience; i++) {
+			const category = parseNonNil(randomItem(attributes))
+			const attribute = parseNonNil(randomItem(category.attributes))
+			if (newStats[attribute.dataKey] === 5) {
+				i -= 1
+				continue
+			}
+			newStats[attribute.dataKey] += 1
+		}
+
+		updateCharacterData({ id: character._id, data: newStats })
+	}
 
 	return (
 		<Field>
 			<FieldLabelText>Experience</FieldLabelText>
 			<FieldDescription>Spend these points on attributes!</FieldDescription>
 			<FieldInput asChild>
-				<p
-					data-negative={usedExperience > world.experience}
-					className={input("data-[negative=true]:text-error-400")}
+				<div
+					className={panel(
+						"border rounded-md px-3 h-10 flex flex-wrap items-center overflow-clip",
+					)}
 				>
-					{world.experience - usedExperience} <span aria-label="out of">/</span>{" "}
-					{world.experience}
-				</p>
+					<p
+						data-negative={usedExperience > world.experience}
+						className="data-[negative=true]:text-error-400 flex-1"
+					>
+						{world.experience - usedExperience}{" "}
+						<span aria-label="out of">/</span> {world.experience}
+					</p>
+					<ConfirmDialog
+						title="Randomize Stats"
+						description="Are you sure you want to randomize your stats? All your current stats will be lost!"
+						confirmText="Randomize Stats"
+						onConfirm={randomizeStats}
+					>
+						<button
+							type="button"
+							className="px-3 -mx-3 hover:bg-base-800 transition self-stretch"
+						>
+							Randomize Stats
+						</button>
+					</ConfirmDialog>
+				</div>
 			</FieldInput>
 		</Field>
 	)
