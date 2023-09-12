@@ -108,7 +108,7 @@ export function FieldLabelTooltip({
 				<div
 					id={tooltipId}
 					className={panel(
-						"pointer-events-none absolute left-1/2 top-[calc(100%+4px)] z-10 w-48 -translate-x-1/2 rounded border px-2 py-1 text-sm leading-snug opacity-0 shadow transition peer-hover:opacity-100 peer-focus:opacity-100",
+						"text-white pointer-events-none absolute left-1/2 top-[calc(100%+4px)] z-10 w-48 -translate-x-1/2 rounded border px-2 py-1 text-sm leading-snug opacity-0 shadow transition peer-hover:opacity-100 peer-focus:opacity-100",
 					)}
 				>
 					{content}
