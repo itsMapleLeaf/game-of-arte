@@ -14,10 +14,7 @@
 	},
 	"wireit": {
 		"dev": {
-			"dependencies": [
-				"dev:vite",
-				"dev:convex"
-			]
+			"dependencies": ["dev:vite", "dev:convex"]
 		},
 		"dev:vite": {
 			"command": "vite dev",
@@ -29,9 +26,7 @@
 		},
 		"build": {
 			"command": "vite build",
-			"dependencies": [
-				"codegen"
-			],
+			"dependencies": ["codegen"],
 			"files": [
 				"index.html",
 				"src",
@@ -41,15 +36,10 @@
 				"tailwind.config.ts",
 				"postcss.config.cjs"
 			],
-			"output": [
-				"dist"
-			]
+			"output": ["dist"]
 		},
 		"lint": {
-			"dependencies": [
-				"lint:biome",
-				"lint:types"
-			]
+			"dependencies": ["lint:biome", "lint:types"]
 		},
 		"lint:biome": {
 			"command": "biome check .",
@@ -65,10 +55,9 @@
 		},
 		"lint:types": {
 			"command": "tsc -b",
-			"dependencies": [
-				"codegen"
-			],
+			"dependencies": ["codegen"],
 			"files": [
+				"tsconfig.json",
 				"**/*.{js,cjs,mjs,ts,tsx}",
 				"!{node_modules,dist,convex/_generated}"
 			],
@@ -79,19 +68,12 @@
 		},
 		"preview": {
 			"command": "vite preview",
-			"dependencies": [
-				"build"
-			]
+			"dependencies": ["build"]
 		},
 		"codegen": {
 			"command": "convex codegen",
-			"files": [
-				"convex",
-				"!convex/_generated"
-			],
-			"output": [
-				"convex/_generated"
-			]
+			"files": ["convex", "!convex/_generated"],
+			"output": ["convex/_generated"]
 		}
 	},
 	"dependencies": {
