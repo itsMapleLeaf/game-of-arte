@@ -28,6 +28,7 @@
 			"command": "vite build",
 			"dependencies": ["codegen"],
 			"files": [
+				"package.json",
 				"index.html",
 				"src",
 				"public",
@@ -57,8 +58,7 @@
 			"command": "tsc -b",
 			"dependencies": ["codegen"],
 			"files": [
-				"tsconfig.json",
-				"**/*.{js,cjs,mjs,ts,tsx}",
+				"**/*.{js,cjs,mjs,ts,tsx,json}",
 				"!{node_modules,dist,convex/_generated}"
 			],
 			"env": {
