@@ -27,7 +27,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Run tests
-        run: pnpm run-p --continue-on-error lint-apply typecheck format
+        run: pnpm run-s --continue-on-error lint-apply typecheck format
 
       - name: Commit changes
         if: always()
