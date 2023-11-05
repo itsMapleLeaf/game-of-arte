@@ -150,6 +150,20 @@ function AttributeRollForm({
 		})
 	}
 
+	const modifierReceiptItems = [{ name: "Base Roll", value: baseDiceCount }]
+	if (stressModifier !== 0) {
+		modifierReceiptItems.push({ name: "Stress", value: stressModifier })
+	}
+	if (isArchetypeAttribute) {
+		modifierReceiptItems.push({ name: "Archetype", value: 2 })
+	}
+	if (modifier !== 0) {
+		modifierReceiptItems.push({ name: "Manual", value: modifier })
+	}
+	if (resilienceToUse > 0) {
+		modifierReceiptItems.push({ name: "Resilience", value: resilienceToUse })
+	}
+
 	return (
 		<div className="grid w-56 gap-2 p-2">
 			<Field>
@@ -181,36 +195,16 @@ function AttributeRollForm({
 				</Field>
 			)}
 
-			<dl className="tabular-nums">
-				<div className="flex flex-row gap-1">
-					<dt className="flex-1 opacity-70">Base Roll</dt>
-					<dd>{baseDiceCount}</dd>
-				</div>
-				{stressModifier !== 0 && (
-					<div className="flex flex-row gap-1">
-						<dt className="flex-1 opacity-70">Stress</dt>
-						<dd>{formatSigned(stressModifier)}</dd>
-					</div>
-				)}
-				{isArchetypeAttribute && (
-					<div className="flex flex-row gap-1">
-						<dt className="flex-1 opacity-70">Archetype</dt>
-						<dd>+2</dd>
-					</div>
-				)}
-				{modifier !== 0 && (
-					<div className="flex flex-row gap-1">
-						<dt className="flex-1 opacity-70">Manual</dt>
-						<dd>{formatSigned(modifier)}</dd>
-					</div>
-				)}
-				{resilienceToUse > 0 && (
-					<div className="flex flex-row gap-1">
-						<dt className="flex-1 opacity-70">Resilience</dt>
-						<dd>{formatSigned(resilienceToUse)}</dd>
-					</div>
-				)}
-			</dl>
+			{modifierReceiptItems.length > 0 && (
+				<dl className="tabular-nums">
+					{modifierReceiptItems.map(({ name, value }) => (
+						<div key={name} className="flex flex-row gap-1">
+							<dt className="flex-1 opacity-70">{name}</dt>
+							<dd>{formatSigned(value)}</dd>
+						</div>
+					))}
+				</dl>
+			)}
 
 			<PopoverClose asChild>
 				<AsyncButton
