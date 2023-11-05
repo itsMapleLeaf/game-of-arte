@@ -25,7 +25,14 @@ import {
 	DataTextArea,
 } from "./DataInput.tsx"
 import { NameInput } from "./NameInput.tsx"
-import { allAttributes, attributes } from "./attributes.ts"
+import {
+	allAttributes,
+	attributes,
+	knowledgeAttributeCategory,
+	mentalAttributeCategory,
+	physicalAttributeCategory,
+	socialAttributeCategory,
+} from "./attributes.ts"
 import { column, row, sectionHeading } from "./styles.ts"
 
 const getStressModifier = (
@@ -262,17 +269,42 @@ function RandomizeStatsButton({ character }: { character: Doc<"characters"> }) {
 			allAttributes.map((attribute) => [attribute.dataKey, 1]),
 		)
 
+		// repeating items for weighted randomness
+		const categories = [
+			physicalAttributeCategory,
+			physicalAttributeCategory,
+			mentalAttributeCategory,
+			mentalAttributeCategory,
+			socialAttributeCategory,
+			socialAttributeCategory,
+			knowledgeAttributeCategory, // knowledge is used a lot less than other stats
+		]
+
 		for (let i = 0; i < world.experience; i++) {
-			const category = parseNonNil(randomItem(attributes))
-			const attribute = parseNonNil(randomItem(category.attributes))
-			if (newStats[attribute.dataKey] === 5) {
+			const category = parseNonNil(randomItem(categories))
+
+			const attributeKey = parseNonNil(
+				randomItem(category.attributes.map((a) => a.dataKey)),
+			)
+
+			// if the attribute is already at 5, try again
+			if (newStats[attributeKey] === 5) {
 				i -= 1
 				continue
 			}
-			newStats[attribute.dataKey] += 1
+
+			newStats[attributeKey] += 1
 		}
 
-		updateCharacterData({ id: character._id, data: newStats })
+		const archetypes = attributes.map((category) => category.archetypeId)
+
+		updateCharacterData({
+			id: character._id,
+			data: {
+				...newStats,
+				archetype: parseNonNil(randomItem(archetypes)),
+			},
+		})
 	}
 
 	const button = (
