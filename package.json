@@ -11,6 +11,7 @@
 		"lint-apply": "biome check . --apply",
 		"lint-apply-unsafe": "biome check . --apply-unsafe",
 		"typecheck": "wireit",
+		"test": "vitest run",
 		"format": "prettier --write --cache --list-different .",
 		"validate-env": "tsx scripts/validate-env.ts"
 	},
@@ -18,7 +19,8 @@
 		"dev": {
 			"dependencies": [
 				"dev:vite",
-				"dev:convex"
+				"dev:convex",
+				"dev:test"
 			]
 		},
 		"dev:vite": {
@@ -27,6 +29,10 @@
 		},
 		"dev:convex": {
 			"command": "convex dev",
+			"service": true
+		},
+		"dev:test": {
+			"command": "vitest dev",
 			"service": true
 		},
 		"build": {
@@ -112,6 +118,7 @@
 		"typescript": "5.2.2",
 		"vite": "4.5.0",
 		"vite-tsconfig-paths": "4.2.1",
+		"vitest": "1.0.0-beta.3",
 		"wireit": "0.14.1"
 	},
 	"pnpm": {
