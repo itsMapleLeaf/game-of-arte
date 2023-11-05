@@ -269,19 +269,15 @@ function RandomizeStatsButton({ character }: { character: Doc<"characters"> }) {
 			allAttributes.map((attribute) => [attribute.dataKey, 1]),
 		)
 
-		// repeating items for weighted randomness
-		const categories = [
-			physicalAttributeCategory,
-			physicalAttributeCategory,
-			mentalAttributeCategory,
-			mentalAttributeCategory,
-			socialAttributeCategory,
-			socialAttributeCategory,
-			knowledgeAttributeCategory, // knowledge is used a lot less than other stats
-		]
-
 		for (let i = 0; i < world.experience; i++) {
-			const category = parseNonNil(randomItem(categories))
+			const category = parseNonNil(
+				randomItemWeighted([
+					[physicalAttributeCategory, 1],
+					[mentalAttributeCategory, 1],
+					[socialAttributeCategory, 1],
+					[knowledgeAttributeCategory, 0.5],
+				]),
+			)
 
 			const attributeKey = parseNonNil(
 				randomItem(category.attributes.map((a) => a.dataKey)),
@@ -337,4 +333,18 @@ function getUsedExperience(character: Doc<"characters">) {
 		const value = toFiniteNumberOrUndefined(character.data[attribute.dataKey])
 		return sum + (value ?? 1) - 1
 	}, 0)
+}
+
+function randomItemWeighted<
+	Items extends readonly [item: unknown, weight: number][],
+>(items: Items): Items[number][0] | undefined {
+	const totalWeight = items.reduce((sum, [, weight]) => sum + weight, 0)
+
+	const normalizedItems = items.map(
+		([item, weight]) => [item, weight / totalWeight] as const,
+	)
+
+	const randomValue = Math.random()
+
+	return normalizedItems.find(([, weight]) => randomValue < weight)?.[0]
 }
