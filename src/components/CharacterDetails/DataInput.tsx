@@ -50,6 +50,7 @@ export function DataTextArea({
 export function DataCounterInput({
 	character,
 	dataKey,
+	defaultValue,
 	...props
 }: Spread<
 	CounterInputProps,
@@ -59,7 +60,7 @@ export function DataCounterInput({
 	return (
 		<CounterInput
 			{...props}
-			value={toFiniteNumberOrUndefined(value)}
+			value={toFiniteNumberOrUndefined(value) ?? defaultValue}
 			onChange={setValue}
 		/>
 	)
