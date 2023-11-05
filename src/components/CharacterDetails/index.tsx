@@ -261,12 +261,12 @@ function ExperienceDisplay({ character }: { character: Doc<"characters"> }) {
 			<FieldInput asChild>
 				<div
 					className={panel(
-						"border rounded-md px-3 h-10 flex flex-wrap items-center overflow-clip",
+						"flex h-10 flex-wrap items-center overflow-clip rounded-md border px-3",
 					)}
 				>
 					<p
 						data-negative={usedExperience > world.experience}
-						className="data-[negative=true]:text-error-400 flex-1"
+						className="flex-1 data-[negative=true]:text-error-400"
 					>
 						{world.experience - usedExperience}{" "}
 						<span aria-label="out of">/</span> {world.experience}
@@ -279,7 +279,7 @@ function ExperienceDisplay({ character }: { character: Doc<"characters"> }) {
 					>
 						<button
 							type="button"
-							className="px-3 -mx-3 hover:bg-base-800 transition self-stretch"
+							className="-mx-3 self-stretch px-3 transition hover:bg-base-800"
 						>
 							Randomize Stats
 						</button>
