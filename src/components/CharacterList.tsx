@@ -51,6 +51,7 @@ function CharacterListItems({
 }) {
 	const roles = useQuerySuspense(api.roles.get)
 	const player = useQuerySuspense(api.players.self)
+	const currentCharacter = useCurrentCharacter()
 
 	return characters.length === 0 ? (
 		<p className="px-3 py-2 opacity-75">No characters found.</p>
@@ -64,7 +65,10 @@ function CharacterListItems({
 				)
 				.map((character) => (
 					<li key={character._id} className="group relative">
-						<CharacterLink character={character} />
+						<CharacterLink
+							character={character}
+							active={currentCharacter?._id === character._id}
+						/>
 						{roles.isAdmin && (
 							<CharacterMenu character={character}>
 								<button
@@ -81,8 +85,13 @@ function CharacterListItems({
 	)
 }
 
-function CharacterLink({ character }: { character: Doc<"characters"> }) {
-	const currentCharacter = useCurrentCharacter()
+function CharacterLink({
+	character,
+	active,
+}: {
+	character: Doc<"characters">
+	active: boolean
+}) {
 	const player = useQuerySuspense(api.players.self)
 	const [isPending, startTransition] = useTransition()
 	const isPendingDelayed = useSpinDelay(isPending)
@@ -92,9 +101,7 @@ function CharacterLink({ character }: { character: Doc<"characters"> }) {
 			type="button"
 			className={twMerge(
 				"flex w-full gap-2 p-2 transition",
-				currentCharacter?._id === character._id
-					? "bg-base-800 opacity-100"
-					: "opacity-60 hover:opacity-100",
+				active ? "bg-base-800 opacity-100" : "opacity-60 hover:opacity-100",
 				player?.ownedCharacterId === character._id && "text-accent-300",
 			)}
 			onClick={() => {
@@ -104,7 +111,7 @@ function CharacterLink({ character }: { character: Doc<"characters"> }) {
 			}}
 		>
 			{isPendingDelayed ? <LoadingSpinner /> : <LucideUser />}
-			{character.name}
+			<div className="min-w-0 flex-1">{character.name}</div>
 		</button>
 	)
 }
