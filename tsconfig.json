@@ -1,5 +1,5 @@
 {
-	"extends": "@itsmapleleaf/configs/tsconfig",
+	"extends": "@itsmapleleaf/configs/tsconfig.bundler.json",
 	"compilerOptions": {
 		"paths": {
 			"convex/*": ["./convex/*"]

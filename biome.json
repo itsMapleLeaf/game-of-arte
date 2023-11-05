@@ -1,4 +1,32 @@
 {
 	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
-	"extends": ["./node_modules/@itsmapleleaf/configs/biome.json"]
+	"organizeImports": {
+		"enabled": true
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"recommended": true,
+			"correctness": {
+				"noUnusedVariables": "warn",
+				"useHookAtTopLevel": "error",
+				"useExhaustiveDependencies": "error"
+			},
+			"nursery": {
+				"useGroupedTypeImport": "warn"
+			},
+			"style": {
+				"noNegationElse": "warn",
+				"useSingleCaseStatement": "warn"
+			}
+		}
+	},
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true
+	},
+	"formatter": {
+		"enabled": false
+	}
 }

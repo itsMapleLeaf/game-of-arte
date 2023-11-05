@@ -1,13 +1,17 @@
 {
 	"typescript.tsdk": "node_modules\\typescript\\lib",
+
 	"javascript.preferences.importModuleSpecifierEnding": "js",
 	"typescript.preferences.importModuleSpecifierEnding": "js",
-	"editor.defaultFormatter": "biomejs.biome",
-	"eslint.enable": true,
+
+	"javascript.preferences.importModuleSpecifier": "shortest",
+	"typescript.preferences.importModuleSpecifier": "shortest",
+
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.formatOnSave": true,
+
+	"eslint.enable": false,
 	"editor.codeActionsOnSave": {
-		"source.removeUnusedImports": true,
-		"source.organizeImports": false,
 		"source.organizeImports.biome": true,
 		"source.fixAll": true
 	}
