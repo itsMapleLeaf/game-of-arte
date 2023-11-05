@@ -10,7 +10,7 @@
 		"lint": "biome check .",
 		"lint-apply": "biome check . --apply",
 		"lint-apply-unsafe": "biome check . --apply-unsafe",
-		"typecheck": "tsc -b",
+		"typecheck": "wireit",
 		"format": "prettier --write --cache --list-different .",
 		"validate-env": "tsx scripts/validate-env.ts"
 	},
@@ -46,6 +46,12 @@
 			],
 			"output": [
 				"dist"
+			]
+		},
+		"typecheck": {
+			"command": "tsc -b",
+			"dependencies": [
+				"codegen"
 			]
 		},
 		"preview": {
