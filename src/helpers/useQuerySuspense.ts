@@ -121,14 +121,16 @@ export function useQueriesSuspense<Queries extends RequestForQueries>(
 	}
 
 	const memoQueries = useMemoValue(queries, (prev, next) => {
-		const prevEntries = Object.entries(prev).map(([key, { query, args }]) => [
+		const prevEntries = Object.entries(prev).map(([key, { query, args }]) => ({
 			key,
-			{ query: getFunctionName(query), args },
-		])
-		const nextEntries = Object.entries(next).map(([key, { query, args }]) => [
+			query: getFunctionName(query),
+			args,
+		}))
+		const nextEntries = Object.entries(next).map(([key, { query, args }]) => ({
 			key,
-			{ query: getFunctionName(query), args },
-		])
+			query: getFunctionName(query),
+			args,
+		}))
 		return isEqual(prevEntries, nextEntries)
 	})
 
