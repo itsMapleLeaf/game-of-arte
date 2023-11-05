@@ -9,7 +9,7 @@ export function isUrl(value: string) {
 	}
 }
 
-export function parseNonEmptyArray<T>(value: T[]): NonEmptyArray<T> {
+export function parseNonEmptyArray<T>(value: readonly T[]): NonEmptyArray<T> {
 	if (value.length === 0) {
 		throw new Error("Expected non-empty array")
 	}
@@ -36,6 +36,14 @@ export function compareKey<K extends PropertyKey>(key: K) {
 	}
 }
 
-export function randomItem<T>(items: [...T[]]) {
+export function randomItem<T>(items: readonly [...T[]]) {
 	return items[Math.floor(Math.random() * items.length)]
+}
+
+export function toLowerCaseTyped<T extends string>(value: T): Lowercase<T> {
+	return value.toLowerCase() as Lowercase<T>
+}
+
+export function toUpperCaseTyped<T extends string>(value: T): Uppercase<T> {
+	return value.toUpperCase() as Uppercase<T>
 }
