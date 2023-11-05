@@ -37,13 +37,16 @@ function DiceRollItems() {
 function DiceRollDetails({ roll }: { roll: DiceRollListItem }) {
 	const isAction = roll.type === "action"
 
+	const isSuccess = (result: number) => result >= 9 && result <= 11
+	const isCriticalSuccess = (result: number) => result === 12
+
 	const dice = isAction
 		? roll.dice.toSorted((a, b) => b.result - a.result)
 		: roll.dice
 
 	const successCount = roll.dice
-		.map((r): number => (r.result === 12 ? 2 : r.result >= 10 ? 1 : 0))
-		.reduce((a, b) => a + b, 0)
+		.map((r) => (isCriticalSuccess(r.result) ? 2 : isSuccess(r.result) ? 1 : 0))
+		.reduce<number>((a, b) => a + b, 0)
 
 	return (
 		<div className="grid content-between gap-2 border-t border-base-800 px-2 py-3">
@@ -55,8 +58,8 @@ function DiceRollDetails({ roll }: { roll: DiceRollListItem }) {
 							// biome-ignore lint/suspicious/noArrayIndexKey: no better key to use
 							key={index}
 							result={die.result}
-							success={die.result === 10 || die.result === 11}
-							crit={die.result === 12}
+							success={isSuccess(die.result)}
+							crit={isCriticalSuccess(die.result)}
 						/>
 					) : (
 						// biome-ignore lint/suspicious/noArrayIndexKey: no better key to use
