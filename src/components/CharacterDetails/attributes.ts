@@ -153,3 +153,5 @@ export const attributes = [
 		],
 	}),
 ]
+
+export const allAttributes = attributes.flatMap((column) => column.attributes)

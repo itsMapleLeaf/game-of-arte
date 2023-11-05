@@ -24,7 +24,7 @@ import {
 	DataTextArea,
 } from "./DataInput.tsx"
 import { NameInput } from "./NameInput.tsx"
-import { attributes } from "./attributes.ts"
+import { allAttributes, attributes } from "./attributes.ts"
 import { column, row, sectionHeading } from "./styles.ts"
 
 const getStressModifier = (
@@ -226,14 +226,38 @@ export function CharacterDetails() {
 function ExperienceDisplay({ character }: { character: Doc<"characters"> }) {
 	const world = useQuerySuspense(api.world.get)
 
-	const allAttributes = attributes.flatMap((group) => group.attributes)
-
 	const usedExperience = allAttributes
 		.map((attribute) => {
 			return toFiniteNumberOrUndefined(character.data[attribute.dataKey]) ?? 1
 		})
 		.reduce((sum, value) => sum + value - 1, 0)
 
+	return (
+		<Field>
+			<FieldLabelText>Experience</FieldLabelText>
+			<FieldDescription>Spend these points on attributes!</FieldDescription>
+			<FieldInput asChild>
+				<div
+					className={panel(
+						"flex h-10 flex-wrap items-center overflow-clip rounded-md border px-3",
+					)}
+				>
+					<p
+						data-negative={usedExperience > world.experience}
+						className="flex-1 data-[negative=true]:text-error-400"
+					>
+						{world.experience - usedExperience}{" "}
+						<span aria-label="out of">/</span> {world.experience}
+					</p>
+					<RandomizeStatsButton character={character} />
+				</div>
+			</FieldInput>
+		</Field>
+	)
+}
+
+function RandomizeStatsButton({ character }: { character: Doc<"characters"> }) {
+	const world = useQuerySuspense(api.world.get)
 	const updateCharacterData = useMutation(api.characters.updateData)
 
 	const randomizeStats = () => {
@@ -255,37 +279,18 @@ function ExperienceDisplay({ character }: { character: Doc<"characters"> }) {
 	}
 
 	return (
-		<Field>
-			<FieldLabelText>Experience</FieldLabelText>
-			<FieldDescription>Spend these points on attributes!</FieldDescription>
-			<FieldInput asChild>
-				<div
-					className={panel(
-						"flex h-10 flex-wrap items-center overflow-clip rounded-md border px-3",
-					)}
-				>
-					<p
-						data-negative={usedExperience > world.experience}
-						className="flex-1 data-[negative=true]:text-error-400"
-					>
-						{world.experience - usedExperience}{" "}
-						<span aria-label="out of">/</span> {world.experience}
-					</p>
-					<ConfirmDialog
-						title="Randomize Stats"
-						description="Are you sure you want to randomize your stats? All your current stats will be lost!"
-						confirmText="Randomize Stats"
-						onConfirm={randomizeStats}
-					>
-						<button
-							type="button"
-							className="-mx-3 self-stretch px-3 transition hover:bg-base-800"
-						>
-							Randomize Stats
-						</button>
-					</ConfirmDialog>
-				</div>
-			</FieldInput>
-		</Field>
+		<ConfirmDialog
+			title="Randomize Stats"
+			description="Are you sure you want to randomize your stats? All your current stats will be lost!"
+			confirmText="Randomize Stats"
+			onConfirm={randomizeStats}
+		>
+			<button
+				type="button"
+				className="-mx-3 self-stretch px-3 transition hover:bg-base-800"
+			>
+				Randomize Stats
+			</button>
+		</ConfirmDialog>
 	)
 }
