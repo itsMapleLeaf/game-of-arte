@@ -1,6 +1,7 @@
 {
 	"extends": "@itsmapleleaf/configs/tsconfig.bundler.json",
 	"compilerOptions": {
+		"skipLibCheck": true,
 		"paths": {
 			"convex/*": ["./convex/*"]
 		}
