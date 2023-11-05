@@ -22,6 +22,10 @@ export function toFiniteNumberOrUndefined(input: unknown): number | undefined {
 	return Number.isFinite(number) ? number : undefined
 }
 
+export function isNonNil<T>(value: T | null | undefined): value is T {
+	return value != null
+}
+
 export function clamp(value: number, min: number, max: number) {
 	return value > max ? max : value < min ? min : value
 }

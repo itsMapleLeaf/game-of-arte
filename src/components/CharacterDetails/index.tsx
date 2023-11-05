@@ -1,6 +1,7 @@
 import { api } from "convex/_generated/api"
 import type { Doc } from "convex/_generated/dataModel"
 import { useMutation } from "convex/react"
+import { cloneElement } from "react"
 import { parseNonNil } from "../../helpers/errors.ts"
 import { randomItem, toFiniteNumberOrUndefined } from "../../helpers/index.ts"
 import { useCurrentCharacter } from "../../helpers/useCurrentCharacter.ts"
@@ -225,12 +226,7 @@ export function CharacterDetails() {
 
 function ExperienceDisplay({ character }: { character: Doc<"characters"> }) {
 	const world = useQuerySuspense(api.world.get)
-
-	const usedExperience = allAttributes
-		.map((attribute) => {
-			return toFiniteNumberOrUndefined(character.data[attribute.dataKey]) ?? 1
-		})
-		.reduce((sum, value) => sum + value - 1, 0)
+	const usedExperience = getUsedExperience(character)
 
 	return (
 		<Field>
@@ -259,6 +255,7 @@ function ExperienceDisplay({ character }: { character: Doc<"characters"> }) {
 function RandomizeStatsButton({ character }: { character: Doc<"characters"> }) {
 	const world = useQuerySuspense(api.world.get)
 	const updateCharacterData = useMutation(api.characters.updateData)
+	const usedExperience = getUsedExperience(character)
 
 	const randomizeStats = () => {
 		const newStats = Object.fromEntries(
@@ -278,6 +275,19 @@ function RandomizeStatsButton({ character }: { character: Doc<"characters"> }) {
 		updateCharacterData({ id: character._id, data: newStats })
 	}
 
+	const button = (
+		<button
+			type="button"
+			className="-mx-3 self-stretch px-3 transition hover:bg-base-800"
+		>
+			Randomize Stats
+		</button>
+	)
+
+	if (usedExperience === 0) {
+		return cloneElement(button, { onClick: randomizeStats })
+	}
+
 	return (
 		<ConfirmDialog
 			title="Randomize Stats"
@@ -285,12 +295,14 @@ function RandomizeStatsButton({ character }: { character: Doc<"characters"> }) {
 			confirmText="Randomize Stats"
 			onConfirm={randomizeStats}
 		>
-			<button
-				type="button"
-				className="-mx-3 self-stretch px-3 transition hover:bg-base-800"
-			>
-				Randomize Stats
-			</button>
+			{button}
 		</ConfirmDialog>
 	)
+}
+
+function getUsedExperience(character: Doc<"characters">) {
+	return allAttributes.reduce((sum, attribute) => {
+		const value = toFiniteNumberOrUndefined(character.data[attribute.dataKey])
+		return sum + (value ?? 1) - 1
+	}, 0)
 }
