@@ -18,7 +18,10 @@ function useFieldProvider() {
 	const labelId = useId()
 	const inputId = useId()
 	const descriptionId = useId()
-	return useMemo(() => ({ labelId, inputId, descriptionId }), [])
+	return useMemo(
+		() => ({ labelId, inputId, descriptionId }),
+		[labelId, inputId, descriptionId],
+	)
 }
 
 const FieldContext = createContext<ReturnType<typeof useFieldProvider>>({
@@ -108,7 +111,7 @@ export function FieldLabelTooltip({
 				<div
 					id={tooltipId}
 					className={panel(
-						"text-white pointer-events-none absolute left-1/2 top-[calc(100%+4px)] z-10 w-48 -translate-x-1/2 rounded border px-2 py-1 text-sm leading-snug opacity-0 shadow transition peer-hover:opacity-100 peer-focus:opacity-100",
+						"pointer-events-none absolute left-1/2 top-[calc(100%+4px)] z-10 w-48 -translate-x-1/2 rounded border px-2 py-1 text-sm leading-snug text-white opacity-0 shadow transition peer-hover:opacity-100 peer-focus:opacity-100",
 					)}
 				>
 					{content}

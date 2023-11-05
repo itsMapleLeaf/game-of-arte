@@ -2,7 +2,10 @@ export function toError(error: unknown): Error {
 	return error instanceof Error ? error : new Error(String(error))
 }
 
-export function raise(value: unknown, caller?: Function): never {
+export function raise(
+	value: unknown,
+	caller?: (...args: unknown[]) => unknown,
+): never {
 	if (typeof value === "string") {
 		const error = new Error(value)
 		Error.captureStackTrace(error, caller)
