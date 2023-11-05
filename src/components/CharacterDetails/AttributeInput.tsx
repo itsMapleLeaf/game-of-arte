@@ -7,8 +7,9 @@ import { twMerge } from "tailwind-merge"
 import { raise } from "../../helpers/errors.ts"
 import { clamp, toFiniteNumberOrUndefined } from "../../helpers/index.ts"
 import { useAppParams } from "../../helpers/useAppParams.ts"
+import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
+import { withPreventDefault } from "../../helpers/withPreventDefault.ts"
 import { input } from "../../styles/index.ts"
-import { AsyncButton } from "../AsyncButton.tsx"
 import { CounterInput, type CounterInputProps } from "../CounterInput.tsx"
 import {
 	Field,
@@ -17,12 +18,8 @@ import {
 	FieldLabelText,
 	FieldLabelTooltip,
 } from "../Field.tsx"
-import {
-	Popover,
-	PopoverClose,
-	PopoverPanel,
-	PopoverTrigger,
-} from "../Popover.tsx"
+import { LoadingSpinner } from "../LoadingPlaceholder.tsx"
+import { Popover, PopoverPanel, PopoverTrigger } from "../Popover.tsx"
 import { useCharacterDataValue } from "./useCharacterDataValue.ts"
 
 export function AttributeInput({
@@ -43,6 +40,7 @@ export function AttributeInput({
 }) {
 	const [valueRaw, setValue] = useCharacterDataValue(character, dataKey)
 	const value = clamp(toFiniteNumberOrUndefined(valueRaw) ?? 1, 1, 5)
+	const [popoverOpen, setPopoverOpen] = useState(false)
 	return (
 		<Field>
 			<div
@@ -65,7 +63,7 @@ export function AttributeInput({
 						max={5}
 					/>
 				</div>
-				<Popover>
+				<Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
 					<PopoverTrigger
 						type="button"
 						className="rounded-md p-2 transition hover:bg-base-800"
@@ -79,6 +77,9 @@ export function AttributeInput({
 							attributeValue={toFiniteNumberOrUndefined(value) ?? 1}
 							stressModifier={stressModifier}
 							isArchetypeAttribute={isArchetypeAttribute}
+							onSuccess={() => {
+								setPopoverOpen(false)
+							}}
 						/>
 					</PopoverPanel>
 				</Popover>
@@ -93,12 +94,14 @@ function AttributeRollForm({
 	attributeValue,
 	stressModifier,
 	isArchetypeAttribute,
+	onSuccess,
 }: {
 	character: Doc<"characters">
 	attributeName: string
 	attributeValue: number
 	stressModifier: number
 	isArchetypeAttribute: boolean
+	onSuccess: () => void
 }) {
 	const appParams = useAppParams()
 	const roll = useMutation(api.diceRolls.roll)
@@ -134,21 +137,24 @@ function AttributeRollForm({
 		.filter(Boolean)
 		.join(" ")
 
-	async function submit() {
-		await roll({
-			label: label || defaultLabel,
-			type: "action",
-			dice: [{ count: diceCount, sides: 12 }],
-			characterId: character._id,
-		})
-		await updateCharacterData({
-			id: character._id,
-			data: { resilience: availableResilience - resilienceToUse },
-		})
-		startTransition(() => {
-			appParams.tab.push("dice")
-		})
-	}
+	const [handleSubmit, handleSubmitState] = useAsyncCallback(
+		async function handleSubmit() {
+			await roll({
+				label: label || defaultLabel,
+				type: "action",
+				dice: [{ count: diceCount, sides: 12 }],
+				characterId: character._id,
+			})
+			await updateCharacterData({
+				id: character._id,
+				data: { resilience: availableResilience - resilienceToUse },
+			})
+			onSuccess()
+			startTransition(() => {
+				appParams.tab.push("dice")
+			})
+		},
+	)
 
 	const modifierReceiptItems = [{ name: "Base Roll", value: baseDiceCount }]
 	if (stressModifier !== 0) {
@@ -165,7 +171,10 @@ function AttributeRollForm({
 	}
 
 	return (
-		<div className="grid w-56 gap-2 p-2">
+		<form
+			onSubmit={withPreventDefault(handleSubmit)}
+			className="grid w-56 gap-2 p-2"
+		>
 			<Field>
 				<FieldLabel>Label</FieldLabel>
 				<FieldInput
@@ -206,15 +215,14 @@ function AttributeRollForm({
 				</dl>
 			)}
 
-			<PopoverClose asChild>
-				<AsyncButton
-					className="flex w-full items-center gap-2 rounded-md border border-base-800 p-2 transition hover:bg-base-800"
-					onClick={submit}
-				>
-					<LucideDices /> Roll {diceCount} {diceCount === 1 ? "die" : "dice"}
-				</AsyncButton>
-			</PopoverClose>
-		</div>
+			<button
+				type="submit"
+				className="flex w-full items-center gap-2 rounded-md border border-base-800 p-2 transition hover:bg-base-800"
+			>
+				{handleSubmitState.isLoading ? <LoadingSpinner /> : <LucideDices />}{" "}
+				Roll {diceCount} {diceCount === 1 ? "die" : "dice"}
+			</button>
+		</form>
 	)
 }
 
