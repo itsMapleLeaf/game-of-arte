@@ -7,9 +7,11 @@
 		"dev": "wireit",
 		"build": "wireit",
 		"preview": "wireit",
-		"lint": "wireit",
-		"format": "biome check --apply .",
-		"format-unsafe": "biome check --apply-unsafe .",
+		"lint": "biome check .",
+		"lint-apply": "biome check . --apply",
+		"lint-apply-unsafe": "biome check . --apply-unsafe",
+		"typecheck": "tsc -b",
+		"format": "prettier --write --cache --list-different .",
 		"validate-env": "tsx scripts/validate-env.ts"
 	},
 	"wireit": {
@@ -45,38 +47,6 @@
 			"output": [
 				"dist"
 			]
-		},
-		"lint": {
-			"dependencies": [
-				"lint:biome",
-				"lint:types"
-			]
-		},
-		"lint:biome": {
-			"command": "biome check .",
-			"files": [
-				"**/*.{js,cjs,mjs,ts,tsx,json}",
-				".gitignore",
-				"!{node_modules,dist,convex/_generated}"
-			],
-			"env": {
-				"WIREIT_FAILURES": "continue"
-			},
-			"output": []
-		},
-		"lint:types": {
-			"command": "tsc -b",
-			"dependencies": [
-				"codegen"
-			],
-			"files": [
-				"**/*.{js,cjs,mjs,ts,tsx,json}",
-				"!{node_modules,dist,convex/_generated}"
-			],
-			"env": {
-				"WIREIT_FAILURES": "continue"
-			},
-			"output": []
 		},
 		"preview": {
 			"command": "vite preview",
