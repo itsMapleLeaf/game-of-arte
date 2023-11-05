@@ -1,4 +1,4 @@
-import { LucideChevronLeft, LucideChevronRight } from "lucide-react"
+import { LucideMinus, LucidePlus } from "lucide-react"
 import { useState } from "react"
 import { clamp } from "../helpers/index.ts"
 import { panel } from "../styles/panel.ts"
@@ -27,7 +27,7 @@ export function CounterInput({
 	return (
 		<div
 			className={panel(
-				"flex items-center justify-center gap-2 rounded-md border",
+				"flex items-center justify-center gap-2 rounded-md border py-1",
 				className,
 			)}
 		>
@@ -41,7 +41,7 @@ export function CounterInput({
 					onChange?.(newValue)
 				}}
 			>
-				<LucideChevronLeft />
+				<LucideMinus className="s-5" />
 			</button>
 			<p className="text-center tabular-nums">
 				{value}
@@ -56,7 +56,7 @@ export function CounterInput({
 					onChange?.(newValue)
 				}}
 			>
-				<LucideChevronRight />
+				<LucidePlus className="s-5" />
 			</button>
 		</div>
 	)
