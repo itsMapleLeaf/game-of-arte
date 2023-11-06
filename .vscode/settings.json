@@ -14,5 +14,9 @@
 	"editor.codeActionsOnSave": {
 		"source.organizeImports.biome": true,
 		"source.fixAll": true
-	}
+	},
+
+	"tailwindCSS.experimental.classRegex": [
+		["(?:twMerge|twStyle)\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+	]
 }

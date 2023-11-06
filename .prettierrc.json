@@ -1,5 +1,6 @@
 {
 	"semi": false,
 	"useTabs": true,
-	"plugins": ["prettier-plugin-jsdoc", "prettier-plugin-tailwindcss"]
+	"plugins": ["prettier-plugin-jsdoc", "prettier-plugin-tailwindcss"],
+	"tailwindFunctions": ["twMerge", "twStyle"]
 }
