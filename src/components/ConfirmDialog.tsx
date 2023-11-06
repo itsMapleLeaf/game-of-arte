@@ -1,5 +1,6 @@
 import * as Dialog from "@radix-ui/react-dialog"
 import type { ReactNode } from "react"
+import { solidButton } from "../styles/button.ts"
 import { panel } from "../styles/panel.ts"
 
 export function ConfirmDialog({
@@ -39,7 +40,7 @@ export function ConfirmDialog({
 							</Dialog.Close>
 							<Dialog.Close
 								type="button"
-								className="rounded bg-accent-700 px-4 py-2 text-white transition hover:bg-accent-800"
+								className={solidButton()}
 								onClick={onConfirm}
 							>
 								{confirmText}
