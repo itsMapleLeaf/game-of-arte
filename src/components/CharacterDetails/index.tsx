@@ -2,10 +2,12 @@ import { api } from "convex/_generated/api"
 import type { Doc } from "convex/_generated/dataModel"
 import { useMutation } from "convex/react"
 import { LucideDices, LucideLock, LucideUnlock } from "lucide-react"
-import { cloneElement, useState } from "react"
+import { cloneElement } from "react"
+import * as v from "valibot"
 import { parseNonNil } from "../../helpers/errors.ts"
 import { randomItem, toFiniteNumberOrUndefined } from "../../helpers/index.ts"
 import { useCurrentCharacter } from "../../helpers/useCurrentCharacter.ts"
+import { useLocalStorageState } from "../../helpers/useLocalStorageState.tsx"
 import { useQuerySuspense } from "../../helpers/useQuerySuspense.ts"
 import { solidButton } from "../../styles/button.ts"
 import { center, input, textArea } from "../../styles/index.ts"
@@ -53,11 +55,15 @@ export function CharacterDetails() {
 	const character = useCurrentCharacter()
 	const ownedCharacter = useQuerySuspense(api.characters.getOwned)
 	const roles = useQuerySuspense(api.roles.get)
-	const [attributesLocked, setAttributesLocked] = useState(false)
+
+	const [attributesLocked, setAttributesLocked] = useLocalStorageState(
+		"attributesLocked",
+		(value) => v.parse(v.fallback(v.boolean(), false), value),
+	)
 
 	function getAttributesEditable(character: Doc<"characters">) {
-		if (attributesLocked) return false
-		return roles.isAdmin || character._id === ownedCharacter?._id
+		if (!roles.isAdmin && character._id !== ownedCharacter?._id) return false
+		return !attributesLocked
 	}
 
 	if (!character) {
