@@ -4,6 +4,8 @@ import { useMutation } from "convex/react"
 import { input } from "../../styles/index.ts"
 import { Field, FieldDescription, FieldInput, FieldLabel } from "../Field.tsx"
 
+export const nameInputId = "characterNameInput"
+
 export function NameInput({ character }: { character: Doc<"characters"> }) {
 	const update = useMutation(api.characters.update).withOptimisticUpdate(
 		(store, args) => {
@@ -23,6 +25,7 @@ export function NameInput({ character }: { character: Doc<"characters"> }) {
 			<FieldLabel>Name</FieldLabel>
 			<FieldDescription>What should we call them?</FieldDescription>
 			<FieldInput
+				id={nameInputId}
 				className={input()}
 				value={character.name}
 				onChange={(event) => {

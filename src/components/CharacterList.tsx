@@ -12,10 +12,12 @@ import {
 import { startTransition, useTransition } from "react"
 import { useSpinDelay } from "spin-delay"
 import { twMerge } from "tailwind-merge"
+import { tryUntilNonNil } from "../helpers/tryUntilNonNil.ts"
 import { useAppParams } from "../helpers/useAppParams.ts"
 import { useAsyncCallback } from "../helpers/useAsyncCallback.ts"
 import { useCurrentCharacter } from "../helpers/useCurrentCharacter.ts"
 import { useQuerySuspense } from "../helpers/useQuerySuspense.ts"
+import { nameInputId } from "./CharacterDetails/NameInput.tsx"
 import { LoadingSpinner } from "./LoadingPlaceholder.tsx"
 import { Menu, MenuItem, MenuPanel, MenuTrigger } from "./Menu.tsx"
 
@@ -166,10 +168,14 @@ function NewCharacterButton() {
 	const [handleClick, state] = useAsyncCallback(
 		useMutation(api.characters.create),
 		{
-			onSuccess(result) {
+			async onSuccess(result) {
 				startTransition(() => {
 					appParams.characterId.push(result._id)
 				})
+				const nameInput = await tryUntilNonNil(() =>
+					document.getElementById(nameInputId),
+				)
+				nameInput?.focus()
 			},
 		},
 	)

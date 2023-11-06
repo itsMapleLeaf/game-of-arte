@@ -47,3 +47,7 @@ export function toLowerCaseTyped<T extends string>(value: T): Lowercase<T> {
 export function toUpperCaseTyped<T extends string>(value: T): Uppercase<T> {
 	return value.toUpperCase() as Uppercase<T>
 }
+
+export function sleep(ms: number) {
+	return new Promise((resolve) => setTimeout(resolve, ms))
+}
