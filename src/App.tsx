@@ -1,8 +1,8 @@
-import { container } from "../styles/container.ts"
-import { AuthButton } from "./AuthButton.tsx"
-import { CharacterDetails } from "./CharacterDetails/index.tsx"
-import { LoadingSuspense } from "./LoadingPlaceholder.tsx"
-import { SideNav } from "./SideNav.tsx"
+import { LoadingSuspense } from "./components/LoadingPlaceholder.tsx"
+import { SideNav } from "./components/SideNav.tsx"
+import { AuthButton } from "./features/auth/AuthButton.tsx"
+import { CharacterDetails } from "./features/characters/CharacterDetails.tsx"
+import { container } from "./styles/container.ts"
 
 export function App() {
 	return (

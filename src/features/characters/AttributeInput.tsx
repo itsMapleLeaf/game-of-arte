@@ -4,23 +4,30 @@ import { useMutation } from "convex/react"
 import { LucideDices } from "lucide-react"
 import { startTransition, useState } from "react"
 import { twMerge } from "tailwind-merge"
-import { raise } from "../../helpers/errors.ts"
-import { clamp, toFiniteNumberOrUndefined } from "../../helpers/index.ts"
-import { useAppParams } from "../../helpers/useAppParams.ts"
-import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
-import { withPreventDefault } from "../../helpers/withPreventDefault.ts"
-import { solidButton } from "../../styles/button.ts"
-import { input } from "../../styles/index.ts"
-import { CounterInput, type CounterInputProps } from "../CounterInput.tsx"
+import {
+	CounterInput,
+	type CounterInputProps,
+} from "../../components/CounterInput.tsx"
 import {
 	Field,
 	FieldInput,
 	FieldLabel,
 	FieldLabelText,
 	FieldLabelTooltip,
-} from "../Field.tsx"
-import { LoadingSpinner } from "../LoadingPlaceholder.tsx"
-import { Popover, PopoverPanel, PopoverTrigger } from "../Popover.tsx"
+} from "../../components/Field.tsx"
+import { LoadingSpinner } from "../../components/LoadingPlaceholder.tsx"
+import {
+	Popover,
+	PopoverPanel,
+	PopoverTrigger,
+} from "../../components/Popover.tsx"
+import { raise } from "../../helpers/errors.ts"
+import { clamp, toFiniteNumberOrUndefined } from "../../helpers/index.ts"
+import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
+import { withPreventDefault } from "../../helpers/withPreventDefault.ts"
+import { solidButton } from "../../styles/button.ts"
+import { input } from "../../styles/index.ts"
+import { useAppParams } from "../../useAppParams.ts"
 import { useCharacterDataValue } from "./useCharacterDataValue.ts"
 
 export function AttributeInput({

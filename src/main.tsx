@@ -6,10 +6,10 @@ import { ConvexReactClient } from "convex/react"
 import { ConvexProviderWithClerk } from "convex/react-clerk"
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
-import { App } from "./components/App.tsx"
-import { AppTitle } from "./components/AppTitle.tsx"
-import { AuthGuard } from "./components/AuthGuard.tsx"
+import { App } from "./App.tsx"
+import { AppTitle } from "./AppTitle.tsx"
 import { LoadingSuspense } from "./components/LoadingPlaceholder.tsx"
+import { AuthGuard } from "./features/auth/AuthGuard.tsx"
 import { parseNonNil } from "./helpers/errors.ts"
 
 const convex = new ConvexReactClient(import.meta.env.VITE_PUBLIC_CONVEX_URL)

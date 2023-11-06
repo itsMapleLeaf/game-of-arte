@@ -3,11 +3,11 @@ import type { Doc } from "convex/_generated/dataModel.js"
 import { useMutation } from "convex/react"
 import { LucidePlus, LucideX } from "lucide-react"
 import { useEffect, useId, useRef } from "react"
-import { parseNonNil } from "../helpers/errors.ts"
-import { clamp } from "../helpers/index.ts"
-import { range } from "../helpers/range.ts"
-import { useQuerySuspense } from "../helpers/useQuerySuspense.ts"
-import { Field, FieldInput, FieldLabel } from "./Field.tsx"
+import { Field, FieldInput, FieldLabel } from "../../components/Field.tsx"
+import { parseNonNil } from "../../helpers/errors.ts"
+import { clamp } from "../../helpers/index.ts"
+import { range } from "../../helpers/range.ts"
+import { useQuerySuspense } from "../../helpers/useQuerySuspense.ts"
 
 export function ClockList() {
 	const roles = useQuerySuspense(api.roles.get)

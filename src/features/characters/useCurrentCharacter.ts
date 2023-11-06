@@ -1,6 +1,6 @@
 import { api } from "convex/_generated/api.js"
-import { useAppParams } from "./useAppParams.ts"
-import { useQueriesSuspense } from "./useQuerySuspense.ts"
+import { useQueriesSuspense } from "../../helpers/useQuerySuspense.ts"
+import { useAppParams } from "../../useAppParams.ts"
 
 export function useCurrentCharacter() {
 	const params = useAppParams()

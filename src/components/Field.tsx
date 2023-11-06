@@ -6,6 +6,7 @@ import {
 	type ForwardedRef,
 	type ReactNode,
 	createContext,
+	useContext,
 	useId,
 	useMemo,
 } from "react"
@@ -14,27 +15,29 @@ import { autoRef } from "../helpers/autoRef.ts"
 import type { Spread } from "../helpers/types.ts"
 import { panel } from "../styles/panel.ts"
 
-function useFieldProvider() {
-	const labelId = useId()
-	const inputId = useId()
-	const descriptionId = useId()
-	return useMemo(
-		() => ({ labelId, inputId, descriptionId }),
-		[labelId, inputId, descriptionId],
-	)
-}
-
-const FieldContext = createContext<ReturnType<typeof useFieldProvider>>({
+const FieldContext = createContext({
 	labelId: "",
 	inputId: "",
 	descriptionId: "",
 })
 
+export function useFieldContext() {
+	return useContext(FieldContext)
+}
+
 export const Field = autoRef(function Field({
 	asChild,
 	...props
 }: ComponentPropsWithRef<"div"> & { asChild?: boolean }) {
-	const context = useFieldProvider()
+	const labelId = useId()
+	const inputId = useId()
+	const descriptionId = useId()
+
+	const context = useMemo(
+		() => ({ labelId, inputId, descriptionId }),
+		[labelId, inputId, descriptionId],
+	)
+
 	const Component = asChild ? Slot : "div"
 	return (
 		<FieldContext.Provider value={context}>
@@ -57,7 +60,7 @@ export const FieldLabel = autoRef(function FieldLabel({
 		size?: "sm" | "base"
 	}
 >) {
-	const context = useFieldProvider()
+	const context = useFieldContext()
 	const Component = asChild ? Slot : "label"
 	return (
 		<Component
@@ -77,7 +80,7 @@ export const FieldLabelText = autoRef(function FieldLabelText({
 	asChild,
 	...props
 }: ComponentPropsWithRef<"p"> & { asChild?: boolean }) {
-	const context = useFieldProvider()
+	const context = useFieldContext()
 	const Component = asChild ? Slot : "p"
 	return (
 		<Component
@@ -130,7 +133,7 @@ export const FieldDescription = autoRef(function FieldDescription({
 	asChild?: boolean
 	ref: ForwardedRef<HTMLParagraphElement>
 }) {
-	const context = useFieldProvider()
+	const context = useFieldContext()
 	const Component = asChild ? Slot : "p"
 	return (
 		<Component
@@ -150,7 +153,7 @@ export const FieldInput = autoRef(function FieldInput({
 	asChild?: boolean
 	ref?: ForwardedRef<HTMLInputElement>
 }) {
-	const context = useFieldProvider()
+	const context = useFieldContext()
 	const Component = asChild ? Slot : "input"
 	return (
 		<Component

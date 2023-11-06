@@ -4,10 +4,15 @@ import type { DiceRollListItem } from "convex/diceRolls.ts"
 import { useMutation } from "convex/react"
 import { LucideDices, LucideHexagon } from "lucide-react"
 import { Virtuoso } from "react-virtuoso"
-import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
-import { useQuerySuspense } from "../../helpers/useQuerySuspense.ts"
-import { CounterInput } from "../CounterInput.tsx"
-import { Field, FieldInput, FieldLabel, FieldLabelText } from "../Field.tsx"
+import { CounterInput } from "~/components/CounterInput.tsx"
+import {
+	Field,
+	FieldInput,
+	FieldLabel,
+	FieldLabelText,
+} from "~/components/Field.tsx"
+import { useAsyncCallback } from "~/helpers/useAsyncCallback.ts"
+import { useQuerySuspense } from "~/helpers/useQuerySuspense.ts"
 
 export function DiceRollList() {
 	return (

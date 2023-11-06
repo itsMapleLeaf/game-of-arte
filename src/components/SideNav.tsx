@@ -7,16 +7,16 @@ import {
 	LucideUsers,
 } from "lucide-react"
 import { startTransition } from "react"
+import { CharacterList } from "../features/characters/CharacterList.tsx"
+import { ClockList } from "../features/clocks/ClockList.tsx"
+import { DiceRollList } from "../features/dice/DiceRollList.tsx"
+import { PlayerList } from "../features/players/PlayerList.tsx"
+import { WorldSettings } from "../features/worlds/WorldSettings.tsx"
 import { parseNonEmptyArray } from "../helpers/index.ts"
-import { useAppParams } from "../helpers/useAppParams.ts"
 import { useQuerySuspense } from "../helpers/useQuerySuspense.ts"
 import { panel } from "../styles/panel.ts"
-import { CharacterList } from "./CharacterList.tsx"
-import { ClockList } from "./ClockList.tsx"
-import { DiceRollList } from "./DiceRollList/index.tsx"
+import { useAppParams } from "../useAppParams.ts"
 import { LoadingSuspense } from "./LoadingPlaceholder.tsx"
-import { PlayerList } from "./PlayerList.tsx"
-import { WorldSettings } from "./WorldSettings.tsx"
 
 const defineView = (options: {
 	id?: string

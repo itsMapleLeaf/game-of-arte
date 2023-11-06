@@ -1,12 +1,21 @@
 import { api } from "convex/_generated/api"
 import type { Doc } from "convex/_generated/dataModel.js"
 import { useMutation } from "convex/react"
+import {
+	Field,
+	FieldDescription,
+	FieldInput,
+	FieldLabel,
+} from "../../components/Field.tsx"
 import { input } from "../../styles/index.ts"
-import { Field, FieldDescription, FieldInput, FieldLabel } from "../Field.tsx"
 
-export const nameInputId = "characterNameInput"
+export const characterNameInputId = "characterNameInput"
 
-export function NameInput({ character }: { character: Doc<"characters"> }) {
+export function CharacterNameInput({
+	character,
+}: {
+	character: Doc<"characters">
+}) {
 	const update = useMutation(api.characters.update).withOptimisticUpdate(
 		(store, args) => {
 			const current = store.getQuery(api.characters.get, { id: args.id })
@@ -25,7 +34,7 @@ export function NameInput({ character }: { character: Doc<"characters"> }) {
 			<FieldLabel>Name</FieldLabel>
 			<FieldDescription>What should we call them?</FieldDescription>
 			<FieldInput
-				id={nameInputId}
+				id={characterNameInputId}
 				className={input()}
 				value={character.name}
 				onChange={(event) => {

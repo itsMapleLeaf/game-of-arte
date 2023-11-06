@@ -4,12 +4,17 @@ import { useMutation } from "convex/react"
 import { LucideUserPlus, LucideX } from "lucide-react"
 import { useRef } from "react"
 import { useSpinDelay } from "spin-delay"
-import { parseNonNil } from "../helpers/errors.ts"
-import { useAsyncCallback } from "../helpers/useAsyncCallback.ts"
-import { useQuerySuspense } from "../helpers/useQuerySuspense.ts"
-import { AsyncButton } from "./AsyncButton.tsx"
-import { LoadingSpinner } from "./LoadingPlaceholder.tsx"
-import { Menu, MenuItem, MenuPanel, MenuTrigger } from "./Menu.tsx"
+import { AsyncButton } from "../../components/AsyncButton.tsx"
+import { LoadingSpinner } from "../../components/LoadingPlaceholder.tsx"
+import {
+	Menu,
+	MenuItem,
+	MenuPanel,
+	MenuTrigger,
+} from "../../components/Menu.tsx"
+import { parseNonNil } from "../../helpers/errors.ts"
+import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
+import { useQuerySuspense } from "../../helpers/useQuerySuspense.ts"
 
 export function PlayerList() {
 	const players = useQuerySuspense(api.players.list)

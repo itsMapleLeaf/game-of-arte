@@ -1,8 +1,8 @@
 import { api } from "convex/_generated/api.js"
 import { useAction, useConvexAuth } from "convex/react"
 import { useEffect } from "react"
-import { useAsyncCallback } from "../helpers/useAsyncCallback.ts"
-import { LoadingPlaceholder } from "./LoadingPlaceholder.tsx"
+import { LoadingPlaceholder } from "~/components/LoadingPlaceholder.tsx"
+import { useAsyncCallback } from "~/helpers/useAsyncCallback.ts"
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
 	const auth = useConvexAuth()

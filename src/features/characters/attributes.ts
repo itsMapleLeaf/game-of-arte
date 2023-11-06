@@ -1,8 +1,4 @@
-import { toLowerCaseTyped } from "../../helpers/index.ts"
-
-export type CharacterAttributeColumn = ReturnType<typeof defineAttributeColumn>
-
-export type CharacterAttribute = CharacterAttributeColumn["attributes"][number]
+import { toLowerCaseTyped } from "~/helpers/index.ts"
 
 type GenericAttributeColumn = {
 	id?: string

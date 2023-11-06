@@ -1,12 +1,17 @@
 import { api } from "convex/_generated/api.js"
 import { useMutation } from "convex/react"
 import { LucideRotateCw } from "lucide-react"
-import { useAsyncCallback } from "../helpers/useAsyncCallback.ts"
-import { useQuerySuspense } from "../helpers/useQuerySuspense.ts"
-import { solidButton } from "../styles/button.ts"
-import { input } from "../styles/index.ts"
-import { ConfirmDialog } from "./ConfirmDialog.tsx"
-import { Field, FieldDescription, FieldInput, FieldLabel } from "./Field.tsx"
+import { ConfirmDialog } from "../../components/ConfirmDialog.tsx"
+import {
+	Field,
+	FieldDescription,
+	FieldInput,
+	FieldLabel,
+} from "../../components/Field.tsx"
+import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
+import { useQuerySuspense } from "../../helpers/useQuerySuspense.ts"
+import { solidButton } from "../../styles/button.ts"
+import { input } from "../../styles/index.ts"
 
 export function WorldSettings() {
 	const world = useQuerySuspense(api.world.get)

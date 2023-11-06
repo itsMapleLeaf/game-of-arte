@@ -3,32 +3,25 @@ import type { Doc } from "convex/_generated/dataModel"
 import { useMutation } from "convex/react"
 import { LucideDices, LucideLock, LucideUnlock } from "lucide-react"
 import { cloneElement } from "react"
+import type { ClassNameValue } from "tailwind-merge"
 import * as v from "valibot"
-import { parseNonNil } from "../../helpers/errors.ts"
-import { randomItem, toFiniteNumberOrUndefined } from "../../helpers/index.ts"
-import { useCurrentCharacter } from "../../helpers/useCurrentCharacter.ts"
-import { useLocalStorageState } from "../../helpers/useLocalStorageState.tsx"
-import { useQuerySuspense } from "../../helpers/useQuerySuspense.ts"
-import { solidButton } from "../../styles/button.ts"
-import { center, input, textArea } from "../../styles/index.ts"
-import { panel } from "../../styles/panel.ts"
-import { ConfirmDialog } from "../ConfirmDialog.tsx"
+import { ConfirmDialog } from "~/components/ConfirmDialog.tsx"
 import {
 	Field,
 	FieldDescription,
 	FieldInput,
 	FieldLabel,
 	FieldLabelText,
-} from "../Field.tsx"
-import { AttributeInput } from "./AttributeInput.tsx"
+} from "~/components/Field.tsx"
+import { AttributeInput } from "~/features/characters/AttributeInput"
 import {
-	DataCounterInput,
-	DataImageInput,
-	DataInput,
-	DataSelectInput,
-	DataTextArea,
-} from "./DataInput.tsx"
-import { NameInput } from "./NameInput.tsx"
+	CharacterDataCounterInput,
+	CharacterDataImageInput,
+	CharacterDataInput,
+	CharacterDataSelectInput,
+	CharacterDataTextArea,
+} from "~/features/characters/CharacterDataInput"
+import { CharacterNameInput } from "~/features/characters/CharacterNameInput"
 import {
 	allAttributes,
 	attributes,
@@ -36,20 +29,16 @@ import {
 	mentalAttributeCategory,
 	physicalAttributeCategory,
 	socialAttributeCategory,
-} from "./attributes.ts"
-import { column, row, sectionHeading } from "./styles.ts"
-
-const getStressModifier = (
-	character: Doc<"characters">,
-	attributeSectionTitle: string,
-): number => {
-	const stressValue =
-		attributeSectionTitle === "Physical"
-			? character.data.physicalStress
-			: character.data.mentalStress
-
-	return (toFiniteNumberOrUndefined(stressValue) ?? 0) * -1
-}
+} from "~/features/characters/attributes"
+import { useCurrentCharacter } from "~/features/characters/useCurrentCharacter"
+import { parseNonNil } from "~/helpers/errors.ts"
+import { randomItem, toFiniteNumberOrUndefined } from "~/helpers/index.ts"
+import { useLocalStorageState } from "~/helpers/useLocalStorageState.tsx"
+import { useQuerySuspense } from "~/helpers/useQuerySuspense.ts"
+import { solidButton } from "~/styles/button.ts"
+import { center, input, textArea } from "~/styles/index.ts"
+import { panel } from "~/styles/panel.ts"
+import { twMerge } from "~/styles/twMerge.ts"
 
 export function CharacterDetails() {
 	const character = useCurrentCharacter()
@@ -76,13 +65,13 @@ export function CharacterDetails() {
 				<section className={column()}>
 					<h3 className={sectionHeading()}>Info</h3>
 
-					<NameInput character={character} />
+					<CharacterNameInput character={character} />
 
 					<Field>
 						<FieldLabel>Pronouns</FieldLabel>
 						<FieldDescription>How do they identify?</FieldDescription>
 						<FieldInput asChild>
-							<DataInput
+							<CharacterDataInput
 								character={character}
 								dataKey="pronouns"
 								className={input()}
@@ -97,7 +86,7 @@ export function CharacterDetails() {
 							attribute category.
 						</FieldDescription>
 						<FieldInput asChild>
-							<DataSelectInput
+							<CharacterDataSelectInput
 								character={character}
 								dataKey="archetype"
 								className={input("py-0")}
@@ -110,7 +99,7 @@ export function CharacterDetails() {
 										{category.archetypeName}
 									</option>
 								))}
-							</DataSelectInput>
+							</CharacterDataSelectInput>
 						</FieldInput>
 					</Field>
 
@@ -118,7 +107,7 @@ export function CharacterDetails() {
 						<FieldLabel>Reference Image</FieldLabel>
 						<FieldDescription>What do they look like?</FieldDescription>
 						<FieldInput asChild>
-							<DataImageInput character={character} dataKey="image" />
+							<CharacterDataImageInput character={character} dataKey="image" />
 						</FieldInput>
 					</Field>
 				</section>
@@ -132,7 +121,7 @@ export function CharacterDetails() {
 							Anything else important about the character.
 						</FieldDescription>
 						<FieldInput asChild>
-							<DataTextArea
+							<CharacterDataTextArea
 								character={character}
 								dataKey="notes"
 								className={textArea("max-h-64")}
@@ -144,7 +133,7 @@ export function CharacterDetails() {
 						<FieldLabel>Inventory</FieldLabel>
 						<FieldDescription>What are you carrying?</FieldDescription>
 						<FieldInput asChild>
-							<DataTextArea
+							<CharacterDataTextArea
 								character={character}
 								dataKey="inventory"
 								className={textArea("max-h-64")}
@@ -163,7 +152,7 @@ export function CharacterDetails() {
 					<div className={row("items-end gap-2")}>
 						<Field>
 							<FieldLabelText>Resilience</FieldLabelText>
-							<DataCounterInput
+							<CharacterDataCounterInput
 								character={character}
 								dataKey="resilience"
 								min={0}
@@ -173,7 +162,7 @@ export function CharacterDetails() {
 
 						<Field>
 							<FieldLabelText>Phys. Stress</FieldLabelText>
-							<DataCounterInput
+							<CharacterDataCounterInput
 								character={character}
 								dataKey="physicalStress"
 								min={0}
@@ -184,7 +173,7 @@ export function CharacterDetails() {
 
 						<Field>
 							<FieldLabelText>Ment. Stress</FieldLabelText>
-							<DataCounterInput
+							<CharacterDataCounterInput
 								character={character}
 								dataKey="mentalStress"
 								min={0}
@@ -200,7 +189,7 @@ export function CharacterDetails() {
 							{`Write specifics about the stress they've taken.`}
 						</FieldDescription>
 						<FieldInput asChild>
-							<DataTextArea
+							<CharacterDataTextArea
 								character={character}
 								dataKey="condition"
 								className={textArea("max-h-40")}
@@ -264,7 +253,7 @@ export function CharacterDetails() {
 					{`Write your character's backstory. Doesn't have to be too long. Unless you want it
 					to be!`}
 				</p>
-				<DataTextArea
+				<CharacterDataTextArea
 					character={character}
 					dataKey="background"
 					rows={3}
@@ -360,6 +349,27 @@ function RandomizeStatsButton({ character }: { character: Doc<"characters"> }) {
 			{button}
 		</ConfirmDialog>
 	)
+}
+
+const row = (...classes: ClassNameValue[]) =>
+	twMerge("grid gap-3 fluid-cols-auto-fit fluid-cols-24", ...classes)
+
+const column = (...classes: ClassNameValue[]) =>
+	twMerge("grid content-start gap-4", ...classes)
+
+const sectionHeading = (...classes: ClassNameValue[]) =>
+	twMerge("border-b border-base-800 pb-1 text-2xl font-light", ...classes)
+
+const getStressModifier = (
+	character: Doc<"characters">,
+	attributeSectionTitle: string,
+): number => {
+	const stressValue =
+		attributeSectionTitle === "Physical"
+			? character.data.physicalStress
+			: character.data.mentalStress
+
+	return (toFiniteNumberOrUndefined(stressValue) ?? 0) * -1
 }
 
 function getUsedExperience(character: Doc<"characters">) {

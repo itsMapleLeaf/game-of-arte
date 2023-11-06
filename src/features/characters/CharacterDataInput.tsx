@@ -1,13 +1,16 @@
 import type { Doc } from "convex/_generated/dataModel.js"
 import type { ComponentPropsWithoutRef } from "react"
 import ExpandingTextArea, { type TextareaProps } from "react-expanding-textarea"
+import {
+	CounterInput,
+	type CounterInputProps,
+} from "../../components/CounterInput.tsx"
+import { ImageInput } from "../../components/ImageInput.tsx"
 import { toFiniteNumberOrUndefined } from "../../helpers/index.ts"
 import type { Spread } from "../../helpers/types.ts"
-import { CounterInput, type CounterInputProps } from "../CounterInput.tsx"
-import { ImageInput } from "./ImageInput.tsx"
 import { useCharacterDataValue } from "./useCharacterDataValue.ts"
 
-export function DataInput({
+export function CharacterDataInput({
 	character,
 	dataKey,
 	...props
@@ -30,7 +33,7 @@ export function DataInput({
 	)
 }
 
-export function DataTextArea({
+export function CharacterDataTextArea({
 	character,
 	dataKey,
 	...props
@@ -47,7 +50,7 @@ export function DataTextArea({
 	)
 }
 
-export function DataCounterInput({
+export function CharacterDataCounterInput({
 	character,
 	dataKey,
 	defaultValue,
@@ -66,7 +69,7 @@ export function DataCounterInput({
 	)
 }
 
-export function DataImageInput({
+export function CharacterDataImageInput({
 	character,
 	dataKey,
 	...props
@@ -86,7 +89,7 @@ export function DataImageInput({
 	)
 }
 
-export function DataSelectInput({
+export function CharacterDataSelectInput({
 	character,
 	dataKey,
 	...props
