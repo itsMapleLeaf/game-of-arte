@@ -1,12 +1,14 @@
 import { api } from "convex/_generated/api"
 import type { Doc } from "convex/_generated/dataModel"
 import { useMutation } from "convex/react"
-import { cloneElement } from "react"
+import { LucideDices, LucideLock, LucideUnlock } from "lucide-react"
+import { cloneElement, useState } from "react"
 import { parseNonNil } from "../../helpers/errors.ts"
 import { randomItem, toFiniteNumberOrUndefined } from "../../helpers/index.ts"
 import { useCurrentCharacter } from "../../helpers/useCurrentCharacter.ts"
 import { useQuerySuspense } from "../../helpers/useQuerySuspense.ts"
-import { input, textArea } from "../../styles/index.ts"
+import { solidButton } from "../../styles/button.ts"
+import { center, input, textArea } from "../../styles/index.ts"
 import { panel } from "../../styles/panel.ts"
 import { ConfirmDialog } from "../ConfirmDialog.tsx"
 import {
@@ -49,6 +51,14 @@ const getStressModifier = (
 
 export function CharacterDetails() {
 	const character = useCurrentCharacter()
+	const ownedCharacter = useQuerySuspense(api.characters.getOwned)
+	const roles = useQuerySuspense(api.roles.get)
+	const [attributesLocked, setAttributesLocked] = useState(false)
+
+	function getAttributesEditable(character: Doc<"characters">) {
+		if (attributesLocked) return false
+		return roles.isAdmin || character._id === ownedCharacter?._id
+	}
 
 	if (!character) {
 		return <p>No characters found.</p>
@@ -136,7 +146,13 @@ export function CharacterDetails() {
 						</FieldInput>
 					</Field>
 
-					<ExperienceDisplay character={character} />
+					<Field>
+						<FieldLabelText>Experience</FieldLabelText>
+						<FieldDescription>
+							Spend these points on attributes!
+						</FieldDescription>
+						<ExperienceDisplay character={character} />
+					</Field>
 
 					<div className={row("items-end gap-2")}>
 						<Field>
@@ -185,6 +201,27 @@ export function CharacterDetails() {
 							/>
 						</FieldInput>
 					</Field>
+
+					<div className={row("fluid-cols-36")}>
+						<RandomizeStatsButton character={character} />
+						{attributesLocked ? (
+							<button
+								type="button"
+								className={solidButton()}
+								onClick={() => setAttributesLocked(!attributesLocked)}
+							>
+								<LucideUnlock /> Unlock Stats
+							</button>
+						) : (
+							<button
+								type="button"
+								className={solidButton()}
+								onClick={() => setAttributesLocked(!attributesLocked)}
+							>
+								<LucideLock /> Lock Stats
+							</button>
+						)}
+					</div>
 				</section>
 			</div>
 
@@ -208,6 +245,7 @@ export function CharacterDetails() {
 								attributeDescription={description}
 								stressModifier={getStressModifier(character, title)}
 								isArchetypeAttribute={character.data.archetype === archetypeId}
+								editable={getAttributesEditable(character)}
 							/>
 						))}
 					</div>
@@ -236,26 +274,19 @@ function ExperienceDisplay({ character }: { character: Doc<"characters"> }) {
 	const usedExperience = getUsedExperience(character)
 
 	return (
-		<Field>
-			<FieldLabelText>Experience</FieldLabelText>
-			<FieldDescription>Spend these points on attributes!</FieldDescription>
-			<FieldInput asChild>
-				<div
-					className={panel(
-						"flex h-10 flex-wrap items-center overflow-clip rounded-md border px-3",
-					)}
-				>
-					<p
-						data-negative={usedExperience > world.experience}
-						className="flex-1 data-[negative=true]:text-error-400"
-					>
-						{world.experience - usedExperience}{" "}
-						<span aria-label="out of">/</span> {world.experience}
-					</p>
-					<RandomizeStatsButton character={character} />
-				</div>
-			</FieldInput>
-		</Field>
+		<FieldInput asChild>
+			<p
+				data-negative={usedExperience > world.experience}
+				className={panel(
+					input(),
+					center(),
+					"h-auto tabular-nums data-[negative=true]:text-error-400",
+				)}
+			>
+				{world.experience - usedExperience} <span aria-label="out of">/</span>{" "}
+				{world.experience}
+			</p>
+		</FieldInput>
 	)
 }
 
@@ -304,11 +335,8 @@ function RandomizeStatsButton({ character }: { character: Doc<"characters"> }) {
 	}
 
 	const button = (
-		<button
-			type="button"
-			className="-mx-3 self-stretch px-3 transition hover:bg-base-800"
-		>
-			Randomize Stats
+		<button type="button" className={solidButton()}>
+			<LucideDices /> Random Stats
 		</button>
 	)
 

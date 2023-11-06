@@ -9,6 +9,7 @@ import { clamp, toFiniteNumberOrUndefined } from "../../helpers/index.ts"
 import { useAppParams } from "../../helpers/useAppParams.ts"
 import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
 import { withPreventDefault } from "../../helpers/withPreventDefault.ts"
+import { solidButton } from "../../styles/button.ts"
 import { input } from "../../styles/index.ts"
 import { CounterInput, type CounterInputProps } from "../CounterInput.tsx"
 import {
@@ -29,6 +30,7 @@ export function AttributeInput({
 	attributeDescription,
 	stressModifier,
 	isArchetypeAttribute,
+	editable,
 	...props
 }: CounterInputProps & {
 	character: Doc<"characters">
@@ -37,6 +39,7 @@ export function AttributeInput({
 	attributeDescription: string
 	stressModifier: number
 	isArchetypeAttribute: boolean
+	editable: boolean
 }) {
 	const [valueRaw, setValue] = useCharacterDataValue(character, dataKey)
 	const value = clamp(toFiniteNumberOrUndefined(valueRaw) ?? 1, 1, 5)
@@ -55,13 +58,20 @@ export function AttributeInput({
 			</div>
 			<div className="flex items-center gap-2">
 				<div className="flex-1">
-					<CounterInput
-						{...props}
-						value={toFiniteNumberOrUndefined(value) ?? 1}
-						onChange={setValue}
-						min={1}
-						max={5}
-					/>
+					{editable ? (
+						<CounterInput
+							{...props}
+							value={value}
+							onChange={setValue}
+							min={1}
+							max={5}
+						/>
+					) : (
+						<p className={input("text-center tabular-nums")}>
+							{value}
+							<span className="opacity-50">/5</span>
+						</p>
+					)}
 				</div>
 				<Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
 					<PopoverTrigger
@@ -215,10 +225,7 @@ function AttributeRollForm({
 				</dl>
 			)}
 
-			<button
-				type="submit"
-				className="flex w-full items-center gap-2 rounded-md border border-base-800 p-2 transition hover:bg-base-800"
-			>
+			<button type="submit" className={solidButton()}>
 				{handleSubmitState.isLoading ? <LoadingSpinner /> : <LucideDices />}{" "}
 				Roll {diceCount} {diceCount === 1 ? "die" : "dice"}
 			</button>
