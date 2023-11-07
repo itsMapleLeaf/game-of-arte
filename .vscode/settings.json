@@ -18,5 +18,12 @@
 
 	"tailwindCSS.experimental.classRegex": [
 		["(?:twMerge|twStyle)\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"]
+	],
+	"tailwindCSS.files.exclude": [
+		"**/.git/**",
+		"**/node_modules/**",
+		"**/.hg/**",
+		"**/.svn/**",
+		"**/dist/**"
 	]
 }
