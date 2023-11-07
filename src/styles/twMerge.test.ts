@@ -7,6 +7,6 @@ describe("custom twMerge", () => {
 			twMerge(
 				"grid-cols-12 fluid-cols-auto-fill fluid-cols-auto-fit fluid-cols-12 fluid-cols-6",
 			),
-		).toBe("fluid-cols-auto-fit fluid-cols-12")
+		).toBe("fluid-cols-auto-fit fluid-cols-6")
 	})
 })
