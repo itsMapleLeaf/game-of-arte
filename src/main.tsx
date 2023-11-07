@@ -9,15 +9,14 @@ import { createRoot } from "react-dom/client"
 import { App } from "./App.tsx"
 import { AppTitle } from "./AppTitle.tsx"
 import { LoadingSuspense } from "./components/LoadingPlaceholder.tsx"
+import { env } from "./env.ts"
 import { AuthGuard } from "./features/auth/AuthGuard.tsx"
 import { parseNonNil } from "./helpers/errors.ts"
 
-const convex = new ConvexReactClient(import.meta.env.VITE_PUBLIC_CONVEX_URL)
+const convex = new ConvexReactClient(env.CONVEX_URL)
 
 createRoot(parseNonNil(document.querySelector("#root"))).render(
-	<ClerkProvider
-		publishableKey={import.meta.env.VITE_PUBLIC_CLERK_PUBLISHABLE_KEY}
-	>
+	<ClerkProvider publishableKey={env.CLERK_PUBLISHABLE_KEY}>
 		<ConvexProviderWithClerk client={convex} useAuth={useAuth}>
 			<StrictMode>
 				<AuthGuard>
