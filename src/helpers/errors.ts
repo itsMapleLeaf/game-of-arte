@@ -4,7 +4,7 @@ export function toError(error: unknown): Error {
 
 export function raise(
 	value: unknown,
-	caller?: (...args: unknown[]) => unknown,
+	caller?: (...args: never[]) => unknown,
 ): never {
 	if (typeof value === "string") {
 		const error = new Error(value)
