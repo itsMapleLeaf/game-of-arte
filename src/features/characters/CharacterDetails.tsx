@@ -63,7 +63,7 @@ export function CharacterDetails() {
 		<div className="grid flex-1 content-start gap-3 self-start">
 			<div className={row("fluid-cols-48")}>
 				<section className={column()}>
-					<h3 className={sectionHeading()}>Info</h3>
+					<h3 className={sectionHeading()}>Identity</h3>
 
 					<CharacterNameInput character={character} />
 
@@ -78,6 +78,18 @@ export function CharacterDetails() {
 							/>
 						</FieldInput>
 					</Field>
+
+					<Field>
+						<FieldLabel>Reference Image</FieldLabel>
+						<FieldDescription>What do they look like?</FieldDescription>
+						<FieldInput asChild>
+							<CharacterDataImageInput character={character} dataKey="image" />
+						</FieldInput>
+					</Field>
+				</section>
+
+				<section className={column()}>
+					<h3 className={sectionHeading()}>Status</h3>
 
 					<Field>
 						<FieldLabel>Archetype</FieldLabel>
@@ -100,44 +112,6 @@ export function CharacterDetails() {
 									</option>
 								))}
 							</CharacterDataSelectInput>
-						</FieldInput>
-					</Field>
-
-					<Field>
-						<FieldLabel>Reference Image</FieldLabel>
-						<FieldDescription>What do they look like?</FieldDescription>
-						<FieldInput asChild>
-							<CharacterDataImageInput character={character} dataKey="image" />
-						</FieldInput>
-					</Field>
-				</section>
-
-				<section className={column()}>
-					<h3 className={sectionHeading()}>Status</h3>
-
-					<Field>
-						<FieldLabel>Notes</FieldLabel>
-						<FieldDescription>
-							Anything else important about the character.
-						</FieldDescription>
-						<FieldInput asChild>
-							<CharacterDataTextArea
-								character={character}
-								dataKey="notes"
-								className={textArea("max-h-64")}
-							/>
-						</FieldInput>
-					</Field>
-
-					<Field>
-						<FieldLabel>Inventory</FieldLabel>
-						<FieldDescription>What are you carrying?</FieldDescription>
-						<FieldInput asChild>
-							<CharacterDataTextArea
-								character={character}
-								dataKey="inventory"
-								className={textArea("max-h-64")}
-							/>
 						</FieldInput>
 					</Field>
 
@@ -247,18 +221,50 @@ export function CharacterDetails() {
 				))}
 			</div>
 
-			<section className={column("gap-2")}>
-				<h3 className={sectionHeading()}>Background</h3>
-				<p>
-					{`Write your character's backstory. Doesn't have to be too long. Unless you want it
-					to be!`}
-				</p>
-				<CharacterDataTextArea
-					character={character}
-					dataKey="background"
-					rows={3}
-					className={textArea()}
-				/>
+			<section className={column()}>
+				<h3 className={sectionHeading()}>Description</h3>
+
+				<Field>
+					<FieldLabel>Inventory</FieldLabel>
+					<FieldDescription>What are you carrying?</FieldDescription>
+					<FieldInput asChild>
+						<CharacterDataTextArea
+							character={character}
+							dataKey="inventory"
+							className={textArea()}
+							rows={3}
+						/>
+					</FieldInput>
+				</Field>
+
+				<Field>
+					<FieldLabel>Notes</FieldLabel>
+					<FieldDescription>
+						Anything else important about the character.
+					</FieldDescription>
+					<FieldInput asChild>
+						<CharacterDataTextArea
+							character={character}
+							dataKey="notes"
+							className={textArea()}
+							rows={3}
+						/>
+					</FieldInput>
+				</Field>
+
+				<Field>
+					<FieldLabel>Background</FieldLabel>
+					<FieldDescription>
+						{`Write your character's backstory. Doesn't have to be too long. Unless you want it
+						to be!`}
+					</FieldDescription>
+					<CharacterDataTextArea
+						character={character}
+						dataKey="background"
+						rows={3}
+						className={textArea()}
+					/>
+				</Field>
 			</section>
 		</div>
 	)
