@@ -11,11 +11,11 @@ import { AppTitle } from "./AppTitle.tsx"
 import { LoadingSuspense } from "./components/LoadingPlaceholder.tsx"
 import { env } from "./env.ts"
 import { AuthGuard } from "./features/auth/AuthGuard.tsx"
-import { parseNonNil } from "./helpers/errors.ts"
+import { expectNonNil } from "./helpers/errors.ts"
 
 const convex = new ConvexReactClient(env.CONVEX_URL)
 
-createRoot(parseNonNil(document.querySelector("#root"))).render(
+createRoot(expectNonNil(document.querySelector("#root"))).render(
 	<ClerkProvider publishableKey={env.CLERK_PUBLISHABLE_KEY}>
 		<ConvexProviderWithClerk client={convex} useAuth={useAuth}>
 			<StrictMode>

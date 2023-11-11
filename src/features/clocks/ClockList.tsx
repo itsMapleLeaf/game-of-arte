@@ -5,7 +5,7 @@ import { LucidePlus, LucideX } from "lucide-react"
 import { useEffect, useId, useRef } from "react"
 import { mapIterable } from "~/helpers/iterable.ts"
 import { Field, FieldInput, FieldLabel } from "../../components/Field.tsx"
-import { parseNonNil } from "../../helpers/errors.ts"
+import { expectNonNil } from "../../helpers/errors.ts"
 import { clamp } from "../../helpers/math.ts"
 import { range } from "../../helpers/range.ts"
 import { useQuerySuspense } from "../../helpers/useQuerySuspense.ts"
@@ -82,7 +82,7 @@ function ClockEditor({ clock }: { clock: Doc<"clocks"> }) {
 	const handleSliderUpdate = (
 		event: React.PointerEvent<HTMLLabelElement> | PointerEvent,
 	) => {
-		const rect = parseNonNil(labelRef.current).getBoundingClientRect()
+		const rect = expectNonNil(labelRef.current).getBoundingClientRect()
 		const value = Math.round(
 			((event.clientX - (rect.left + 2)) / rect.width) * clock.maxValue,
 		)

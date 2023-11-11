@@ -12,7 +12,7 @@ import {
 	MenuPanel,
 	MenuTrigger,
 } from "../../components/Menu.tsx"
-import { parseNonNil } from "../../helpers/errors.ts"
+import { expectNonNil } from "../../helpers/errors.ts"
 import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
 import { useQuerySuspense } from "../../helpers/useQuerySuspense.ts"
 
@@ -41,7 +41,7 @@ function NewPlayerForm() {
 
 	const [addPlayer, state] = useAsyncCallback(useMutation(api.players.add), {
 		onSuccess() {
-			parseNonNil(formRef.current).reset()
+			expectNonNil(formRef.current).reset()
 		},
 	})
 

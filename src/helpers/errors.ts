@@ -20,6 +20,6 @@ export function raise(
 	throw value
 }
 
-export function parseNonNil<T>(value: T | undefined | null): T {
-	return value ?? raise("Expected non-nil value", parseNonNil)
+export function expectNonNil<T>(value: T): NonNullable<T> {
+	return value ?? raise("Expected non-nil value", expectNonNil)
 }

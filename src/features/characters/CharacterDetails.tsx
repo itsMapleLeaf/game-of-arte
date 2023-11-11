@@ -31,7 +31,7 @@ import {
 	socialAttributeCategory,
 } from "~/features/characters/attributes"
 import { useCurrentCharacter } from "~/features/characters/useCurrentCharacter"
-import { parseNonNil } from "~/helpers/errors.ts"
+import { expectNonNil } from "~/helpers/errors.ts"
 import { randomItem, toFiniteNumberOrUndefined } from "~/helpers/index.ts"
 import { useLocalStorageState } from "~/helpers/useLocalStorageState.tsx"
 import { useQuerySuspense } from "~/helpers/useQuerySuspense.ts"
@@ -296,7 +296,7 @@ function RandomizeStatsButton({ character }: { character: Doc<"characters"> }) {
 		)
 
 		for (let i = 0; i < world.experience; i++) {
-			const category = parseNonNil(
+			const category = expectNonNil(
 				randomItemWeighted([
 					[physicalAttributeCategory, 1],
 					[mentalAttributeCategory, 1],
@@ -305,7 +305,7 @@ function RandomizeStatsButton({ character }: { character: Doc<"characters"> }) {
 				]),
 			)
 
-			const attributeKey = parseNonNil(
+			const attributeKey = expectNonNil(
 				randomItem(category.attributes.map((a) => a.dataKey)),
 			)
 
@@ -324,7 +324,7 @@ function RandomizeStatsButton({ character }: { character: Doc<"characters"> }) {
 			id: character._id,
 			data: {
 				...newStats,
-				archetype: parseNonNil(randomItem(archetypes)),
+				archetype: expectNonNil(randomItem(archetypes)),
 			},
 		})
 	}
