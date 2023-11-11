@@ -14,6 +14,7 @@ import { PlayerList } from "../features/players/PlayerList.tsx"
 import { WorldSettings } from "../features/worlds/WorldSettings.tsx"
 import { useQuerySuspense } from "../helpers/useQuerySuspense.ts"
 import { panel } from "../styles/panel.ts"
+import { LoadingSuspense } from "./LoadingPlaceholder.tsx"
 
 export function SideNav() {
 	const roles = useQuerySuspense(api.roles.get)
@@ -64,7 +65,7 @@ function SideNavCollapsible({
 				<div className="flex-1">{title}</div>
 				<LucideChevronLeft className="transition-transform group-open:-rotate-90" />
 			</summary>
-			{children}
+			<LoadingSuspense>{children}</LoadingSuspense>
 		</details>
 	)
 }
