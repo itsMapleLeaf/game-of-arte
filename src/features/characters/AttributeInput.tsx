@@ -2,7 +2,7 @@ import { api } from "convex/_generated/api.js"
 import type { Doc } from "convex/_generated/dataModel.js"
 import { useMutation } from "convex/react"
 import { LucideDices } from "lucide-react"
-import { startTransition, useState } from "react"
+import { useState } from "react"
 import { twMerge } from "tailwind-merge"
 import { clamp } from "~/helpers/math.ts"
 import {
@@ -28,7 +28,6 @@ import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
 import { withPreventDefault } from "../../helpers/withPreventDefault.ts"
 import { solidButton } from "../../styles/button.ts"
 import { input } from "../../styles/index.ts"
-import { useAppParams } from "../../useAppParams.ts"
 import { useCharacterDataValue } from "./useCharacterDataValue.ts"
 
 export function AttributeInput({
@@ -121,7 +120,6 @@ function AttributeRollForm({
 	isArchetypeAttribute: boolean
 	onSuccess: () => void
 }) {
-	const appParams = useAppParams()
 	const roll = useMutation(api.diceRolls.roll)
 	const updateCharacterData = useMutation(api.characters.updateData)
 	const [label, setLabel] = useState("")
@@ -168,9 +166,6 @@ function AttributeRollForm({
 				data: { resilience: availableResilience - resilienceToUse },
 			})
 			onSuccess()
-			startTransition(() => {
-				appParams.tab.push("dice")
-			})
 		},
 	)
 

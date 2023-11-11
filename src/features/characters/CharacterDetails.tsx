@@ -30,7 +30,7 @@ import {
 	physicalAttributeCategory,
 	socialAttributeCategory,
 } from "~/features/characters/attributes"
-import { useCurrentCharacter } from "~/features/characters/useCurrentCharacter"
+import { useCurrentCharacter } from "~/features/characters/useCurrentCharacter.tsx"
 import { expectNonNil } from "~/helpers/errors.ts"
 import { randomItem, toFiniteNumberOrUndefined } from "~/helpers/index.ts"
 import { useLocalStorageState } from "~/helpers/useLocalStorageState.tsx"

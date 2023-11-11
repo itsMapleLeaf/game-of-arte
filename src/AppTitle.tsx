@@ -1,14 +1,8 @@
-import { api } from "convex/_generated/api.js"
-import { useQuery } from "convex/react"
 import { useEffect } from "react"
-import { useAppParams } from "./useAppParams.ts"
+import { useCurrentCharacter } from "./features/characters/useCurrentCharacter.tsx"
 
 export function AppTitle() {
-	const params = useAppParams()
-
-	const character = useQuery(api.characters.get, {
-		id: params.characterId.current,
-	})
+	const character = useCurrentCharacter()
 
 	useEffect(() => {
 		if (character) {

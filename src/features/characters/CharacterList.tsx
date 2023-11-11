@@ -9,8 +9,7 @@ import {
 	LucideTrash,
 	LucideUser,
 } from "lucide-react"
-import { startTransition, useTransition } from "react"
-import { useSpinDelay } from "spin-delay"
+import { startTransition } from "react"
 import { twMerge } from "tailwind-merge"
 import { LoadingSpinner } from "../../components/LoadingPlaceholder.tsx"
 import {
@@ -22,9 +21,12 @@ import {
 import { tryUntilNonNil } from "../../helpers/tryUntilNonNil.ts"
 import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
 import { useQuerySuspense } from "../../helpers/useQuerySuspense.ts"
-import { useAppParams } from "../../useAppParams.ts"
 import { characterNameInputId } from "./CharacterNameInput.tsx"
-import { useCurrentCharacter } from "./useCurrentCharacter.ts"
+import {
+	SetCharacterButton,
+	useCurrentCharacterId,
+	useSetCurrentCharacterId,
+} from "./useCurrentCharacter.tsx"
 
 export function CharacterList() {
 	const characters = useQuerySuspense(api.characters.list)
@@ -58,7 +60,7 @@ function CharacterListItems({
 }) {
 	const roles = useQuerySuspense(api.roles.get)
 	const player = useQuerySuspense(api.players.self)
-	const currentCharacter = useCurrentCharacter()
+	const currentCharacterId = useCurrentCharacterId()
 
 	return characters.length === 0 ? (
 		<p className="px-3 py-2 opacity-75">No characters found.</p>
@@ -72,10 +74,20 @@ function CharacterListItems({
 				)
 				.map((character) => (
 					<li key={character._id} className="group relative">
-						<CharacterLink
-							character={character}
-							active={currentCharacter?._id === character._id}
-						/>
+						<SetCharacterButton
+							characterId={character._id}
+							className={twMerge(
+								"group flex w-full gap-2 p-2 transition",
+								currentCharacterId === character._id
+									? "bg-base-800 opacity-100"
+									: "opacity-60 hover:opacity-100",
+								player?.ownedCharacterId === character._id && "text-accent-300",
+							)}
+						>
+							<LucideUser className="group-data-[pending]:hidden" />
+							<LoadingSpinner className="hidden group-data-[pending]:block" />
+							<div className="min-w-0 flex-1">{character.name}</div>
+						</SetCharacterButton>
 						{roles.isAdmin && (
 							<CharacterMenu character={character}>
 								<button
@@ -89,37 +101,6 @@ function CharacterListItems({
 					</li>
 				))}
 		</ul>
-	)
-}
-
-function CharacterLink({
-	character,
-	active,
-}: {
-	character: Doc<"characters">
-	active: boolean
-}) {
-	const player = useQuerySuspense(api.players.self)
-	const [isPending, startTransition] = useTransition()
-	const isPendingDelayed = useSpinDelay(isPending)
-	const appParams = useAppParams()
-	return (
-		<button
-			type="button"
-			className={twMerge(
-				"flex w-full gap-2 p-2 transition",
-				active ? "bg-base-800 opacity-100" : "opacity-60 hover:opacity-100",
-				player?.ownedCharacterId === character._id && "text-accent-300",
-			)}
-			onClick={() => {
-				startTransition(() => {
-					appParams.characterId.push(character._id)
-				})
-			}}
-		>
-			{isPendingDelayed ? <LoadingSpinner /> : <LucideUser />}
-			<div className="min-w-0 flex-1">{character.name}</div>
-		</button>
 	)
 }
 
@@ -169,13 +150,14 @@ function DeleteItem({ character }: { character: Doc<"characters"> }) {
 }
 
 function NewCharacterButton() {
-	const appParams = useAppParams()
+	const setCurrentCharacterId = useSetCurrentCharacterId()
+
 	const [handleClick, state] = useAsyncCallback(
 		useMutation(api.characters.create),
 		{
 			async onSuccess(result) {
 				startTransition(() => {
-					appParams.characterId.push(result._id)
+					setCurrentCharacterId(result._id)
 				})
 				const nameInput = await tryUntilNonNil(() =>
 					document.getElementById(characterNameInputId),
