@@ -174,18 +174,35 @@ function AttributeRollForm({
 		},
 	)
 
-	const modifierReceiptItems = [{ name: "Base Roll", value: baseDiceCount }]
+	const modifierReceiptItems = [
+		{
+			name: "Base Roll",
+			value: `${baseDiceCount}`,
+		},
+	]
 	if (stressModifier !== 0) {
-		modifierReceiptItems.push({ name: "Stress", value: stressModifier })
+		modifierReceiptItems.push({
+			name: "Stress",
+			value: formatSigned(stressModifier),
+		})
 	}
 	if (isArchetypeAttribute) {
-		modifierReceiptItems.push({ name: "Archetype", value: 2 })
+		modifierReceiptItems.push({
+			name: "Archetype",
+			value: formatSigned(2),
+		})
 	}
 	if (modifier !== 0) {
-		modifierReceiptItems.push({ name: "Manual", value: modifier })
+		modifierReceiptItems.push({
+			name: "Manual",
+			value: formatSigned(modifier),
+		})
 	}
 	if (resilienceToUse > 0) {
-		modifierReceiptItems.push({ name: "Resilience", value: resilienceToUse })
+		modifierReceiptItems.push({
+			name: "Resilience",
+			value: formatSigned(resilienceToUse),
+		})
 	}
 
 	return (
@@ -227,7 +244,7 @@ function AttributeRollForm({
 					{modifierReceiptItems.map(({ name, value }) => (
 						<div key={name} className="flex flex-row gap-1">
 							<dt className="flex-1 opacity-70">{name}</dt>
-							<dd>{formatSigned(value)}</dd>
+							<dd>{value}</dd>
 						</div>
 					))}
 				</dl>
