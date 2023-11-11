@@ -1,4 +1,4 @@
-import { toLowerCaseTyped } from "~/helpers/index.ts"
+import { compareKey, toLowerCaseTyped } from "~/helpers/index.ts"
 
 type GenericAttributeColumn = {
 	id?: string
@@ -52,7 +52,7 @@ export const physicalAttributeCategory = defineAttributeColumn({
 			description:
 				"Solving problems with raw physical prowess and brute force.",
 		}),
-	],
+	].toSorted(compareKey("name")),
 })
 
 export const mentalAttributeCategory = defineAttributeColumn({
@@ -79,7 +79,7 @@ export const mentalAttributeCategory = defineAttributeColumn({
 			description:
 				"Seeing, hearing, or otherwise detecting the presence of things.",
 		}),
-	],
+	].toSorted(compareKey("name")),
 })
 
 export const socialAttributeCategory = defineAttributeColumn({
@@ -118,7 +118,7 @@ export const socialAttributeCategory = defineAttributeColumn({
 			name: "Comfort",
 			description: "Calming others with a gentle aura.",
 		}),
-	],
+	].toSorted(compareKey("name")),
 })
 
 export const knowledgeAttributeCategory = defineAttributeColumn({
@@ -155,7 +155,7 @@ export const knowledgeAttributeCategory = defineAttributeColumn({
 			name: "Tech",
 			description: "Mechanical contraptions and architecture.",
 		}),
-	],
+	].toSorted(compareKey("name")),
 })
 
 export const attributes = [
