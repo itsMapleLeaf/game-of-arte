@@ -11,6 +11,7 @@ import {
 	FieldLabel,
 	FieldLabelText,
 } from "~/components/Field.tsx"
+import { LoadingSuspense } from "~/components/LoadingPlaceholder.tsx"
 import { useAsyncCallback } from "~/helpers/useAsyncCallback.ts"
 import { useQuerySuspense } from "~/helpers/useQuerySuspense.ts"
 
@@ -18,7 +19,9 @@ export function DiceRollList() {
 	return (
 		<div className="flex h-full flex-col divide-y divide-base-800">
 			<div className="-mt-px flex-1">
-				<DiceRollItems />
+				<LoadingSuspense>
+					<DiceRollItems />
+				</LoadingSuspense>
 			</div>
 			<DiceRollForm />
 		</div>
