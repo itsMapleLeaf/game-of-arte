@@ -73,7 +73,10 @@ function CharacterListItems({
 						Number(player?.ownedCharacterId === a._id),
 				)
 				.map((character) => (
-					<li key={character._id} className="group relative">
+					<li
+						key={character._id}
+						className="group/character-list-item relative"
+					>
 						<SetCharacterButton
 							characterId={character._id}
 							className={twMerge(
@@ -92,7 +95,7 @@ function CharacterListItems({
 							<CharacterMenu character={character}>
 								<button
 									type="button"
-									className="absolute inset-y-0 right-0 flex items-center p-2 opacity-0 transition hover:!opacity-100 group-hover:opacity-50"
+									className="absolute inset-y-0 right-0 flex items-center p-2 opacity-0 transition hover:!opacity-100 group-hover/character-list-item:opacity-50"
 								>
 									<LucideMoreVertical className="s-5" />
 								</button>
