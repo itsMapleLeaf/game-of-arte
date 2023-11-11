@@ -384,11 +384,13 @@ function randomItemWeighted<
 >(items: Items): Items[number][0] | undefined {
 	const totalWeight = items.reduce((sum, [, weight]) => sum + weight, 0)
 
-	const normalizedItems = items.map(
-		([item, weight]) => [item, weight / totalWeight] as const,
-	)
+	const itemsWithDistributions: [Items[number][0], number][] = []
+	let currentDistribution = 0
+	for (const [item, weight] of items) {
+		currentDistribution += weight / totalWeight
+		itemsWithDistributions.push([item, currentDistribution])
+	}
 
 	const randomValue = Math.random()
-
-	return normalizedItems.find(([, weight]) => randomValue < weight)?.[0]
+	return itemsWithDistributions.find(([, weight]) => randomValue < weight)?.[0]
 }
