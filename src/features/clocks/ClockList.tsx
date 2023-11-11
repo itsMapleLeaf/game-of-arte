@@ -3,9 +3,10 @@ import type { Doc } from "convex/_generated/dataModel.js"
 import { useMutation } from "convex/react"
 import { LucidePlus, LucideX } from "lucide-react"
 import { useEffect, useId, useRef } from "react"
+import { mapIterable } from "~/helpers/iterable.ts"
 import { Field, FieldInput, FieldLabel } from "../../components/Field.tsx"
 import { parseNonNil } from "../../helpers/errors.ts"
-import { clamp } from "../../helpers/index.ts"
+import { clamp } from "../../helpers/math.ts"
 import { range } from "../../helpers/range.ts"
 import { useQuerySuspense } from "../../helpers/useQuerySuspense.ts"
 
@@ -183,13 +184,15 @@ function ClockEditor({ clock }: { clock: Doc<"clocks"> }) {
 					}}
 				>
 					<span className="sr-only">Value</span>
-					{range(clock.maxValue).map((tick) => (
-						<div
-							key={tick}
-							className="absolute bottom-0 left-0 top-0 w-px bg-accent-500"
-							style={{ left: `${(tick / clock.maxValue) * 100}%` }}
-						/>
-					))}
+					{[
+						...mapIterable(range(clock.maxValue), (tick) => (
+							<div
+								key={tick}
+								className="absolute bottom-0 left-0 top-0 w-px bg-accent-500"
+								style={{ left: `${(tick / clock.maxValue) * 100}%` }}
+							/>
+						)),
+					]}
 					<div
 						className="absolute inset-0 bg-accent-500/50"
 						style={{

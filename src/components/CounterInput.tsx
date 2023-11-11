@@ -1,6 +1,6 @@
 import { LucideMinus, LucidePlus } from "lucide-react"
 import { useState } from "react"
-import { clamp } from "../helpers/index.ts"
+import { clamp } from "../helpers/math.ts"
 import { panel } from "../styles/panel.ts"
 
 export type CounterInputProps = {

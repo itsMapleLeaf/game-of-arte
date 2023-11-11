@@ -4,6 +4,7 @@ import { useMutation } from "convex/react"
 import { LucideDices } from "lucide-react"
 import { startTransition, useState } from "react"
 import { twMerge } from "tailwind-merge"
+import { clamp } from "~/helpers/math.ts"
 import {
 	CounterInput,
 	type CounterInputProps,
@@ -22,7 +23,7 @@ import {
 	PopoverTrigger,
 } from "../../components/Popover.tsx"
 import { raise } from "../../helpers/errors.ts"
-import { clamp, toFiniteNumberOrUndefined } from "../../helpers/index.ts"
+import { toFiniteNumberOrUndefined } from "../../helpers/index.ts"
 import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
 import { withPreventDefault } from "../../helpers/withPreventDefault.ts"
 import { solidButton } from "../../styles/button.ts"

@@ -1,6 +1,18 @@
 type RangeArgs = [length: number] | [start: number, end: number, step?: number]
 
-export function range(...args: RangeArgs): number[] {
+export function* range(...args: RangeArgs): Generator<number> {
+	const { start, end, step } = parseRangeArgs(args)
+	for (let i = start; i < end; i += step) {
+		yield i
+	}
+}
+
+export function* rangeInclusive(...args: RangeArgs): Generator<number> {
+	const { start, end, step } = parseRangeArgs(args)
+	yield* range(start, end + step, step)
+}
+
+function parseRangeArgs(args: RangeArgs) {
 	let start
 	let end
 	let step
@@ -13,14 +25,5 @@ export function range(...args: RangeArgs): number[] {
 		end = args[1]
 		step = args[2] ?? 1
 	}
-
-	const result = []
-	for (let i = start; i < end; i += step) {
-		result.push(i)
-	}
-	return result
-}
-
-export function rangeInclusive(start: number, end: number): number[] {
-	return range(start, end + 1)
+	return { start, end, step }
 }
