@@ -169,37 +169,6 @@ function AttributeRollForm({
 		},
 	)
 
-	const modifierReceiptItems = [
-		{
-			name: "Base Roll",
-			value: `${baseDiceCount}`,
-		},
-	]
-	if (stressModifier !== 0) {
-		modifierReceiptItems.push({
-			name: "Stress",
-			value: formatSigned(stressModifier),
-		})
-	}
-	if (isArchetypeAttribute) {
-		modifierReceiptItems.push({
-			name: "Archetype",
-			value: formatSigned(2),
-		})
-	}
-	if (modifier !== 0) {
-		modifierReceiptItems.push({
-			name: "Manual",
-			value: formatSigned(modifier),
-		})
-	}
-	if (resilienceToUse > 0) {
-		modifierReceiptItems.push({
-			name: "Resilience",
-			value: formatSigned(resilienceToUse),
-		})
-	}
-
 	return (
 		<form
 			onSubmit={withPreventDefault(handleSubmit)}
@@ -234,22 +203,45 @@ function AttributeRollForm({
 				</Field>
 			)}
 
-			{modifierReceiptItems.length > 0 && (
-				<dl className="tabular-nums">
-					{modifierReceiptItems.map(({ name, value }) => (
-						<div key={name} className="flex flex-row gap-1">
-							<dt className="flex-1 opacity-70">{name}</dt>
-							<dd>{value}</dd>
-						</div>
-					))}
-				</dl>
-			)}
+			<dl className="tabular-nums">
+				<ReceiptItem name="Base Roll" value={baseDiceCount} />
+				{stressModifier !== 0 && (
+					<ReceiptItem name="Stress" value={formatSigned(stressModifier)} />
+				)}
+				{isArchetypeAttribute && (
+					<ReceiptItem name="Archetype" value={formatSigned(2)} />
+				)}
+				{modifier !== 0 && (
+					<ReceiptItem name="Manual" value={formatSigned(modifier)} />
+				)}
+				{resilienceToUse > 0 && (
+					<ReceiptItem
+						name="Resilience"
+						value={formatSigned(resilienceToUse)}
+					/>
+				)}
+			</dl>
 
 			<button type="submit" className={solidButton()}>
 				{handleSubmitState.isLoading ? <LoadingSpinner /> : <LucideDices />}{" "}
 				Roll {diceCount} {diceCount === 1 ? "die" : "dice"}
 			</button>
 		</form>
+	)
+}
+
+function ReceiptItem({
+	name,
+	value,
+}: {
+	name: React.ReactNode
+	value: React.ReactNode
+}) {
+	return (
+		<div className="flex flex-row gap-1">
+			<dt className="flex-1 opacity-70">{name}</dt>
+			<dd>{value}</dd>
+		</div>
 	)
 }
 
