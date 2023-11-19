@@ -37,6 +37,7 @@ export const roll = mutation({
 		label: v.optional(v.string()),
 		characterId: v.optional(v.id("characters")),
 		dice: v.array(v.object({ sides: v.number(), count: v.number() })),
+		secret: v.optional(v.boolean()),
 	},
 	handler: async (ctx, { dice, ...data }) => {
 		const user = await requirePlayerUser(ctx)

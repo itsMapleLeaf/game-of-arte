@@ -11,6 +11,7 @@ import {
 } from "../../components/CounterInput.tsx"
 import {
 	Field,
+	FieldDescription,
 	FieldInput,
 	FieldLabel,
 	FieldLabelText,
@@ -125,6 +126,7 @@ function AttributeRollForm({
 	const [label, setLabel] = useState("")
 	const [resilienceToUse, setResilienceToUse] = useState(0)
 	const [modifier, setModifier] = useState(0)
+	const [secret, setSecret] = useState(false)
 
 	const availableResilience =
 		toFiniteNumberOrUndefined(character.data.resilience) ?? 0
@@ -160,6 +162,7 @@ function AttributeRollForm({
 				type: "action",
 				dice: [{ count: diceCount, sides: 12 }],
 				characterId: character._id,
+				secret,
 			})
 			await updateCharacterData({
 				id: character._id,
@@ -172,7 +175,7 @@ function AttributeRollForm({
 	return (
 		<form
 			onSubmit={withPreventDefault(handleSubmit)}
-			className="grid w-56 gap-2 p-2"
+			className="grid w-64 gap-3 p-2"
 		>
 			<Field>
 				<FieldLabel>Label</FieldLabel>
@@ -203,16 +206,28 @@ function AttributeRollForm({
 				</Field>
 			)}
 
+			<Field>
+				<FieldLabel className="flex items-center gap-2">
+					Secret{" "}
+					<FieldInput
+						type="checkbox"
+						checked={secret}
+						onChange={(event) => {
+							setSecret(event.currentTarget.checked)
+						}}
+						className="accent-accent-500 s-4"
+					/>
+				</FieldLabel>
+				<FieldDescription>Only you and the GM will see this.</FieldDescription>
+			</Field>
+
 			<dl className="tabular-nums">
 				<ReceiptItem name="Base Roll" value={baseDiceCount} />
-				{stressModifier !== 0 && (
-					<ReceiptItem name="Stress" value={formatSigned(stressModifier)} />
-				)}
 				{isArchetypeAttribute && (
 					<ReceiptItem name="Archetype" value={formatSigned(2)} />
 				)}
-				{modifier !== 0 && (
-					<ReceiptItem name="Manual" value={formatSigned(modifier)} />
+				{stressModifier !== 0 && (
+					<ReceiptItem name="Stress" value={formatSigned(stressModifier)} />
 				)}
 				{resilienceToUse > 0 && (
 					<ReceiptItem
@@ -220,11 +235,15 @@ function AttributeRollForm({
 						value={formatSigned(resilienceToUse)}
 					/>
 				)}
+				{modifier !== 0 && (
+					<ReceiptItem name="Manual" value={formatSigned(modifier)} />
+				)}
 			</dl>
 
 			<button type="submit" className={solidButton()}>
 				{handleSubmitState.isLoading ? <LoadingSpinner /> : <LucideDices />}{" "}
-				Roll {diceCount} {diceCount === 1 ? "die" : "dice"}
+				Roll {diceCount} {diceCount === 1 ? "die" : "dice"}{" "}
+				{secret && "(secretly)"}
 			</button>
 		</form>
 	)

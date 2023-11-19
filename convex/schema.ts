@@ -42,6 +42,7 @@ export default defineSchema({
 		characterId: v.optional(v.id("characters")),
 		dice: diceSchema,
 		resilienceCollected: v.optional(v.boolean()),
+		secret: v.optional(v.boolean()),
 	}),
 
 	clocks: defineTable({
