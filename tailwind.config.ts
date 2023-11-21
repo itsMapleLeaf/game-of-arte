@@ -1,5 +1,6 @@
 import { tailwindExtensions } from "@itsmapleleaf/configs/tailwind"
 import type { Config } from "tailwindcss"
+import animate from "tailwindcss-animate"
 import colors from "tailwindcss/colors"
 import plugin from "tailwindcss/plugin"
 
@@ -19,6 +20,7 @@ export default {
 		},
 	},
 	plugins: [
+		animate,
 		plugin(function customPreflight(api) {
 			api.addBase({
 				":focus": {
