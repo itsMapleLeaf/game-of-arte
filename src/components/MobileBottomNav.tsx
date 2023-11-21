@@ -81,15 +81,13 @@ function TabContent({
 }) {
 	return (
 		<div className="flex flex-col items-center gap-1 py-2.5 text-center text-xs font-medium leading-none">
-			{typeof Icon === "string" ? (
+			{typeof Icon === "string" ?
 				<img
 					src={Icon}
 					alt=""
 					className={twMerge("rounded-full s-6", iconClass)}
 				/>
-			) : (
-				<Icon className={twMerge("s-6", iconClass)} />
-			)}
+			:	<Icon className={twMerge("s-6", iconClass)} />}
 			<span>{label}</span>
 		</div>
 	)

@@ -65,7 +65,7 @@ export function AttributeInput({
 			</div>
 			<div className="flex items-center gap-2">
 				<div className="flex-1">
-					{editable ? (
+					{editable ?
 						<CounterInput
 							{...props}
 							value={value}
@@ -73,12 +73,11 @@ export function AttributeInput({
 							min={1}
 							max={5}
 						/>
-					) : (
-						<p className={input("text-center tabular-nums")}>
+					:	<p className={input("text-center tabular-nums")}>
 							{value}
 							<span className="opacity-50">/5</span>
 						</p>
-					)}
+					}
 				</div>
 				<Popover open={popoverOpen} onOpenChange={setPopoverOpen}>
 					<PopoverTrigger
@@ -223,7 +222,9 @@ function AttributeRollForm({
 			</dl>
 
 			<button type="submit" className={solidButton()}>
-				{handleSubmitState.isLoading ? <LoadingSpinner /> : <LucideDices />}{" "}
+				{handleSubmitState.isLoading ?
+					<LoadingSpinner />
+				:	<LucideDices />}{" "}
 				Roll {diceCount} {diceCount === 1 ? "die" : "dice"}
 			</button>
 		</form>

@@ -173,7 +173,7 @@ export function CharacterDetails() {
 
 					<div className={row("fluid-cols-36")}>
 						<RandomizeStatsButton character={character} />
-						{attributesLocked ? (
+						{attributesLocked ?
 							<button
 								type="button"
 								className={solidButton()}
@@ -181,15 +181,14 @@ export function CharacterDetails() {
 							>
 								<LucideUnlock /> Unlock Stats
 							</button>
-						) : (
-							<button
+						:	<button
 								type="button"
 								className={solidButton()}
 								onClick={() => setAttributesLocked(!attributesLocked)}
 							>
 								<LucideLock /> Lock Stats
 							</button>
-						)}
+						}
 					</div>
 				</section>
 			</div>
@@ -371,9 +370,9 @@ const getStressModifier = (
 	attributeSectionTitle: string,
 ): number => {
 	const stressValue =
-		attributeSectionTitle === "Physical"
-			? character.data.physicalStress
-			: character.data.mentalStress
+		attributeSectionTitle === "Physical" ?
+			character.data.physicalStress
+		:	character.data.mentalStress
 
 	return (toFiniteNumberOrUndefined(stressValue) ?? 0) * -1
 }

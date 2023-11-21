@@ -21,17 +21,16 @@ export function PlayerList() {
 	return (
 		<div className="flex h-full flex-col divide-y divide-base-800">
 			<NewPlayerForm />
-			{players.length === 0 ? (
+			{players.length === 0 ?
 				<p className="p-3">No players have been added yet.</p>
-			) : (
-				<ul className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-3">
+			:	<ul className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-3">
 					{players.map((player) => (
 						<li key={player._id}>
 							<PlayerListItem player={player} />
 						</li>
 					))}
 				</ul>
-			)}
+			}
 		</div>
 	)
 }
@@ -66,7 +65,9 @@ function NewPlayerForm() {
 				placeholder="Discord User ID (e.g. 123456789012345678)"
 			/>
 			<button type="submit" className="p-2">
-				{isLoading ? <LoadingSpinner /> : <LucideUserPlus />}
+				{isLoading ?
+					<LoadingSpinner />
+				:	<LucideUserPlus />}
 				<span className="sr-only">Add Player</span>
 			</button>
 		</form>
