@@ -34,7 +34,7 @@ export function compareKey<K extends PropertyKey>(key: K) {
 
 export function randomItem<Items extends readonly unknown[]>(
 	items: readonly [...Items],
-): Items[number] {
+): number extends Items["length"] ? Items[number] | undefined : Items[number] {
 	return items[Math.floor(Math.random() * items.length)]
 }
 
