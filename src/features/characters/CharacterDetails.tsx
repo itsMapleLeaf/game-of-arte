@@ -308,7 +308,9 @@ function RandomizeStatsButton({ character }: { character: Doc<"characters"> }) {
 				[knowledgeAttributeCategory, 0.5] as const,
 			])
 
-			const attributeKey = randomItem(category.attributes.map((a) => a.dataKey))
+			const attributeKey = expectNonNil(
+				randomItem(category.attributes.map((a) => a.dataKey)),
+			)
 
 			// if the attribute is already at 5, try again
 			if (newStats[attributeKey] === 5) {
