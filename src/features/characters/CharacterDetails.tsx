@@ -301,18 +301,14 @@ function RandomizeStatsButton({ character }: { character: Doc<"characters"> }) {
 		)
 
 		for (let i = 0; i < world.experience; i++) {
-			const category = expectNonNil(
-				randomItemWeighted([
-					[physicalAttributeCategory, 1],
-					[mentalAttributeCategory, 1],
-					[socialAttributeCategory, 1],
-					[knowledgeAttributeCategory, 0.5],
-				]),
-			)
+			const category = randomItemWeighted([
+				[physicalAttributeCategory, 1] as const,
+				[mentalAttributeCategory, 1] as const,
+				[socialAttributeCategory, 1] as const,
+				[knowledgeAttributeCategory, 0.5] as const,
+			])
 
-			const attributeKey = expectNonNil(
-				randomItem(category.attributes.map((a) => a.dataKey)),
-			)
+			const attributeKey = randomItem(category.attributes.map((a) => a.dataKey))
 
 			// if the attribute is already at 5, try again
 			if (newStats[attributeKey] === 5) {
@@ -385,8 +381,8 @@ function getUsedExperience(character: Doc<"characters">) {
 }
 
 function randomItemWeighted<
-	Items extends readonly [item: unknown, weight: number][],
->(items: Items): Items[number][0] | undefined {
+	Items extends readonly (readonly [item: unknown, weight: number])[],
+>(items: Items): Items[number][0] {
 	const totalWeight = items.reduce((sum, [, weight]) => sum + weight, 0)
 
 	const itemsWithDistributions: [Items[number][0], number][] = []
