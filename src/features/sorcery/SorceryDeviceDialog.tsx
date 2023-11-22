@@ -26,7 +26,6 @@ import {
 	FieldLabelText,
 } from "~/components/Field.tsx"
 import { randomItem } from "~/helpers/index.ts"
-import { useOnce } from "~/helpers/useOnce.ts"
 import { clearButton, solidButton } from "~/styles/button.ts"
 import { input, textArea } from "~/styles/index.ts"
 import { panel } from "~/styles/panel.ts"
@@ -60,7 +59,7 @@ export function SorceryDeviceDialog({
 }
 
 function SorceryDeviceForm() {
-	const placeholder = useOnce(() => randomItem(placeholders))
+	const [placeholder] = useState(() => randomItem(placeholders))
 
 	const [selectedAffinitySpellIds, setSelectedAffinitySpellIds] = useState(
 		new Set<SorcerySpellId>(),
