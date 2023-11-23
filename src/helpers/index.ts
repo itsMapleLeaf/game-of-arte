@@ -1,4 +1,4 @@
-import type { NonEmptyArray } from "./types.ts"
+import type { NonEmptyArray, SafeArrayIndex } from "./types.ts"
 
 export function isUrl(value: string) {
 	try {
@@ -9,7 +9,7 @@ export function isUrl(value: string) {
 	}
 }
 
-export function parseNonEmptyArray<T>(value: readonly T[]): NonEmptyArray<T> {
+export function expectNonEmptyArray<T>(value: readonly T[]): NonEmptyArray<T> {
 	if (value.length === 0) {
 		throw new Error("Expected non-empty array")
 	}
@@ -33,8 +33,8 @@ export function compareKey<K extends PropertyKey>(key: K) {
 }
 
 export function randomItem<Items extends readonly unknown[]>(
-	items: readonly [...Items],
-): number extends Items["length"] ? Items[number] | undefined : Items[number] {
+	items: Items,
+): SafeArrayIndex<Items> {
 	return items[Math.floor(Math.random() * items.length)]
 }
 
