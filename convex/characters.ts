@@ -3,8 +3,8 @@ import { v } from "convex/values"
 import randimals from "randimals"
 import { compareKey } from "../src/helpers/index.ts"
 import { getRoles, requireAdmin, requirePlayerUser } from "./roles.ts"
-import { nullish, playerDataValidator } from "./schema.ts"
 import { findUserByTokenIdentifier } from "./users.ts"
+import { nullish, record } from "./validators.ts"
 
 export const list = query({
 	handler: async (ctx) => {
@@ -94,7 +94,7 @@ export const update = mutation({
 export const updateData = mutation({
 	args: {
 		id: v.id("characters"),
-		data: playerDataValidator(),
+		data: record<string | number>(),
 	},
 	handler: async (ctx, args) => {
 		await requirePlayerUser(ctx)

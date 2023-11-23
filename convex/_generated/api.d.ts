@@ -21,6 +21,7 @@ import type * as diceRolls from "../diceRolls.js";
 import type * as players from "../players.js";
 import type * as roles from "../roles.js";
 import type * as users from "../users.js";
+import type * as validators from "../validators.js";
 import type * as world from "../world.js";
 
 /**
@@ -39,6 +40,7 @@ declare const fullApi: ApiFromModules<{
   players: typeof players;
   roles: typeof roles;
   users: typeof users;
+  validators: typeof validators;
   world: typeof world;
 }>;
 export declare const api: FilterApi<
