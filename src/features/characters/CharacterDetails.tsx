@@ -315,6 +315,7 @@ function RandomizeStatsButton({ character }: { character: Doc<"characters"> }) {
 	const usedExperience = getUsedExperience(character)
 
 	const randomizeStats = () => {
+		// NOTE: if this function fails again, extract the logic and write a test
 		const newStats = Object.fromEntries(
 			allAttributes.map((attribute) => [attribute.dataKey, 1]),
 		)
