@@ -8,6 +8,7 @@
 		"dev:vite": "vite dev",
 		"dev:convex": "convex dev",
 		"dev:test": "vitest dev",
+		"dev:types": "tsc --noEmit --watch",
 		"build": "vite build",
 		"preview": "vite preview",
 		"lint": "biome check .",
