@@ -12,20 +12,23 @@ import { LoadingSuspense } from "./components/LoadingPlaceholder.tsx"
 import { env } from "./env.ts"
 import { AuthGuard } from "./features/auth/AuthGuard.tsx"
 import { expectNonNil } from "./helpers/errors.ts"
+import { TooltipProvider } from "./components/Tooltip.tsx"
 
 const convex = new ConvexReactClient(env.CONVEX_URL)
 
 createRoot(expectNonNil(document.querySelector("#root"))).render(
 	<ClerkProvider publishableKey={env.CLERK_PUBLISHABLE_KEY}>
 		<ConvexProviderWithClerk client={convex} useAuth={useAuth}>
-			<StrictMode>
-				<AuthGuard>
-					<AppTitle />
-					<LoadingSuspense className="fixed inset-0">
-						<App />
-					</LoadingSuspense>
-				</AuthGuard>
-			</StrictMode>
+			<TooltipProvider delayDuration={250}>
+				<StrictMode>
+					<AuthGuard>
+						<AppTitle />
+						<LoadingSuspense className="fixed inset-0">
+							<App />
+						</LoadingSuspense>
+					</AuthGuard>
+				</StrictMode>
+			</TooltipProvider>
 		</ConvexProviderWithClerk>
 	</ClerkProvider>,
 )
