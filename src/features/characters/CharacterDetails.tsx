@@ -40,6 +40,8 @@ import { solidButton } from "~/styles/button.ts"
 import { center, input, textArea } from "~/styles/index.ts"
 import { panel } from "~/styles/panel.ts"
 import { twMerge } from "~/styles/twMerge.ts"
+import { ChooseAffinitySpellsButton } from "../sorcery/ChooseAffinitySpellsButton.tsx"
+import { RemoveSorceryDeviceButton } from "../sorcery/RemoveSorceryDeviceButton.tsx"
 import { SorceryDeviceEditor } from "../sorcery/SorceryDeviceEditor.tsx"
 
 export function CharacterDetails() {
@@ -200,10 +202,17 @@ export function CharacterDetails() {
 
 						{character.sorceryDevice == null ?
 							<AddSorceryDeviceButton character={character} />
-						:	<SorceryDeviceEditor
-								character={character}
-								sorceryDevice={character.sorceryDevice}
-							/>
+						:	<>
+								<SorceryDeviceEditor
+									character={character}
+									sorceryDevice={character.sorceryDevice}
+								/>
+								<ChooseAffinitySpellsButton
+									character={character}
+									sorceryDevice={character.sorceryDevice}
+								/>
+								<RemoveSorceryDeviceButton character={character} />
+							</>
 						}
 					</section>
 				</div>

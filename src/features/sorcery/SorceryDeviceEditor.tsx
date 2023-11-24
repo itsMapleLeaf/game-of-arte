@@ -1,15 +1,7 @@
-import { api } from "convex/_generated/api"
 import type { Doc } from "convex/_generated/dataModel"
-import { useMutation } from "convex/react"
-import { LucideInfo, LucideSparkles, LucideX } from "lucide-react"
+import { LucideInfo } from "lucide-react"
 import { useState } from "react"
 import ExpandingTextArea from "react-expanding-textarea"
-import { ConfirmDialog } from "~/components/ConfirmDialog.tsx"
-import {
-	Dialog,
-	DialogTrigger,
-	SimpleDialogContent,
-} from "~/components/Dialog.tsx"
 import {
 	Field,
 	FieldDescription,
@@ -19,11 +11,11 @@ import {
 } from "~/components/Field.tsx"
 import { randomItem } from "~/helpers/index.ts"
 import type { NonEmptyArray } from "~/helpers/types.ts"
-import { clearButton, solidButton } from "~/styles/button.ts"
+import { clearButton } from "~/styles/button.ts"
 import { textArea } from "~/styles/index.ts"
 import { SorcerySpellDetailsButton } from "./SorcerySpellDetailsButton.tsx"
-import { SorcerySpellSelect } from "./SorcerySpellSelect.tsx"
 import { sorcerySpells } from "./data.ts"
+import { useSetSorceryDeviceMutation } from "./useSetSorceryDeviceMutation.tsx"
 
 export function SorceryDeviceEditor({
 	character,
@@ -36,21 +28,7 @@ export function SorceryDeviceEditor({
 		randomItem(descriptionPlaceholders),
 	)
 
-	const setSorceryDevice = useMutation(
-		api.characters.setSorceryDevice,
-	).withOptimisticUpdate((store, args) => {
-		const character = store.getQuery(api.characters.get, { id: args.id })
-		if (!character) return
-
-		store.setQuery(
-			api.characters.get,
-			{ id: args.id },
-			{
-				...character,
-				sorceryDevice: args.sorceryDevice ?? undefined,
-			},
-		)
-	})
+	const setSorceryDevice = useSetSorceryDeviceMutation()
 
 	const updateSorceryDevice = (
 		data: Partial<Doc<"characters">["sorceryDevice"]>,
@@ -110,61 +88,7 @@ export function SorceryDeviceEditor({
 					</FieldInput>
 				</Field>
 			)}
-
-			<ChooseAffinitySpellsButton
-				sorceryDevice={sorceryDevice}
-				onSubmit={(affinities) => {
-					updateSorceryDevice({ affinities })
-				}}
-			/>
-
-			<ConfirmDialog
-				title="Remove Sorcery Device"
-				description="Are you sure you want to remove this character's sorcery device?"
-				confirmText="Remove"
-				onConfirm={() => {
-					setSorceryDevice({
-						id: character._id,
-						sorceryDevice: null,
-					})
-				}}
-			>
-				<button type="button" className={solidButton()}>
-					<LucideX /> Remove Sorcery Device
-				</button>
-			</ConfirmDialog>
 		</>
-	)
-}
-
-function ChooseAffinitySpellsButton({
-	sorceryDevice,
-	onSubmit,
-}: {
-	sorceryDevice: NonNullable<Doc<"characters">["sorceryDevice"]>
-	onSubmit: (
-		affinities: NonNullable<Doc<"characters">["sorceryDevice"]>["affinities"],
-	) => void
-}) {
-	const [open, setOpen] = useState(false)
-	return (
-		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogTrigger type="button" className={solidButton()}>
-				<LucideSparkles /> Choose Affinity Spells
-			</DialogTrigger>
-			<SimpleDialogContent title="Choose Affinity Spells">
-				<SorcerySpellSelect
-					count={3}
-					initialSpellIds={Object.values(sorceryDevice.affinities ?? {})}
-					onSubmit={([first, second, third]) => {
-						if (first && second && third) {
-							onSubmit({ first, second, third })
-							setOpen(false)
-						}
-					}}
-				/>
-			</SimpleDialogContent>
-		</Dialog>
 	)
 }
 
