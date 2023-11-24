@@ -34,7 +34,10 @@ export function DialogPanel(props: React.ComponentPropsWithoutRef<"div">) {
 	return (
 		<div
 			{...props}
-			className={panel("rounded-md border shadow-md", props.className)}
+			className={panel(
+				"rounded-md border bg-base-950 shadow-md",
+				props.className,
+			)}
 		/>
 	)
 }
