@@ -12,7 +12,7 @@ import {
 } from "react"
 import { twMerge } from "tailwind-merge"
 import { autoRef } from "../helpers/autoRef.ts"
-import type { Spread } from "../helpers/types.ts"
+import type { Nullish, Spread } from "../helpers/types.ts"
 import { panel } from "../styles/panel.ts"
 
 const FieldContext = createContext({
@@ -27,8 +27,12 @@ export function useFieldContext() {
 
 export const Field = autoRef(function Field({
 	asChild,
+	errors,
 	...props
-}: ComponentPropsWithRef<"div"> & { asChild?: boolean }) {
+}: ComponentPropsWithRef<"div"> & {
+	asChild?: boolean
+	errors?: FieldErrorList
+}) {
 	const labelId = useId()
 	const inputId = useId()
 	const descriptionId = useId()
@@ -45,6 +49,7 @@ export const Field = autoRef(function Field({
 				{...props}
 				className={twMerge("flex min-w-0 flex-col gap-1", props.className)}
 			/>
+			<FieldErrors errors={errors} />
 		</FieldContext.Provider>
 	)
 })
@@ -146,21 +151,47 @@ export const FieldDescription = autoRef(function FieldDescription({
 	)
 })
 
+export type FieldErrorList = Nullish<string | string[]>
+
+export const FieldErrors = autoRef(function FieldErrors({
+	errors,
+	asChild,
+	...props
+}: ComponentPropsWithRef<"div"> & {
+	errors: FieldErrorList
+	asChild?: boolean
+}) {
+	const messages = [errors].flat().filter(Boolean)
+	const Component = asChild ? Slot : "div"
+	return messages.length === 0 ?
+			null
+		:	<Component role="alert" className="text-sm text-error-400" {...props}>
+				{messages.map((message) => (
+					<p key={message}>{message}</p>
+				))}
+			</Component>
+})
+
 export const FieldInput = autoRef(function FieldInput({
 	asChild,
+	errors,
 	...props
 }: ComponentPropsWithoutRef<"input"> & {
 	asChild?: boolean
+	errors?: FieldErrorList
 	ref?: ForwardedRef<HTMLInputElement>
 }) {
 	const context = useFieldContext()
 	const Component = asChild ? Slot : "input"
 	return (
-		<Component
-			id={context.inputId}
-			aria-labelledby={context.labelId}
-			aria-describedby={context.descriptionId}
-			{...props}
-		/>
+		<>
+			<FieldErrors errors={errors} />
+			<Component
+				id={context.inputId}
+				aria-labelledby={context.labelId}
+				aria-describedby={context.descriptionId}
+				{...props}
+			/>
+		</>
 	)
 })
