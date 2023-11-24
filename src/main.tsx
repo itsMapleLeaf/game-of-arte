@@ -9,10 +9,10 @@ import { createRoot } from "react-dom/client"
 import { App } from "./App.tsx"
 import { AppTitle } from "./AppTitle.tsx"
 import { LoadingSuspense } from "./components/LoadingPlaceholder.tsx"
+import { TooltipProvider } from "./components/Tooltip.tsx"
 import { env } from "./env.ts"
 import { AuthGuard } from "./features/auth/AuthGuard.tsx"
 import { expectNonNil } from "./helpers/errors.ts"
-import { TooltipProvider } from "./components/Tooltip.tsx"
 
 const convex = new ConvexReactClient(env.CONVEX_URL)
 
