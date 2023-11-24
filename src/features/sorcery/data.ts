@@ -1,7 +1,7 @@
 export interface SorcerySpell {
 	name: string
 	description: string
-	cost: { mana: number | "variable"; mentalStress?: number }
+	cost: { mana: number; mentalStress?: number }
 	castingTime?: { turns: number }
 	amplifiedDescription: string
 	drawbacks?: string[]
@@ -27,13 +27,13 @@ export const sorcerySpells: Record<SorcerySpellId, SorcerySpell> = {
 		cost: { mana: 2 },
 		drawbacks: [`You get burnt`],
 	},
-	counter: {
-		name: "Counter",
-		description: `Prevent the effect of another spell`,
-		amplifiedDescription: `Repeat the spell and modify it as if you casted it yourself`,
-		cost: { mana: "variable" },
-		drawbacks: [`The spell doesn’t get cancelled, but altered in some way`],
-	},
+	// counter: {
+	// 	name: "Counter",
+	// 	description: `Prevent the effect of another spell`,
+	// 	amplifiedDescription: `Repeat the spell and modify it as if you casted it yourself`,
+	// 	cost: { mana: "variable" },
+	// 	drawbacks: [`The spell doesn’t get cancelled, but altered in some way`],
+	// },
 	frost: {
 		name: "Frost",
 		description: `Accumulate water in the area and form it into an ice structure with the mass of a baseball`,
