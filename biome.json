@@ -20,7 +20,8 @@
 			},
 			"style": {
 				"noNegationElse": "warn",
-				"useSingleCaseStatement": "warn"
+				"useSingleCaseStatement": "warn",
+				"noUnusedTemplateLiteral": "off"
 			}
 		}
 	},
