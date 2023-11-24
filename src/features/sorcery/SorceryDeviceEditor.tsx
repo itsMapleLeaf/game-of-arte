@@ -1,10 +1,15 @@
 import { api } from "convex/_generated/api"
 import type { Doc } from "convex/_generated/dataModel"
 import { useMutation } from "convex/react"
-import { LucideX } from "lucide-react"
+import { LucideSparkles, LucideX } from "lucide-react"
 import { useState } from "react"
 import ExpandingTextArea from "react-expanding-textarea"
 import { ConfirmDialog } from "~/components/ConfirmDialog.tsx"
+import {
+	Dialog,
+	DialogTrigger,
+	SimpleDialogContent,
+} from "~/components/Dialog.tsx"
 import {
 	Field,
 	FieldDescription,
@@ -16,7 +21,9 @@ import { randomItem } from "~/helpers/index.ts"
 import type { NonEmptyArray } from "~/helpers/types.ts"
 import { solidButton } from "~/styles/button.ts"
 import { textArea } from "~/styles/index.ts"
+import { panel } from "~/styles/panel.ts"
 import { SorcerySpellSelect } from "./SorcerySpellSelect.tsx"
+import { sorcerySpells } from "./data.ts"
 
 export function SorceryDeviceEditor({
 	character,
@@ -74,21 +81,35 @@ export function SorceryDeviceEditor({
 				</FieldInput>
 			</Field>
 
-			<Field>
-				<FieldLabelText>Affinity Spells</FieldLabelText>
-				<FieldDescription>
-					Select three spells. This device will let you cast those spells more
-					often.
-				</FieldDescription>
-				<FieldInput asChild>
-					<SorcerySpellSelect
-						value={new Set(sorceryDevice.spellAffinityIds)}
-						onChange={(value) => {
-							updateSorceryDevice({ spellAffinityIds: [...value] })
-						}}
-					/>
-				</FieldInput>
-			</Field>
+			{sorceryDevice.affinities && (
+				<Field>
+					<FieldLabelText>Affinity Spells</FieldLabelText>
+					<FieldDescription>
+						You can cast affinity spells more often.
+					</FieldDescription>
+					<FieldInput asChild>
+						<ul className="flex flex-wrap gap-2">
+							{Object.values(sorceryDevice.affinities)
+								.flatMap((spellId) => {
+									const spell = sorcerySpells[spellId]
+									return spell ? [[spellId, spell] as const] : []
+								})
+								.map(([id, spell]) => (
+									<li key={id} className={panel("rounded border px-2 py-1")}>
+										{spell.name}
+									</li>
+								))}
+						</ul>
+					</FieldInput>
+				</Field>
+			)}
+
+			<ChooseAffinitySpellsButton
+				sorceryDevice={sorceryDevice}
+				onSubmit={(affinities) => {
+					updateSorceryDevice({ affinities })
+				}}
+			/>
 
 			<ConfirmDialog
 				title="Remove Sorcery Device"
@@ -106,6 +127,37 @@ export function SorceryDeviceEditor({
 				</button>
 			</ConfirmDialog>
 		</>
+	)
+}
+
+function ChooseAffinitySpellsButton({
+	sorceryDevice,
+	onSubmit,
+}: {
+	sorceryDevice: NonNullable<Doc<"characters">["sorceryDevice"]>
+	onSubmit: (
+		affinities: NonNullable<Doc<"characters">["sorceryDevice"]>["affinities"],
+	) => void
+}) {
+	const [open, setOpen] = useState(false)
+	return (
+		<Dialog open={open} onOpenChange={setOpen}>
+			<DialogTrigger type="button" className={solidButton()}>
+				<LucideSparkles /> Choose Affinity Spells
+			</DialogTrigger>
+			<SimpleDialogContent title="Choose Affinity Spells">
+				<SorcerySpellSelect
+					count={3}
+					initialSpellIds={Object.values(sorceryDevice.affinities ?? {})}
+					onSubmit={([first, second, third]) => {
+						if (first && second && third) {
+							onSubmit({ first, second, third })
+							setOpen(false)
+						}
+					}}
+				/>
+			</SimpleDialogContent>
+		</Dialog>
 	)
 }
 

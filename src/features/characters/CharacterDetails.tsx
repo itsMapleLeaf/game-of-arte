@@ -386,7 +386,7 @@ function AddSorceryDeviceButton({
 					id: character._id,
 					sorceryDevice: {
 						description: "",
-						spellAffinityIds: [],
+						affinities: null,
 					},
 				})
 			}}
