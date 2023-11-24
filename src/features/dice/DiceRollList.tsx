@@ -2,7 +2,7 @@ import { api } from "convex/_generated/api.js"
 import type { Id } from "convex/_generated/dataModel.js"
 import type { DiceRollListItem } from "convex/diceRolls.ts"
 import { useMutation } from "convex/react"
-import { LucideDices, LucideHexagon } from "lucide-react"
+import { LucideDices, LucidePentagon } from "lucide-react"
 import { Virtuoso } from "react-virtuoso"
 import { CounterInput } from "~/components/CounterInput.tsx"
 import {
@@ -113,7 +113,7 @@ function Diecon({
 			data-crit={crit}
 			className="relative flex items-center justify-center data-[crit=true]:text-green-400 data-[success=true]:text-blue-400"
 		>
-			<LucideHexagon className="s-10" strokeWidth={1} />
+			<LucidePentagon className="translate-y-[-2px] s-10" strokeWidth={1} />
 			<span className="absolute">{result}</span>
 		</li>
 	)
