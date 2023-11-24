@@ -10,7 +10,7 @@ import { useRef, useState } from "react"
 import { autoRef } from "~/helpers/autoRef.ts"
 import { plural } from "~/helpers/index.ts"
 import { setRemove } from "~/helpers/set.ts"
-import { clearButton, solidButton } from "~/styles/button.ts"
+import { clearButton, outlineButton, solidButton } from "~/styles/button.ts"
 import { input } from "~/styles/index.ts"
 import { SorcerySpellDetailsButton } from "./SorcerySpellDetailsButton"
 import { type SorcerySpellId, sorcerySpells } from "./data"
@@ -21,7 +21,7 @@ export const SorcerySpellSelect = autoRef(function SorcerySpellSelect({
 	onSubmit,
 }: {
 	count: number
-	initialSpellIds: Iterable<SorcerySpellId>
+	initialSpellIds?: Iterable<SorcerySpellId>
 	onSubmit: (spellIds: ReadonlySet<SorcerySpellId>) => void
 }) {
 	const [selected, setSelected] = useState<ReadonlySet<SorcerySpellId>>(
@@ -54,10 +54,10 @@ export const SorcerySpellSelect = autoRef(function SorcerySpellSelect({
 					}
 				>
 					{matchedSpells.map(([id, spell]) => (
-						<CompositeRow key={id} className="flex gap-1">
+						<CompositeRow key={id} className="flex">
 							<label
-								className={clearButton(
-									"flex flex-1 cursor-pointer items-center gap-2 border border-base-800 ring-inset ring-accent-400 ring-accent-400 hover:bg-base-900 [&:has(:checked)]:text-accent-400 [&:has(:focus-visible)]:ring-2",
+								className={outlineButton(
+									"flex-1 cursor-pointer gap-2 ring-inset ring-accent-400 [&:has(:checked)]:text-accent-400 [&:has(:focus-visible)]:ring-2",
 								)}
 							>
 								<CompositeItem
@@ -82,7 +82,9 @@ export const SorcerySpellSelect = autoRef(function SorcerySpellSelect({
 							<SorcerySpellDetailsButton spell={spell} asChild>
 								<CompositeItem
 									type="button"
-									className={clearButton("h-auto p-2")}
+									className={clearButton(
+										"aspect-square opacity-50 hover:bg-transparent hover:opacity-100",
+									)}
 								>
 									<LucideInfo aria-hidden />
 									<span className="sr-only">Learn more about {spell.name}</span>

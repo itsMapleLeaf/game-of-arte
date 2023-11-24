@@ -1,7 +1,7 @@
 import type { Doc } from "convex/_generated/dataModel"
 import { LucideX } from "lucide-react"
 import { ConfirmDialog } from "~/components/ConfirmDialog.tsx"
-import { solidButton } from "~/styles/button.ts"
+import { outlineButton } from "~/styles/button.ts"
 import { useSetSorceryDeviceMutation } from "./useSetSorceryDeviceMutation"
 
 export function RemoveSorceryDeviceButton({
@@ -23,7 +23,7 @@ export function RemoveSorceryDeviceButton({
 				})
 			}}
 		>
-			<button type="button" className={solidButton()}>
+			<button type="button" className={outlineButton()}>
 				<LucideX /> Remove Sorcery Device
 			</button>
 		</ConfirmDialog>

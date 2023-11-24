@@ -11,7 +11,7 @@ import {
 } from "~/components/Field.tsx"
 import { randomItem } from "~/helpers/index.ts"
 import type { NonEmptyArray } from "~/helpers/types.ts"
-import { clearButton } from "~/styles/button.ts"
+import { outlineButton } from "~/styles/button.ts"
 import { textArea } from "~/styles/index.ts"
 import { SorcerySpellDetailsButton } from "./SorcerySpellDetailsButton.tsx"
 import { sorcerySpells } from "./data.ts"
@@ -76,9 +76,7 @@ export function SorceryDeviceEditor({
 									<li key={id} className="contents">
 										<SorcerySpellDetailsButton
 											spell={spell}
-											className={clearButton(
-												"flex h-8 items-center gap-2 rounded border border-base-800 px-2",
-											)}
+											className={outlineButton()}
 										>
 											<LucideInfo className="s-4" /> {spell.name}
 										</SorcerySpellDetailsButton>

@@ -121,6 +121,11 @@ export const socialAttributeCategory = defineAttributeColumn({
 	].toSorted(compareKey("name")),
 })
 
+export const sorceryAttribute = defineAttribute({
+	name: "Sorcery",
+	description: "The act of mana manipulation to various means.",
+})
+
 export const knowledgeAttributeCategory = defineAttributeColumn({
 	title: "Knowledge",
 	archetypeName: "Scholar",
@@ -143,10 +148,7 @@ export const knowledgeAttributeCategory = defineAttributeColumn({
 			description:
 				"Plants, creatures, weather, spirits, and other natural terrestrial subjects, as well as survival.",
 		}),
-		defineAttribute({
-			name: "Sorcery",
-			description: "The act of mana manipulation to various means.",
-		}),
+		sorceryAttribute,
 		defineAttribute({
 			name: "Taboo",
 			description: "Demons, curses, and other such occultic matters.",

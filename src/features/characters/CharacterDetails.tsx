@@ -1,7 +1,14 @@
 import { api } from "convex/_generated/api"
 import type { Doc } from "convex/_generated/dataModel"
 import { useMutation } from "convex/react"
-import { LucideDices, LucideLock, LucideUnlock, LucideWand } from "lucide-react"
+import {
+	LucideDices,
+	LucideLock,
+	LucideSparkles,
+	LucideUnlock,
+	LucideWand,
+	LucideWand2,
+} from "lucide-react"
 import { cloneElement } from "react"
 import type { ClassNameValue } from "tailwind-merge"
 import * as v from "valibot"
@@ -36,10 +43,11 @@ import { expectNonNil } from "~/helpers/errors.ts"
 import { randomItem, toFiniteNumberOrUndefined } from "~/helpers/index.ts"
 import { useLocalStorageState } from "~/helpers/useLocalStorageState.tsx"
 import { useQuerySuspense } from "~/helpers/useQuerySuspense.ts"
-import { solidButton } from "~/styles/button.ts"
+import { outlineButton, solidButton } from "~/styles/button.ts"
 import { center, input, textArea } from "~/styles/index.ts"
 import { panel } from "~/styles/panel.ts"
 import { twMerge } from "~/styles/twMerge.ts"
+import { CastSpellButton } from "../sorcery/CastSpellButton.tsx"
 import { ChooseAffinitySpellsButton } from "../sorcery/ChooseAffinitySpellsButton.tsx"
 import { RemoveSorceryDeviceButton } from "../sorcery/RemoveSorceryDeviceButton.tsx"
 import { SorceryDeviceEditor } from "../sorcery/SorceryDeviceEditor.tsx"
@@ -207,10 +215,22 @@ export function CharacterDetails() {
 									character={character}
 									sorceryDevice={character.sorceryDevice}
 								/>
+								<CastSpellButton
+									character={character}
+									sorceryDevice={character.sorceryDevice}
+									type="button"
+									className={solidButton()}
+								>
+									<LucideWand2 /> Cast Spell
+								</CastSpellButton>
 								<ChooseAffinitySpellsButton
 									character={character}
 									sorceryDevice={character.sorceryDevice}
-								/>
+									type="button"
+									className={outlineButton()}
+								>
+									<LucideSparkles /> Choose Affinity Spells
+								</ChooseAffinitySpellsButton>
 								<RemoveSorceryDeviceButton character={character} />
 							</>
 						}

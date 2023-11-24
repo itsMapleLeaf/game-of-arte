@@ -1,19 +1,19 @@
+import type { DialogTriggerProps } from "@radix-ui/react-dialog"
 import type { Doc } from "convex/_generated/dataModel"
-import { LucideSparkles } from "lucide-react"
 import { useState } from "react"
 import {
 	Dialog,
 	DialogTrigger,
 	SimpleDialogContent,
 } from "~/components/Dialog.tsx"
-import { solidButton } from "~/styles/button.ts"
 import { SorcerySpellSelect } from "./SorcerySpellSelect.tsx"
 import { useSetSorceryDeviceMutation } from "./useSetSorceryDeviceMutation.tsx"
 
 export function ChooseAffinitySpellsButton({
 	character,
 	sorceryDevice,
-}: {
+	...props
+}: DialogTriggerProps & {
 	character: Doc<"characters">
 	sorceryDevice: NonNullable<Doc<"characters">["sorceryDevice"]>
 }) {
@@ -23,9 +23,7 @@ export function ChooseAffinitySpellsButton({
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
-			<DialogTrigger type="button" className={solidButton()}>
-				<LucideSparkles /> Choose Affinity Spells
-			</DialogTrigger>
+			<DialogTrigger {...props} />
 			<SimpleDialogContent title="Choose Affinity Spells">
 				<SorcerySpellSelect
 					count={3}
