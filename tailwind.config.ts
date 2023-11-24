@@ -21,6 +21,11 @@ export default {
 	},
 	plugins: [
 		animate,
+
+		plugin(function children(api) {
+			api.addVariant("children", "& > *:not([hidden])")
+		}),
+
 		plugin(function customPreflight(api) {
 			api.addBase({
 				":focus": {
