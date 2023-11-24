@@ -1,7 +1,7 @@
 import { api } from "convex/_generated/api"
 import type { Doc } from "convex/_generated/dataModel"
 import { useMutation } from "convex/react"
-import { LucideSparkles, LucideX } from "lucide-react"
+import { LucideInfo, LucideSparkles, LucideX } from "lucide-react"
 import { useState } from "react"
 import ExpandingTextArea from "react-expanding-textarea"
 import { ConfirmDialog } from "~/components/ConfirmDialog.tsx"
@@ -19,9 +19,9 @@ import {
 } from "~/components/Field.tsx"
 import { randomItem } from "~/helpers/index.ts"
 import type { NonEmptyArray } from "~/helpers/types.ts"
-import { solidButton } from "~/styles/button.ts"
+import { clearButton, solidButton } from "~/styles/button.ts"
 import { textArea } from "~/styles/index.ts"
-import { panel } from "~/styles/panel.ts"
+import { SorcerySpellDetailsButton } from "./SorcerySpellDetailsButton.tsx"
 import { SorcerySpellSelect } from "./SorcerySpellSelect.tsx"
 import { sorcerySpells } from "./data.ts"
 
@@ -95,8 +95,15 @@ export function SorceryDeviceEditor({
 									return spell ? [[spellId, spell] as const] : []
 								})
 								.map(([id, spell]) => (
-									<li key={id} className={panel("rounded border px-2 py-1")}>
-										{spell.name}
+									<li key={id} className="contents">
+										<SorcerySpellDetailsButton
+											spell={spell}
+											className={clearButton(
+												"flex h-8 items-center gap-2 rounded border border-base-800 px-2",
+											)}
+										>
+											<LucideInfo className="s-4" /> {spell.name}
+										</SorcerySpellDetailsButton>
 									</li>
 								))}
 						</ul>

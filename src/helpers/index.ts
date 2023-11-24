@@ -49,3 +49,14 @@ export function toUpperCaseTyped<T extends string>(value: T): Uppercase<T> {
 export function sleep(ms: number) {
 	return new Promise((resolve) => setTimeout(resolve, ms))
 }
+
+export function plural(
+	count: number,
+	word: string,
+	{
+		pluralWord = `${word}s`,
+		template = (count: number, word: string) => `${count} ${word}`,
+	} = {},
+) {
+	return template(count, count === 1 ? word : pluralWord)
+}
