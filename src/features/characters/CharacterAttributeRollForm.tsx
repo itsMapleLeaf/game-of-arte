@@ -25,6 +25,7 @@ export function CharacterAttributeRollForm({
 	attributeValue,
 	stressModifier,
 	isArchetypeAttribute,
+	isNonAffinitySpell,
 	defaultLabel = `${character.name}: ${attributeName}`,
 	onSuccess,
 }: {
@@ -33,6 +34,7 @@ export function CharacterAttributeRollForm({
 	attributeValue: number
 	stressModifier: number
 	isArchetypeAttribute: boolean
+	isNonAffinitySpell: boolean
 	defaultLabel?: string
 	onSuccess: () => void
 }) {
@@ -46,7 +48,11 @@ export function CharacterAttributeRollForm({
 		toFiniteNumberOrUndefined(character.data.resilience) ?? 0
 
 	const totalModifier =
-		modifier + resilienceToUse + stressModifier + (isArchetypeAttribute ? 2 : 0)
+		modifier +
+		resilienceToUse +
+		stressModifier +
+		(isArchetypeAttribute ? 2 : 0) +
+		(isNonAffinitySpell ? -2 : 0)
 
 	const baseDiceCount =
 		{
@@ -132,6 +138,9 @@ export function CharacterAttributeRollForm({
 						name="Resilience"
 						value={formatSigned(resilienceToUse)}
 					/>
+				)}
+				{isNonAffinitySpell && (
+					<ReceiptItem name="Non-Affinity" value={formatSigned(-2)} />
 				)}
 			</dl>
 

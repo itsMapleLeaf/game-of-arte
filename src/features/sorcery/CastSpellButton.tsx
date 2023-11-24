@@ -1,6 +1,7 @@
 import type { DialogTriggerProps } from "@radix-ui/react-dialog"
 import { api } from "convex/_generated/api.js"
 import type { Doc } from "convex/_generated/dataModel"
+import { useMutation } from "convex/react"
 import {
 	LucideAlertTriangle,
 	LucideArrowRight,
@@ -18,7 +19,6 @@ import {
 	FieldInput,
 	FieldLabel,
 } from "~/components/Field.tsx"
-import { expectNonNil } from "~/helpers/errors.ts"
 import { toFiniteNumberOrUndefined } from "~/helpers/index.ts"
 import { useQuerySuspense } from "~/helpers/useQuerySuspense.ts"
 import { outlineButton } from "~/styles/button.ts"
@@ -30,7 +30,7 @@ import {
 	sorceryAttribute,
 } from "../characters/attributes.ts"
 import { SorcerySpellSelect } from "./SorcerySpellSelect.tsx"
-import { type SorcerySpell, sorcerySpells } from "./data.ts"
+import { type SorcerySpellId, sorcerySpells } from "./data.ts"
 
 export function CastSpellButton({
 	character,
@@ -47,6 +47,7 @@ export function CastSpellButton({
 			<SimpleDialogContent title="Cast Spell">
 				<CastSpellForm
 					character={character}
+					sorceryDevice={sorceryDevice}
 					onSuccess={() => {
 						setOpen(false)
 					}}
@@ -58,13 +59,20 @@ export function CastSpellButton({
 
 function CastSpellForm({
 	character,
+	sorceryDevice,
 	onSuccess,
 }: {
 	character: Doc<"characters">
+	sorceryDevice: NonNullable<Doc<"characters">["sorceryDevice"]>
 	onSuccess: () => void
 }) {
 	const world = useQuerySuspense(api.world.get)
-	const [spell, setSpell] = useState<SorcerySpell>()
+	const subtractWorldMana = useMutation(api.world.subtractMana)
+	const updateCharacterData = useMutation(api.characters.updateData)
+
+	const [spellId, setSpellId] = useState<SorcerySpellId>()
+	const spell = spellId ? sorcerySpells[spellId] : undefined
+
 	const [amplify, setAmplify] = useState(false)
 
 	const worldMana = world.mana ?? 10
@@ -73,14 +81,13 @@ function CastSpellForm({
 		toFiniteNumberOrUndefined(character.data.mentalStress) ?? 0
 
 	const mentalStressCost = (spell?.cost.mentalStress ?? 0) + (amplify ? 1 : 0)
+	const finalMentalStress = Math.min(6, mentalStress + mentalStressCost)
+
+	const isAffinity =
+		spellId && Object.values(sorceryDevice.affinities ?? {}).includes(spellId)
 
 	return spell == null ?
-			<SorcerySpellSelect
-				count={1}
-				onSubmit={([spell]) => {
-					setSpell(sorcerySpells[expectNonNil(spell)])
-				}}
-			/>
+			<SorcerySpellSelect count={1} onSubmit={([id]) => setSpellId(id)} />
 		:	<div className="grid gap-4">
 				<section className="text-center" aria-label="Spell Details">
 					<h3 className="text-xl font-light">{spell.name}</h3>
@@ -107,15 +114,15 @@ function CastSpellForm({
 						<p
 							className={twMerge(
 								"flex items-center justify-center gap-1 transition",
-								mentalStress + mentalStressCost >= 6 && "text-red-400",
+								finalMentalStress >= 6 && "text-red-400",
 							)}
 						>
 							Mental Stress:
 							<span className="sr-only">from</span>
 							<strong>{mentalStress}</strong>
 							<LucideArrowRight aria-label="to" className="s-5" />
-							<strong>{Math.min(6, mentalStress + mentalStressCost)}</strong>
-							{mentalStress + mentalStressCost >= 6 && (
+							<strong>{Math.min(6, finalMentalStress)}</strong>
+							{finalMentalStress >= 6 && (
 								<LucideAlertTriangle className="s-5" />
 							)}
 						</p>
@@ -148,18 +155,35 @@ function CastSpellForm({
 					isArchetypeAttribute={
 						character.data.archetype === knowledgeAttributeCategory.archetypeId
 					}
+					isNonAffinitySpell={!isAffinity}
 					stressModifier={-mentalStress}
 					defaultLabel={`${character.name}: ${spell.name} (${sorceryAttribute.name})`}
-					onSuccess={onSuccess}
+					onSuccess={async () => {
+						await Promise.all([
+							subtractWorldMana({
+								amount: spell.cost.mana ?? 0,
+							}).catch(console.error),
+							updateCharacterData({
+								id: character._id,
+								data: {
+									mentalStress: Math.min(6, finalMentalStress),
+								},
+							}).catch(console.error),
+						])
+						onSuccess()
+					}}
 				/>
+
 				<button
 					type="button"
 					className={outlineButton()}
-					onClick={() => {
-						setSpell(undefined)
-					}}
+					onClick={() => setSpellId(undefined)}
 				>
 					<LucideChevronLeft /> Back
 				</button>
+
+				<aside className="text-center text-sm opacity-75">
+					Spell costs will be applied automatically after rolling.
+				</aside>
 			</div>
 }

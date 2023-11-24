@@ -85,6 +85,7 @@ export function AttributeInput({
 							attributeValue={toFiniteNumberOrUndefined(value) ?? 1}
 							stressModifier={stressModifier}
 							isArchetypeAttribute={isArchetypeAttribute}
+							isNonAffinitySpell={false}
 							onSuccess={() => {
 								setPopoverOpen(false)
 							}}
