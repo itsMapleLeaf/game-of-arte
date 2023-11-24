@@ -15,6 +15,7 @@ export default defineSchema({
 
 	worlds: defineTable({
 		experience: v.number(),
+		mana: v.optional(v.number()),
 	}),
 
 	players: defineTable({

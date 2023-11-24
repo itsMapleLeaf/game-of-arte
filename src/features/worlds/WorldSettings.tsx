@@ -18,7 +18,7 @@ export function WorldSettings() {
 
 	const update = useMutation(api.world.update).withOptimisticUpdate(
 		(store, args) => {
-			store.setQuery(api.world.get, {}, args)
+			store.setQuery(api.world.get, {}, { ...world, ...args })
 		},
 	)
 
