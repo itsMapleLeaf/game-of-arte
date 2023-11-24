@@ -11,7 +11,7 @@ import { autoRef } from "~/helpers/autoRef.ts"
 import { plural } from "~/helpers/index.ts"
 import { setRemove } from "~/helpers/set.ts"
 import { clearButton, outlineButton, solidButton } from "~/styles/button.ts"
-import { input } from "~/styles/index.ts"
+import { checkbox, input } from "~/styles/index.ts"
 import { SorcerySpellDetailsButton } from "./SorcerySpellDetailsButton"
 import { type SorcerySpellId, sorcerySpells } from "./data"
 
@@ -64,7 +64,7 @@ export const SorcerySpellSelect = autoRef(function SorcerySpellSelect({
 									render={
 										<input
 											type={count === 1 ? "radio" : "checkbox"}
-											className="accent-accent-400 s-4 focus-visible:ring-0"
+											className={checkbox("focus-visible:ring-0")}
 											checked={selected.has(id)}
 											onChange={(event) => {
 												setSelected((selected) =>

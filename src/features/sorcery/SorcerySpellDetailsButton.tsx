@@ -6,6 +6,7 @@ import {
 	SimpleDialogContent,
 } from "~/components/Dialog.tsx"
 import type { SorcerySpell } from "./data"
+import { formatSpellCost } from "./formatSpellCost"
 
 export function SorcerySpellDetailsButton({
 	spell,
@@ -23,14 +24,7 @@ export function SorcerySpellDetailsButton({
 					<h3 className="text-sm font-medium uppercase tracking-wide opacity-75">
 						Cost
 					</h3>
-					<p>
-						{[
-							`${spell.cost.mana === "variable" ? "X" : spell.cost.mana} mana`,
-							spell.cost.mentalStress && `${spell.cost.mentalStress} stress`,
-						]
-							.filter(Boolean)
-							.join(", ")}
-					</p>
+					<p>{formatSpellCost(spell)}</p>
 				</section>
 
 				<section>

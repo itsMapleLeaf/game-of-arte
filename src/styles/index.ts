@@ -12,3 +12,5 @@ export const textArea = twStyle(
 		"w-full min-w-0 resize-none rounded-md border px-3 py-2 leading-6 transition",
 	),
 )
+
+export const checkbox = twStyle("accent-accent-400 s-4")
