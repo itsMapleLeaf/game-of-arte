@@ -215,23 +215,26 @@ export function CharacterDetails() {
 									character={character}
 									sorceryDevice={character.sorceryDevice}
 								/>
-								<CastSpellButton
-									character={character}
-									sorceryDevice={character.sorceryDevice}
-									type="button"
-									className={solidButton()}
-								>
-									<LucideWand2 /> Cast Spell
-								</CastSpellButton>
-								<ChooseAffinitySpellsButton
-									character={character}
-									sorceryDevice={character.sorceryDevice}
-									type="button"
-									className={outlineButton()}
-								>
-									<LucideSparkles /> Choose Affinity Spells
-								</ChooseAffinitySpellsButton>
-								<RemoveSorceryDeviceButton character={character} />
+
+								<section className={column("gap-2")}>
+									<CastSpellButton
+										character={character}
+										sorceryDevice={character.sorceryDevice}
+										type="button"
+										className={solidButton()}
+									>
+										<LucideWand2 /> Cast Spell
+									</CastSpellButton>
+									<ChooseAffinitySpellsButton
+										character={character}
+										sorceryDevice={character.sorceryDevice}
+										type="button"
+										className={outlineButton()}
+									>
+										<LucideSparkles /> Choose Affinity Spells
+									</ChooseAffinitySpellsButton>
+									<RemoveSorceryDeviceButton character={character} />
+								</section>
 							</>
 						}
 					</section>
