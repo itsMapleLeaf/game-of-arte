@@ -26,6 +26,7 @@ export function ChooseAffinitySpellsButton({
 			<DialogTrigger {...props} />
 			<SimpleDialogContent title="Choose Affinity Spells">
 				<SorcerySpellSelect
+					sorceryDevice={sorceryDevice}
 					count={3}
 					initialSpellIds={Object.values(sorceryDevice.affinities ?? {})}
 					onSubmit={([first, second, third]) => {

@@ -4,9 +4,10 @@ import {
 	CompositeProvider,
 	CompositeRow,
 } from "@ariakit/react"
-import { LucideCheck, LucideInfo } from "lucide-react"
+import type { Doc } from "convex/_generated/dataModel.js"
+import { LucideCheck, LucideInfo, LucideSparkles } from "lucide-react"
 import { matchSorter } from "match-sorter"
-import { useRef, useState } from "react"
+import { useState } from "react"
 import { autoRef } from "~/helpers/autoRef.ts"
 import { plural } from "~/helpers/index.ts"
 import { setRemove } from "~/helpers/set.ts"
@@ -16,10 +17,12 @@ import { SorcerySpellDetailsButton } from "./SorcerySpellDetailsButton"
 import { type SorcerySpellId, sorcerySpells } from "./data"
 
 export const SorcerySpellSelect = autoRef(function SorcerySpellSelect({
+	sorceryDevice,
 	count,
 	initialSpellIds,
 	onSubmit,
 }: {
+	sorceryDevice: NonNullable<Doc<"characters">["sorceryDevice"]>
 	count: number
 	initialSpellIds?: Iterable<SorcerySpellId>
 	onSubmit: (spellIds: ReadonlySet<SorcerySpellId>) => void
@@ -28,8 +31,9 @@ export const SorcerySpellSelect = autoRef(function SorcerySpellSelect({
 		() => new Set(initialSpellIds),
 	)
 	const [search, setSearch] = useState("")
-	const buttonRef = useRef<HTMLButtonElement>(null)
-	const inputRef = useRef<HTMLInputElement>(null)
+	const affinitySpellIds = new Set(
+		Object.values(sorceryDevice.affinities ?? {}),
+	)
 
 	const matchedSpells = matchSorter(Object.entries(sorcerySpells), search, {
 		keys: ["1.name", "1.description", "1.amplifyDescription", "1.caveats"],
@@ -44,7 +48,6 @@ export const SorcerySpellSelect = autoRef(function SorcerySpellSelect({
 				onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
 					setSearch(event.target.value)
 				}}
-				ref={inputRef}
 			/>
 
 			<CompositeProvider focusLoop="vertical">
@@ -57,7 +60,7 @@ export const SorcerySpellSelect = autoRef(function SorcerySpellSelect({
 						<CompositeRow key={id} className="flex">
 							<label
 								className={outlineButton(
-									"flex-1 cursor-pointer gap-2 ring-inset ring-accent-400 [&:has(:checked)]:text-accent-400 [&:has(:focus-visible)]:ring-2",
+									"flex-1 cursor-pointer justify-start gap-2 ring-inset ring-accent-400 [&:has(:checked)]:text-accent-400 [&:has(:focus-visible)]:ring-2",
 								)}
 							>
 								<CompositeItem
@@ -76,7 +79,10 @@ export const SorcerySpellSelect = autoRef(function SorcerySpellSelect({
 										/>
 									}
 								/>
-								<div className="flex-1">{spell.name}</div>
+								{spell.name}
+								{affinitySpellIds.has(id) && (
+									<LucideSparkles aria-label="Affinity spell" />
+								)}
 							</label>
 
 							<SorcerySpellDetailsButton spell={spell} asChild>
@@ -103,7 +109,6 @@ export const SorcerySpellSelect = autoRef(function SorcerySpellSelect({
 						onClick={() => {
 							onSubmit(selected)
 						}}
-						ref={buttonRef}
 					>
 						<LucideCheck /> Confirm
 					</button>

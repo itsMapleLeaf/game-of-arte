@@ -87,7 +87,11 @@ function CastSpellForm({
 		spellId && Object.values(sorceryDevice.affinities ?? {}).includes(spellId)
 
 	return spell == null ?
-			<SorcerySpellSelect count={1} onSubmit={([id]) => setSpellId(id)} />
+			<SorcerySpellSelect
+				sorceryDevice={sorceryDevice}
+				count={1}
+				onSubmit={([id]) => setSpellId(id)}
+			/>
 		:	<div className="grid gap-4">
 				<section className="text-center" aria-label="Spell Details">
 					<h3 className="text-xl font-light">{spell.name}</h3>
