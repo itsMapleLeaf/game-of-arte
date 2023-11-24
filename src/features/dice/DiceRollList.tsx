@@ -12,6 +12,11 @@ import {
 	FieldLabelText,
 } from "~/components/Field.tsx"
 import { LoadingSuspense } from "~/components/LoadingPlaceholder.tsx"
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from "~/components/Tooltip.tsx"
 import { useAsyncCallback } from "~/helpers/useAsyncCallback.ts"
 import { useQuerySuspense } from "~/helpers/useQuerySuspense.ts"
 
@@ -68,12 +73,13 @@ function DiceRollDetails({ roll }: { roll: DiceRollListItem }) {
 						<Diecon
 							// biome-ignore lint/suspicious/noArrayIndexKey: no better key to use
 							key={index}
+							sides={die.sides}
 							result={die.result}
 							success={isSuccess(die.result)}
 							crit={isCriticalSuccess(die.result)}
 						/>
 						// biome-ignore lint/suspicious/noArrayIndexKey: no better key to use
-					:	<Diecon key={index} result={die.result} />,
+					:	<Diecon key={index} sides={die.sides} result={die.result} />,
 				)}
 			</ul>
 			<p className="text-sm leading-tight">
@@ -99,23 +105,30 @@ function DiceRollDetails({ roll }: { roll: DiceRollListItem }) {
 }
 
 function Diecon({
+	sides,
 	result,
 	success,
 	crit,
 }: {
+	sides: number
 	result: number
 	success?: boolean
 	crit?: boolean
 }) {
 	return (
-		<li
-			data-success={success}
-			data-crit={crit}
-			className="relative flex items-center justify-center data-[crit=true]:text-green-400 data-[success=true]:text-blue-400"
-		>
-			<LucidePentagon className="translate-y-[-2px] s-10" strokeWidth={1} />
-			<span className="absolute">{result}</span>
-		</li>
+		<Tooltip>
+			<TooltipTrigger>
+				<li
+					data-success={success}
+					data-crit={crit}
+					className="relative flex items-center justify-center data-[crit=true]:text-green-400 data-[success=true]:text-blue-400"
+				>
+					<LucidePentagon className="translate-y-[-2px] s-10" strokeWidth={1} />
+					<span className="absolute">{result}</span>
+				</li>
+			</TooltipTrigger>
+			<TooltipContent>d{sides}</TooltipContent>
+		</Tooltip>
 	)
 }
 
