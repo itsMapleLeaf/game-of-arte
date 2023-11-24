@@ -63,7 +63,7 @@ export function SorceryDeviceEditor({
 				<Field>
 					<FieldLabelText>Affinity Spells</FieldLabelText>
 					<FieldDescription>
-						You can cast affinity spells more often.
+						You can cast affinity spells more reliably.
 					</FieldDescription>
 					<FieldInput asChild>
 						<ul className="flex flex-wrap gap-2">
