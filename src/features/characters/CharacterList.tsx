@@ -62,49 +62,48 @@ function CharacterListItems({
 	const player = useQuerySuspense(api.players.self)
 	const currentCharacterId = useCurrentCharacterId()
 
-	return characters.length === 0 ? (
-		<p className="px-3 py-2 opacity-75">No characters found.</p>
-	) : (
-		<ul>
-			{characters
-				.toSorted(
-					(a, b) =>
-						Number(player?.ownedCharacterId === b._id) -
-						Number(player?.ownedCharacterId === a._id),
-				)
-				.map((character) => (
-					<li
-						key={character._id}
-						className="group/character-list-item relative"
-					>
-						<SetCharacterButton
-							characterId={character._id}
-							className={twMerge(
-								"group flex w-full gap-2 p-2 transition",
-								currentCharacterId === character._id
-									? "bg-base-800 opacity-100"
-									: "opacity-60 hover:opacity-100",
-								player?.ownedCharacterId === character._id && "text-accent-300",
-							)}
+	return characters.length === 0 ?
+			<p className="px-3 py-2 opacity-75">No characters found.</p>
+		:	<ul>
+				{characters
+					.toSorted(
+						(a, b) =>
+							Number(player?.ownedCharacterId === b._id) -
+							Number(player?.ownedCharacterId === a._id),
+					)
+					.map((character) => (
+						<li
+							key={character._id}
+							className="group/character-list-item relative"
 						>
-							<LucideUser className="group-data-[pending]:hidden" />
-							<LoadingSpinner className="hidden group-data-[pending]:block" />
-							<div className="min-w-0 flex-1">{character.name}</div>
-						</SetCharacterButton>
-						{roles.isAdmin && (
-							<CharacterMenu character={character}>
-								<button
-									type="button"
-									className="absolute inset-y-0 right-0 flex items-center p-2 opacity-0 transition hover:!opacity-100 group-hover/character-list-item:opacity-50"
-								>
-									<LucideMoreVertical className="s-5" />
-								</button>
-							</CharacterMenu>
-						)}
-					</li>
-				))}
-		</ul>
-	)
+							<SetCharacterButton
+								characterId={character._id}
+								className={twMerge(
+									"group flex w-full gap-2 p-2 transition",
+									currentCharacterId === character._id ?
+										"bg-base-800 opacity-100"
+									:	"opacity-60 hover:opacity-100",
+									player?.ownedCharacterId === character._id &&
+										"text-accent-300",
+								)}
+							>
+								<LucideUser className="group-data-[pending]:hidden" />
+								<LoadingSpinner className="hidden group-data-[pending]:block" />
+								<div className="min-w-0 flex-1">{character.name}</div>
+							</SetCharacterButton>
+							{roles.isAdmin && (
+								<CharacterMenu character={character}>
+									<button
+										type="button"
+										className="absolute inset-y-0 right-0 flex items-center p-2 opacity-0 transition hover:!opacity-100 group-hover/character-list-item:opacity-50"
+									>
+										<LucideMoreVertical className="s-5" />
+									</button>
+								</CharacterMenu>
+							)}
+						</li>
+					))}
+			</ul>
 }
 
 function CharacterMenu({
@@ -133,7 +132,9 @@ function ToggleHiddenItem({ character }: { character: Doc<"characters"> }) {
 				void update({ id: character._id, hidden: !character.hidden })
 			}}
 		>
-			{character.hidden ? <LucideEye /> : <LucideEyeOff />}
+			{character.hidden ?
+				<LucideEye />
+			:	<LucideEyeOff />}
 			{character.hidden ? "Show" : "Hide"}
 		</MenuItem>
 	)
@@ -179,7 +180,10 @@ function NewCharacterButton() {
 			}}
 			disabled={state.isLoading}
 		>
-			{state.isLoading ? <LoadingSpinner /> : <LucidePlus />} New Character
+			{state.isLoading ?
+				<LoadingSpinner />
+			:	<LucidePlus />}{" "}
+			New Character
 		</button>
 	)
 }

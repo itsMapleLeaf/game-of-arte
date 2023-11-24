@@ -48,12 +48,15 @@ function DiceRollDetails({ roll }: { roll: DiceRollListItem }) {
 	const isSuccess = (result: number) => result >= 9 && result <= 11
 	const isCriticalSuccess = (result: number) => result === 12
 
-	const dice = isAction
-		? roll.dice.toSorted((a, b) => b.result - a.result)
-		: roll.dice
+	const dice =
+		isAction ? roll.dice.toSorted((a, b) => b.result - a.result) : roll.dice
 
 	const successCount = roll.dice
-		.map((r) => (isCriticalSuccess(r.result) ? 2 : isSuccess(r.result) ? 1 : 0))
+		.map((r) =>
+			isCriticalSuccess(r.result) ? 2
+			: isSuccess(r.result) ? 1
+			: 0,
+		)
 		.reduce<number>((a, b) => a + b, 0)
 
 	return (
@@ -61,7 +64,7 @@ function DiceRollDetails({ roll }: { roll: DiceRollListItem }) {
 			{roll.label && <h2 className="text-lg/tight font-light">{roll.label}</h2>}
 			<ul className="-mx-1 flex flex-wrap items-center">
 				{dice.map((die, index) =>
-					isAction ? (
+					isAction ?
 						<Diecon
 							// biome-ignore lint/suspicious/noArrayIndexKey: no better key to use
 							key={index}
@@ -69,10 +72,8 @@ function DiceRollDetails({ roll }: { roll: DiceRollListItem }) {
 							success={isSuccess(die.result)}
 							crit={isCriticalSuccess(die.result)}
 						/>
-					) : (
 						// biome-ignore lint/suspicious/noArrayIndexKey: no better key to use
-						<Diecon key={index} result={die.result} />
-					),
+					:	<Diecon key={index} result={die.result} />,
 				)}
 			</ul>
 			<p className="text-sm leading-tight">

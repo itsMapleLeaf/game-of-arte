@@ -1,7 +1,14 @@
-import * as Dialog from "@radix-ui/react-dialog"
 import type { ReactNode } from "react"
-import { solidButton } from "../styles/button.ts"
-import { panel } from "../styles/panel.ts"
+import { clearButton, solidButton } from "../styles/button.ts"
+import {
+	Dialog,
+	DialogClose,
+	DialogContent,
+	DialogDescription,
+	DialogPanel,
+	DialogTitle,
+	DialogTrigger,
+} from "./Dialog.tsx"
 
 export function ConfirmDialog({
 	title,
@@ -19,36 +26,26 @@ export function ConfirmDialog({
 	children: React.ReactNode
 }) {
 	return (
-		<Dialog.Root>
-			<Dialog.Trigger asChild>{children}</Dialog.Trigger>
-			<Dialog.Portal>
-				<Dialog.Overlay className="fixed inset-0 flex flex-col overflow-y-auto bg-black bg-opacity-75 p-4">
-					<Dialog.Content
-						className={panel("m-auto rounded-md border p-4 shadow-md")}
-					>
-						<Dialog.Title className="mb-2 text-2xl font-light">
-							{title}
-						</Dialog.Title>
-
-						<Dialog.Description className="my-4">
-							{description}
-						</Dialog.Description>
-
-						<div className="flex justify-end gap-2">
-							<Dialog.Close className="h-10 rounded-md px-3 leading-none transition hover:bg-base-800">
-								{cancelText}
-							</Dialog.Close>
-							<Dialog.Close
-								type="button"
-								className={solidButton()}
-								onClick={onConfirm}
-							>
-								{confirmText}
-							</Dialog.Close>
-						</div>
-					</Dialog.Content>
-				</Dialog.Overlay>
-			</Dialog.Portal>
-		</Dialog.Root>
+		<Dialog>
+			<DialogTrigger asChild>{children}</DialogTrigger>
+			<DialogContent>
+				<DialogPanel className="p-4">
+					<DialogTitle className="mb-2 text-2xl font-light">
+						{title}
+					</DialogTitle>
+					<DialogDescription className="my-4">{description}</DialogDescription>
+					<div className="flex justify-end gap-2">
+						<DialogClose className={clearButton()}>{cancelText}</DialogClose>
+						<DialogClose
+							type="button"
+							className={solidButton()}
+							onClick={onConfirm}
+						>
+							{confirmText}
+						</DialogClose>
+					</div>
+				</DialogPanel>
+			</DialogContent>
+		</Dialog>
 	)
 }

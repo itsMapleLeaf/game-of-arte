@@ -1,4 +1,8 @@
 import * as BasePopover from "@radix-ui/react-popover"
+import {
+	radixAnimationFade,
+	radixAnimationSlideBottom,
+} from "~/styles/radixAnimations.ts"
 import { panel } from "../styles/panel.ts"
 
 export const Popover = BasePopover.Root
@@ -18,11 +22,12 @@ export function PopoverPanel({
 	return (
 		<BasePopover.Portal>
 			<>
-				<div className="pointer-events-none fixed inset-0 bg-black/75" />
 				<BasePopover.Content
 					{...props}
 					className={panel(
-						"overflow-clip rounded-md border shadow-md focus-visible:ring-0",
+						radixAnimationSlideBottom(),
+						radixAnimationFade(),
+						"origin-[--radix-popover-content-transform-origin] overflow-clip rounded-md border shadow-md focus-visible:ring-0",
 						className,
 					)}
 					sideOffset={8}

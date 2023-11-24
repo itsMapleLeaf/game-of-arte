@@ -1,4 +1,4 @@
-import type { NonEmptyArray } from "./types.ts"
+import type { NonEmptyArray, SafeArrayIndex } from "./types.ts"
 
 export function isUrl(value: string) {
 	try {
@@ -9,7 +9,7 @@ export function isUrl(value: string) {
 	}
 }
 
-export function parseNonEmptyArray<T>(value: readonly T[]): NonEmptyArray<T> {
+export function expectNonEmptyArray<T>(value: readonly T[]): NonEmptyArray<T> {
 	if (value.length === 0) {
 		throw new Error("Expected non-empty array")
 	}
@@ -32,7 +32,9 @@ export function compareKey<K extends PropertyKey>(key: K) {
 	}
 }
 
-export function randomItem<T>(items: readonly [...T[]]) {
+export function randomItem<Items extends readonly unknown[]>(
+	items: Items,
+): SafeArrayIndex<Items> {
 	return items[Math.floor(Math.random() * items.length)]
 }
 
@@ -46,4 +48,15 @@ export function toUpperCaseTyped<T extends string>(value: T): Uppercase<T> {
 
 export function sleep(ms: number) {
 	return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+export function plural(
+	count: number,
+	word: string,
+	{
+		pluralWord = `${word}s`,
+		template = (count: number, word: string) => `${count} ${word}`,
+	} = {},
+) {
+	return template(count, count === 1 ? word : pluralWord)
 }

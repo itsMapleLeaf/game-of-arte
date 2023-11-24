@@ -40,12 +40,38 @@ function ClockItems() {
 
 	return (
 		<ul className="min-h-0 flex-1 divide-y divide-base-800 overflow-y-auto">
+			<li className="flex flex-col gap-2 p-3">
+				<WorldManaClock />
+			</li>
 			{clocks.map((clock) => (
-				<li key={clock._id}>
+				<li key={clock._id} className="flex flex-col gap-2 p-3">
 					<ClockEditor clock={clock} />
 				</li>
 			))}
 		</ul>
+	)
+}
+
+const manaClockSize = 10
+
+function WorldManaClock() {
+	const world = useQuerySuspense(api.world.get)
+
+	const update = useMutation(api.world.update).withOptimisticUpdate(
+		(store, args) => {
+			store.setQuery(api.world.get, {}, { ...world, ...args })
+		},
+	)
+
+	return (
+		<>
+			<h3 className="text-center text-xl font-light">Mana</h3>
+			<ClockRangeInput
+				value={world.mana ?? manaClockSize}
+				maxValue={manaClockSize}
+				onChange={(mana) => update({ mana })}
+			/>
+		</>
 	)
 }
 
@@ -76,44 +102,8 @@ function ClockEditor({ clock }: { clock: Doc<"clocks"> }) {
 		},
 	)
 
-	const labelRef = useRef<HTMLLabelElement>(null)
-	const draggingRef = useRef(false)
-
-	const handleSliderUpdate = (
-		event: React.PointerEvent<HTMLLabelElement> | PointerEvent,
-	) => {
-		const rect = expectNonNil(labelRef.current).getBoundingClientRect()
-		const value = Math.round(
-			((event.clientX - (rect.left + 2)) / rect.width) * clock.maxValue,
-		)
-		void update({ id: clock._id, value: clamp(value, 0, clock.maxValue) })
-	}
-
-	useWindowEvent("pointermove", (event) => {
-		if (draggingRef.current) {
-			handleSliderUpdate(event)
-			event.preventDefault()
-		}
-	})
-
-	useWindowEvent("pointerup", (event) => {
-		if (draggingRef.current) {
-			draggingRef.current = false
-			event.preventDefault()
-		}
-	})
-
-	useWindowEvent("blur", (event) => {
-		if (draggingRef.current) {
-			draggingRef.current = false
-			event.preventDefault()
-		}
-	})
-
-	const valueId = useId()
-
 	return (
-		<div className="flex flex-col gap-2 p-3">
+		<>
 			<div className="flex gap-2">
 				<Field className="flex-1">
 					<FieldLabel size="sm">Name</FieldLabel>
@@ -157,52 +147,102 @@ function ClockEditor({ clock }: { clock: Doc<"clocks"> }) {
 					</button>
 				)}
 			</div>
+			<ClockRangeInput
+				value={clock.value}
+				maxValue={clock.maxValue}
+				onChange={(value) => {
+					void update({ id: clock._id, value })
+				}}
+			/>
+		</>
+	)
+}
 
-			<div className="relative col-span-full rounded-md">
-				<input
-					id={valueId}
-					type="range"
-					className="absolute inset-0 appearance-none opacity-0"
-					value={clock.value}
-					min={0}
-					max={clock.maxValue}
-					onChange={(event) => {
-						void update({
-							id: clock._id,
-							value: event.currentTarget.valueAsNumber,
-						})
+function ClockRangeInput({
+	value,
+	maxValue,
+	onChange,
+}: {
+	value: number
+	maxValue: number
+	onChange: (value: number) => void
+}) {
+	const labelRef = useRef<HTMLLabelElement>(null)
+	const draggingRef = useRef(false)
+
+	const handleSliderUpdate = (
+		event: React.PointerEvent<HTMLLabelElement> | PointerEvent,
+	) => {
+		const rect = expectNonNil(labelRef.current).getBoundingClientRect()
+		const value = Math.round(
+			((event.clientX - (rect.left + 2)) / rect.width) * maxValue,
+		)
+		onChange(clamp(value, 0, maxValue))
+	}
+
+	useWindowEvent("pointermove", (event) => {
+		if (draggingRef.current) {
+			handleSliderUpdate(event)
+			event.preventDefault()
+		}
+	})
+
+	useWindowEvent("pointerup", (event) => {
+		if (draggingRef.current) {
+			draggingRef.current = false
+			event.preventDefault()
+		}
+	})
+
+	useWindowEvent("blur", (event) => {
+		if (draggingRef.current) {
+			draggingRef.current = false
+			event.preventDefault()
+		}
+	})
+
+	const valueId = useId()
+
+	return (
+		<div className="relative col-span-full rounded-md">
+			<input
+				id={valueId}
+				type="range"
+				className="absolute inset-0 appearance-none opacity-0"
+				value={value}
+				min={0}
+				max={maxValue}
+				onChange={(event) => {
+					onChange(event.currentTarget.valueAsNumber)
+				}}
+			/>
+			<label
+				htmlFor={valueId}
+				ref={labelRef}
+				className="group relative flex h-8 w-full touch-none flex-row rounded-md border-2 border-accent-500 ring-accent-400 ring-no-inset focus-visible:ring-2"
+				onPointerDown={(event) => {
+					event.preventDefault()
+					draggingRef.current = true
+					handleSliderUpdate(event)
+				}}
+			>
+				<span className="sr-only">Value</span>
+				{[
+					...mapIterable(range(maxValue), (tick) => (
+						<div
+							key={tick}
+							className="absolute bottom-0 left-0 top-0 w-px bg-accent-500"
+							style={{ left: `${(tick / maxValue) * 100}%` }}
+						/>
+					)),
+				]}
+				<div
+					className="absolute inset-0 bg-accent-500/50"
+					style={{
+						width: `${(clamp(value, 0, maxValue) / maxValue) * 100}%`,
 					}}
 				/>
-				<label
-					htmlFor={valueId}
-					ref={labelRef}
-					className="group relative flex h-8 w-full touch-none flex-row rounded-md border-2 border-accent-500 ring-accent-400 ring-no-inset focus-visible:ring-2"
-					onPointerDown={(event) => {
-						event.preventDefault()
-						draggingRef.current = true
-						handleSliderUpdate(event)
-					}}
-				>
-					<span className="sr-only">Value</span>
-					{[
-						...mapIterable(range(clock.maxValue), (tick) => (
-							<div
-								key={tick}
-								className="absolute bottom-0 left-0 top-0 w-px bg-accent-500"
-								style={{ left: `${(tick / clock.maxValue) * 100}%` }}
-							/>
-						)),
-					]}
-					<div
-						className="absolute inset-0 bg-accent-500/50"
-						style={{
-							width: `${
-								(clamp(clock.value, 0, clock.maxValue) / clock.maxValue) * 100
-							}%`,
-						}}
-					/>
-				</label>
-			</div>
+			</label>
 		</div>
 	)
 }

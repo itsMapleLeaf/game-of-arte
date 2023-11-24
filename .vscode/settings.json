@@ -12,8 +12,8 @@
 
 	"eslint.enable": false,
 	"editor.codeActionsOnSave": {
-		"source.organizeImports.biome": true,
-		"source.fixAll": true
+		"source.organizeImports.biome": "explicit",
+		"source.fixAll": "explicit"
 	},
 
 	"tailwindCSS.experimental.classRegex": [

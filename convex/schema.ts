@@ -1,15 +1,8 @@
 import { defineSchema, defineTable } from "convex/server"
-import { type Validator, v } from "convex/values"
-
-export const nullish = <T>(validator: Validator<T>) =>
-	v.optional(v.union(validator, v.null()))
-
-export const playerDataValidator = () =>
-	v.any() as Validator<Record<string, string | number>>
-
-export const diceSchema = v.array(
-	v.object({ sides: v.number(), result: v.number() }),
-)
+import { v } from "convex/values"
+import { sorceryDeviceValidator } from "./characters.validators.ts"
+import { diceValidator } from "./diceRolls.validators.ts"
+import { record } from "./validators.ts"
 
 export default defineSchema({
 	users: defineTable({
@@ -22,6 +15,7 @@ export default defineSchema({
 
 	worlds: defineTable({
 		experience: v.number(),
+		mana: v.optional(v.number()),
 	}),
 
 	players: defineTable({
@@ -32,7 +26,8 @@ export default defineSchema({
 	characters: defineTable({
 		name: v.string(),
 		hidden: v.optional(v.boolean()),
-		data: playerDataValidator(),
+		data: record<string | number>(),
+		sorceryDevice: v.optional(sorceryDeviceValidator),
 	}),
 
 	diceRolls: defineTable({
@@ -40,7 +35,7 @@ export default defineSchema({
 		label: v.optional(v.string()),
 		discordUserId: v.string(),
 		characterId: v.optional(v.id("characters")),
-		dice: diceSchema,
+		dice: diceValidator,
 		resilienceCollected: v.optional(v.boolean()),
 	}),
 

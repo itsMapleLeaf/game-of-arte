@@ -1,10 +1,12 @@
-import { mutation, query } from "convex/_generated/server"
+import { type QueryCtx, mutation, query } from "convex/_generated/server"
 import { v } from "convex/values"
 import randimals from "randimals"
 import { compareKey } from "../src/helpers/index.ts"
+import type { Id } from "./_generated/dataModel"
+import { sorceryDeviceValidator } from "./characters.validators.ts"
 import { getRoles, requireAdmin, requirePlayerUser } from "./roles.ts"
-import { nullish, playerDataValidator } from "./schema.ts"
 import { findUserByTokenIdentifier } from "./users.ts"
+import { nullish, record } from "./validators.ts"
 
 export const list = query({
 	handler: async (ctx) => {
@@ -94,7 +96,7 @@ export const update = mutation({
 export const updateData = mutation({
 	args: {
 		id: v.id("characters"),
-		data: playerDataValidator(),
+		data: record<string | number>(),
 	},
 	handler: async (ctx, args) => {
 		await requirePlayerUser(ctx)
@@ -113,6 +115,19 @@ export const updateData = mutation({
 	},
 })
 
+export const setSorceryDevice = mutation({
+	args: {
+		id: v.id("characters"),
+		sorceryDevice: v.union(sorceryDeviceValidator, v.null()),
+	},
+	handler: async (ctx, args) => {
+		await requireOwnedCharacter(ctx, args.id)
+		await ctx.db.patch(args.id, {
+			sorceryDevice: args.sorceryDevice ?? undefined,
+		})
+	},
+})
+
 export const remove = mutation({
 	args: { id: v.id("characters") },
 	handler: async (ctx, args) => {
@@ -120,3 +135,37 @@ export const remove = mutation({
 		await ctx.db.delete(args.id)
 	},
 })
+
+async function requireOwnedCharacter(
+	ctx: QueryCtx,
+	characterId: Id<"characters">,
+) {
+	const character = await ctx.db.get(characterId)
+	if (!character) {
+		throw new Error(`Character not found: ${characterId}`)
+	}
+
+	const user = await requirePlayerUser(ctx)
+	if (user.discordUserId === process.env.ADMIN_DISCORD_USER_ID) {
+		return character
+	}
+
+	const player = await ctx.db
+		.query("players")
+		.withIndex("by_discord_user_id", (q) =>
+			q.eq("discordUserId", user.discordUserId),
+		)
+		.first()
+
+	if (!player) {
+		throw new Error(`User ${user.name} is not a player`)
+	}
+
+	if (player.ownedCharacterId !== character._id) {
+		throw new Error(
+			`User ${user.name} does not own character ${character.name}`,
+		)
+	}
+
+	return character
+}

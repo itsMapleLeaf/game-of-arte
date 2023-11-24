@@ -1,10 +1,18 @@
 import { api } from "convex/_generated/api"
 import type { Doc } from "convex/_generated/dataModel"
 import { useMutation } from "convex/react"
-import { LucideDices, LucideLock, LucideUnlock } from "lucide-react"
+import {
+	LucideDices,
+	LucideLock,
+	LucideSparkles,
+	LucideUnlock,
+	LucideWand,
+	LucideWand2,
+} from "lucide-react"
 import { cloneElement } from "react"
 import type { ClassNameValue } from "tailwind-merge"
 import * as v from "valibot"
+import { AsyncButton } from "~/components/AsyncButton.tsx"
 import { ConfirmDialog } from "~/components/ConfirmDialog.tsx"
 import {
 	Field,
@@ -35,10 +43,14 @@ import { expectNonNil } from "~/helpers/errors.ts"
 import { randomItem, toFiniteNumberOrUndefined } from "~/helpers/index.ts"
 import { useLocalStorageState } from "~/helpers/useLocalStorageState.tsx"
 import { useQuerySuspense } from "~/helpers/useQuerySuspense.ts"
-import { solidButton } from "~/styles/button.ts"
+import { outlineButton, solidButton } from "~/styles/button.ts"
 import { center, input, textArea } from "~/styles/index.ts"
 import { panel } from "~/styles/panel.ts"
 import { twMerge } from "~/styles/twMerge.ts"
+import { CastSpellButton } from "../sorcery/CastSpellButton.tsx"
+import { ChooseAffinitySpellsButton } from "../sorcery/ChooseAffinitySpellsButton.tsx"
+import { RemoveSorceryDeviceButton } from "../sorcery/RemoveSorceryDeviceButton.tsx"
+import { SorceryDeviceEditor } from "../sorcery/SorceryDeviceEditor.tsx"
 
 export function CharacterDetails() {
 	const character = useCurrentCharacter()
@@ -60,7 +72,7 @@ export function CharacterDetails() {
 	}
 
 	return (
-		<div className="grid flex-1 content-start gap-3 self-start">
+		<div className="grid flex-1 content-start gap-8 self-start">
 			<div className={row("fluid-cols-48")}>
 				<section className={column()}>
 					<h3 className={sectionHeading()}>Identity</h3>
@@ -78,18 +90,6 @@ export function CharacterDetails() {
 							/>
 						</FieldInput>
 					</Field>
-
-					<Field>
-						<FieldLabel>Reference Image</FieldLabel>
-						<FieldDescription>What do they look like?</FieldDescription>
-						<FieldInput asChild>
-							<CharacterDataImageInput character={character} dataKey="image" />
-						</FieldInput>
-					</Field>
-				</section>
-
-				<section className={column()}>
-					<h3 className={sectionHeading()}>Status</h3>
 
 					<Field>
 						<FieldLabel>Archetype</FieldLabel>
@@ -116,82 +116,129 @@ export function CharacterDetails() {
 					</Field>
 
 					<Field>
-						<FieldLabelText>Experience</FieldLabelText>
-						<FieldDescription>
-							Spend these points on attributes!
-						</FieldDescription>
-						<ExperienceDisplay character={character} />
-					</Field>
-
-					<div className={row("items-end gap-2")}>
-						<Field>
-							<FieldLabelText>Resilience</FieldLabelText>
-							<CharacterDataCounterInput
-								character={character}
-								dataKey="resilience"
-								min={0}
-								defaultValue={2}
-							/>
-						</Field>
-
-						<Field>
-							<FieldLabelText>Phys. Stress</FieldLabelText>
-							<CharacterDataCounterInput
-								character={character}
-								dataKey="physicalStress"
-								min={0}
-								max={6}
-								defaultValue={0}
-							/>
-						</Field>
-
-						<Field>
-							<FieldLabelText>Ment. Stress</FieldLabelText>
-							<CharacterDataCounterInput
-								character={character}
-								dataKey="mentalStress"
-								min={0}
-								max={6}
-								defaultValue={0}
-							/>
-						</Field>
-					</div>
-
-					<Field>
-						<FieldLabel>Condition</FieldLabel>
-						<FieldDescription>
-							{`Write specifics about the stress they've taken.`}
-						</FieldDescription>
+						<FieldLabel>Reference Image</FieldLabel>
+						<FieldDescription>What do they look like?</FieldDescription>
 						<FieldInput asChild>
-							<CharacterDataTextArea
-								character={character}
-								dataKey="condition"
-								className={textArea("max-h-40")}
-							/>
+							<CharacterDataImageInput character={character} dataKey="image" />
 						</FieldInput>
 					</Field>
-
-					<div className={row("fluid-cols-36")}>
-						<RandomizeStatsButton character={character} />
-						{attributesLocked ? (
-							<button
-								type="button"
-								className={solidButton()}
-								onClick={() => setAttributesLocked(!attributesLocked)}
-							>
-								<LucideUnlock /> Unlock Stats
-							</button>
-						) : (
-							<button
-								type="button"
-								className={solidButton()}
-								onClick={() => setAttributesLocked(!attributesLocked)}
-							>
-								<LucideLock /> Lock Stats
-							</button>
-						)}
-					</div>
 				</section>
+
+				<div className={column()}>
+					<section className={column()}>
+						<h3 className={sectionHeading()}>Status</h3>
+
+						<Field>
+							<FieldLabelText>Experience</FieldLabelText>
+							<FieldDescription>
+								Spend these points on attributes!
+							</FieldDescription>
+							<ExperienceDisplay character={character} />
+						</Field>
+
+						<div className={row("items-end gap-2")}>
+							<Field>
+								<FieldLabelText>Resilience</FieldLabelText>
+								<CharacterDataCounterInput
+									character={character}
+									dataKey="resilience"
+									min={0}
+									defaultValue={2}
+								/>
+							</Field>
+
+							<Field>
+								<FieldLabelText>Phys. Stress</FieldLabelText>
+								<CharacterDataCounterInput
+									character={character}
+									dataKey="physicalStress"
+									min={0}
+									max={6}
+									defaultValue={0}
+								/>
+							</Field>
+
+							<Field>
+								<FieldLabelText>Ment. Stress</FieldLabelText>
+								<CharacterDataCounterInput
+									character={character}
+									dataKey="mentalStress"
+									min={0}
+									max={6}
+									defaultValue={0}
+								/>
+							</Field>
+						</div>
+
+						<Field>
+							<FieldLabel>Condition</FieldLabel>
+							<FieldDescription>
+								{`Write specifics about the stress they've taken.`}
+							</FieldDescription>
+							<FieldInput asChild>
+								<CharacterDataTextArea
+									character={character}
+									dataKey="condition"
+									className={textArea("max-h-40")}
+								/>
+							</FieldInput>
+						</Field>
+
+						<div className={row("fluid-cols-36")}>
+							<RandomizeStatsButton character={character} />
+							{attributesLocked ?
+								<button
+									type="button"
+									className={solidButton()}
+									onClick={() => setAttributesLocked(!attributesLocked)}
+								>
+									<LucideUnlock /> Unlock Stats
+								</button>
+							:	<button
+									type="button"
+									className={solidButton()}
+									onClick={() => setAttributesLocked(!attributesLocked)}
+								>
+									<LucideLock /> Lock Stats
+								</button>
+							}
+						</div>
+					</section>
+
+					<section className={column()}>
+						<h3 className={sectionHeading()}>Sorcery</h3>
+
+						{character.sorceryDevice == null ?
+							<AddSorceryDeviceButton character={character} />
+						:	<>
+								<SorceryDeviceEditor
+									character={character}
+									sorceryDevice={character.sorceryDevice}
+								/>
+
+								<section className={column("gap-2")}>
+									<CastSpellButton
+										character={character}
+										sorceryDevice={character.sorceryDevice}
+										type="button"
+										className={solidButton()}
+									>
+										<LucideWand2 /> Cast Spell
+									</CastSpellButton>
+									<ChooseAffinitySpellsButton
+										character={character}
+										sorceryDevice={character.sorceryDevice}
+										type="button"
+										className={outlineButton()}
+									>
+										<LucideSparkles /> Choose Affinity Spells
+									</ChooseAffinitySpellsButton>
+									<RemoveSorceryDeviceButton character={character} />
+								</section>
+							</>
+						}
+					</section>
+				</div>
 			</div>
 
 			<div className={row("content-center fluid-cols-36")}>
@@ -297,19 +344,18 @@ function RandomizeStatsButton({ character }: { character: Doc<"characters"> }) {
 	const usedExperience = getUsedExperience(character)
 
 	const randomizeStats = () => {
+		// NOTE: if this function fails again, extract the logic and write a test
 		const newStats = Object.fromEntries(
 			allAttributes.map((attribute) => [attribute.dataKey, 1]),
 		)
 
 		for (let i = 0; i < world.experience; i++) {
-			const category = expectNonNil(
-				randomItemWeighted([
-					[physicalAttributeCategory, 1],
-					[mentalAttributeCategory, 1],
-					[socialAttributeCategory, 1],
-					[knowledgeAttributeCategory, 0.5],
-				]),
-			)
+			const category = randomItemWeighted([
+				[physicalAttributeCategory, 1] as const,
+				[mentalAttributeCategory, 1] as const,
+				[socialAttributeCategory, 1] as const,
+				[knowledgeAttributeCategory, 0.5] as const,
+			])
 
 			const attributeKey = expectNonNil(
 				randomItem(category.attributes.map((a) => a.dataKey)),
@@ -357,6 +403,31 @@ function RandomizeStatsButton({ character }: { character: Doc<"characters"> }) {
 	)
 }
 
+function AddSorceryDeviceButton({
+	character,
+}: {
+	character: Doc<"characters">
+}) {
+	const setSorceryDevice = useMutation(api.characters.setSorceryDevice)
+	return (
+		<AsyncButton
+			type="button"
+			className={solidButton()}
+			onClick={() => {
+				return setSorceryDevice({
+					id: character._id,
+					sorceryDevice: {
+						description: "",
+						affinities: null,
+					},
+				})
+			}}
+		>
+			<LucideWand /> Add Sorcery Device
+		</AsyncButton>
+	)
+}
+
 const row = (...classes: ClassNameValue[]) =>
 	twMerge("grid gap-3 fluid-cols-auto-fit fluid-cols-24", ...classes)
 
@@ -371,9 +442,9 @@ const getStressModifier = (
 	attributeSectionTitle: string,
 ): number => {
 	const stressValue =
-		attributeSectionTitle === "Physical"
-			? character.data.physicalStress
-			: character.data.mentalStress
+		attributeSectionTitle === "Physical" ?
+			character.data.physicalStress
+		:	character.data.mentalStress
 
 	return (toFiniteNumberOrUndefined(stressValue) ?? 0) * -1
 }
@@ -386,8 +457,8 @@ function getUsedExperience(character: Doc<"characters">) {
 }
 
 function randomItemWeighted<
-	Items extends readonly [item: unknown, weight: number][],
->(items: Items): Items[number][0] | undefined {
+	Items extends readonly (readonly [item: unknown, weight: number])[],
+>(items: Items): Items[number][0] {
 	const totalWeight = items.reduce((sum, [, weight]) => sum + weight, 0)
 
 	const itemsWithDistributions: [Items[number][0], number][] = []

@@ -1,6 +1,7 @@
 {
 	"extends": "@itsmapleleaf/configs/tsconfig.bundler.json",
 	"compilerOptions": {
+		"preserveWatchOutput": true,
 		"skipLibCheck": true,
 		"paths": {
 			"~/*": ["./src/*"],
