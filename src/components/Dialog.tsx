@@ -12,7 +12,7 @@ export const DialogClose = DialogBase.Close
 export function DialogContent(props: DialogBase.DialogContentProps) {
 	return (
 		<DialogBase.Portal>
-			<DialogBase.Overlay className="fixed inset-0 flex flex-col overflow-y-auto bg-black bg-opacity-75 p-4 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:fade-in">
+			<DialogBase.Overlay className="fixed inset-0 flex flex-col bg-black bg-opacity-75 p-4 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:fade-in">
 				<DialogBase.Content
 					{...props}
 					className={twMerge(
