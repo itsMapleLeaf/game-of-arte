@@ -12,11 +12,11 @@ export const DialogClose = DialogBase.Close
 export function DialogContent(props: DialogBase.DialogContentProps) {
 	return (
 		<DialogBase.Portal>
-			<DialogBase.Overlay className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:fade-in fixed inset-0 flex flex-col overflow-y-auto bg-black bg-opacity-75 p-4">
+			<DialogBase.Overlay className="fixed inset-0 flex flex-col overflow-y-auto bg-black bg-opacity-75 p-4 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:fade-in">
 				<DialogBase.Content
 					{...props}
 					className={twMerge(
-						"data-[state=open]:animate-in data-[state=open]:slide-in-from-bottom-2 data-[state=closed]:slide-out-to-bottom-2 data-[state=closed]:animate-out m-auto flex flex-col",
+						"m-auto flex flex-col data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:slide-out-to-bottom-2 data-[state=open]:slide-in-from-bottom-2",
 						props.className,
 					)}
 				>
@@ -36,5 +36,24 @@ export function DialogPanel(props: React.ComponentPropsWithoutRef<"div">) {
 			{...props}
 			className={panel("rounded-md border shadow-md", props.className)}
 		/>
+	)
+}
+
+export function SimpleDialogContent({
+	title,
+	children,
+}: {
+	title: React.ReactNode
+	children: React.ReactNode
+}) {
+	return (
+		<DialogContent className="w-full max-w-md">
+			<DialogPanel className="flex flex-col gap-3 p-4">
+				<DialogTitle className="text-center text-3xl font-light">
+					{title}
+				</DialogTitle>
+				{children}
+			</DialogPanel>
+		</DialogContent>
 	)
 }
