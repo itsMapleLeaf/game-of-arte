@@ -5,6 +5,7 @@ import { LucideDices, LucideLock, LucideUnlock, LucideWand } from "lucide-react"
 import { cloneElement } from "react"
 import type { ClassNameValue } from "tailwind-merge"
 import * as v from "valibot"
+import { AsyncButton } from "~/components/AsyncButton.tsx"
 import { ConfirmDialog } from "~/components/ConfirmDialog.tsx"
 import {
 	Field,
@@ -39,10 +40,7 @@ import { solidButton } from "~/styles/button.ts"
 import { center, input, textArea } from "~/styles/index.ts"
 import { panel } from "~/styles/panel.ts"
 import { twMerge } from "~/styles/twMerge.ts"
-import {
-	SorceryDeviceDialog,
-	SorceryDeviceDialogTrigger,
-} from "../sorcery/SorceryDeviceDialog.tsx"
+import { SorceryDeviceEditor } from "../sorcery/SorceryDeviceEditor.tsx"
 
 export function CharacterDetails() {
 	const character = useCurrentCharacter()
@@ -64,7 +62,7 @@ export function CharacterDetails() {
 	}
 
 	return (
-		<div className="grid flex-1 content-start gap-3 self-start">
+		<div className="grid flex-1 content-start gap-8 self-start">
 			<div className={row("fluid-cols-48")}>
 				<section className={column()}>
 					<h3 className={sectionHeading()}>Identity</h3>
@@ -84,6 +82,30 @@ export function CharacterDetails() {
 					</Field>
 
 					<Field>
+						<FieldLabel>Archetype</FieldLabel>
+						<FieldDescription>
+							The backbone of your character. Gives +2 dice to the corresponding
+							attribute category.
+						</FieldDescription>
+						<FieldInput asChild>
+							<CharacterDataSelectInput
+								character={character}
+								dataKey="archetype"
+								className={input("py-0")}
+							>
+								<option disabled value="">
+									Select an archetype
+								</option>
+								{attributes.map((category) => (
+									<option key={category.id} value={category.archetypeId}>
+										{category.archetypeName}
+									</option>
+								))}
+							</CharacterDataSelectInput>
+						</FieldInput>
+					</Field>
+
+					<Field>
 						<FieldLabel>Reference Image</FieldLabel>
 						<FieldDescription>What do they look like?</FieldDescription>
 						<FieldInput asChild>
@@ -95,30 +117,6 @@ export function CharacterDetails() {
 				<div className={column()}>
 					<section className={column()}>
 						<h3 className={sectionHeading()}>Status</h3>
-
-						<Field>
-							<FieldLabel>Archetype</FieldLabel>
-							<FieldDescription>
-								The backbone of your character. Gives +2 dice to the
-								corresponding attribute category.
-							</FieldDescription>
-							<FieldInput asChild>
-								<CharacterDataSelectInput
-									character={character}
-									dataKey="archetype"
-									className={input("py-0")}
-								>
-									<option disabled value="">
-										Select an archetype
-									</option>
-									{attributes.map((category) => (
-										<option key={category.id} value={category.archetypeId}>
-											{category.archetypeName}
-										</option>
-									))}
-								</CharacterDataSelectInput>
-							</FieldInput>
-						</Field>
 
 						<Field>
 							<FieldLabelText>Experience</FieldLabelText>
@@ -200,14 +198,13 @@ export function CharacterDetails() {
 					<section className={column()}>
 						<h3 className={sectionHeading()}>Sorcery</h3>
 
-						<SorceryDeviceDialog>
-							<SorceryDeviceDialogTrigger
-								type="button"
-								className={solidButton()}
-							>
-								<LucideWand /> Add Sorcery Device
-							</SorceryDeviceDialogTrigger>
-						</SorceryDeviceDialog>
+						{character.sorceryDevice == null ?
+							<AddSorceryDeviceButton character={character} />
+						:	<SorceryDeviceEditor
+								character={character}
+								sorceryDevice={character.sorceryDevice}
+							/>
+						}
 					</section>
 				</div>
 			</div>
@@ -371,6 +368,31 @@ function RandomizeStatsButton({ character }: { character: Doc<"characters"> }) {
 		>
 			{button}
 		</ConfirmDialog>
+	)
+}
+
+function AddSorceryDeviceButton({
+	character,
+}: {
+	character: Doc<"characters">
+}) {
+	const setSorceryDevice = useMutation(api.characters.setSorceryDevice)
+	return (
+		<AsyncButton
+			type="button"
+			className={solidButton()}
+			onClick={() => {
+				return setSorceryDevice({
+					id: character._id,
+					sorceryDevice: {
+						description: "",
+						spellAffinityIds: [],
+					},
+				})
+			}}
+		>
+			<LucideWand /> Add Sorcery Device
+		</AsyncButton>
 	)
 }
 
