@@ -1,3 +1,4 @@
+import * as ScrollArea from "@radix-ui/react-scroll-area"
 import { useRect } from "@reach/rect"
 import { useRef } from "react"
 import { LoadingSuspense } from "./components/LoadingPlaceholder.tsx"
@@ -29,17 +30,46 @@ export function App() {
 function ViewportHeightScrollArea({ children }: { children: React.ReactNode }) {
 	const referenceRef = useRef<HTMLDivElement>(null)
 	const rect = useRect(referenceRef)
+
+	const scrollAreaTop = referenceRef.current?.offsetTop
+
+	const scrollAreaBottom =
+		document.documentElement.scrollHeight -
+		((referenceRef.current?.offsetTop ?? 0) +
+			(referenceRef.current?.offsetHeight ?? 0))
+
 	return (
-		<div className="w-64" ref={referenceRef}>
+		<div
+			className="w-[280px]"
+			style={
+				{
+					"--scroll-area-top": `${scrollAreaTop ?? 0}px`,
+					"--scroll-area-bottom": `${scrollAreaBottom ?? 0}px`,
+				} as React.CSSProperties
+			}
+			ref={referenceRef}
+		>
 			<div
-				className="fixed bottom-0 top-0 overflow-y-auto pb-4"
+				className="fixed bottom-0 top-0"
 				style={{
 					left: rect?.left,
 					width: rect?.width,
-					paddingTop: referenceRef.current?.offsetTop,
 				}}
 			>
-				{children}
+				<ScrollArea.Root className="s-full">
+					<ScrollArea.Viewport
+						// there's a div inside with display: table that breaks horizontal sizing
+						className="pb-[--scroll-area-bottom] pr-3 pt-[--scroll-area-top] s-full [&>div]:!block"
+					>
+						{children}
+					</ScrollArea.Viewport>
+					<ScrollArea.Scrollbar
+						orientation="vertical"
+						className="w-1.5 pb-[--scroll-area-bottom] pt-[--scroll-area-top]"
+					>
+						<ScrollArea.Thumb className="rounded-full bg-white bg-opacity-25 transition-colors hover:bg-opacity-50 active:bg-accent-400" />
+					</ScrollArea.Scrollbar>
+				</ScrollArea.Root>
 			</div>
 		</div>
 	)
