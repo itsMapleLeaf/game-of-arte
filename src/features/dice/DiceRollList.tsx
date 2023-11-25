@@ -89,7 +89,7 @@ function DiceRollDetails({
 	return (
 		<div className="grid content-between gap-2 border-t border-base-800 px-2 py-3">
 			{roll.label && <h2 className="text-lg/tight font-light">{roll.label}</h2>}
-			<ul className="-mx-1 flex flex-wrap items-center">
+			<ul className="group/diecon-list -mx-1 flex flex-wrap items-center">
 				{roll.dice.map((die, index) => (
 					// biome-ignore lint/suspicious/noArrayIndexKey: no better key
 					<Diecon key={index} die={die} />
@@ -118,10 +118,10 @@ function DiceRollDetails({
 function Diecon({ die }: { die: Die }) {
 	return (
 		<Tooltip disableHoverableContent>
-			<TooltipTrigger>
+			<TooltipTrigger tabIndex={0} asChild>
 				<li
 					className={twMerge(
-						"relative flex items-center justify-center",
+						"relative flex cursor-default items-center justify-center rounded transition hover:!opacity-100 focus-visible:!opacity-100 group-hover/diecon-list:opacity-50 group-[:has(:focus-within)]/diecon-list:opacity-50",
 						die.color === "positive" && "text-blue-400",
 						die.color === "critical" && "text-green-400",
 						die.color === "negative" && "text-red-400",
