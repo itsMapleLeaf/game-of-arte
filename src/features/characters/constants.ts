@@ -2,6 +2,8 @@ export const ATTRIBUTE_MIN = 1
 export const ATTRIBUTE_MAX = 5
 export const ATTRIBUTE_DEFAULT = ATTRIBUTE_MIN
 
+export const ARCHETYPE_BONUS = 2
+
 export const RESILIENCE_MIN = 0
 export const RESILIENCE_DEFAULT = 2
 

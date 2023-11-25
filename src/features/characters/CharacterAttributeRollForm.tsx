@@ -27,7 +27,7 @@ import {
 } from "../dice/rules.ts"
 import { CharacterContext } from "./CharacterContext.tsx"
 import { type Attribute, attributeCategories } from "./attributes.ts"
-import { ACTION_DICE_COUNT_BY_LEVEL } from "./constants.ts"
+import { ACTION_DICE_COUNT_BY_LEVEL, ARCHETYPE_BONUS } from "./constants.ts"
 import { parseCharacterData } from "./data.ts"
 
 export function CharacterAttributeRollForm({
@@ -74,7 +74,7 @@ export function CharacterAttributeRollForm({
 		]
 
 	const boostDiceItems = [
-		{ label: "Archetype", value: isArchetypeAttribute ? 1 : 0 },
+		{ label: "Archetype", value: isArchetypeAttribute ? ARCHETYPE_BONUS : 0 },
 		{ label: "Resilience", value: resilienceToUse },
 		...extraBoostDiceItems,
 		{ label: "Extra Boost Dice", value: additionalBoostDice },
