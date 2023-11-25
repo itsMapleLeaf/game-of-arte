@@ -26,6 +26,13 @@ export default {
 			api.addVariant("children", "& > *:not([hidden])")
 		}),
 
+		plugin(function scrollbar(api) {
+			api.addVariant("scrollbar", "&::-webkit-scrollbar")
+			api.addVariant("scrollbar-thumb", "&::-webkit-scrollbar-thumb")
+			api.addVariant("scrollbar-track", "&::-webkit-scrollbar-track")
+			api.addVariant("scrollbar-corner", "&::-webkit-scrollbar-corner")
+		}),
+
 		plugin(function customPreflight(api) {
 			api.addBase({
 				":focus": {
