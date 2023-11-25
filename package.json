@@ -4,7 +4,7 @@
 	"scripts": {
 		"prepare": "husky install",
 		"codegen": "convex codegen",
-		"dev": "pnpm run /^dev:/",
+		"dev": "pnpm run --parallel /^dev:/",
 		"dev:vite": "vite dev",
 		"dev:convex": "convex dev",
 		"dev:test": "vitest dev",
