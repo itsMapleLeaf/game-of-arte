@@ -117,7 +117,7 @@ function DiceRollDetails({
 
 function Diecon({ die }: { die: Die }) {
 	return (
-		<Tooltip>
+		<Tooltip disableHoverableContent>
 			<TooltipTrigger>
 				<li
 					className={twMerge(
