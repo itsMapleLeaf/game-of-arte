@@ -84,7 +84,7 @@ const characterDataSchema = v.object({
 	),
 
 	archetype: v.fallback(
-		v.nullish(v.picklist(["athlete", "strategist", "empath", "scholar"])),
+		v.optional(v.picklist(["athlete", "strategist", "empath", "scholar"])),
 		undefined,
 	),
 })

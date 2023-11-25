@@ -1,7 +1,7 @@
 import { defineSchema, defineTable } from "convex/server"
 import { v } from "convex/values"
 import { sorceryDeviceValidator } from "./characters.validators.ts"
-import { diceValidator } from "./diceRolls.validators.ts"
+import { dieValidator } from "./diceRolls.validators.ts"
 import { record } from "./validators.ts"
 
 export default defineSchema({
@@ -35,7 +35,8 @@ export default defineSchema({
 		label: v.optional(v.string()),
 		discordUserId: v.string(),
 		characterId: v.optional(v.id("characters")),
-		dice: diceValidator,
+		dice: v.array(dieValidator),
+		hints: v.optional(v.array(v.string())),
 		resilienceCollected: v.optional(v.boolean()),
 	}),
 

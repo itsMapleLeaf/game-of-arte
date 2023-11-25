@@ -18,7 +18,13 @@ import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
 import { withPreventDefault } from "../../helpers/withPreventDefault.ts"
 import { solidButton } from "../../styles/button.ts"
 import { input } from "../../styles/index.ts"
+import type { DiceHint } from "../dice/DiceHint.ts"
 import { ACTION_DICE_SIDES, MODIFIER_DICE_SIDES } from "../dice/constants.ts"
+import {
+	ACTION_DICE_RULES,
+	BOOST_DICE_RULES,
+	SNAG_DICE_RULES,
+} from "../dice/rules.ts"
 import { CharacterContext } from "./CharacterContext.tsx"
 import { type Attribute, attributeCategories } from "./attributes.ts"
 import { ACTION_DICE_COUNT_BY_LEVEL } from "./constants.ts"
@@ -42,6 +48,7 @@ export function CharacterAttributeRollForm({
 
 	const roll = useMutation(api.diceRolls.roll)
 	const updateCharacterData = useMutation(api.characters.updateData)
+	const setHints = useMutation(api.diceRolls.setHints)
 
 	const [label, setLabel] = useState("")
 	const [resilienceToUse, setResilienceToUse] = useState(0)
@@ -84,33 +91,48 @@ export function CharacterAttributeRollForm({
 	const diceCount = actionDiceCount + boostDiceCount + snagDiceCount
 
 	const labelPlaceholder =
-		defaultLabel ?? `${character.name}: ${attribute.name}`
+		defaultLabel ??
+		`${character.name}: ${attribute.name} ${characterAttributeValue}`
 
 	const [handleSubmit, handleSubmitState] = useAsyncCallback(
 		async function handleSubmit() {
-			await roll({
+			const result = await roll({
 				label: label || labelPlaceholder,
 				type: "action",
 				dice: [
 					{
 						count: actionDiceCount,
 						sides: ACTION_DICE_SIDES,
+						rules: ACTION_DICE_RULES,
 					},
 					...boostDiceItems.map((item) => ({
 						count: item.value,
 						sides: MODIFIER_DICE_SIDES,
+						rules: BOOST_DICE_RULES,
 					})),
 					...snagDiceItems.map((item) => ({
 						count: item.value,
 						sides: MODIFIER_DICE_SIDES,
+						rules: SNAG_DICE_RULES,
 					})),
 				],
 				characterId: character._id,
 			})
+
 			await updateCharacterData({
 				id: character._id,
 				data: { resilience: characterData.resilience - resilienceToUse },
 			})
+
+			const successCount = sum(result.dice.map((die) => die.successes ?? 0))
+			if (successCount <= 0) {
+				const hints: DiceHint[] = ["collectResilience"]
+				await setHints({
+					rollId: result._id,
+					hints,
+				})
+			}
+
 			onSuccess()
 		},
 	)

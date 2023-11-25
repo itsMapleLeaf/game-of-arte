@@ -1,7 +1,7 @@
 import { v } from "convex/values"
-import { toFiniteNumberOrUndefined } from "../src/helpers/index.ts"
 import type { Doc } from "./_generated/dataModel"
 import { mutation, query } from "./_generated/server.js"
+import { type Die, diceRuleValidator } from "./diceRolls.validators.ts"
 import { requireAdmin, requirePlayerUser } from "./roles.ts"
 
 export type DiceRollListItem = Omit<Doc<"diceRolls">, "discordUserId"> & {
@@ -36,22 +36,39 @@ export const roll = mutation({
 		type: v.optional(v.literal("action")),
 		label: v.optional(v.string()),
 		characterId: v.optional(v.id("characters")),
-		dice: v.array(v.object({ sides: v.number(), count: v.number() })),
+		dice: v.array(
+			v.object({
+				sides: v.number(),
+				count: v.number(),
+				rules: v.optional(v.array(diceRuleValidator)),
+			}),
+		),
 	},
 	handler: async (ctx, { dice, ...data }) => {
 		const user = await requirePlayerUser(ctx)
 
-		const rolls = []
-		for (const dieItem of dice) {
-			for (let i = 0; i < dieItem.count; i++) {
+		const rolls: Die[] = []
+		for (const diceInput of dice) {
+			for (let i = 0; i < diceInput.count; i++) {
+				const result = Math.floor(Math.random() * diceInput.sides) + 1
+
+				const { range: _, ...props } =
+					diceInput.rules?.find(
+						(rule) =>
+							rule.range == null ||
+							(result >= (rule.range.min ?? 1) &&
+								result <= (rule.range.max ?? diceInput.sides)),
+					) ?? {}
+
 				rolls.push({
-					sides: dieItem.sides,
-					result: Math.floor(Math.random() * dieItem.sides) + 1,
+					...props,
+					sides: diceInput.sides,
+					result,
 				})
 			}
 		}
 
-		await ctx.db.insert("diceRolls", {
+		const id = await ctx.db.insert("diceRolls", {
 			...data,
 			discordUserId: user.discordUserId,
 			dice: rolls,
@@ -60,44 +77,25 @@ export const roll = mutation({
 		const allRolls = await ctx.db.query("diceRolls").collect()
 		const excessRolls = allRolls.slice(0, -maxRolls)
 		await Promise.all(excessRolls.map((r) => ctx.db.delete(r._id)))
+
+		return { _id: id, dice: rolls }
 	},
 })
 
-export const collectResilience = mutation({
+export const setHints = mutation({
 	args: {
-		id: v.id("diceRolls"),
+		rollId: v.id("diceRolls"),
+		hints: v.array(v.string()),
 	},
-	handler: async (ctx, args) => {
+	handler: async (ctx, { rollId, hints }) => {
 		await requirePlayerUser(ctx)
 
-		const roll = await ctx.db.get(args.id)
+		const roll = await ctx.db.get(rollId)
 		if (!roll) {
 			throw new Error("Roll not found")
 		}
 
-		if (!roll.characterId) {
-			throw new Error("Roll has no character")
-		}
-
-		if (roll.resilienceCollected) {
-			throw new Error("Resilience already collected")
-		}
-
-		const character = await ctx.db.get(roll.characterId)
-		if (!character) {
-			throw new Error("Character not found")
-		}
-
-		await Promise.all([
-			ctx.db.patch(args.id, { resilienceCollected: true }),
-			ctx.db.patch(character._id, {
-				data: {
-					...character.data,
-					resilience:
-						(toFiniteNumberOrUndefined(character.data.resilience) ?? 2) + 1,
-				},
-			}),
-		])
+		await ctx.db.patch(rollId, { hints })
 	},
 })
 
