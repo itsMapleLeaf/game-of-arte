@@ -52,6 +52,7 @@ import { ChooseAffinitySpellsButton } from "../sorcery/ChooseAffinitySpellsButto
 import { RemoveSorceryDeviceButton } from "../sorcery/RemoveSorceryDeviceButton.tsx"
 import { SorceryDeviceEditor } from "../sorcery/SorceryDeviceEditor.tsx"
 import { CharacterContext } from "./CharacterContext.tsx"
+import { Button } from "~/components/Button.tsx"
 
 export function CharacterDetails() {
 	const character = useCurrentCharacter()
@@ -223,14 +224,13 @@ export function CharacterDetails() {
 
 									{(character._id === ownedCharacter?._id || roles.isAdmin) && (
 										<section className={column("gap-2")}>
-											<CastSpellButton
-												character={character}
-												sorceryDevice={character.sorceryDevice}
-												type="button"
-												className={solidButton()}
-											>
-												<LucideWand2 /> Cast Spell
-											</CastSpellButton>
+											<Button icon={{ start: LucideWand2 }} asChild>
+												<CastSpellButton
+													sorceryDevice={character.sorceryDevice}
+												>
+													Cast Spell
+												</CastSpellButton>
+											</Button>
 											<ChooseAffinitySpellsButton
 												character={character}
 												sorceryDevice={character.sorceryDevice}

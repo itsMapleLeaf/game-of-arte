@@ -35,13 +35,13 @@ import {
 	type SorcerySpellId,
 	sorcerySpells,
 } from "./data.ts"
+import { CharacterContext } from "../characters/CharacterContext.tsx"
+import { parseCharacterData } from "../characters/data.ts"
 
 export function CastSpellButton({
-	character,
 	sorceryDevice,
 	...props
 }: DialogTriggerProps & {
-	character: Doc<"characters">
 	sorceryDevice: NonNullable<Doc<"characters">["sorceryDevice"]>
 }) {
 	const [open, setOpen] = useState(false)
@@ -50,7 +50,6 @@ export function CastSpellButton({
 			<DialogTrigger {...props} />
 			<SimpleDialogContent title="Cast Spell">
 				<CastSpellForm
-					character={character}
 					sorceryDevice={sorceryDevice}
 					onSuccess={() => {
 						setOpen(false)
@@ -62,14 +61,15 @@ export function CastSpellButton({
 }
 
 function CastSpellForm({
-	character,
 	sorceryDevice,
 	onSuccess,
 }: {
-	character: Doc<"characters">
 	sorceryDevice: NonNullable<Doc<"characters">["sorceryDevice"]>
 	onSuccess: () => void
 }) {
+	const character = CharacterContext.useValue()
+	const characterData = parseCharacterData(character.data)
+
 	const world = useQuerySuspense(api.world.get)
 	const subtractWorldMana = useMutation(api.world.subtractMana)
 	const updateCharacterData = useMutation(api.characters.updateData)
@@ -82,7 +82,7 @@ function CastSpellForm({
 	const worldMana = world.mana ?? WORLD_MANA_MAX
 
 	const mentalStress =
-		toFiniteNumberOrUndefined(character.data.mentalStress) ?? 0
+		toFiniteNumberOrUndefined(characterData.mentalStress) ?? 0
 
 	const mentalStressCost = (spell?.cost.mentalStress ?? 0) + (amplify ? 1 : 0)
 	const finalMentalStress = Math.min(

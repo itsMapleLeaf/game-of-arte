@@ -34,6 +34,8 @@ import { useQuerySuspense } from "~/helpers/useQuerySuspense.ts"
 import { twMerge } from "~/styles/twMerge.ts"
 import { parseCharacterData } from "../characters/data.ts"
 import { parseDiceHints } from "./DiceHint.ts"
+import { Button } from "~/components/Button.tsx"
+import { SrOnly } from "~/components/SrOnly.tsx"
 
 export function DiceRollList() {
 	return (
@@ -179,13 +181,26 @@ function CollectResilienceButton({
 	}
 
 	return (
-		<button
-			type="button"
-			className="justify-self-start rounded border border-base-600 bg-base-700/50 p-1.5 text-sm leading-none transition hover:bg-base-800"
-			onClick={collectResilience}
-		>
-			+1 Resilience
-		</button>
+		<div className="flex gap-1">
+			<Button
+				appearance="outline"
+				size="small"
+				pending={state.isLoading}
+				onClick={collectResilience}
+			>
+				+1 Resilience
+			</Button>
+			<Button
+				appearance="outline"
+				size="small"
+				square
+				pending={state.isLoading}
+				onClick={collectResilience}
+				icon={{ start: LucideX }}
+			>
+				<SrOnly>Hide resilience button</SrOnly>
+			</Button>
+		</div>
 	)
 }
 

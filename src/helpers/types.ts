@@ -40,3 +40,6 @@ typesAreEqual<SafeArrayIndex<[...number[], number]>, number>(true)
 typesAreEqual<SafeArrayIndex<[number, ...number[], number]>, number>(true)
 typesAreEqual<SafeArrayIndex<[]>, undefined>(true)
 typesAreEqual<SafeArrayIndex<number[]>, number | undefined>(true)
+
+/** Like {@link Omit}, but enforces that the keys are present in the type. */
+export type StrictOmit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
