@@ -82,7 +82,15 @@ export function AttributeInput({
 					>
 						<LucideDices />
 					</PopoverTrigger>
-					<PopoverPanel side="bottom" align="center" className="w-64 p-4">
+					<PopoverPanel
+						className="w-64 p-4"
+						// adding dice can sometimes cause layout shift,
+						// so we'll make it align end and disable collision avoidance
+						// to prevent that
+						side="bottom"
+						align="end"
+						avoidCollisions={false}
+					>
 						<CharacterAttributeRollForm
 							attribute={attribute}
 							onSuccess={() => setPopoverOpen(false)}
