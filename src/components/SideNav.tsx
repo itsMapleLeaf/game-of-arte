@@ -19,7 +19,7 @@ import { LoadingSuspense } from "./LoadingPlaceholder.tsx"
 export function SideNav() {
 	const roles = useQuerySuspense(api.roles.get)
 	return (
-		<section className="sticky bottom-8 mt-auto flex h-max w-64 flex-col gap-4">
+		<div className="flex flex-col gap-4">
 			<SideNavCollapsible title="Characters" icon={<LucideUsers />} open>
 				<CharacterList />
 			</SideNavCollapsible>
@@ -45,7 +45,7 @@ export function SideNav() {
 					<WorldSettings />
 				</SideNavCollapsible>
 			)}
-		</section>
+		</div>
 	)
 }
 
