@@ -21,7 +21,7 @@ import { input } from "../../styles/index.ts"
 import { ACTION_DICE_SIDES, MODIFIER_DICE_SIDES } from "../dice/constants.ts"
 import { CharacterContext } from "./CharacterContext.tsx"
 import { type Attribute, attributeCategories } from "./attributes.ts"
-import { DICE_COUNT_BY_LEVEL } from "./constants.ts"
+import { ACTION_DICE_COUNT_BY_LEVEL } from "./constants.ts"
 import { parseCharacterData } from "./data.ts"
 
 export function CharacterAttributeRollForm({
@@ -57,8 +57,8 @@ export function CharacterAttributeRollForm({
 	const isArchetypeAttribute =
 		characterData.archetype === attributeCategory.archetypeId
 
-	const baseDiceCount =
-		DICE_COUNT_BY_LEVEL[characterAttributeValue] ??
+	const actionDiceCount =
+		ACTION_DICE_COUNT_BY_LEVEL[characterAttributeValue] ??
 		raise(`Invalid attribute value ${characterAttributeValue}`)
 
 	const stress =
@@ -81,7 +81,7 @@ export function CharacterAttributeRollForm({
 	].filter((item) => item.value > 0)
 	const snagDiceCount = sum(snagDiceItems.map((item) => item.value))
 
-	const diceCount = baseDiceCount + boostDiceCount + snagDiceCount
+	const diceCount = actionDiceCount + boostDiceCount + snagDiceCount
 
 	const labelPlaceholder =
 		defaultLabel ?? `${character.name}: ${attribute.name}`
@@ -93,7 +93,7 @@ export function CharacterAttributeRollForm({
 				type: "action",
 				dice: [
 					{
-						count: diceCount,
+						count: actionDiceCount,
 						sides: ACTION_DICE_SIDES,
 					},
 					...boostDiceItems.map((item) => ({
@@ -159,8 +159,8 @@ export function CharacterAttributeRollForm({
 
 			<dl className="flex flex-col gap-1 tabular-nums">
 				<ReceiptItem
-					name="Base Roll"
-					value={baseDiceCount}
+					name="Action Dice"
+					value={actionDiceCount}
 					icon={<LucidePentagon className="s-5" />}
 				/>
 				{boostDiceItems.map((item) => (

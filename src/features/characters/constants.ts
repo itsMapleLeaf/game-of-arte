@@ -9,7 +9,7 @@ export const STRESS_MIN = 0
 export const STRESS_MAX = 6
 export const STRESS_DEFAULT = STRESS_MIN
 
-export const DICE_COUNT_BY_LEVEL: Record<number, number> = {
+export const ACTION_DICE_COUNT_BY_LEVEL: Record<number, number> = {
 	1: 1,
 	2: 2,
 	3: 4,
