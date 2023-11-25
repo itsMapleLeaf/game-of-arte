@@ -31,7 +31,7 @@ import {
 } from "~/features/characters/CharacterDataInput"
 import { CharacterNameInput } from "~/features/characters/CharacterNameInput"
 import {
-	allAttributes,
+	attributeCategories,
 	attributes,
 	knowledgeAttributeCategory,
 	mentalAttributeCategory,
@@ -51,6 +51,7 @@ import { CastSpellButton } from "../sorcery/CastSpellButton.tsx"
 import { ChooseAffinitySpellsButton } from "../sorcery/ChooseAffinitySpellsButton.tsx"
 import { RemoveSorceryDeviceButton } from "../sorcery/RemoveSorceryDeviceButton.tsx"
 import { SorceryDeviceEditor } from "../sorcery/SorceryDeviceEditor.tsx"
+import { CharacterContext } from "./CharacterContext.tsx"
 
 export function CharacterDetails() {
 	const character = useCurrentCharacter()
@@ -72,250 +73,250 @@ export function CharacterDetails() {
 	}
 
 	return (
-		<div className="grid flex-1 content-start gap-8 self-start">
-			<div className={row("fluid-cols-48")}>
-				<section className={column()}>
-					<h3 className={sectionHeading()}>Identity</h3>
-
-					<CharacterNameInput character={character} />
-
-					<Field>
-						<FieldLabel>Pronouns</FieldLabel>
-						<FieldDescription>How do they identify?</FieldDescription>
-						<FieldInput asChild>
-							<CharacterDataInput
-								character={character}
-								dataKey="pronouns"
-								className={input()}
-							/>
-						</FieldInput>
-					</Field>
-
-					<Field>
-						<FieldLabel>Archetype</FieldLabel>
-						<FieldDescription>
-							The backbone of your character. Gives +2 dice to the corresponding
-							attribute category.
-						</FieldDescription>
-						<FieldInput asChild>
-							<CharacterDataSelectInput
-								character={character}
-								dataKey="archetype"
-								className={input("py-0")}
-							>
-								<option disabled value="">
-									Select an archetype
-								</option>
-								{attributes.map((category) => (
-									<option key={category.id} value={category.archetypeId}>
-										{category.archetypeName}
-									</option>
-								))}
-							</CharacterDataSelectInput>
-						</FieldInput>
-					</Field>
-
-					<Field>
-						<FieldLabel>Reference Image</FieldLabel>
-						<FieldDescription>What do they look like?</FieldDescription>
-						<FieldInput asChild>
-							<CharacterDataImageInput character={character} dataKey="image" />
-						</FieldInput>
-					</Field>
-				</section>
-
-				<div className={column()}>
+		<CharacterContext.Provider value={character}>
+			<div className="grid flex-1 content-start gap-8 self-start">
+				<div className={row("fluid-cols-48")}>
 					<section className={column()}>
-						<h3 className={sectionHeading()}>Status</h3>
+						<h3 className={sectionHeading()}>Identity</h3>
+
+						<CharacterNameInput character={character} />
 
 						<Field>
-							<FieldLabelText>Experience</FieldLabelText>
-							<FieldDescription>
-								Spend these points on attributes!
-							</FieldDescription>
-							<ExperienceDisplay character={character} />
-						</Field>
-
-						<div className={row("items-end gap-2")}>
-							<Field>
-								<FieldLabelText>Resilience</FieldLabelText>
-								<CharacterDataCounterInput
-									character={character}
-									dataKey="resilience"
-									min={0}
-									defaultValue={2}
-								/>
-							</Field>
-
-							<Field>
-								<FieldLabelText>Phys. Stress</FieldLabelText>
-								<CharacterDataCounterInput
-									character={character}
-									dataKey="physicalStress"
-									min={0}
-									max={6}
-									defaultValue={0}
-								/>
-							</Field>
-
-							<Field>
-								<FieldLabelText>Ment. Stress</FieldLabelText>
-								<CharacterDataCounterInput
-									character={character}
-									dataKey="mentalStress"
-									min={0}
-									max={6}
-									defaultValue={0}
-								/>
-							</Field>
-						</div>
-
-						<Field>
-							<FieldLabel>Condition</FieldLabel>
-							<FieldDescription>
-								{`Write specifics about the stress they've taken.`}
-							</FieldDescription>
+							<FieldLabel>Pronouns</FieldLabel>
+							<FieldDescription>How do they identify?</FieldDescription>
 							<FieldInput asChild>
-								<CharacterDataTextArea
+								<CharacterDataInput
 									character={character}
-									dataKey="condition"
-									className={textArea("max-h-40")}
+									dataKey="pronouns"
+									className={input()}
 								/>
 							</FieldInput>
 						</Field>
 
-						<div className={row("fluid-cols-36")}>
-							<RandomizeStatsButton character={character} />
-							{attributesLocked ?
-								<button
-									type="button"
-									className={solidButton()}
-									onClick={() => setAttributesLocked(!attributesLocked)}
-								>
-									<LucideUnlock /> Unlock Stats
-								</button>
-							:	<button
-									type="button"
-									className={solidButton()}
-									onClick={() => setAttributesLocked(!attributesLocked)}
-								>
-									<LucideLock /> Lock Stats
-								</button>
-							}
-						</div>
-					</section>
-
-					<section className={column()}>
-						<h3 className={sectionHeading()}>Sorcery</h3>
-
-						{character.sorceryDevice == null ?
-							<AddSorceryDeviceButton character={character} />
-						:	<>
-								<SorceryDeviceEditor
+						<Field>
+							<FieldLabel>Archetype</FieldLabel>
+							<FieldDescription>
+								The backbone of your character. Gives +2 dice to the
+								corresponding attribute category.
+							</FieldDescription>
+							<FieldInput asChild>
+								<CharacterDataSelectInput
 									character={character}
-									sorceryDevice={character.sorceryDevice}
+									dataKey="archetype"
+									className={input("py-0")}
+								>
+									<option disabled value="">
+										Select an archetype
+									</option>
+									{attributeCategories.map((category) => (
+										<option key={category.id} value={category.archetypeId}>
+											{category.archetypeName}
+										</option>
+									))}
+								</CharacterDataSelectInput>
+							</FieldInput>
+						</Field>
+
+						<Field>
+							<FieldLabel>Reference Image</FieldLabel>
+							<FieldDescription>What do they look like?</FieldDescription>
+							<FieldInput asChild>
+								<CharacterDataImageInput
+									character={character}
+									dataKey="image"
 								/>
-
-								{(character._id === ownedCharacter?._id || roles.isAdmin) && (
-									<section className={column("gap-2")}>
-										<CastSpellButton
-											character={character}
-											sorceryDevice={character.sorceryDevice}
-											type="button"
-											className={solidButton()}
-										>
-											<LucideWand2 /> Cast Spell
-										</CastSpellButton>
-										<ChooseAffinitySpellsButton
-											character={character}
-											sorceryDevice={character.sorceryDevice}
-											type="button"
-											className={outlineButton()}
-										>
-											<LucideSparkles /> Choose Affinity Spells
-										</ChooseAffinitySpellsButton>
-										<RemoveSorceryDeviceButton character={character} />
-									</section>
-								)}
-							</>
-						}
+							</FieldInput>
+						</Field>
 					</section>
-				</div>
-			</div>
 
-			<div className={row("content-center fluid-cols-36")}>
-				{attributes.map(({ title, attributes, archetypeId }) => (
-					<div key={title} className={column("gap-4")}>
-						<h3
-							className={sectionHeading(
-								"transition-colors",
-								character.data.archetype === archetypeId && "text-accent-400",
-							)}
-						>
-							{title}
-						</h3>
-						{attributes.map(({ name, description, dataKey }) => (
-							<AttributeInput
-								key={dataKey}
-								character={character}
-								dataKey={dataKey}
-								attributeName={name}
-								attributeDescription={description}
-								stressModifier={getStressModifier(character, title)}
-								isArchetypeAttribute={character.data.archetype === archetypeId}
-								editable={getAttributesEditable(character)}
-							/>
-						))}
+					<div className={column()}>
+						<section className={column()}>
+							<h3 className={sectionHeading()}>Status</h3>
+
+							<Field>
+								<FieldLabelText>Experience</FieldLabelText>
+								<FieldDescription>
+									Spend these points on attributes!
+								</FieldDescription>
+								<ExperienceDisplay character={character} />
+							</Field>
+
+							<div className={row("items-end gap-2")}>
+								<Field>
+									<FieldLabelText>Resilience</FieldLabelText>
+									<CharacterDataCounterInput
+										character={character}
+										dataKey="resilience"
+										min={0}
+										defaultValue={2}
+									/>
+								</Field>
+
+								<Field>
+									<FieldLabelText>Phys. Stress</FieldLabelText>
+									<CharacterDataCounterInput
+										character={character}
+										dataKey="physicalStress"
+										min={0}
+										max={6}
+										defaultValue={0}
+									/>
+								</Field>
+
+								<Field>
+									<FieldLabelText>Ment. Stress</FieldLabelText>
+									<CharacterDataCounterInput
+										character={character}
+										dataKey="mentalStress"
+										min={0}
+										max={6}
+										defaultValue={0}
+									/>
+								</Field>
+							</div>
+
+							<Field>
+								<FieldLabel>Condition</FieldLabel>
+								<FieldDescription>
+									{`Write specifics about the stress they've taken.`}
+								</FieldDescription>
+								<FieldInput asChild>
+									<CharacterDataTextArea
+										character={character}
+										dataKey="condition"
+										className={textArea("max-h-40")}
+									/>
+								</FieldInput>
+							</Field>
+
+							<div className={row("fluid-cols-36")}>
+								<RandomizeStatsButton character={character} />
+								{attributesLocked ?
+									<button
+										type="button"
+										className={solidButton()}
+										onClick={() => setAttributesLocked(!attributesLocked)}
+									>
+										<LucideUnlock /> Unlock Stats
+									</button>
+								:	<button
+										type="button"
+										className={solidButton()}
+										onClick={() => setAttributesLocked(!attributesLocked)}
+									>
+										<LucideLock /> Lock Stats
+									</button>
+								}
+							</div>
+						</section>
+
+						<section className={column()}>
+							<h3 className={sectionHeading()}>Sorcery</h3>
+
+							{character.sorceryDevice == null ?
+								<AddSorceryDeviceButton character={character} />
+							:	<>
+									<SorceryDeviceEditor
+										character={character}
+										sorceryDevice={character.sorceryDevice}
+									/>
+
+									{(character._id === ownedCharacter?._id || roles.isAdmin) && (
+										<section className={column("gap-2")}>
+											<CastSpellButton
+												character={character}
+												sorceryDevice={character.sorceryDevice}
+												type="button"
+												className={solidButton()}
+											>
+												<LucideWand2 /> Cast Spell
+											</CastSpellButton>
+											<ChooseAffinitySpellsButton
+												character={character}
+												sorceryDevice={character.sorceryDevice}
+												type="button"
+												className={outlineButton()}
+											>
+												<LucideSparkles /> Choose Affinity Spells
+											</ChooseAffinitySpellsButton>
+											<RemoveSorceryDeviceButton character={character} />
+										</section>
+									)}
+								</>
+							}
+						</section>
 					</div>
-				))}
-			</div>
+				</div>
 
-			<section className={column()}>
-				<h3 className={sectionHeading()}>Description</h3>
+				<div className={row("content-center fluid-cols-36")}>
+					{attributeCategories.map(({ title, attributes, archetypeId }) => (
+						<div key={title} className={column("gap-4")}>
+							<h3
+								className={sectionHeading(
+									"transition-colors",
+									character.data.archetype === archetypeId && "text-accent-400",
+								)}
+							>
+								{title}
+							</h3>
+							{attributes.map((attribute) => (
+								<AttributeInput
+									key={attribute.dataKey}
+									attribute={attribute}
+									editable={getAttributesEditable(character)}
+								/>
+							))}
+						</div>
+					))}
+				</div>
 
-				<Field>
-					<FieldLabel>Inventory</FieldLabel>
-					<FieldDescription>What are you carrying?</FieldDescription>
-					<FieldInput asChild>
-						<CharacterDataTextArea
-							character={character}
-							dataKey="inventory"
-							className={textArea()}
-							rows={3}
-						/>
-					</FieldInput>
-				</Field>
+				<section className={column()}>
+					<h3 className={sectionHeading()}>Description</h3>
 
-				<Field>
-					<FieldLabel>Notes</FieldLabel>
-					<FieldDescription>
-						Anything else important about the character.
-					</FieldDescription>
-					<FieldInput asChild>
-						<CharacterDataTextArea
-							character={character}
-							dataKey="notes"
-							className={textArea()}
-							rows={3}
-						/>
-					</FieldInput>
-				</Field>
+					<Field>
+						<FieldLabel>Inventory</FieldLabel>
+						<FieldDescription>What are you carrying?</FieldDescription>
+						<FieldInput asChild>
+							<CharacterDataTextArea
+								character={character}
+								dataKey="inventory"
+								className={textArea()}
+								rows={3}
+							/>
+						</FieldInput>
+					</Field>
 
-				<Field>
-					<FieldLabel>Background</FieldLabel>
-					<FieldDescription>
-						{`Write your character's backstory. Doesn't have to be too long. Unless you want it
+					<Field>
+						<FieldLabel>Notes</FieldLabel>
+						<FieldDescription>
+							Anything else important about the character.
+						</FieldDescription>
+						<FieldInput asChild>
+							<CharacterDataTextArea
+								character={character}
+								dataKey="notes"
+								className={textArea()}
+								rows={3}
+							/>
+						</FieldInput>
+					</Field>
+
+					<Field>
+						<FieldLabel>Background</FieldLabel>
+						<FieldDescription>
+							{`Write your character's backstory. Doesn't have to be too long. Unless you want it
 						to be!`}
-					</FieldDescription>
-					<CharacterDataTextArea
-						character={character}
-						dataKey="background"
-						rows={3}
-						className={textArea()}
-					/>
-				</Field>
-			</section>
-		</div>
+						</FieldDescription>
+						<CharacterDataTextArea
+							character={character}
+							dataKey="background"
+							rows={3}
+							className={textArea()}
+						/>
+					</Field>
+				</section>
+			</div>
+		</CharacterContext.Provider>
 	)
 }
 
@@ -348,7 +349,7 @@ function RandomizeStatsButton({ character }: { character: Doc<"characters"> }) {
 	const randomizeStats = () => {
 		// NOTE: if this function fails again, extract the logic and write a test
 		const newStats = Object.fromEntries(
-			allAttributes.map((attribute) => [attribute.dataKey, 1]),
+			attributes.map((attribute) => [attribute.dataKey, 1]),
 		)
 
 		for (let i = 0; i < world.experience; i++) {
@@ -372,7 +373,9 @@ function RandomizeStatsButton({ character }: { character: Doc<"characters"> }) {
 			newStats[attributeKey] += 1
 		}
 
-		const archetypes = attributes.map((category) => category.archetypeId)
+		const archetypes = attributeCategories.map(
+			(category) => category.archetypeId,
+		)
 
 		updateCharacterData({
 			id: character._id,
@@ -452,7 +455,7 @@ const getStressModifier = (
 }
 
 function getUsedExperience(character: Doc<"characters">) {
-	return allAttributes.reduce((sum, attribute) => {
+	return attributes.reduce((sum, attribute) => {
 		const value = toFiniteNumberOrUndefined(character.data[attribute.dataKey])
 		return sum + (value ?? 1) - 1
 	}, 0)

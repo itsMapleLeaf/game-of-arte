@@ -2,5 +2,5 @@ export const ACTION_DICE_SIDES = 12
 export const ACTION_DICE_SUCCESS_THRESHOLD = 9
 export const ACTION_DICE_CRITICAL_THRESHOLD = 12
 
-export const SNAG_DICE_SIDES = 4
-export const SNAG_DICE_THRESHOLD = 4
+export const MODIFIER_DICE_SIDES = 4
+export const MODIFIER_DICE_THRESHOLD = 4

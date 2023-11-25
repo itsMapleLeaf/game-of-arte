@@ -160,16 +160,17 @@ export const knowledgeAttributeCategory = defineAttributeColumn({
 	].toSorted(compareKey("name")),
 })
 
-export const attributes = [
+export const attributeCategories = [
 	physicalAttributeCategory,
 	mentalAttributeCategory,
 	socialAttributeCategory,
 	knowledgeAttributeCategory,
 ]
 
-export const allAttributes = attributes.flatMap<
-	(typeof attributes)[number]["attributes"][number]
+export const attributes = attributeCategories.flatMap<
+	(typeof attributeCategories)[number]["attributes"][number]
 >((column) => column.attributes)
 
-export type AttributeCategoryId = (typeof attributes)[number]["id"]
-export type AttributeKey = (typeof allAttributes)[number]["dataKey"]
+export type Attribute = (typeof attributes)[number]
+export type AttributeCategoryId = (typeof attributeCategories)[number]["id"]
+export type AttributeKey = (typeof attributes)[number]["dataKey"]

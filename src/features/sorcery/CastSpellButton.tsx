@@ -25,12 +25,16 @@ import { outlineButton } from "~/styles/button.ts"
 import { checkbox } from "~/styles/index.ts"
 import { twMerge } from "~/styles/twMerge.ts"
 import { CharacterAttributeRollForm } from "../characters/CharacterAttributeRollForm.tsx"
-import {
-	knowledgeAttributeCategory,
-	sorceryAttribute,
-} from "../characters/attributes.ts"
+import { sorceryAttribute } from "../characters/attributes.ts"
+import { STRESS_MAX } from "../characters/constants.ts"
+import { WORLD_MANA_MAX } from "../worlds/constants.ts"
 import { SorcerySpellSelect } from "./SorcerySpellSelect.tsx"
-import { type SorcerySpellId, sorcerySpells } from "./data.ts"
+import { NON_AFFINITY_PENALTY } from "./constants.ts"
+import {
+	type SorcerySpell,
+	type SorcerySpellId,
+	sorcerySpells,
+} from "./data.ts"
 
 export function CastSpellButton({
 	character,
@@ -75,16 +79,23 @@ function CastSpellForm({
 
 	const [amplify, setAmplify] = useState(false)
 
-	const worldMana = world.mana ?? 10
+	const worldMana = world.mana ?? WORLD_MANA_MAX
 
 	const mentalStress =
 		toFiniteNumberOrUndefined(character.data.mentalStress) ?? 0
 
 	const mentalStressCost = (spell?.cost.mentalStress ?? 0) + (amplify ? 1 : 0)
-	const finalMentalStress = Math.min(6, mentalStress + mentalStressCost)
+	const finalMentalStress = Math.min(
+		STRESS_MAX,
+		mentalStress + mentalStressCost,
+	)
+	const stressRisk = finalMentalStress >= 6
 
 	const isAffinity =
 		spellId && Object.values(sorceryDevice.affinities ?? {}).includes(spellId)
+
+	const finalWorldMana = (spell: SorcerySpell) =>
+		Math.max(0, worldMana - spell.cost.mana)
 
 	return spell == null ?
 			<SorcerySpellSelect
@@ -108,7 +119,7 @@ function CastSpellForm({
 						<span className="sr-only">from</span>
 						<strong>{worldMana}</strong>
 						<LucideArrowRight aria-label="to" className="s-5" />
-						<strong>{Math.max(0, worldMana - spell.cost.mana)}</strong>
+						<strong>{finalWorldMana(spell)}</strong>
 						{worldMana <= spell.cost.mana && (
 							<LucideAlertTriangle className="s-5" />
 						)}
@@ -118,17 +129,15 @@ function CastSpellForm({
 						<p
 							className={twMerge(
 								"flex items-center justify-center gap-1 transition",
-								finalMentalStress >= 6 && "text-red-400",
+								stressRisk && "text-red-400",
 							)}
 						>
 							Mental Stress:
 							<span className="sr-only">from</span>
 							<strong>{mentalStress}</strong>
 							<LucideArrowRight aria-label="to" className="s-5" />
-							<strong>{Math.min(6, finalMentalStress)}</strong>
-							{finalMentalStress >= 6 && (
-								<LucideAlertTriangle className="s-5" />
-							)}
+							<strong>{finalMentalStress}</strong>
+							{stressRisk && <LucideAlertTriangle className="s-5" />}
 						</p>
 					)}
 				</section>
@@ -149,28 +158,22 @@ function CastSpellForm({
 				</Field>
 
 				<CharacterAttributeRollForm
-					character={character}
-					attributeName={sorceryAttribute.name}
-					attributeValue={
-						toFiniteNumberOrUndefined(
-							character.data[sorceryAttribute.dataKey],
-						) ?? 1
+					attribute={sorceryAttribute}
+					extraSnagDiceItems={
+						isAffinity ?
+							[]
+						:	[{ label: "Non-Affinity Spell", value: NON_AFFINITY_PENALTY }]
 					}
-					isArchetypeAttribute={
-						character.data.archetype === knowledgeAttributeCategory.archetypeId
-					}
-					isNonAffinitySpell={!isAffinity}
-					stressModifier={-mentalStress}
 					defaultLabel={`${character.name}: ${spell.name} (${sorceryAttribute.name})`}
 					onSuccess={async () => {
 						await Promise.all([
 							subtractWorldMana({
-								amount: spell.cost.mana ?? 0,
+								amount: spell.cost.mana,
 							}).catch(console.error),
 							updateCharacterData({
 								id: character._id,
 								data: {
-									mentalStress: Math.min(6, finalMentalStress),
+									mentalStress: finalMentalStress,
 								},
 							}).catch(console.error),
 						])
