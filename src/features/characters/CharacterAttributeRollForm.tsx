@@ -1,8 +1,10 @@
 import { api } from "convex/_generated/api.js"
-import type { Doc } from "convex/_generated/dataModel.js"
 import { useMutation } from "convex/react"
-import { LucideDices } from "lucide-react"
-import { useState } from "react"
+import { LucideDices, LucidePentagon, LucideTriangle } from "lucide-react"
+import { type ReactNode, useState } from "react"
+import { plural } from "~/helpers/index.ts"
+import { sum } from "~/helpers/math.ts"
+import { twMerge } from "~/styles/twMerge.ts"
 import { CounterInput } from "../../components/CounterInput.tsx"
 import {
 	Field,
@@ -12,81 +14,125 @@ import {
 } from "../../components/Field.tsx"
 import { LoadingSpinner } from "../../components/LoadingPlaceholder.tsx"
 import { raise } from "../../helpers/errors.ts"
-import { toFiniteNumberOrUndefined } from "../../helpers/index.ts"
 import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
 import { withPreventDefault } from "../../helpers/withPreventDefault.ts"
 import { solidButton } from "../../styles/button.ts"
 import { input } from "../../styles/index.ts"
+import type { DiceHint } from "../dice/DiceHint.ts"
+import { ACTION_DICE_SIDES, MODIFIER_DICE_SIDES } from "../dice/constants.ts"
+import {
+	ACTION_DICE_RULES,
+	BOOST_DICE_RULES,
+	SNAG_DICE_RULES,
+} from "../dice/rules.ts"
+import { CharacterContext } from "./CharacterContext.tsx"
+import { type Attribute, attributeCategories } from "./attributes.ts"
+import { ACTION_DICE_COUNT_BY_LEVEL } from "./constants.ts"
+import { parseCharacterData } from "./data.ts"
 
 export function CharacterAttributeRollForm({
-	character,
-	// biome-ignore lint/correctness/noUnusedVariables: bugged
-	attributeName,
-	attributeValue,
-	stressModifier,
-	isArchetypeAttribute,
-	isNonAffinitySpell,
-	defaultLabel = `${character.name}: ${attributeName}`,
+	attribute,
+	defaultLabel,
+	extraBoostDiceItems = [],
+	extraSnagDiceItems = [],
 	onSuccess,
 }: {
-	character: Doc<"characters">
-	attributeName: string
-	attributeValue: number
-	stressModifier: number
-	isArchetypeAttribute: boolean
-	isNonAffinitySpell: boolean
+	attribute: Attribute
 	defaultLabel?: string
+	extraBoostDiceItems?: { label: string; value: number }[]
+	extraSnagDiceItems?: { label: string; value: number }[]
 	onSuccess: () => void
 }) {
+	const character = CharacterContext.useValue()
+	const characterData = parseCharacterData(character.data)
+
 	const roll = useMutation(api.diceRolls.roll)
 	const updateCharacterData = useMutation(api.characters.updateData)
+	const setHints = useMutation(api.diceRolls.setHints)
+
 	const [label, setLabel] = useState("")
 	const [resilienceToUse, setResilienceToUse] = useState(0)
-	const [modifier, setModifier] = useState(0)
+	const [additionalBoostDice, setAdditionalBoostDice] = useState(0)
+	const [additionalSnagDice, setAdditionalSnagDice] = useState(0)
 
-	const availableResilience =
-		toFiniteNumberOrUndefined(character.data.resilience) ?? 0
+	const characterAttributeValue = characterData[attribute.dataKey]
 
-	const totalModifier =
-		modifier +
-		resilienceToUse +
-		stressModifier +
-		(isArchetypeAttribute ? 2 : 0) +
-		(isNonAffinitySpell ? -2 : 0)
+	const attributeCategory =
+		attributeCategories.find((cat) => cat.attributes.includes(attribute)) ??
+		raise(`No category found for attribute ${attribute.name}`)
 
-	const baseDiceCount =
-		{
-			1: 1,
-			2: 2,
-			3: 4,
-			4: 7,
-			5: 12,
-		}[attributeValue] ?? raise(`Invalid attribute value ${attributeValue}`)
+	const isArchetypeAttribute =
+		characterData.archetype === attributeCategory.archetypeId
 
-	const diceCount = Math.max(baseDiceCount + totalModifier, 1)
+	const actionDiceCount =
+		ACTION_DICE_COUNT_BY_LEVEL[characterAttributeValue] ??
+		raise(`Invalid attribute value ${characterAttributeValue}`)
 
-	const isModified =
-		modifier !== 0 || resilienceToUse !== 0 || stressModifier !== 0
+	const stress =
+		characterData[
+			attributeCategory.id === "physical" ? "physicalStress" : "mentalStress"
+		]
 
-	const fallbackLabel = [
-		defaultLabel,
-		isModified && `(${formatSigned(totalModifier)})`,
-	]
-		.filter(Boolean)
-		.join(" ")
+	const boostDiceItems = [
+		{ label: "Archetype", value: isArchetypeAttribute ? 1 : 0 },
+		{ label: "Resilience", value: resilienceToUse },
+		...extraBoostDiceItems,
+		{ label: "Extra Boost Dice", value: additionalBoostDice },
+	].filter((item) => item.value > 0)
+	const boostDiceCount = sum(boostDiceItems.map((item) => item.value))
+
+	const snagDiceItems = [
+		{ label: "Stress", value: stress },
+		...extraSnagDiceItems,
+		{ label: "Extra Snag Dice", value: additionalSnagDice },
+	].filter((item) => item.value > 0)
+	const snagDiceCount = sum(snagDiceItems.map((item) => item.value))
+
+	const diceCount = actionDiceCount + boostDiceCount + snagDiceCount
+
+	const labelPlaceholder =
+		defaultLabel ??
+		`${character.name}: ${attribute.name} ${characterAttributeValue}`
 
 	const [handleSubmit, handleSubmitState] = useAsyncCallback(
 		async function handleSubmit() {
-			await roll({
-				label: label || fallbackLabel,
+			const result = await roll({
+				label: label || labelPlaceholder,
 				type: "action",
-				dice: [{ count: diceCount, sides: 12 }],
+				dice: [
+					{
+						count: actionDiceCount,
+						sides: ACTION_DICE_SIDES,
+						rules: ACTION_DICE_RULES,
+					},
+					...boostDiceItems.map((item) => ({
+						count: item.value,
+						sides: MODIFIER_DICE_SIDES,
+						rules: BOOST_DICE_RULES,
+					})),
+					...snagDiceItems.map((item) => ({
+						count: item.value,
+						sides: MODIFIER_DICE_SIDES,
+						rules: SNAG_DICE_RULES,
+					})),
+				],
 				characterId: character._id,
 			})
+
 			await updateCharacterData({
 				id: character._id,
-				data: { resilience: availableResilience - resilienceToUse },
+				data: { resilience: characterData.resilience - resilienceToUse },
 			})
+
+			const successCount = sum(result.dice.map((die) => die.successes ?? 0))
+			if (successCount <= 0) {
+				const hints: DiceHint[] = ["collectResilience"]
+				await setHints({
+					rollId: result._id,
+					hints,
+				})
+			}
+
 			onSuccess()
 		},
 	)
@@ -97,7 +143,7 @@ export function CharacterAttributeRollForm({
 				<FieldLabel>Label</FieldLabel>
 				<FieldInput
 					className={input()}
-					placeholder={fallbackLabel}
+					placeholder={labelPlaceholder}
 					value={label}
 					onChange={(event) => {
 						setLabel(event.currentTarget.value)
@@ -106,49 +152,64 @@ export function CharacterAttributeRollForm({
 			</Field>
 
 			<Field>
-				<FieldLabelText>Modifier</FieldLabelText>
-				<CounterInput value={modifier} onChange={setModifier} />
+				<FieldLabelText>Boost Dice</FieldLabelText>
+				<CounterInput
+					value={additionalBoostDice}
+					onChange={setAdditionalBoostDice}
+				/>
 			</Field>
 
-			{availableResilience > 0 && (
+			<Field>
+				<FieldLabelText>Snag Dice</FieldLabelText>
+				<CounterInput
+					value={additionalSnagDice}
+					onChange={setAdditionalSnagDice}
+				/>
+			</Field>
+
+			{characterData.resilience > 0 && (
 				<Field>
 					<FieldLabelText>Use Resilience</FieldLabelText>
 					<CounterInput
 						min={0}
-						max={availableResilience}
+						max={characterData.resilience}
 						value={resilienceToUse}
 						onChange={setResilienceToUse}
 					/>
 				</Field>
 			)}
 
-			<dl className="tabular-nums">
-				<ReceiptItem name="Base Roll" value={baseDiceCount} />
-				{stressModifier !== 0 && (
-					<ReceiptItem name="Stress" value={formatSigned(stressModifier)} />
-				)}
-				{isArchetypeAttribute && (
-					<ReceiptItem name="Archetype" value={formatSigned(2)} />
-				)}
-				{modifier !== 0 && (
-					<ReceiptItem name="Manual" value={formatSigned(modifier)} />
-				)}
-				{resilienceToUse > 0 && (
+			<dl className="flex flex-col gap-1 tabular-nums">
+				<ReceiptItem
+					name="Action Dice"
+					value={actionDiceCount}
+					icon={<LucidePentagon className="s-5" />}
+				/>
+				{boostDiceItems.map((item) => (
 					<ReceiptItem
-						name="Resilience"
-						value={formatSigned(resilienceToUse)}
+						key={item.label}
+						name={item.label}
+						value={item.value}
+						icon={<LucideTriangle className="s-5" />}
+						className="text-green-400"
 					/>
-				)}
-				{isNonAffinitySpell && (
-					<ReceiptItem name="Non-Affinity" value={formatSigned(-2)} />
-				)}
+				))}
+				{snagDiceItems.map((item) => (
+					<ReceiptItem
+						key={item.label}
+						name={item.label}
+						value={item.value}
+						icon={<LucideTriangle className="s-5" />}
+						className="text-red-400"
+					/>
+				))}
 			</dl>
 
 			<button type="submit" className={solidButton()}>
 				{handleSubmitState.isLoading ?
 					<LoadingSpinner />
 				:	<LucideDices />}{" "}
-				Roll {diceCount} {diceCount === 1 ? "die" : "dice"}
+				Roll {plural(diceCount, "Die", { pluralWord: "Dice" })}
 			</button>
 		</form>
 	)
@@ -157,18 +218,21 @@ export function CharacterAttributeRollForm({
 function ReceiptItem({
 	name,
 	value,
+	className,
+	icon,
 }: {
 	name: React.ReactNode
 	value: React.ReactNode
+	className?: string
+	icon: ReactNode
 }) {
 	return (
-		<div className="flex flex-row gap-1">
-			<dt className="flex-1 opacity-70">{name}</dt>
-			<dd>{value}</dd>
+		<div className={twMerge("flex flex-row", className)}>
+			<dt className="flex-1">{name}</dt>
+			<dd className="flex items-center gap-1">
+				{value}
+				{icon}
+			</dd>
 		</div>
 	)
-}
-
-function formatSigned(number: number) {
-	return number >= 0 ? `+${number}` : `${number}`
 }

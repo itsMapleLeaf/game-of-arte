@@ -1,4 +1,3 @@
-import type { Doc } from "convex/_generated/dataModel.js"
 import { LucideDices } from "lucide-react"
 import { useState } from "react"
 import { twMerge } from "tailwind-merge"
@@ -20,29 +19,34 @@ import {
 import { toFiniteNumberOrUndefined } from "../../helpers/index.ts"
 import { input } from "../../styles/index.ts"
 import { CharacterAttributeRollForm } from "./CharacterAttributeRollForm.tsx"
+import { CharacterContext } from "./CharacterContext.tsx"
+import type { Attribute } from "./attributes.ts"
+import { ATTRIBUTE_DEFAULT, ATTRIBUTE_MAX, ATTRIBUTE_MIN } from "./constants.ts"
 import { useCharacterDataValue } from "./useCharacterDataValue.ts"
 
 export function AttributeInput({
-	character,
-	dataKey,
-	attributeName,
-	attributeDescription,
-	stressModifier,
-	isArchetypeAttribute,
+	attribute,
 	editable,
 	...props
 }: CounterInputProps & {
-	character: Doc<"characters">
-	dataKey: string
-	attributeName: string
-	attributeDescription: string
-	stressModifier: number
-	isArchetypeAttribute: boolean
+	attribute: Attribute
 	editable: boolean
 }) {
-	const [valueRaw, setValue] = useCharacterDataValue(character, dataKey)
-	const value = clamp(toFiniteNumberOrUndefined(valueRaw) ?? 1, 1, 5)
+	const character = CharacterContext.useValue()
+
+	const [valueRaw, setValue] = useCharacterDataValue(
+		character,
+		attribute.dataKey,
+	)
+
+	const value = clamp(
+		toFiniteNumberOrUndefined(valueRaw) ?? ATTRIBUTE_DEFAULT,
+		ATTRIBUTE_MIN,
+		ATTRIBUTE_MAX,
+	)
+
 	const [popoverOpen, setPopoverOpen] = useState(false)
+
 	return (
 		<Field>
 			<div
@@ -51,8 +55,8 @@ export function AttributeInput({
 					value > 1 ? "text-accent-400" : "",
 				)}
 			>
-				<FieldLabelTooltip content={attributeDescription}>
-					<FieldLabelText>{attributeName}</FieldLabelText>
+				<FieldLabelTooltip content={attribute.description}>
+					<FieldLabelText>{attribute.name}</FieldLabelText>
 				</FieldLabelTooltip>
 			</div>
 			<div className="flex items-center gap-2">
@@ -80,15 +84,8 @@ export function AttributeInput({
 					</PopoverTrigger>
 					<PopoverPanel side="bottom" align="center" className="w-64 p-4">
 						<CharacterAttributeRollForm
-							character={character}
-							attributeName={attributeName}
-							attributeValue={toFiniteNumberOrUndefined(value) ?? 1}
-							stressModifier={stressModifier}
-							isArchetypeAttribute={isArchetypeAttribute}
-							isNonAffinitySpell={false}
-							onSuccess={() => {
-								setPopoverOpen(false)
-							}}
+							attribute={attribute}
+							onSuccess={() => setPopoverOpen(false)}
 						/>
 					</PopoverPanel>
 				</Popover>

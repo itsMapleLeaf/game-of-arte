@@ -1,8 +1,18 @@
 import { api } from "convex/_generated/api.js"
-import type { Id } from "convex/_generated/dataModel.js"
+import type { Doc } from "convex/_generated/dataModel.js"
 import type { DiceRollListItem } from "convex/diceRolls.ts"
+import type { Die } from "convex/diceRolls.validators.ts"
 import { useMutation } from "convex/react"
-import { LucideDices, LucidePentagon } from "lucide-react"
+import {
+	LucideDiamond,
+	LucideDices,
+	LucideHexagon,
+	LucidePentagon,
+	LucideSquare,
+	LucideStar,
+	LucideTriangle,
+	LucideX,
+} from "lucide-react"
 import { Virtuoso } from "react-virtuoso"
 import { CounterInput } from "~/components/CounterInput.tsx"
 import {
@@ -17,8 +27,13 @@ import {
 	TooltipContent,
 	TooltipTrigger,
 } from "~/components/Tooltip.tsx"
+import { plural } from "~/helpers/index.ts"
+import { sum } from "~/helpers/math.ts"
 import { useAsyncCallback } from "~/helpers/useAsyncCallback.ts"
 import { useQuerySuspense } from "~/helpers/useQuerySuspense.ts"
+import { twMerge } from "~/styles/twMerge.ts"
+import { parseCharacterData } from "../characters/data.ts"
+import { parseDiceHints } from "./DiceHint.ts"
 
 export function DiceRollList() {
 	return (
@@ -35,11 +50,22 @@ export function DiceRollList() {
 
 function DiceRollItems() {
 	const rolls = useQuerySuspense(api.diceRolls.list)
+	const characters = useQuerySuspense(api.characters.list)
+	const charactersById = new Map(
+		characters.map((character) => [character._id, character]),
+	)
 	return (
 		<Virtuoso
 			data={rolls}
 			computeItemKey={(_index, roll) => roll._id}
-			itemContent={(_index, roll) => <DiceRollDetails roll={roll} />}
+			itemContent={(_index, roll) => (
+				<DiceRollDetails
+					roll={roll}
+					character={
+						roll.characterId ? charactersById.get(roll.characterId) : undefined
+					}
+				/>
+			)}
 			initialTopMostItemIndex={rolls.length - 1}
 			followOutput
 			alignToBottom
@@ -47,95 +73,106 @@ function DiceRollItems() {
 	)
 }
 
-function DiceRollDetails({ roll }: { roll: DiceRollListItem }) {
-	const isAction = roll.type === "action"
+function DiceRollDetails({
+	roll,
+	character,
+}: {
+	roll: DiceRollListItem
+	character: Doc<"characters"> | undefined
+}) {
+	const successCounts = roll.dice.flatMap((die) => die.successes ?? [])
 
-	const isSuccess = (result: number) => result >= 9 && result <= 11
-	const isCriticalSuccess = (result: number) => result === 12
+	const totalSuccesses =
+		successCounts.length > 0 ? sum(successCounts) : undefined
 
-	const dice =
-		isAction ? roll.dice.toSorted((a, b) => b.result - a.result) : roll.dice
-
-	const successCount = roll.dice
-		.map((r) =>
-			isCriticalSuccess(r.result) ? 2
-			: isSuccess(r.result) ? 1
-			: 0,
-		)
-		.reduce<number>((a, b) => a + b, 0)
-
+	const hints = parseDiceHints(roll.hints)
 	return (
 		<div className="grid content-between gap-2 border-t border-base-800 px-2 py-3">
 			{roll.label && <h2 className="text-lg/tight font-light">{roll.label}</h2>}
 			<ul className="-mx-1 flex flex-wrap items-center">
-				{dice.map((die, index) =>
-					isAction ?
-						<Diecon
-							// biome-ignore lint/suspicious/noArrayIndexKey: no better key to use
-							key={index}
-							sides={die.sides}
-							result={die.result}
-							success={isSuccess(die.result)}
-							crit={isCriticalSuccess(die.result)}
-						/>
-						// biome-ignore lint/suspicious/noArrayIndexKey: no better key to use
-					:	<Diecon key={index} sides={die.sides} result={die.result} />,
-				)}
+				{roll.dice.map((die, index) => (
+					// biome-ignore lint/suspicious/noArrayIndexKey: no better key
+					<Diecon key={index} die={die} />
+				))}
 			</ul>
 			<p className="text-sm leading-tight">
-				{isAction && (
+				{totalSuccesses != null && (
 					<>
 						<span
-							data-success={successCount > 0}
-							data-fail={successCount === 0}
-							className="data-[fail=true]:text-red-300 data-[success=true]:text-green-300"
+							className={totalSuccesses > 0 ? "text-green-300" : "text-red-300"}
 						>
-							{successCount} success{successCount === 1 ? "" : "es"}
+							{plural(totalSuccesses, "success", { pluralWord: "successes" })}
 						</span>
 						{" • "}
 					</>
 				)}
 				<span className="text-base-400">rolled by</span> {roll.initiatorName}
 			</p>
-			{isAction && successCount === 0 && !roll.resilienceCollected && (
-				<CollectResilienceButton rollId={roll._id} />
+			{hints.has("collectResilience") && character && (
+				<CollectResilienceButton roll={roll} character={character} />
 			)}
 		</div>
 	)
 }
 
-function Diecon({
-	sides,
-	result,
-	success,
-	crit,
-}: {
-	sides: number
-	result: number
-	success?: boolean
-	crit?: boolean
-}) {
+function Diecon({ die }: { die: Die }) {
 	return (
-		<Tooltip>
+		<Tooltip disableHoverableContent>
 			<TooltipTrigger>
 				<li
-					data-success={success}
-					data-crit={crit}
-					className="relative flex items-center justify-center data-[crit=true]:text-green-400 data-[success=true]:text-blue-400"
+					className={twMerge(
+						"relative flex items-center justify-center",
+						die.color === "positive" && "text-blue-400",
+						die.color === "critical" && "text-green-400",
+						die.color === "negative" && "text-red-400",
+					)}
 				>
-					<LucidePentagon className="translate-y-[-2px] s-10" strokeWidth={1} />
-					<span className="absolute">{result}</span>
+					{die.sides === 4 ?
+						<LucideTriangle className="s-10" strokeWidth={1} />
+					: die.sides === 6 ?
+						<LucideSquare className="s-10" strokeWidth={1} />
+					: die.sides === 8 ?
+						<LucideDiamond className="s-10" strokeWidth={1} />
+					: die.sides === 12 ?
+						<LucidePentagon className="s-10" strokeWidth={1} />
+					:	<LucideHexagon className="s-10" strokeWidth={1} />}
+
+					<span className="absolute translate-y-[3px]">
+						{die.face === "blank" ?
+							null
+						: die.face === "success" ?
+							<LucideStar className="s-4" />
+						: die.face === "fail" ?
+							<LucideX className="s-4" />
+						:	die.result}
+					</span>
 				</li>
 			</TooltipTrigger>
-			<TooltipContent>d{sides}</TooltipContent>
+			<TooltipContent className="pointer-events-none">
+				{die.tooltip ?? `d${die.sides}: ${die.result}`}
+			</TooltipContent>
 		</Tooltip>
 	)
 }
 
-function CollectResilienceButton({ rollId }: { rollId: Id<"diceRolls"> }) {
-	const [collectResilience, state] = useAsyncCallback(
-		useMutation(api.diceRolls.collectResilience),
-	)
+function CollectResilienceButton({
+	roll,
+	character,
+}: {
+	roll: DiceRollListItem
+	character: Doc<"characters">
+}) {
+	const updateCharacterData = useMutation(api.characters.updateData)
+	const setHints = useMutation(api.diceRolls.setHints)
+
+	const [collectResilience, state] = useAsyncCallback(async () => {
+		const data = parseCharacterData(character.data)
+		await updateCharacterData({
+			id: character._id,
+			data: { resilience: data.resilience + 1 },
+		})
+		await setHints({ rollId: roll._id, hints: [] })
+	})
 
 	if (state.isLoading) {
 		return null
@@ -145,9 +182,7 @@ function CollectResilienceButton({ rollId }: { rollId: Id<"diceRolls"> }) {
 		<button
 			type="button"
 			className="justify-self-start rounded border border-base-600 bg-base-700/50 p-1.5 text-sm leading-none transition hover:bg-base-800"
-			onClick={() => {
-				collectResilience({ id: rollId })
-			}}
+			onClick={collectResilience}
 		>
 			+1 Resilience
 		</button>
