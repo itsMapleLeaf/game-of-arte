@@ -20,7 +20,7 @@ export function SideNav() {
 	const roles = useQuerySuspense(api.roles.get)
 	return (
 		<div className="flex flex-col gap-4">
-			<SideNavCollapsible title="Characters" icon={<LucideUsers />} open>
+			<SideNavCollapsible title="Characters" icon={<LucideUsers />} defaultOpen>
 				<CharacterList />
 			</SideNavCollapsible>
 
@@ -52,16 +52,29 @@ export function SideNav() {
 function SideNavCollapsible({
 	title,
 	icon,
-	open,
+	defaultOpen,
 	children,
 }: {
 	title: string
 	icon: React.ReactNode
-	open?: boolean
+	defaultOpen?: boolean
 	children: React.ReactNode
 }) {
 	return (
-		<details className={panel("group rounded-md border")} open={open}>
+		<details
+			className={panel("group rounded-md border")}
+			open={
+				localStorage.getItem(`collapse:${title}`) ?
+					localStorage.getItem(`collapse:${title}`) === "true"
+				:	defaultOpen
+			}
+			onToggle={(event) => {
+				localStorage.setItem(
+					`collapse:${title}`,
+					event.currentTarget.open.toString(),
+				)
+			}}
+		>
 			<summary className="flex cursor-pointer select-none list-none gap-2 rounded-t-md bg-base-800 p-2 transition hover:text-accent-400">
 				<div>{icon}</div>
 				<div className="flex-1">{title}</div>
