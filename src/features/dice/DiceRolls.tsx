@@ -60,7 +60,7 @@ function DiceRollList() {
 						</DialogTrigger>
 						<SimpleDialogContent title="Dice Rolls">
 							<div className="h-[calc(100vh-16rem)]">
-								<LoadingSuspense>
+								<LoadingSuspense className="h-full">
 									<FullDiceRollList />
 								</LoadingSuspense>
 							</div>
