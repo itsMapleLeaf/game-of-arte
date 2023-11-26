@@ -1,10 +1,10 @@
 import { tailwindExtensions } from "@itsmapleleaf/configs/tailwind"
-import type { Config } from "tailwindcss"
 import animate from "tailwindcss-animate"
 import colors from "tailwindcss/colors"
 import plugin from "tailwindcss/plugin"
 
-export default {
+/** @satisfies {import("tailwindcss").Config} */
+const config = {
 	content: ["./src/**/*.{ts,tsx}", "./index.html"],
 	presets: [tailwindExtensions],
 	theme: {
@@ -61,4 +61,5 @@ export default {
 			})
 		}),
 	],
-} satisfies Config
+}
+export default config
