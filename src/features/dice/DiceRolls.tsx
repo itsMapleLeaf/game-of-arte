@@ -42,7 +42,8 @@ export function DiceRolls() {
 }
 
 function DiceRollList() {
-	const listResult = useQuerySuspense(api.diceRolls.list, { limit: 5 })
+	const pageSize = 5
+	const listResult = useQuerySuspense(api.diceRolls.list, { limit: pageSize })
 	const characters = useQuerySuspense(api.characters.list)
 	const charactersById = new Map(
 		characters.map((character) => [character._id, character]),
@@ -68,18 +69,22 @@ function DiceRollList() {
 					</Dialog>
 				)}
 				<ul className="contents">
-					{listResult.page.toReversed().map((roll) => (
-						<li key={roll._id} className={panel("rounded-md border p-2")}>
-							<DiceRollDetails
-								roll={roll}
-								character={
-									roll.characterId ?
-										charactersById.get(roll.characterId)
-									:	undefined
-								}
-							/>
-						</li>
-					))}
+					{/* we need to slice since new items can make the page bigger (lol) */}
+					{listResult.page
+						.slice(0, pageSize)
+						.toReversed()
+						.map((roll) => (
+							<li key={roll._id} className={panel("rounded-md border p-2")}>
+								<DiceRollDetails
+									roll={roll}
+									character={
+										roll.characterId ?
+											charactersById.get(roll.characterId)
+										:	undefined
+									}
+								/>
+							</li>
+						))}
 				</ul>
 			</div>
 }
