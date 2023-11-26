@@ -164,7 +164,9 @@ function CastSpellForm({
 							[]
 						:	[{ label: "Non-Affinity Spell", value: NON_AFFINITY_PENALTY }]
 					}
-					defaultLabel={`${character.name}: ${spell.name} (${sorceryAttribute.name})`}
+					defaultLabel={`${character.name}: ${sorceryAttribute.name} - ${
+						spell.name
+					}${amplify ? " (Amplified)" : ""}`}
 					onSuccess={async () => {
 						await Promise.all([
 							subtractWorldMana({
