@@ -43,7 +43,7 @@ export function CounterInput({
 			>
 				<LucideMinus className="s-5" />
 			</button>
-			<p className="text-center tabular-nums">
+			<p className="min-w-8 text-center tabular-nums">
 				{value}
 				{max !== Infinity ? `/${max}` : ""}
 			</p>

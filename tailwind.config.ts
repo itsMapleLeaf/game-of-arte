@@ -17,6 +17,14 @@ export default {
 				accent: colors.emerald,
 				error: colors.red,
 			},
+			keyframes: (utils) => ({
+				"flash-accent": {
+					from: { color: utils.theme("colors.accent.400") },
+				},
+			}),
+			animation: {
+				"flash-accent": "flash-accent 1s",
+			},
 		},
 	},
 	plugins: [

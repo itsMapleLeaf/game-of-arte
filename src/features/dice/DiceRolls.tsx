@@ -74,7 +74,10 @@ function DiceRollList() {
 						.slice(0, pageSize)
 						.toReversed()
 						.map((roll) => (
-							<li key={roll._id} className={panel("rounded-md border p-2")}>
+							<li
+								key={roll._id}
+								className={panel("animate-flash-accent rounded-md border p-2")}
+							>
 								<DiceRollDetails
 									roll={roll}
 									character={
