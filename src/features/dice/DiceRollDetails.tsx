@@ -25,6 +25,8 @@ import { parseCharacterData } from "../characters/data.ts"
 import { parseDiceHints } from "./DiceHint.ts"
 import { Button } from "~/components/Button.tsx"
 import { SrOnly } from "~/components/SrOnly.tsx"
+import { startTransition, useEffect, useState } from "react"
+import { autoRef } from "~/helpers/autoRef.tsx"
 
 export function DiceRollDetails({
 	roll,
@@ -39,13 +41,16 @@ export function DiceRollDetails({
 		successCounts.length > 0 ? sum(successCounts) : undefined
 
 	const hints = parseDiceHints(roll.hints)
+
 	return (
 		<div className="grid content-between gap-2">
 			{roll.label && <h2 className="text-lg/tight font-light">{roll.label}</h2>}
 			<ul className="group/diecon-list -mx-1 flex flex-wrap items-center">
 				{roll.dice.map((die, index) => (
 					// biome-ignore lint/suspicious/noArrayIndexKey: no better key
-					<Diecon key={index} die={die} />
+					<DieTooltip die={die} key={index}>
+						<Diecon die={die} />
+					</DieTooltip>
 				))}
 			</ul>
 			<p className="text-sm leading-tight">
@@ -68,44 +73,69 @@ export function DiceRollDetails({
 	)
 }
 
-function Diecon({ die }: { die: Die }) {
+const Diecon = autoRef(function Diecon({
+	die,
+	...props
+}: React.ComponentPropsWithRef<"li"> & { die: Die }) {
 	return (
-		<Tooltip disableHoverableContent>
-			<TooltipTrigger tabIndex={0} asChild>
-				<li
-					className={twMerge(
-						"relative flex cursor-default items-center justify-center rounded transition hover:!opacity-100 focus-visible:!opacity-100 group-hover/diecon-list:opacity-50 group-[:has(:focus-within)]/diecon-list:opacity-50",
-						die.color === "positive" && "text-blue-400",
-						die.color === "critical" && "text-green-400",
-						die.color === "negative" && "text-red-400",
-					)}
-				>
-					{die.sides === 4 ?
-						<LucideTriangle className="s-10" strokeWidth={1} />
-					: die.sides === 6 ?
-						<LucideSquare className="s-10" strokeWidth={1} />
-					: die.sides === 8 ?
-						<LucideDiamond className="s-10" strokeWidth={1} />
-					: die.sides === 12 ?
-						<LucidePentagon className="s-10" strokeWidth={1} />
-					:	<LucideHexagon className="s-10" strokeWidth={1} />}
+		<li
+			{...props}
+			className={twMerge(
+				"relative flex cursor-default items-center justify-center rounded transition hover:!opacity-100 focus-visible:!opacity-100 group-hover/diecon-list:opacity-50 group-[:has(:focus-within)]/diecon-list:opacity-50",
+				die.color === "positive" && "text-blue-400",
+				die.color === "critical" && "text-green-400",
+				die.color === "negative" && "text-red-400",
+				props.className,
+			)}
+		>
+			{die.sides === 4 ?
+				<LucideTriangle className="s-10" strokeWidth={1} />
+			: die.sides === 6 ?
+				<LucideSquare className="s-10" strokeWidth={1} />
+			: die.sides === 8 ?
+				<LucideDiamond className="s-10" strokeWidth={1} />
+			: die.sides === 12 ?
+				<LucidePentagon className="s-10" strokeWidth={1} />
+			:	<LucideHexagon className="s-10" strokeWidth={1} />}
 
-					<span className="absolute translate-y-[3px]">
-						{die.face === "blank" ?
-							null
-						: die.face === "success" ?
-							<LucideStar className="s-4" />
-						: die.face === "fail" ?
-							<LucideX className="s-4" />
-						:	die.result}
-					</span>
-				</li>
-			</TooltipTrigger>
-			<TooltipContent className="pointer-events-none">
-				{die.tooltip ?? `d${die.sides}: ${die.result}`}
-			</TooltipContent>
-		</Tooltip>
+			<span className="absolute translate-y-[3px]">
+				{die.face === "blank" ?
+					null
+				: die.face === "success" ?
+					<LucideStar className="s-4" />
+				: die.face === "fail" ?
+					<LucideX className="s-4" />
+				:	die.result}
+			</span>
+		</li>
 	)
+})
+
+function DieTooltip({
+	die,
+	children,
+}: {
+	die: Die
+	children: React.ReactElement
+}) {
+	// delay rendering for perf, the tooltip is expensive when we render a lot of them
+	const [renderTooltip, setRenderTooltip] = useState(false)
+	useEffect(() => {
+		startTransition(() => {
+			setRenderTooltip(true)
+		})
+	}, [])
+
+	return renderTooltip ?
+			<Tooltip disableHoverableContent>
+				<TooltipTrigger tabIndex={0} asChild>
+					{children}
+				</TooltipTrigger>
+				<TooltipContent className="pointer-events-none">
+					{die.tooltip ?? `d${die.sides}: ${die.result}`}
+				</TooltipContent>
+			</Tooltip>
+		:	children
 }
 
 function CollectResilienceButton({
