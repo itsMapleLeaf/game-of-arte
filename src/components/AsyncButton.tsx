@@ -1,6 +1,6 @@
 import type { ComponentPropsWithRef } from "react"
 import { twMerge } from "tailwind-merge"
-import { autoRef } from "../helpers/autoRef.ts"
+import { autoRef } from "../helpers/autoRef.tsx"
 import type { Spread } from "../helpers/types.ts"
 import { useAsyncCallback } from "../helpers/useAsyncCallback.ts"
 

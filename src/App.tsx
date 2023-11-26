@@ -1,4 +1,3 @@
-import * as ScrollArea from "@radix-ui/react-scroll-area"
 import { useRect } from "@reach/rect"
 import { useRef } from "react"
 import { LoadingSuspense } from "./components/LoadingPlaceholder.tsx"
@@ -6,6 +5,11 @@ import { SideNav } from "./components/SideNav.tsx"
 import { AuthButton } from "./features/auth/AuthButton.tsx"
 import { CharacterDetails } from "./features/characters/CharacterDetails.tsx"
 import { container } from "./styles/container.ts"
+import {
+	ScrollAreaRoot,
+	ScrollAreaScrollbar,
+	ScrollAreaViewport,
+} from "./components/ScrollArea.tsx"
 
 export function App() {
 	return (
@@ -56,20 +60,12 @@ function ViewportHeightScrollArea({ children }: { children: React.ReactNode }) {
 					width: rect?.width,
 				}}
 			>
-				<ScrollArea.Root className="s-full">
-					<ScrollArea.Viewport
-						// there's a div inside with display: table that breaks horizontal sizing
-						className="pb-[--scroll-area-bottom] pr-3 pt-[--scroll-area-top] s-full [&>div]:!block"
-					>
+				<ScrollAreaRoot className="s-full">
+					<ScrollAreaViewport className="pb-[--scroll-area-bottom] pr-3 pt-[--scroll-area-top]">
 						{children}
-					</ScrollArea.Viewport>
-					<ScrollArea.Scrollbar
-						orientation="vertical"
-						className="w-1.5 pb-[--scroll-area-bottom] pt-[--scroll-area-top]"
-					>
-						<ScrollArea.Thumb className="rounded-full bg-white bg-opacity-25 transition-colors hover:bg-opacity-50 active:bg-accent-400" />
-					</ScrollArea.Scrollbar>
-				</ScrollArea.Root>
+					</ScrollAreaViewport>
+					<ScrollAreaScrollbar className="pb-[--scroll-area-bottom] pt-[--scroll-area-top]" />
+				</ScrollAreaRoot>
 			</div>
 		</div>
 	)

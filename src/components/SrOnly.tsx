@@ -1,5 +1,5 @@
 import { Slot } from "@radix-ui/react-slot"
-import { autoRef } from "~/helpers/autoRef.ts"
+import { autoRef } from "~/helpers/autoRef.tsx"
 
 export interface SrOnlyProps extends React.ComponentPropsWithoutRef<"span"> {
 	asChild?: boolean

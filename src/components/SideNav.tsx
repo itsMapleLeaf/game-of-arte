@@ -9,7 +9,7 @@ import {
 } from "lucide-react"
 import { CharacterList } from "../features/characters/CharacterList.tsx"
 import { ClockList } from "../features/clocks/ClockList.tsx"
-import { DiceRollList } from "../features/dice/DiceRollList.tsx"
+import { DiceRolls } from "../features/dice/DiceRolls.tsx"
 import { PlayerList } from "../features/players/PlayerList.tsx"
 import { WorldSettings } from "../features/worlds/WorldSettings.tsx"
 import { useQuerySuspense } from "../helpers/useQuerySuspense.ts"
@@ -25,9 +25,7 @@ export function SideNav() {
 			</SideNavCollapsible>
 
 			<SideNavCollapsible title="Dice" icon={<LucideDices />}>
-				<div className="h-[640px]">
-					<DiceRollList />
-				</div>
+				<DiceRolls />
 			</SideNavCollapsible>
 
 			<SideNavCollapsible title="Clocks" icon={<LucideClock />}>

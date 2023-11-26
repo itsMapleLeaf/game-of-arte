@@ -1,4 +1,4 @@
-import { autoRef } from "~/helpers/autoRef.ts"
+import { autoRef } from "~/helpers/autoRef.tsx"
 import { Slot, Slottable } from "@radix-ui/react-slot"
 import { twStyle, type TwStyle } from "~/styles/twStyle.ts"
 import { LucideLoader2 } from "lucide-react"

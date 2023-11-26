@@ -2,7 +2,7 @@ import { api } from "convex/_generated/api.js"
 import { atom } from "nanostores"
 import { useCallback, useEffect, useState, useTransition } from "react"
 import { useSpinDelay } from "spin-delay"
-import { autoRef } from "~/helpers/autoRef.ts"
+import { autoRef } from "~/helpers/autoRef.tsx"
 import { useQueriesSuspense } from "../../helpers/useQuerySuspense.ts"
 
 const characterIdAtom = atom(localStorage.getItem("characterId"))

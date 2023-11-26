@@ -3,6 +3,8 @@ import type { Doc } from "./_generated/dataModel"
 import { mutation, query } from "./_generated/server.js"
 import { type Die, diceRuleValidator } from "./diceRolls.validators.ts"
 import { requireAdmin, requirePlayerUser } from "./roles.ts"
+import { nullish } from "./validators.ts"
+import type { PaginationResult } from "convex/server"
 
 export type DiceRollListItem = Omit<Doc<"diceRolls">, "discordUserId"> & {
 	initiatorName: string | undefined
@@ -11,9 +13,20 @@ export type DiceRollListItem = Omit<Doc<"diceRolls">, "discordUserId"> & {
 const maxRolls = 250
 
 export const list = query({
-	handler: async (ctx): Promise<DiceRollListItem[]> => {
-		const rolls = await ctx.db.query("diceRolls").collect()
-		const discordUserIds = [...new Set(rolls.map((r) => r.discordUserId))]
+	args: {
+		limit: v.optional(v.number()),
+		cursor: nullish(v.string()),
+	},
+	handler: async (ctx, args): Promise<PaginationResult<DiceRollListItem>> => {
+		const result = await ctx.db
+			.query("diceRolls")
+			.order("desc")
+			.paginate({
+				numItems: args.limit ?? maxRolls,
+				cursor: args.cursor ?? null,
+			})
+
+		const discordUserIds = [...new Set(result.page.map((r) => r.discordUserId))]
 
 		const users = await ctx.db
 			.query("users")
@@ -24,10 +37,13 @@ export const list = query({
 
 		const usersById = new Map(users.map((u) => [u.discordUserId, u]))
 
-		return rolls.map(({ discordUserId, ...roll }) => ({
-			...roll,
-			initiatorName: usersById.get(discordUserId)?.name,
-		}))
+		return {
+			...result,
+			page: result.page.map(({ discordUserId, ...roll }) => ({
+				...roll,
+				initiatorName: usersById.get(discordUserId)?.name,
+			})),
+		}
 	},
 })
 

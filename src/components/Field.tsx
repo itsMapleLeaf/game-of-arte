@@ -11,7 +11,7 @@ import {
 	useMemo,
 } from "react"
 import { twMerge } from "tailwind-merge"
-import { autoRef } from "../helpers/autoRef.ts"
+import { autoRef } from "../helpers/autoRef.tsx"
 import type { Nullish, Spread } from "../helpers/types.ts"
 import { panel } from "../styles/panel.ts"
 
