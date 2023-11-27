@@ -1,15 +1,15 @@
 import { useRect } from "@reach/rect"
 import { useRef } from "react"
 import { LoadingSuspense } from "./components/LoadingPlaceholder.tsx"
-import { SideNav } from "./components/SideNav.tsx"
-import { AuthButton } from "./features/auth/AuthButton.tsx"
-import { CharacterDetails } from "./features/characters/CharacterDetails.tsx"
-import { container } from "./styles/container.ts"
 import {
 	ScrollAreaRoot,
 	ScrollAreaScrollbar,
 	ScrollAreaViewport,
 } from "./components/ScrollArea.tsx"
+import { SideNav } from "./components/SideNav.tsx"
+import { AuthButton } from "./features/auth/AuthButton.tsx"
+import { CharacterDetails } from "./features/characters/CharacterDetails.tsx"
+import { container } from "./styles/container.ts"
 
 export function App() {
 	return (

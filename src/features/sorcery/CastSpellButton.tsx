@@ -25,8 +25,10 @@ import { outlineButton } from "~/styles/button.ts"
 import { checkbox } from "~/styles/index.ts"
 import { twMerge } from "~/styles/twMerge.ts"
 import { CharacterAttributeRollForm } from "../characters/CharacterAttributeRollForm.tsx"
+import { CharacterContext } from "../characters/CharacterContext.tsx"
 import { sorceryAttribute } from "../characters/attributes.ts"
 import { STRESS_MAX } from "../characters/constants.ts"
+import { parseCharacterData } from "../characters/data.ts"
 import { WORLD_MANA_MAX } from "../worlds/constants.ts"
 import { SorcerySpellSelect } from "./SorcerySpellSelect.tsx"
 import { NON_AFFINITY_PENALTY } from "./constants.ts"
@@ -35,8 +37,6 @@ import {
 	type SorcerySpellId,
 	sorcerySpells,
 } from "./data.ts"
-import { CharacterContext } from "../characters/CharacterContext.tsx"
-import { parseCharacterData } from "../characters/data.ts"
 
 export function CastSpellButton({
 	sorceryDevice,

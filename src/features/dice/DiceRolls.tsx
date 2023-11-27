@@ -1,8 +1,14 @@
-import { Virtuoso, type ScrollerProps } from "react-virtuoso"
 import { api } from "convex/_generated/api.js"
 import { useMutation } from "convex/react"
 import { LucideDices, LucideList } from "lucide-react"
+import { type ScrollerProps, Virtuoso } from "react-virtuoso"
+import { Button } from "~/components/Button.tsx"
 import { CounterInput } from "~/components/CounterInput.tsx"
+import {
+	Dialog,
+	DialogTrigger,
+	SimpleDialogContent,
+} from "~/components/Dialog.tsx"
 import {
 	Field,
 	FieldInput,
@@ -10,23 +16,17 @@ import {
 	FieldLabelText,
 } from "~/components/Field.tsx"
 import { LoadingSuspense } from "~/components/LoadingPlaceholder.tsx"
-import { useAsyncCallback } from "~/helpers/useAsyncCallback.ts"
-import { useQuerySuspense } from "~/helpers/useQuerySuspense.ts"
-import { DiceRollDetails } from "./DiceRollDetails.tsx"
-import { EmptyState } from "../../components/EmptyState.tsx"
-import {
-	Dialog,
-	DialogTrigger,
-	SimpleDialogContent,
-} from "~/components/Dialog.tsx"
-import { Button } from "~/components/Button.tsx"
-import { panel } from "~/styles/panel.ts"
 import {
 	ScrollAreaRoot,
 	ScrollAreaScrollbar,
 	ScrollAreaViewport,
 } from "~/components/ScrollArea.tsx"
 import { autoRef } from "~/helpers/autoRef.tsx"
+import { useAsyncCallback } from "~/helpers/useAsyncCallback.ts"
+import { useQuerySuspense } from "~/helpers/useQuerySuspense.ts"
+import { panel } from "~/styles/panel.ts"
+import { EmptyState } from "../../components/EmptyState.tsx"
+import { DiceRollDetails } from "./DiceRollDetails.tsx"
 
 export function DiceRolls() {
 	return (

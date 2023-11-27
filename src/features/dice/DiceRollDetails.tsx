@@ -12,21 +12,21 @@ import {
 	LucideTriangle,
 	LucideX,
 } from "lucide-react"
+import { startTransition, useEffect, useState } from "react"
+import { Button } from "~/components/Button.tsx"
+import { SrOnly } from "~/components/SrOnly.tsx"
 import {
 	Tooltip,
 	TooltipContent,
 	TooltipTrigger,
 } from "~/components/Tooltip.tsx"
+import { autoRef } from "~/helpers/autoRef.tsx"
 import { plural } from "~/helpers/index.ts"
 import { sum } from "~/helpers/math.ts"
 import { useAsyncCallback } from "~/helpers/useAsyncCallback.ts"
 import { twMerge } from "~/styles/twMerge.ts"
 import { parseCharacterData } from "../characters/data.ts"
 import { parseDiceHints } from "./DiceHint.ts"
-import { Button } from "~/components/Button.tsx"
-import { SrOnly } from "~/components/SrOnly.tsx"
-import { startTransition, useEffect, useState } from "react"
-import { autoRef } from "~/helpers/autoRef.tsx"
 
 export function DiceRollDetails({
 	roll,

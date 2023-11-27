@@ -13,6 +13,7 @@ import { cloneElement } from "react"
 import type { ClassNameValue } from "tailwind-merge"
 import * as v from "valibot"
 import { AsyncButton } from "~/components/AsyncButton.tsx"
+import { Button } from "~/components/Button.tsx"
 import { ConfirmDialog } from "~/components/ConfirmDialog.tsx"
 import {
 	Field,
@@ -52,7 +53,6 @@ import { ChooseAffinitySpellsButton } from "../sorcery/ChooseAffinitySpellsButto
 import { RemoveSorceryDeviceButton } from "../sorcery/RemoveSorceryDeviceButton.tsx"
 import { SorceryDeviceEditor } from "../sorcery/SorceryDeviceEditor.tsx"
 import { CharacterContext } from "./CharacterContext.tsx"
-import { Button } from "~/components/Button.tsx"
 
 export function CharacterDetails() {
 	const character = useCurrentCharacter()
@@ -441,18 +441,6 @@ const column = (...classes: ClassNameValue[]) =>
 
 const sectionHeading = (...classes: ClassNameValue[]) =>
 	twMerge("border-b border-base-800 pb-1 text-2xl font-light", ...classes)
-
-const getStressModifier = (
-	character: Doc<"characters">,
-	attributeSectionTitle: string,
-): number => {
-	const stressValue =
-		attributeSectionTitle === "Physical" ?
-			character.data.physicalStress
-		:	character.data.mentalStress
-
-	return (toFiniteNumberOrUndefined(stressValue) ?? 0) * -1
-}
 
 function getUsedExperience(character: Doc<"characters">) {
 	return attributes.reduce((sum, attribute) => {

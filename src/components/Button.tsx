@@ -1,10 +1,10 @@
-import { autoRef } from "~/helpers/autoRef.tsx"
 import { Slot, Slottable } from "@radix-ui/react-slot"
-import { twStyle, type TwStyle } from "~/styles/twStyle.ts"
 import { LucideLoader2 } from "lucide-react"
 import type { ClassNameValue } from "tailwind-merge"
+import { autoRef } from "~/helpers/autoRef.tsx"
 import type { StrictOmit } from "~/helpers/types.ts"
 import { twMerge } from "~/styles/twMerge.ts"
+import { type TwStyle, twStyle } from "~/styles/twStyle.ts"
 
 export interface ButtonProps
 	extends React.ComponentPropsWithRef<"button">,
@@ -22,18 +22,15 @@ export type ButtonIconComponent = (props: {
 export const Button = autoRef(function Button(props: ButtonProps) {
 	const {
 		asChild,
-		appearance = "solid",
 		size = "default",
 		icon: iconProp,
 		pending,
-		disabled,
 		children,
-		className,
-		square,
 		...buttonProps
 	} = props
 
-	let iconStart, iconEnd
+	let iconStart
+	let iconEnd
 	if (iconProp) {
 		const iconStyle = buttonIconSizeStyles[size]
 		if ("start" in iconProp) {
