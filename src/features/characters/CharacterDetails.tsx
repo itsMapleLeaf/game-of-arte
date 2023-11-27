@@ -119,6 +119,22 @@ export function CharacterDetails() {
 						</Field>
 
 						<Field>
+							<FieldLabel>Notes</FieldLabel>
+							<FieldDescription>
+								Anything else important about the character.
+							</FieldDescription>
+							<FieldInput asChild>
+								<CharacterDataTextArea
+									character={character}
+									dataKey="notes"
+									className={textArea()}
+									rows={4}
+									fixedHeight
+								/>
+							</FieldInput>
+						</Field>
+
+						<Field>
 							<FieldLabel>Reference Image</FieldLabel>
 							<FieldDescription>What do they look like?</FieldDescription>
 							<FieldInput asChild>
@@ -132,15 +148,42 @@ export function CharacterDetails() {
 
 					<div className={column()}>
 						<section className={column()}>
-							<h3 className={sectionHeading()}>Status</h3>
+							<h3 className={sectionHeading()}>Sorcery</h3>
 
-							<Field>
-								<FieldLabelText>Experience</FieldLabelText>
-								<FieldDescription>
-									Spend these points on attributes!
-								</FieldDescription>
-								<ExperienceDisplay character={character} />
-							</Field>
+							{character.sorceryDevice == null ?
+								<AddSorceryDeviceButton character={character} />
+							:	<>
+									<SorceryDeviceEditor
+										character={character}
+										sorceryDevice={character.sorceryDevice}
+									/>
+
+									{(character._id === ownedCharacter?._id || roles.isAdmin) && (
+										<section className={column("gap-2")}>
+											<Button icon={{ start: LucideWand2 }} asChild>
+												<CastSpellButton
+													sorceryDevice={character.sorceryDevice}
+												>
+													Cast Spell
+												</CastSpellButton>
+											</Button>
+											<ChooseAffinitySpellsButton
+												character={character}
+												sorceryDevice={character.sorceryDevice}
+												type="button"
+												className={outlineButton()}
+											>
+												<LucideSparkles /> Choose Affinity Spells
+											</ChooseAffinitySpellsButton>
+											<RemoveSorceryDeviceButton character={character} />
+										</section>
+									)}
+								</>
+							}
+						</section>
+
+						<section className={column()}>
+							<h3 className={sectionHeading()}>Status</h3>
 
 							<div className={row("items-end gap-2")}>
 								<Field>
@@ -185,7 +228,9 @@ export function CharacterDetails() {
 									<CharacterDataTextArea
 										character={character}
 										dataKey="condition"
-										className={textArea("max-h-40")}
+										className={textArea()}
+										rows={4}
+										fixedHeight
 									/>
 								</FieldInput>
 							</Field>
@@ -209,41 +254,14 @@ export function CharacterDetails() {
 									</button>
 								}
 							</div>
-						</section>
 
-						<section className={column()}>
-							<h3 className={sectionHeading()}>Sorcery</h3>
-
-							{character.sorceryDevice == null ?
-								<AddSorceryDeviceButton character={character} />
-							:	<>
-									<SorceryDeviceEditor
-										character={character}
-										sorceryDevice={character.sorceryDevice}
-									/>
-
-									{(character._id === ownedCharacter?._id || roles.isAdmin) && (
-										<section className={column("gap-2")}>
-											<Button icon={{ start: LucideWand2 }} asChild>
-												<CastSpellButton
-													sorceryDevice={character.sorceryDevice}
-												>
-													Cast Spell
-												</CastSpellButton>
-											</Button>
-											<ChooseAffinitySpellsButton
-												character={character}
-												sorceryDevice={character.sorceryDevice}
-												type="button"
-												className={outlineButton()}
-											>
-												<LucideSparkles /> Choose Affinity Spells
-											</ChooseAffinitySpellsButton>
-											<RemoveSorceryDeviceButton character={character} />
-										</section>
-									)}
-								</>
-							}
+							<Field>
+								<FieldLabelText>Experience</FieldLabelText>
+								<FieldDescription>
+									Spend these points on attributes!
+								</FieldDescription>
+								<ExperienceDisplay character={character} />
+							</Field>
 						</section>
 					</div>
 				</div>
@@ -280,21 +298,6 @@ export function CharacterDetails() {
 							<CharacterDataTextArea
 								character={character}
 								dataKey="inventory"
-								className={textArea()}
-								rows={3}
-							/>
-						</FieldInput>
-					</Field>
-
-					<Field>
-						<FieldLabel>Notes</FieldLabel>
-						<FieldDescription>
-							Anything else important about the character.
-						</FieldDescription>
-						<FieldInput asChild>
-							<CharacterDataTextArea
-								character={character}
-								dataKey="notes"
 								className={textArea()}
 								rows={3}
 							/>

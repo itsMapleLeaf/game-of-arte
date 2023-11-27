@@ -1,6 +1,6 @@
 import type { Doc } from "convex/_generated/dataModel.js"
 import type { ComponentPropsWithoutRef } from "react"
-import ExpandingTextArea, { type TextareaProps } from "react-expanding-textarea"
+import ExpandingTextArea from "react-expanding-textarea"
 import {
 	CounterInput,
 	type CounterInputProps,
@@ -33,14 +33,23 @@ export function CharacterDataInput({
 	)
 }
 
+interface CharacterDataTextAreaProps
+	extends ComponentPropsWithoutRef<"textarea"> {
+	character: Doc<"characters">
+	dataKey: string
+	fixedHeight?: boolean
+}
+
 export function CharacterDataTextArea({
 	character,
 	dataKey,
+	fixedHeight,
 	...props
-}: Spread<TextareaProps, { character: Doc<"characters">; dataKey: string }>) {
+}: CharacterDataTextAreaProps) {
 	const [value, setValue] = useCharacterDataValue(character, dataKey)
+	const Component = fixedHeight ? "textarea" : ExpandingTextArea
 	return (
-		<ExpandingTextArea
+		<Component
 			{...props}
 			value={String(value ?? "")}
 			onChange={(event) => {
