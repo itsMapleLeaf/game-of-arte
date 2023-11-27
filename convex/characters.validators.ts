@@ -1,4 +1,4 @@
-import { v } from "convex/values"
+import { type Infer, v } from "convex/values"
 
 export const sorceryDeviceValidator = v.object({
 	description: v.string(),
@@ -11,4 +11,12 @@ export const sorceryDeviceValidator = v.object({
 			third: v.string(),
 		}),
 	),
+})
+
+export type Condition = Infer<typeof conditionValidator>
+export const conditionValidator = v.object({
+	id: v.string(),
+	description: v.string(),
+	physicalStress: v.number(),
+	mentalStress: v.number(),
 })

@@ -52,6 +52,7 @@ import { CastSpellButton } from "../sorcery/CastSpellButton.tsx"
 import { ChooseAffinitySpellsButton } from "../sorcery/ChooseAffinitySpellsButton.tsx"
 import { RemoveSorceryDeviceButton } from "../sorcery/RemoveSorceryDeviceButton.tsx"
 import { SorceryDeviceEditor } from "../sorcery/SorceryDeviceEditor.tsx"
+import { CharacterConditions } from "./CharacterConditions.tsx"
 import { CharacterContext } from "./CharacterContext.tsx"
 
 export function CharacterDetails() {
@@ -220,19 +221,19 @@ export function CharacterDetails() {
 							</div>
 
 							<Field>
-								<FieldLabel>Condition</FieldLabel>
+								<FieldLabel>Conditions</FieldLabel>
 								<FieldDescription>
-									{`Write specifics about the stress they've taken.`}
+									List your character's sources of stress.
 								</FieldDescription>
-								<FieldInput asChild>
-									<CharacterDataTextArea
-										character={character}
-										dataKey="condition"
-										className={textArea()}
-										rows={4}
-										fixedHeight
-									/>
-								</FieldInput>
+								<CharacterConditions />
+							</Field>
+
+							<Field>
+								<FieldLabelText>Experience</FieldLabelText>
+								<FieldDescription>
+									Spend these points on attributes!
+								</FieldDescription>
+								<ExperienceDisplay character={character} />
 							</Field>
 
 							<div className={row("fluid-cols-36")}>
@@ -254,14 +255,6 @@ export function CharacterDetails() {
 									</button>
 								}
 							</div>
-
-							<Field>
-								<FieldLabelText>Experience</FieldLabelText>
-								<FieldDescription>
-									Spend these points on attributes!
-								</FieldDescription>
-								<ExperienceDisplay character={character} />
-							</Field>
 						</section>
 					</div>
 				</div>

@@ -1,6 +1,9 @@
 import { defineSchema, defineTable } from "convex/server"
 import { v } from "convex/values"
-import { sorceryDeviceValidator } from "./characters.validators.ts"
+import {
+	conditionValidator,
+	sorceryDeviceValidator,
+} from "./characters.validators.ts"
 import { dieValidator } from "./diceRolls.validators.ts"
 import { record } from "./validators.ts"
 
@@ -28,6 +31,7 @@ export default defineSchema({
 		hidden: v.optional(v.boolean()),
 		data: record<string | number>(),
 		sorceryDevice: v.optional(sorceryDeviceValidator),
+		conditions: v.optional(v.array(conditionValidator)),
 	}),
 
 	diceRolls: defineTable({
