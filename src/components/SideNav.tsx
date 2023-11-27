@@ -7,6 +7,7 @@ import {
 	LucideUsers,
 	LucideWrench,
 } from "lucide-react"
+import { useLocalStorageState } from "~/helpers/useLocalStorageState.tsx"
 import { CharacterList } from "../features/characters/CharacterList.tsx"
 import { ClockList } from "../features/clocks/ClockList.tsx"
 import { DiceRolls } from "../features/dice/DiceRolls.tsx"
@@ -50,7 +51,7 @@ export function SideNav() {
 function SideNavCollapsible({
 	title,
 	icon,
-	defaultOpen,
+	defaultOpen = false,
 	children,
 }: {
 	title: string
@@ -58,20 +59,14 @@ function SideNavCollapsible({
 	defaultOpen?: boolean
 	children: React.ReactNode
 }) {
+	const [open, setOpen] = useLocalStorageState(`collapse:${title}`, (input) => {
+		return typeof input === "boolean" ? input : defaultOpen
+	})
 	return (
 		<details
 			className={panel("group rounded-md border")}
-			open={
-				localStorage.getItem(`collapse:${title}`) ?
-					localStorage.getItem(`collapse:${title}`) === "true"
-				:	defaultOpen
-			}
-			onToggle={(event) => {
-				localStorage.setItem(
-					`collapse:${title}`,
-					event.currentTarget.open.toString(),
-				)
-			}}
+			open={open}
+			onToggle={(event) => setOpen(event.currentTarget.open)}
 		>
 			<summary className="flex cursor-pointer select-none list-none gap-2 rounded-t-md bg-base-800 p-2 transition hover:text-accent-400">
 				<div>{icon}</div>
