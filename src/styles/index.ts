@@ -9,7 +9,7 @@ export const input = twStyle(
 
 export const textArea = twStyle(
 	panel(
-		"w-full min-w-0 resize-none rounded-md border px-3 py-2 leading-6 transition",
+		"block w-full  min-w-0 resize-none rounded-md border px-3 py-2 leading-6 transition",
 	),
 )
 
