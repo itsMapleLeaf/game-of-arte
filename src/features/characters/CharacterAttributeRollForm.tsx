@@ -28,7 +28,7 @@ import {
 import { CharacterContext } from "./CharacterContext.tsx"
 import { type Attribute, attributeCategories } from "./attributes.ts"
 import { ACTION_DICE_COUNT_BY_LEVEL, ARCHETYPE_BONUS } from "./constants.ts"
-import { parseCharacterData } from "./data.ts"
+import { getCharacterStress, parseCharacterData } from "./data.ts"
 
 export function CharacterAttributeRollForm({
 	attribute,
@@ -68,10 +68,7 @@ export function CharacterAttributeRollForm({
 		ACTION_DICE_COUNT_BY_LEVEL[characterAttributeValue] ??
 		raise(`Invalid attribute value ${characterAttributeValue}`)
 
-	const stress =
-		characterData[
-			attributeCategory.id === "physical" ? "physicalStress" : "mentalStress"
-		]
+	const { physicalStress, mentalStress } = getCharacterStress(character)
 
 	const boostDiceItems = [
 		{ label: "Archetype", value: isArchetypeAttribute ? ARCHETYPE_BONUS : 0 },
@@ -82,7 +79,9 @@ export function CharacterAttributeRollForm({
 	const boostDiceCount = sum(boostDiceItems.map((item) => item.value))
 
 	const snagDiceItems = [
-		{ label: "Stress", value: stress },
+		attributeCategory.id === "physical" ?
+			{ label: "Physical Stress", value: physicalStress }
+		:	{ label: "Mental Stress", value: mentalStress },
 		...extraSnagDiceItems,
 		{ label: "Extra Snag Dice", value: additionalSnagDice },
 	].filter((item) => item.value > 0)

@@ -19,7 +19,6 @@ import {
 	FieldInput,
 	FieldLabel,
 } from "~/components/Field.tsx"
-import { toFiniteNumberOrUndefined } from "~/helpers/index.ts"
 import { useQuerySuspense } from "~/helpers/useQuerySuspense.ts"
 import { outlineButton } from "~/styles/button.ts"
 import { checkbox } from "~/styles/index.ts"
@@ -28,7 +27,7 @@ import { CharacterAttributeRollForm } from "../characters/CharacterAttributeRoll
 import { CharacterContext } from "../characters/CharacterContext.tsx"
 import { sorceryAttribute } from "../characters/attributes.ts"
 import { STRESS_MAX } from "../characters/constants.ts"
-import { parseCharacterData } from "../characters/data.ts"
+import { getCharacterStress } from "../characters/data.ts"
 import { WORLD_MANA_MAX } from "../worlds/constants.ts"
 import { SorcerySpellSelect } from "./SorcerySpellSelect.tsx"
 import { NON_AFFINITY_PENALTY } from "./constants.ts"
@@ -68,7 +67,6 @@ function CastSpellForm({
 	onSuccess: () => void
 }) {
 	const character = CharacterContext.useValue()
-	const characterData = parseCharacterData(character.data)
 
 	const world = useQuerySuspense(api.world.get)
 	const subtractWorldMana = useMutation(api.world.subtractMana)
@@ -81,8 +79,7 @@ function CastSpellForm({
 
 	const worldMana = world.mana ?? WORLD_MANA_MAX
 
-	const mentalStress =
-		toFiniteNumberOrUndefined(characterData.mentalStress) ?? 0
+	const { mentalStress } = getCharacterStress(character)
 
 	const mentalStressCost = (spell?.cost.mentalStress ?? 0) + (amplify ? 1 : 0)
 	const finalMentalStress = Math.min(
