@@ -1,14 +1,12 @@
+import type { Doc } from "convex/_generated/dataModel.js"
 import * as v from "valibot"
-import { clamp } from "~/helpers/math.ts"
+import { clamp, sum } from "~/helpers/math.ts"
 import {
 	ATTRIBUTE_DEFAULT,
 	ATTRIBUTE_MAX,
 	ATTRIBUTE_MIN,
 	RESILIENCE_DEFAULT,
 	RESILIENCE_MIN,
-	STRESS_DEFAULT,
-	STRESS_MAX,
-	STRESS_MIN,
 } from "./constants.ts"
 
 const toCharacterDataValue =
@@ -65,24 +63,6 @@ const characterDataSchema = v.object({
 		}),
 	),
 
-	mentalStress: v.transform(
-		v.unknown(),
-		toCharacterDataValue({
-			min: STRESS_MIN,
-			max: STRESS_MAX,
-			fallback: STRESS_DEFAULT,
-		}),
-	),
-
-	physicalStress: v.transform(
-		v.unknown(),
-		toCharacterDataValue({
-			min: STRESS_MIN,
-			max: STRESS_MAX,
-			fallback: STRESS_DEFAULT,
-		}),
-	),
-
 	archetype: v.fallback(
 		v.optional(v.picklist(["athlete", "strategist", "empath", "scholar"])),
 		undefined,
@@ -91,4 +71,14 @@ const characterDataSchema = v.object({
 
 export function parseCharacterData(data: Record<string, string | number>) {
 	return v.parse(characterDataSchema, data)
+}
+
+export function getCharacterStress(character: Doc<"characters">) {
+	const physicalStress = sum(
+		character.conditions?.map((c) => c.physicalStress) ?? [],
+	)
+	const mentalStress = sum(
+		character.conditions?.map((c) => c.mentalStress) ?? [],
+	)
+	return { physicalStress, mentalStress }
 }

@@ -54,6 +54,9 @@ import { RemoveSorceryDeviceButton } from "../sorcery/RemoveSorceryDeviceButton.
 import { SorceryDeviceEditor } from "../sorcery/SorceryDeviceEditor.tsx"
 import { CharacterConditions } from "./CharacterConditions.tsx"
 import { CharacterContext } from "./CharacterContext.tsx"
+import { MentalStressIndicator } from "./MentalStressIndicator.tsx"
+import { PhysicalStressIndicator } from "./PhysicalStressIndicator.tsx"
+import { getCharacterStress } from "./data.ts"
 
 export function CharacterDetails() {
 	const character = useCurrentCharacter()
@@ -73,6 +76,8 @@ export function CharacterDetails() {
 	if (!character) {
 		return <p>No characters found.</p>
 	}
+
+	const { physicalStress, mentalStress } = getCharacterStress(character)
 
 	return (
 		<CharacterContext.Provider value={character}>
@@ -198,25 +203,13 @@ export function CharacterDetails() {
 								</Field>
 
 								<Field>
-									<FieldLabelText>Phys. Stress</FieldLabelText>
-									<CharacterDataCounterInput
-										character={character}
-										dataKey="physicalStress"
-										min={0}
-										max={6}
-										defaultValue={0}
-									/>
-								</Field>
-
-								<Field>
-									<FieldLabelText>Ment. Stress</FieldLabelText>
-									<CharacterDataCounterInput
-										character={character}
-										dataKey="mentalStress"
-										min={0}
-										max={6}
-										defaultValue={0}
-									/>
+									<FieldLabelText>Stress</FieldLabelText>
+									<FieldInput asChild>
+										<p className={panel(input(), center(), "h-10 gap-3")}>
+											<PhysicalStressIndicator value={physicalStress} />
+											<MentalStressIndicator value={mentalStress} />
+										</p>
+									</FieldInput>
 								</Field>
 							</div>
 
