@@ -236,20 +236,20 @@ export function CharacterDetails() {
 							<div className={row("fluid-cols-36")}>
 								<RandomizeStatsButton character={character} />
 								{attributesLocked ?
-									<button
-										type="button"
-										className={solidButton()}
+									<Button
+										appearance="outline"
+										icon={{ start: LucideUnlock }}
 										onClick={() => setAttributesLocked(!attributesLocked)}
 									>
-										<LucideUnlock /> Unlock Stats
-									</button>
-								:	<button
-										type="button"
-										className={solidButton()}
+										Unlock Stats
+									</Button>
+								:	<Button
+										appearance="outline"
+										icon={{ start: LucideLock }}
 										onClick={() => setAttributesLocked(!attributesLocked)}
 									>
-										<LucideLock /> Lock Stats
-									</button>
+										Lock Stats
+									</Button>
 								}
 							</div>
 						</section>
@@ -339,7 +339,7 @@ function RandomizeStatsButton({ character }: { character: Doc<"characters"> }) {
 	const updateCharacterData = useMutation(api.characters.updateData)
 	const usedExperience = getUsedExperience(character)
 
-	const randomizeStats = () => {
+	const randomizeStats = async () => {
 		// NOTE: if this function fails again, extract the logic and write a test
 		const newStats = Object.fromEntries(
 			attributes.map((attribute) => [attribute.dataKey, 1]),
@@ -370,7 +370,7 @@ function RandomizeStatsButton({ character }: { character: Doc<"characters"> }) {
 			(category) => category.archetypeId,
 		)
 
-		updateCharacterData({
+		await updateCharacterData({
 			id: character._id,
 			data: {
 				...newStats,
@@ -380,9 +380,9 @@ function RandomizeStatsButton({ character }: { character: Doc<"characters"> }) {
 	}
 
 	const button = (
-		<button type="button" className={solidButton()}>
-			<LucideDices /> Random Stats
-		</button>
+		<Button appearance="outline" icon={{ start: LucideDices }}>
+			Random Stats
+		</Button>
 	)
 
 	if (usedExperience === 0) {
