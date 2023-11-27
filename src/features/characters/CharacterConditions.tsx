@@ -1,4 +1,3 @@
-import { CompositeItem } from "@ariakit/react"
 import type { PopoverTriggerProps } from "@radix-ui/react-popover"
 import { api } from "convex/_generated/api"
 import type { Condition } from "convex/characters.validators.ts"
@@ -103,33 +102,25 @@ function CharacterConditionItem({ condition }: { condition: Condition }) {
 				</div>
 			</div>
 
-			<CompositeItem
-				render={
-					<Button
-						appearance="faded"
-						icon={{ start: LucideX }}
-						square
-						className="-mx-2 min-h-8"
-						onClick={removeCondition}
-					>
-						<SrOnly>Remove</SrOnly>
-					</Button>
-				}
-			/>
+			<Button
+				appearance="faded"
+				icon={{ start: LucideX }}
+				square
+				className="-mx-2 min-h-8"
+				onClick={removeCondition}
+			>
+				<SrOnly>Remove</SrOnly>
+			</Button>
 
 			<ConditionFormButton initialCondition={condition} asChild>
-				<CompositeItem
-					render={
-						<Button
-							appearance="faded"
-							icon={{ start: LucideEdit }}
-							square
-							className="-mx-2 min-h-8"
-						>
-							<SrOnly>Edit</SrOnly>
-						</Button>
-					}
-				/>
+				<Button
+					appearance="faded"
+					icon={{ start: LucideEdit }}
+					square
+					className="-mx-2 min-h-8"
+				>
+					<SrOnly>Edit</SrOnly>
+				</Button>
 			</ConditionFormButton>
 		</div>
 	)
