@@ -3,15 +3,17 @@ import { LucideLoader2 } from "lucide-react"
 import type { ClassNameValue } from "tailwind-merge"
 import { autoRef } from "~/helpers/autoRef.tsx"
 import type { StrictOmit } from "~/helpers/types.ts"
+import { useAsyncCallback } from "~/helpers/useAsyncCallback.ts"
 import { twMerge } from "~/styles/twMerge.ts"
 import { type TwStyle, twStyle } from "~/styles/twStyle.ts"
 
 export interface ButtonProps
-	extends React.ComponentPropsWithRef<"button">,
+	extends StrictOmit<React.ComponentPropsWithRef<"button">, "onClick">,
 		StrictOmit<ButtonStyleProps, "className"> {
 	asChild?: boolean
 	icon?: { start: ButtonIconComponent } | { end: ButtonIconComponent }
 	pending?: boolean
+	onClick?: (event: React.MouseEvent<HTMLButtonElement>) => unknown
 }
 
 export type ButtonIconComponent = (props: {
@@ -20,14 +22,21 @@ export type ButtonIconComponent = (props: {
 }) => React.ReactNode
 
 export const Button = autoRef(function Button(props: ButtonProps) {
+	const [handleClick, state] = useAsyncCallback(
+		async (event: React.MouseEvent<HTMLButtonElement>) => {
+			await onClick?.(event)
+		},
+	)
+
 	const {
 		asChild,
 		size = "default",
 		icon: iconProp,
-		pending,
+		pending = state.isLoading,
 		children,
 		appearance: _appearance,
 		square: _square,
+		onClick,
 		...buttonProps
 	} = props
 
@@ -51,7 +60,12 @@ export const Button = autoRef(function Button(props: ButtonProps) {
 
 	const Component = asChild ? Slot : "button"
 	return (
-		<Component type="button" {...buttonProps} className={buttonStyle(props)}>
+		<Component
+			type="button"
+			{...buttonProps}
+			className={buttonStyle(props)}
+			onClick={handleClick}
+		>
 			{iconStart}
 			<Slottable>{children}</Slottable>
 			{iconEnd}
@@ -95,8 +109,11 @@ const buttonAppearanceStyles = {
 			"border-error-700 bg-error-700 bg-opacity-25 hover:bg-opacity-50",
 		),
 	),
-	clear: twStyle(baseAppearanceStyle("hover:bg-base-800")),
 	outline: twStyle(baseAppearanceStyle("border-base-700 hover:bg-base-800")),
+	clear: twStyle(baseAppearanceStyle("hover:bg-base-800")),
+	faded: twStyle(
+		baseAppearanceStyle("opacity-50 hover:opacity-100 focus:opacity-100"),
+	),
 }
 
 const buttonSizeStyles = {
