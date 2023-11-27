@@ -154,6 +154,40 @@ export function CharacterDetails() {
 
 					<div className={column()}>
 						<section className={column()}>
+							<h3 className={sectionHeading()}>Status</h3>
+
+							<div className={row("items-end gap-2")}>
+								<Field>
+									<FieldLabelText>Resilience</FieldLabelText>
+									<CharacterDataCounterInput
+										character={character}
+										dataKey="resilience"
+										min={0}
+										defaultValue={2}
+									/>
+								</Field>
+
+								<Field>
+									<FieldLabelText>Stress</FieldLabelText>
+									<FieldInput asChild>
+										<p className={panel(input(), center(), "h-10 gap-3")}>
+											<PhysicalStressIndicator value={physicalStress} />
+											<MentalStressIndicator value={mentalStress} />
+										</p>
+									</FieldInput>
+								</Field>
+							</div>
+
+							<Field>
+								<FieldLabel>Conditions</FieldLabel>
+								<FieldDescription>
+									List your character's sources of stress.
+								</FieldDescription>
+								<CharacterConditions />
+							</Field>
+						</section>
+
+						<section className={column()}>
 							<h3 className={sectionHeading()}>Sorcery</h3>
 
 							{character.sorceryDevice == null ?
@@ -189,37 +223,7 @@ export function CharacterDetails() {
 						</section>
 
 						<section className={column()}>
-							<h3 className={sectionHeading()}>Status</h3>
-
-							<div className={row("items-end gap-2")}>
-								<Field>
-									<FieldLabelText>Resilience</FieldLabelText>
-									<CharacterDataCounterInput
-										character={character}
-										dataKey="resilience"
-										min={0}
-										defaultValue={2}
-									/>
-								</Field>
-
-								<Field>
-									<FieldLabelText>Stress</FieldLabelText>
-									<FieldInput asChild>
-										<p className={panel(input(), center(), "h-10 gap-3")}>
-											<PhysicalStressIndicator value={physicalStress} />
-											<MentalStressIndicator value={mentalStress} />
-										</p>
-									</FieldInput>
-								</Field>
-							</div>
-
-							<Field>
-								<FieldLabel>Conditions</FieldLabel>
-								<FieldDescription>
-									List your character's sources of stress.
-								</FieldDescription>
-								<CharacterConditions />
-							</Field>
+							<h3 className={sectionHeading()}>Progression</h3>
 
 							<Field>
 								<FieldLabelText>Experience</FieldLabelText>

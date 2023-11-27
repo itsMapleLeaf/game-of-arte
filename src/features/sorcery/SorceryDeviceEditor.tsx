@@ -49,7 +49,7 @@ export function SorceryDeviceEditor({
 				<FieldDescription>Describe your sorcery device.</FieldDescription>
 				<FieldInput asChild>
 					<ExpandingTextArea
-						className={textArea()}
+						className={textArea("max-h-32")}
 						placeholder={descriptionPlaceholder}
 						value={sorceryDevice.description}
 						onChange={(event) => {
