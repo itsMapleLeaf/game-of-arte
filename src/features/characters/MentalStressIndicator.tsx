@@ -7,7 +7,7 @@ export function MentalStressIndicator({ value }: { value: number }) {
 			label="Mental Stress"
 			icon={<LucideBrain />}
 			value={value}
-			className="text-blue-400"
+			className="text-purple-400"
 		/>
 	)
 }
