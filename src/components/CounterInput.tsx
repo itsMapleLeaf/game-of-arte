@@ -27,7 +27,7 @@ export function CounterInput({
 	return (
 		<div
 			className={panel(
-				"flex items-center justify-center gap-2 rounded-md border py-1",
+				"flex h-10 items-center justify-center gap-2 rounded-md border py-1",
 				className,
 			)}
 		>
