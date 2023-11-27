@@ -3,7 +3,10 @@ import { v } from "convex/values"
 import randimals from "randimals"
 import { compareKey } from "../src/helpers/index.ts"
 import type { Id } from "./_generated/dataModel"
-import { sorceryDeviceValidator } from "./characters.validators.ts"
+import {
+	conditionValidator,
+	sorceryDeviceValidator,
+} from "./characters.validators.ts"
 import { getRoles, requireAdmin, requirePlayerUser } from "./roles.ts"
 import { findUserByTokenIdentifier } from "./users.ts"
 import { nullish, record } from "./validators.ts"
@@ -86,6 +89,7 @@ export const update = mutation({
 		id: v.id("characters"),
 		name: v.optional(v.string()),
 		hidden: v.optional(v.boolean()),
+		conditions: v.optional(v.array(conditionValidator)),
 	},
 	handler: async (ctx, { id, ...args }) => {
 		await requirePlayerUser(ctx)
