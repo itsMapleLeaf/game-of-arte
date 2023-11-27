@@ -7,7 +7,7 @@ export function PhysicalStressIndicator({ value }: { value: number }) {
 			label="Physical Stress"
 			icon={<LucideHeartCrack />}
 			value={value}
-			className="text-red-400"
+			className="text-orange-400"
 		/>
 	)
 }
