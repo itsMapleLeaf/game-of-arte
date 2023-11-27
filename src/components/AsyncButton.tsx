@@ -1,18 +1,18 @@
 import type { ComponentPropsWithRef } from "react"
 import { twMerge } from "tailwind-merge"
 import { autoRef } from "../helpers/autoRef.tsx"
-import type { Spread } from "../helpers/types.ts"
+import type { StrictOmit } from "../helpers/types.ts"
 import { useAsyncCallback } from "../helpers/useAsyncCallback.ts"
+
+export interface AsyncButtonProps
+	extends StrictOmit<ComponentPropsWithRef<"button">, "onClick"> {
+	onClick: (event: React.MouseEvent) => PromiseLike<unknown>
+}
 
 export const AsyncButton = autoRef(function AsyncButton({
 	onClick,
 	...props
-}: Spread<
-	ComponentPropsWithRef<"button">,
-	{
-		onClick: (event: React.MouseEvent) => PromiseLike<unknown>
-	}
->) {
+}: AsyncButtonProps) {
 	const [handleClick, state] = useAsyncCallback(
 		async (event: React.MouseEvent<HTMLButtonElement>) => {
 			try {
