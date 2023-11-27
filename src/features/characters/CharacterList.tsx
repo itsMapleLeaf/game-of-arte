@@ -11,6 +11,7 @@ import {
 } from "lucide-react"
 import { startTransition } from "react"
 import { twMerge } from "tailwind-merge"
+import { Collapse, CollapseSummary } from "~/components/Collapse.tsx"
 import { LoadingSpinner } from "../../components/LoadingPlaceholder.tsx"
 import {
 	Menu,
@@ -39,14 +40,14 @@ export function CharacterList() {
 					characters={characters.filter((character) => !character.hidden)}
 				/>
 				{roles.isAdmin && (
-					<section>
-						<h2 className="mt-2 px-3 text-sm font-medium uppercase opacity-60">
+					<Collapse>
+						<CollapseSummary className="px-3 py-2 text-sm font-medium uppercase opacity-75">
 							Hidden
-						</h2>
+						</CollapseSummary>
 						<CharacterListItems
 							characters={characters.filter((character) => character.hidden)}
 						/>
-					</section>
+					</Collapse>
 				)}
 			</div>
 		</div>
