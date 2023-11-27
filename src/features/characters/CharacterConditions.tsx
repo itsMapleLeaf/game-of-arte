@@ -60,16 +60,6 @@ function CharacterConditionItem({ condition }: { condition: Condition }) {
 				</div>
 			</div>
 
-			<Button
-				appearance="faded"
-				icon={{ start: LucideX }}
-				square
-				className="-mx-2 min-h-8"
-				onClick={removeCondition}
-			>
-				<SrOnly>Remove</SrOnly>
-			</Button>
-
 			<ConditionFormButton initialCondition={condition} asChild>
 				<Button
 					appearance="faded"
@@ -80,6 +70,16 @@ function CharacterConditionItem({ condition }: { condition: Condition }) {
 					<SrOnly>Edit</SrOnly>
 				</Button>
 			</ConditionFormButton>
+
+			<Button
+				appearance="faded"
+				icon={{ start: LucideX }}
+				square
+				className="-mx-2 min-h-8"
+				onClick={removeCondition}
+			>
+				<SrOnly>Remove</SrOnly>
+			</Button>
 		</div>
 	)
 }
