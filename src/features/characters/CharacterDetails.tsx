@@ -44,7 +44,7 @@ import { expectNonNil } from "~/helpers/errors.ts"
 import { randomItem, toFiniteNumberOrUndefined } from "~/helpers/index.ts"
 import { useLocalStorageState } from "~/helpers/useLocalStorageState.tsx"
 import { useQuerySuspense } from "~/helpers/useQuerySuspense.ts"
-import { outlineButton, solidButton } from "~/styles/button.ts"
+import { solidButton } from "~/styles/button.ts"
 import { center, input, textArea } from "~/styles/index.ts"
 import { panel } from "~/styles/panel.ts"
 import { twMerge } from "~/styles/twMerge.ts"
@@ -200,20 +200,30 @@ export function CharacterDetails() {
 
 									{(character._id === ownedCharacter?._id || roles.isAdmin) && (
 										<section className={column("gap-2")}>
-											<Button icon={{ start: LucideWand2 }} asChild>
-												<CastSpellButton
-													sorceryDevice={character.sorceryDevice}
-												>
-													Cast Spell
-												</CastSpellButton>
-											</Button>
+											{character.sorceryDevice.affinities && (
+												<Button icon={{ start: LucideWand2 }} asChild>
+													<CastSpellButton
+														sorceryDevice={character.sorceryDevice}
+													>
+														Cast Spell
+													</CastSpellButton>
+												</Button>
+											)}
 											<ChooseAffinitySpellsButton
 												character={character}
 												sorceryDevice={character.sorceryDevice}
-												type="button"
-												className={outlineButton()}
+												asChild
 											>
-												<LucideSparkles /> Choose Affinity Spells
+												<Button
+													appearance={
+														character.sorceryDevice.affinities ?
+															"outline"
+														:	"solid"
+													}
+													icon={{ start: LucideSparkles }}
+												>
+													Choose Affinity Spells
+												</Button>
 											</ChooseAffinitySpellsButton>
 											<RemoveSorceryDeviceButton character={character} />
 										</section>
