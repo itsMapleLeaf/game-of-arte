@@ -1,6 +1,5 @@
 import { api } from "convex/_generated/api.js"
 import {
-	LucideChevronLeft,
 	LucideClock,
 	LucideDices,
 	LucideGamepad2,
@@ -15,40 +14,41 @@ import { PlayerList } from "../features/players/PlayerList.tsx"
 import { WorldSettings } from "../features/worlds/WorldSettings.tsx"
 import { useQuerySuspense } from "../helpers/useQuerySuspense.ts"
 import { panel } from "../styles/panel.ts"
+import { Collapse, CollapseSummary } from "./Collapse.tsx"
 import { LoadingSuspense } from "./LoadingPlaceholder.tsx"
 
 export function SideNav() {
 	const roles = useQuerySuspense(api.roles.get)
 	return (
 		<div className="flex flex-col gap-4">
-			<SideNavCollapsible title="Characters" icon={<LucideUsers />} defaultOpen>
+			<SideNavCollapse title="Characters" icon={<LucideUsers />} defaultOpen>
 				<CharacterList />
-			</SideNavCollapsible>
+			</SideNavCollapse>
 
-			<SideNavCollapsible title="Dice" icon={<LucideDices />}>
+			<SideNavCollapse title="Dice" icon={<LucideDices />}>
 				<DiceRolls />
-			</SideNavCollapsible>
+			</SideNavCollapse>
 
-			<SideNavCollapsible title="Clocks" icon={<LucideClock />}>
+			<SideNavCollapse title="Clocks" icon={<LucideClock />}>
 				<ClockList />
-			</SideNavCollapsible>
+			</SideNavCollapse>
 
 			{roles.isAdmin && (
-				<SideNavCollapsible title="Players" icon={<LucideGamepad2 />}>
+				<SideNavCollapse title="Players" icon={<LucideGamepad2 />}>
 					<PlayerList />
-				</SideNavCollapsible>
+				</SideNavCollapse>
 			)}
 
 			{roles.isAdmin && (
-				<SideNavCollapsible title="Manage World" icon={<LucideWrench />}>
+				<SideNavCollapse title="Manage World" icon={<LucideWrench />}>
 					<WorldSettings />
-				</SideNavCollapsible>
+				</SideNavCollapse>
 			)}
 		</div>
 	)
 }
 
-function SideNavCollapsible({
+function SideNavCollapse({
 	title,
 	icon,
 	defaultOpen = false,
@@ -63,17 +63,20 @@ function SideNavCollapsible({
 		return typeof input === "boolean" ? input : defaultOpen
 	})
 	return (
-		<details
-			className={panel("group rounded-md border")}
+		<Collapse
+			className={panel("group rounded-md border bg-base-800")}
 			open={open}
 			onToggle={(event) => setOpen(event.currentTarget.open)}
 		>
-			<summary className="flex cursor-pointer select-none list-none gap-2 rounded-t-md bg-base-800 p-2 transition hover:text-accent-400">
-				<div>{icon}</div>
-				<div className="flex-1">{title}</div>
-				<LucideChevronLeft className="transition-transform group-open:-rotate-90" />
-			</summary>
-			<LoadingSuspense>{children}</LoadingSuspense>
-		</details>
+			<CollapseSummary className="p-2">
+				<div className="flex items-center gap-2 rounded-t-md">
+					{icon}
+					{title}
+				</div>
+			</CollapseSummary>
+			<div className="bg-base-900">
+				<LoadingSuspense>{children}</LoadingSuspense>
+			</div>
+		</Collapse>
 	)
 }
