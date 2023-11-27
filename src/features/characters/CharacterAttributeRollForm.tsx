@@ -1,6 +1,6 @@
 import { api } from "convex/_generated/api.js"
 import { useMutation } from "convex/react"
-import { LucideDices, LucidePentagon, LucideTriangle } from "lucide-react"
+import { LucideDices, LucidePentagon } from "lucide-react"
 import { type ReactNode, useState } from "react"
 import { plural } from "~/helpers/index.ts"
 import { sum } from "~/helpers/math.ts"
@@ -19,6 +19,7 @@ import { withPreventDefault } from "../../helpers/withPreventDefault.ts"
 import { solidButton } from "../../styles/button.ts"
 import { input } from "../../styles/index.ts"
 import type { DiceHint } from "../dice/DiceHint.ts"
+import { DieIcon } from "../dice/DieIcon.tsx"
 import { ACTION_DICE_SIDES, MODIFIER_DICE_SIDES } from "../dice/constants.ts"
 import {
 	ACTION_DICE_RULES,
@@ -189,7 +190,7 @@ export function CharacterAttributeRollForm({
 						key={item.label}
 						name={item.label}
 						value={item.value}
-						icon={<LucideTriangle className="s-5" />}
+						icon={<DieIcon sides={MODIFIER_DICE_SIDES} className="s-5" />}
 						className="text-green-400"
 					/>
 				))}
@@ -198,7 +199,7 @@ export function CharacterAttributeRollForm({
 						key={item.label}
 						name={item.label}
 						value={item.value}
-						icon={<LucideTriangle className="s-5" />}
+						icon={<DieIcon sides={MODIFIER_DICE_SIDES} className="s-5" />}
 						className="text-red-400"
 					/>
 				))}
