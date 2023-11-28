@@ -25,7 +25,7 @@ import { checkbox } from "~/styles/index.ts"
 import { twMerge } from "~/styles/twMerge.ts"
 import { CharacterAttributeRollForm } from "../characters/CharacterAttributeRollForm.tsx"
 import { CharacterContext } from "../characters/CharacterContext.tsx"
-import { sorceryAttribute } from "../characters/attributes.ts"
+import { getAttributeById } from "../characters/attributes.ts"
 import { STRESS_MAX } from "../characters/constants.ts"
 import { getCharacterStress } from "../characters/data.ts"
 import { WORLD_MANA_MAX } from "../worlds/constants.ts"
@@ -155,15 +155,15 @@ function CastSpellForm({
 				</Field>
 
 				<CharacterAttributeRollForm
-					attribute={sorceryAttribute}
+					attribute={getAttributeById("sorcery")}
 					extraSnagDiceItems={
 						isAffinity ?
 							[]
 						:	[{ label: "Non-Affinity Spell", value: NON_AFFINITY_PENALTY }]
 					}
-					defaultLabel={`${character.name}: ${sorceryAttribute.name} - ${
-						spell.name
-					}${amplify ? " (Amplified)" : ""}`}
+					defaultLabel={`${character.name}: ${
+						getAttributeById("sorcery").name
+					} - ${spell.name}${amplify ? " (Amplified)" : ""}`}
 					onSuccess={async () => {
 						await Promise.all([
 							subtractWorldMana({

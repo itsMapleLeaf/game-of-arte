@@ -29,15 +29,11 @@ export function AttributeInput({
 	editable,
 	...props
 }: CounterInputProps & {
-	attribute: Attribute
+	attribute: Attribute & { id: string }
 	editable: boolean
 }) {
 	const character = CharacterContext.useValue()
-
-	const [valueRaw, setValue] = useCharacterDataValue(
-		character,
-		attribute.dataKey,
-	)
+	const [valueRaw, setValue] = useCharacterDataValue(character, attribute.id)
 
 	const value = clamp(
 		toFiniteNumberOrUndefined(valueRaw) ?? ATTRIBUTE_DEFAULT,

@@ -1,6 +1,7 @@
 import type { Doc } from "convex/_generated/dataModel.js"
 import * as v from "valibot"
 import { clamp, sum } from "~/helpers/math.ts"
+import type { AttributeCategoryId } from "./attributes.ts"
 import {
 	ATTRIBUTE_DEFAULT,
 	ATTRIBUTE_MAX,
@@ -64,9 +65,20 @@ const characterDataSchema = v.object({
 	),
 
 	archetype: v.fallback(
-		v.optional(v.picklist(["athlete", "strategist", "empath", "scholar"])),
+		v.optional(
+			v.picklist<
+				AttributeCategoryId,
+				[AttributeCategoryId, ...AttributeCategoryId[]]
+			>(["physical", "mental", "social", "knowledge"]),
+		),
 		undefined,
 	),
+
+	pronouns: v.optional(v.string()),
+	image: v.optional(v.string()),
+	notes: v.optional(v.string()),
+	inventory: v.optional(v.string()),
+	background: v.optional(v.string()),
 })
 
 export function parseCharacterData(data: Record<string, string | number>) {

@@ -43,3 +43,13 @@ typesAreEqual<SafeArrayIndex<number[]>, number | undefined>(true)
 
 /** Like {@link Omit}, but enforces that the keys are present in the type. */
 export type StrictOmit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
+
+/**
+ * Returns a union of keys in every object of the union type
+ *
+ * @example
+ * 	type Foo = { a: string } | { b: number }
+ * 	type BrokenKeys = keyof Foo // never
+ * 	type Keys = KeyOfUnion<Foo> // "a" | "b"
+ */
+export type KeyOfUnion<T> = T extends Record<infer K, unknown> ? K : never

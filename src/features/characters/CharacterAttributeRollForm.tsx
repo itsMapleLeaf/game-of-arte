@@ -27,7 +27,7 @@ import {
 	SNAG_DICE_RULES,
 } from "../dice/rules.ts"
 import { CharacterContext } from "./CharacterContext.tsx"
-import { type Attribute, attributeCategories } from "./attributes.ts"
+import type { Attribute } from "./attributes.ts"
 import { ACTION_DICE_COUNT_BY_LEVEL, ARCHETYPE_BONUS } from "./constants.ts"
 import { getCharacterStress, parseCharacterData } from "./data.ts"
 
@@ -56,14 +56,9 @@ export function CharacterAttributeRollForm({
 	const [additionalBoostDice, setAdditionalBoostDice] = useState(0)
 	const [additionalSnagDice, setAdditionalSnagDice] = useState(0)
 
-	const characterAttributeValue = characterData[attribute.dataKey]
+	const characterAttributeValue = characterData[attribute.id]
 
-	const attributeCategory =
-		attributeCategories.find((cat) => cat.attributes.includes(attribute)) ??
-		raise(`No category found for attribute ${attribute.name}`)
-
-	const isArchetypeAttribute =
-		characterData.archetype === attributeCategory.archetypeId
+	const isArchetypeAttribute = characterData.archetype === attribute.category.id
 
 	const actionDiceCount =
 		ACTION_DICE_COUNT_BY_LEVEL[characterAttributeValue] ??
@@ -80,7 +75,7 @@ export function CharacterAttributeRollForm({
 	const boostDiceCount = sum(boostDiceItems.map((item) => item.value))
 
 	const snagDiceItems = [
-		attributeCategory.id === "physical" ?
+		attribute.category.id === "physical" ?
 			{ label: "Physical Stress", value: physicalStress }
 		:	{ label: "Mental Stress", value: mentalStress },
 		...extraSnagDiceItems,

@@ -1,12 +1,13 @@
 import { api } from "convex/_generated/api"
 import type { Doc } from "convex/_generated/dataModel.js"
 import { useMutation } from "convex/react"
+import { type CharacterData, parseCharacterData } from "./data.ts"
 
 export function useCharacterDataValue(
 	character: Doc<"characters">,
-	key: string,
+	key: keyof CharacterData,
 ) {
-	const value = character.data[key]
+	const value = parseCharacterData(character.data)[key]
 
 	const update = useMutation(api.characters.updateData).withOptimisticUpdate(
 		(store, args) => {

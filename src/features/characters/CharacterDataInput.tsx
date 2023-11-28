@@ -8,6 +8,7 @@ import {
 import { ImageInput } from "../../components/ImageInput.tsx"
 import { toFiniteNumberOrUndefined } from "../../helpers/index.ts"
 import type { Spread } from "../../helpers/types.ts"
+import type { CharacterData } from "./data.ts"
 import { useCharacterDataValue } from "./useCharacterDataValue.ts"
 
 export function CharacterDataInput({
@@ -17,7 +18,7 @@ export function CharacterDataInput({
 }: Omit<
 	Spread<
 		ComponentPropsWithoutRef<"input">,
-		{ character: Doc<"characters">; dataKey: string }
+		{ character: Doc<"characters">; dataKey: keyof CharacterData }
 	>,
 	"children"
 >) {
@@ -36,7 +37,7 @@ export function CharacterDataInput({
 interface CharacterDataTextAreaProps
 	extends ComponentPropsWithoutRef<"textarea"> {
 	character: Doc<"characters">
-	dataKey: string
+	dataKey: keyof CharacterData
 	fixedHeight?: boolean
 }
 
@@ -66,7 +67,11 @@ export function CharacterDataCounterInput({
 	...props
 }: Spread<
 	CounterInputProps,
-	{ character: Doc<"characters">; dataKey: string; defaultValue?: number }
+	{
+		character: Doc<"characters">
+		dataKey: keyof CharacterData
+		defaultValue?: number
+	}
 >) {
 	const [value, setValue] = useCharacterDataValue(character, dataKey)
 	return (
@@ -84,7 +89,7 @@ export function CharacterDataImageInput({
 	...props
 }: Spread<
 	ComponentPropsWithoutRef<"input">,
-	{ character: Doc<"characters">; dataKey: string }
+	{ character: Doc<"characters">; dataKey: keyof CharacterData }
 >) {
 	const [value, setValue] = useCharacterDataValue(character, dataKey)
 	return (
@@ -104,7 +109,7 @@ export function CharacterDataSelectInput({
 	...props
 }: Spread<
 	ComponentPropsWithoutRef<"select">,
-	{ character: Doc<"characters">; dataKey: string }
+	{ character: Doc<"characters">; dataKey: keyof CharacterData }
 >) {
 	const [value, setValue] = useCharacterDataValue(character, dataKey)
 	return (
