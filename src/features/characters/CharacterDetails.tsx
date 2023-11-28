@@ -2,12 +2,11 @@ import { api } from "convex/_generated/api"
 import type { Doc } from "convex/_generated/dataModel"
 import { useMutation } from "convex/react"
 import {
+	LucideBookOpenText,
 	LucideDices,
 	LucideLock,
-	LucideSparkles,
 	LucideUnlock,
 	LucideWand,
-	LucideWand2,
 } from "lucide-react"
 import { cloneElement } from "react"
 import type { ClassNameValue } from "tailwind-merge"
@@ -46,7 +45,6 @@ import { center, input, textArea } from "~/styles/index.ts"
 import { panel } from "~/styles/panel.ts"
 import { twMerge } from "~/styles/twMerge.ts"
 import { CastSpellButton } from "../sorcery/CastSpellButton.tsx"
-import { ChooseAffinitySpellsButton } from "../sorcery/ChooseAffinitySpellsButton.tsx"
 import { RemoveSorceryDeviceButton } from "../sorcery/RemoveSorceryDeviceButton.tsx"
 import { SorceryDeviceEditor } from "../sorcery/SorceryDeviceEditor.tsx"
 import { CharacterConditions } from "./CharacterConditions.tsx"
@@ -198,30 +196,12 @@ export function CharacterDetails() {
 									{(character._id === ownedCharacter?._id || roles.isAdmin) && (
 										<section className={column("gap-2")}>
 											{character.sorceryDevice.affinities && (
-												<Button icon={{ start: LucideWand2 }} asChild>
-													<CastSpellButton
-														sorceryDevice={character.sorceryDevice}
-													>
-														Cast Spell
-													</CastSpellButton>
-												</Button>
+												<CastSpellButton asChild>
+													<Button icon={{ start: LucideBookOpenText }}>
+														Spellbook
+													</Button>
+												</CastSpellButton>
 											)}
-											<ChooseAffinitySpellsButton
-												character={character}
-												sorceryDevice={character.sorceryDevice}
-												asChild
-											>
-												<Button
-													appearance={
-														character.sorceryDevice.affinities ?
-															"outline"
-														:	"solid"
-													}
-													icon={{ start: LucideSparkles }}
-												>
-													Choose Affinity Spells
-												</Button>
-											</ChooseAffinitySpellsButton>
 											<RemoveSorceryDeviceButton character={character} />
 										</section>
 									)}

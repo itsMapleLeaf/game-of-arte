@@ -4,8 +4,7 @@ import {
 	CompositeProvider,
 	CompositeRow,
 } from "@ariakit/react"
-import type { Doc } from "convex/_generated/dataModel.js"
-import { LucideCheck, LucideInfo, LucideSparkles } from "lucide-react"
+import { LucideCheck, LucideInfo } from "lucide-react"
 import { matchSorter } from "match-sorter"
 import { useState } from "react"
 import { autoRef } from "~/helpers/autoRef.tsx"
@@ -17,12 +16,10 @@ import { SorcerySpellDetailsButton } from "./SorcerySpellDetailsButton"
 import { type SorcerySpellId, sorcerySpells } from "./spells"
 
 export const SorcerySpellSelect = autoRef(function SorcerySpellSelect({
-	sorceryDevice,
 	count,
 	initialSpellIds,
 	onSubmit,
 }: {
-	sorceryDevice: NonNullable<Doc<"characters">["sorceryDevice"]>
 	count: number
 	initialSpellIds?: Iterable<SorcerySpellId>
 	onSubmit: (spellIds: ReadonlySet<SorcerySpellId>) => void
@@ -31,9 +28,6 @@ export const SorcerySpellSelect = autoRef(function SorcerySpellSelect({
 		() => new Set(initialSpellIds),
 	)
 	const [search, setSearch] = useState("")
-	const affinitySpellIds = new Set(
-		Object.values(sorceryDevice.affinities ?? {}),
-	)
 
 	const matchedSpells = matchSorter(Object.entries(sorcerySpells), search, {
 		keys: ["1.name", "1.description", "1.amplifyDescription", "1.caveats"],
@@ -80,9 +74,6 @@ export const SorcerySpellSelect = autoRef(function SorcerySpellSelect({
 									}
 								/>
 								{spell.name}
-								{affinitySpellIds.has(id) && (
-									<LucideSparkles aria-label="Affinity spell" />
-								)}
 							</label>
 
 							<SorcerySpellDetailsButton spell={spell} asChild>

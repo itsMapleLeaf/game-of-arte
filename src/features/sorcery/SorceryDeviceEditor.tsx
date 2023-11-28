@@ -1,5 +1,4 @@
 import type { Doc } from "convex/_generated/dataModel"
-import { LucideInfo } from "lucide-react"
 import { useState } from "react"
 import ExpandingTextArea from "react-expanding-textarea"
 import {
@@ -7,14 +6,10 @@ import {
 	FieldDescription,
 	FieldInput,
 	FieldLabel,
-	FieldLabelText,
 } from "~/components/Field.tsx"
 import { randomItem } from "~/helpers/index.ts"
 import type { NonEmptyArray } from "~/helpers/types.ts"
-import { outlineButton } from "~/styles/button.ts"
 import { textArea } from "~/styles/index.ts"
-import { SorcerySpellDetailsButton } from "./SorcerySpellDetailsButton.tsx"
-import { sorcerySpells } from "./spells.ts"
 import { useSetSorceryDeviceMutation } from "./useSetSorceryDeviceMutation.tsx"
 
 export function SorceryDeviceEditor({
@@ -43,50 +38,20 @@ export function SorceryDeviceEditor({
 	}
 
 	return (
-		<>
-			<Field>
-				<FieldLabel>Sorcery Device</FieldLabel>
-				<FieldDescription>Describe your sorcery device.</FieldDescription>
-				<FieldInput asChild>
-					<ExpandingTextArea
-						className={textArea("max-h-32")}
-						placeholder={descriptionPlaceholder}
-						value={sorceryDevice.description}
-						onChange={(event) => {
-							updateSorceryDevice({ description: event.target.value })
-						}}
-					/>
-				</FieldInput>
-			</Field>
-
-			{sorceryDevice.affinities && (
-				<Field>
-					<FieldLabelText>Affinity Spells</FieldLabelText>
-					<FieldDescription>
-						You can cast affinity spells more reliably.
-					</FieldDescription>
-					<FieldInput asChild>
-						<ul className="flex flex-wrap gap-2">
-							{Object.values(sorceryDevice.affinities)
-								.flatMap((spellId) => {
-									const spell = sorcerySpells[spellId]
-									return spell ? [[spellId, spell] as const] : []
-								})
-								.map(([id, spell]) => (
-									<li key={id} className="contents">
-										<SorcerySpellDetailsButton
-											spell={spell}
-											className={outlineButton()}
-										>
-											<LucideInfo className="s-4" /> {spell.name}
-										</SorcerySpellDetailsButton>
-									</li>
-								))}
-						</ul>
-					</FieldInput>
-				</Field>
-			)}
-		</>
+		<Field>
+			<FieldLabel>Sorcery Device</FieldLabel>
+			<FieldDescription>Describe your sorcery device.</FieldDescription>
+			<FieldInput asChild>
+				<ExpandingTextArea
+					className={textArea("max-h-32")}
+					placeholder={descriptionPlaceholder}
+					value={sorceryDevice.description}
+					onChange={(event) => {
+						updateSorceryDevice({ description: event.target.value })
+					}}
+				/>
+			</FieldInput>
+		</Field>
 	)
 }
 

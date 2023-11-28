@@ -1,6 +1,5 @@
 import type { DialogTriggerProps } from "@radix-ui/react-dialog"
 import { api } from "convex/_generated/api.js"
-import type { Doc } from "convex/_generated/dataModel"
 import { useMutation } from "convex/react"
 import {
 	LucideAlertTriangle,
@@ -30,26 +29,19 @@ import { STRESS_MAX } from "../characters/constants.ts"
 import { getCharacterStress } from "../characters/data.ts"
 import { WORLD_MANA_MAX } from "../worlds/constants.ts"
 import { SorcerySpellSelect } from "./SorcerySpellSelect.tsx"
-import { NON_AFFINITY_PENALTY } from "./constants.ts"
 import {
 	type SorcerySpell,
 	type SorcerySpellId,
 	sorcerySpells,
 } from "./spells.ts"
 
-export function CastSpellButton({
-	sorceryDevice,
-	...props
-}: DialogTriggerProps & {
-	sorceryDevice: NonNullable<Doc<"characters">["sorceryDevice"]>
-}) {
+export function CastSpellButton(props: DialogTriggerProps) {
 	const [open, setOpen] = useState(false)
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger {...props} />
 			<SimpleDialogContent title="Cast Spell">
 				<CastSpellForm
-					sorceryDevice={sorceryDevice}
 					onSuccess={() => {
 						setOpen(false)
 					}}
@@ -59,13 +51,7 @@ export function CastSpellButton({
 	)
 }
 
-function CastSpellForm({
-	sorceryDevice,
-	onSuccess,
-}: {
-	sorceryDevice: NonNullable<Doc<"characters">["sorceryDevice"]>
-	onSuccess: () => void
-}) {
+function CastSpellForm({ onSuccess }: { onSuccess: () => void }) {
 	const character = CharacterContext.useValue()
 
 	const world = useQuerySuspense(api.world.get)
@@ -88,18 +74,11 @@ function CastSpellForm({
 	)
 	const stressRisk = finalMentalStress >= 6
 
-	const isAffinity =
-		spellId && Object.values(sorceryDevice.affinities ?? {}).includes(spellId)
-
 	const finalWorldMana = (spell: SorcerySpell) =>
 		Math.max(0, worldMana - spell.cost.mana)
 
 	return spell == null ?
-			<SorcerySpellSelect
-				sorceryDevice={sorceryDevice}
-				count={1}
-				onSubmit={([id]) => setSpellId(id)}
-			/>
+			<SorcerySpellSelect count={1} onSubmit={([id]) => setSpellId(id)} />
 		:	<div className="grid gap-4">
 				<section className="text-center" aria-label="Spell Details">
 					<h3 className="text-xl font-light">{spell.name}</h3>
@@ -156,11 +135,6 @@ function CastSpellForm({
 
 				<CharacterAttributeRollForm
 					attribute={getAttributeById(spell.attributeId)}
-					extraSnagDiceItems={
-						isAffinity ?
-							[]
-						:	[{ label: "Non-Affinity Spell", value: NON_AFFINITY_PENALTY }]
-					}
 					defaultLabel={`${character.name}: ${
 						getAttributeById(spell.attributeId).name
 					} - ${spell.name}${amplify ? " (Amplified)" : ""}`}
