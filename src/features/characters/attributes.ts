@@ -162,7 +162,9 @@ const attributeCategoriesById = Object.fromEntries(
 		},
 	),
 ) as Record<AttributeCategoryId, AttributeCategory>
-const attributeCategories = Object.values(attributeCategoriesById)
+const attributeCategories = Object.values(attributeCategoriesById).sort(
+	(a, b) => a.title.localeCompare(b.title),
+)
 
 const attributesById = Object.fromEntries(
 	Object.entries(attributeCategoriesInternal).flatMap(
@@ -177,7 +179,9 @@ const attributesById = Object.fromEntries(
 			]),
 	),
 ) as Record<AttributeId, Attribute>
-const attributes = Object.values(attributesById)
+const attributes = Object.values(attributesById).sort((a, b) =>
+	a.name.localeCompare(b.name),
+)
 
 export function getAttributeCategories(): AttributeCategory[] {
 	return attributeCategories
