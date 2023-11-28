@@ -14,7 +14,7 @@ import type { NonEmptyArray } from "~/helpers/types.ts"
 import { outlineButton } from "~/styles/button.ts"
 import { textArea } from "~/styles/index.ts"
 import { SorcerySpellDetailsButton } from "./SorcerySpellDetailsButton.tsx"
-import { sorcerySpells } from "./data.ts"
+import { sorcerySpells } from "./spells.ts"
 import { useSetSorceryDeviceMutation } from "./useSetSorceryDeviceMutation.tsx"
 
 export function SorceryDeviceEditor({

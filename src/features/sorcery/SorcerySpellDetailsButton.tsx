@@ -5,8 +5,8 @@ import {
 	DialogTrigger,
 	SimpleDialogContent,
 } from "~/components/Dialog.tsx"
-import type { SorcerySpell } from "./data"
 import { formatSpellCost } from "./formatSpellCost"
+import type { SorcerySpell } from "./spells"
 
 export function SorcerySpellDetailsButton({
 	spell,

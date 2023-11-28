@@ -35,7 +35,7 @@ import {
 	type SorcerySpell,
 	type SorcerySpellId,
 	sorcerySpells,
-} from "./data.ts"
+} from "./spells.ts"
 
 export function CastSpellButton({
 	sorceryDevice,

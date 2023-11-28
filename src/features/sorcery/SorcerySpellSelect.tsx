@@ -14,7 +14,7 @@ import { setRemove } from "~/helpers/set.ts"
 import { clearButton, outlineButton, solidButton } from "~/styles/button.ts"
 import { checkbox, input } from "~/styles/index.ts"
 import { SorcerySpellDetailsButton } from "./SorcerySpellDetailsButton"
-import { type SorcerySpellId, sorcerySpells } from "./data"
+import { type SorcerySpellId, sorcerySpells } from "./spells"
 
 export const SorcerySpellSelect = autoRef(function SorcerySpellSelect({
 	sorceryDevice,
