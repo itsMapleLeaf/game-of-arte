@@ -195,13 +195,11 @@ export function CharacterDetails() {
 
 									{(character._id === ownedCharacter?._id || roles.isAdmin) && (
 										<section className={column("gap-2")}>
-											{character.sorceryDevice.affinities && (
-												<CastSpellButton asChild>
-													<Button icon={{ start: LucideBookOpenText }}>
-														Spellbook
-													</Button>
-												</CastSpellButton>
-											)}
+											<CastSpellButton asChild>
+												<Button icon={{ start: LucideBookOpenText }}>
+													Spellbook
+												</Button>
+											</CastSpellButton>
 											<RemoveSorceryDeviceButton character={character} />
 										</section>
 									)}
