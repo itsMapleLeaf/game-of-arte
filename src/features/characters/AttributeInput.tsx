@@ -16,13 +16,13 @@ import {
 	PopoverPanel,
 	PopoverTrigger,
 } from "../../components/Popover.tsx"
-import { toFiniteNumberOrUndefined } from "../../helpers/index.ts"
 import { input } from "../../styles/index.ts"
 import { CharacterAttributeRollForm } from "./CharacterAttributeRollForm.tsx"
 import { CharacterContext } from "./CharacterContext.tsx"
 import type { Attribute } from "./attributes.ts"
-import { ATTRIBUTE_DEFAULT, ATTRIBUTE_MAX, ATTRIBUTE_MIN } from "./constants.ts"
-import { useCharacterDataValue } from "./useCharacterDataValue.ts"
+import { ATTRIBUTE_MAX, ATTRIBUTE_MIN } from "./constants.ts"
+import { getCharacterAttributeValue } from "./data.ts"
+import { useUpdateCharacterData } from "./useUpdateCharacterData.ts"
 
 export function AttributeInput({
 	attribute,
@@ -32,16 +32,17 @@ export function AttributeInput({
 	attribute: Attribute & { id: string }
 	editable: boolean
 }) {
-	const character = CharacterContext.useValue()
-	const [valueRaw, setValue] = useCharacterDataValue(character, attribute.id)
-
-	const value = clamp(
-		toFiniteNumberOrUndefined(valueRaw) ?? ATTRIBUTE_DEFAULT,
-		ATTRIBUTE_MIN,
-		ATTRIBUTE_MAX,
-	)
-
 	const [popoverOpen, setPopoverOpen] = useState(false)
+
+	const character = CharacterContext.useValue()
+	const value = getCharacterAttributeValue(character, attribute.id)
+	const updateCharacterData = useUpdateCharacterData()
+
+	const handleChange = (value: number) => {
+		updateCharacterData(character._id, {
+			[attribute.id]: clamp(value, ATTRIBUTE_MIN, ATTRIBUTE_MAX),
+		})
+	}
 
 	return (
 		<Field>
@@ -61,7 +62,7 @@ export function AttributeInput({
 						<CounterInput
 							{...props}
 							value={value}
-							onChange={setValue}
+							onChange={handleChange}
 							min={1}
 							max={5}
 						/>

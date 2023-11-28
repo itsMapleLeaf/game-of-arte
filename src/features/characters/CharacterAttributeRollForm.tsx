@@ -29,7 +29,11 @@ import {
 import { CharacterContext } from "./CharacterContext.tsx"
 import type { Attribute } from "./attributes.ts"
 import { ACTION_DICE_COUNT_BY_LEVEL, ARCHETYPE_BONUS } from "./constants.ts"
-import { getCharacterStress, parseCharacterData } from "./data.ts"
+import {
+	getCharacterAttributeValue,
+	getCharacterStress,
+	parseCharacterData,
+} from "./data.ts"
 
 export function CharacterAttributeRollForm({
 	attribute,
@@ -46,6 +50,10 @@ export function CharacterAttributeRollForm({
 }) {
 	const character = CharacterContext.useValue()
 	const characterData = parseCharacterData(character.data)
+	const characterAttributeValue = getCharacterAttributeValue(
+		character,
+		attribute.id,
+	)
 
 	const roll = useMutation(api.diceRolls.roll)
 	const updateCharacterData = useMutation(api.characters.updateData)
@@ -55,8 +63,6 @@ export function CharacterAttributeRollForm({
 	const [resilienceToUse, setResilienceToUse] = useState(0)
 	const [additionalBoostDice, setAdditionalBoostDice] = useState(0)
 	const [additionalSnagDice, setAdditionalSnagDice] = useState(0)
-
-	const characterAttributeValue = characterData[attribute.id]
 
 	const isArchetypeAttribute = characterData.archetype === attribute.category.id
 

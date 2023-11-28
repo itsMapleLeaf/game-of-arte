@@ -1,7 +1,7 @@
 import type { Doc } from "convex/_generated/dataModel.js"
 import * as v from "valibot"
 import { clamp, sum } from "~/helpers/math.ts"
-import type { AttributeCategoryId } from "./attributes.ts"
+import type { AttributeCategoryId, AttributeId } from "./attributes.ts"
 import {
 	ATTRIBUTE_DEFAULT,
 	ATTRIBUTE_MAX,
@@ -10,55 +10,28 @@ import {
 	RESILIENCE_MIN,
 } from "./constants.ts"
 
-const toCharacterDataValue =
-	({ min = 0, max = Infinity, fallback = 0 } = {}) =>
-	(input: unknown) => {
-		const number = Number(input)
-		return Number.isFinite(number) ?
-				clamp(Math.round(number), min, max)
-			:	fallback
-	}
+function toNumberValue(
+	input: unknown,
+	{ min = 0, max = Infinity, fallback = 0 } = {},
+) {
+	const number = Number(input)
+	return Number.isFinite(number) ?
+			clamp(Math.round(number), min, max)
+		:	fallback
+}
 
-const attributeValueSchema = v.transform(
-	v.unknown(),
-	toCharacterDataValue({
+function toAttributeValue(input: unknown) {
+	return toNumberValue(input, {
 		min: ATTRIBUTE_MIN,
 		max: ATTRIBUTE_MAX,
 		fallback: ATTRIBUTE_DEFAULT,
-	}),
-)
+	})
+}
 
 export type CharacterData = v.Output<typeof characterDataSchema>
 const characterDataSchema = v.object({
-	agility: attributeValueSchema,
-	endurance: attributeValueSchema,
-	stealth: attributeValueSchema,
-	strength: attributeValueSchema,
-
-	dexterity: attributeValueSchema,
-	resolve: attributeValueSchema,
-	intuition: attributeValueSchema,
-	perception: attributeValueSchema,
-
-	charm: attributeValueSchema,
-	deception: attributeValueSchema,
-	intimidation: attributeValueSchema,
-	insight: attributeValueSchema,
-	persuasion: attributeValueSchema,
-	performance: attributeValueSchema,
-	comfort: attributeValueSchema,
-
-	sorcery: attributeValueSchema,
-	alchemy: attributeValueSchema,
-	astronomy: attributeValueSchema,
-	world: attributeValueSchema,
-	nature: attributeValueSchema,
-	taboo: attributeValueSchema,
-	tech: attributeValueSchema,
-
-	resilience: v.transform(
-		v.unknown(),
-		toCharacterDataValue({
+	resilience: v.transform(v.unknown(), (input) =>
+		toNumberValue(input, {
 			min: RESILIENCE_MIN,
 			fallback: RESILIENCE_DEFAULT,
 		}),
@@ -83,6 +56,13 @@ const characterDataSchema = v.object({
 
 export function parseCharacterData(data: Record<string, string | number>) {
 	return v.parse(characterDataSchema, data)
+}
+
+export function getCharacterAttributeValue(
+	character: Doc<"characters">,
+	attributeId: AttributeId,
+) {
+	return toAttributeValue(character.data[attributeId])
 }
 
 export function getCharacterStress(character: Doc<"characters">) {
