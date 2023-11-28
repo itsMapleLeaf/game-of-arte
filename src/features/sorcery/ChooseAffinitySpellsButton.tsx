@@ -7,6 +7,7 @@ import {
 	SimpleDialogContent,
 } from "~/components/Dialog.tsx"
 import { SorcerySpellSelect } from "./SorcerySpellSelect.tsx"
+import { sorcerySpells } from "./spells.ts"
 import { useSetSorceryDeviceMutation } from "./useSetSorceryDeviceMutation.tsx"
 
 export function ChooseAffinitySpellsButton({
@@ -20,6 +21,7 @@ export function ChooseAffinitySpellsButton({
 	const [open, setOpen] = useState(false)
 
 	const setSorceryDevice = useSetSorceryDeviceMutation()
+	const affinityValues = new Set(Object.values(sorceryDevice.affinities ?? {}))
 
 	return (
 		<Dialog open={open} onOpenChange={setOpen}>
@@ -28,7 +30,9 @@ export function ChooseAffinitySpellsButton({
 				<SorcerySpellSelect
 					sorceryDevice={sorceryDevice}
 					count={3}
-					initialSpellIds={Object.values(sorceryDevice.affinities ?? {})}
+					initialSpellIds={Object.keys(sorcerySpells).filter((id) =>
+						affinityValues.has(id),
+					)}
 					onSubmit={([first, second, third]) => {
 						if (first && second && third) {
 							setSorceryDevice({

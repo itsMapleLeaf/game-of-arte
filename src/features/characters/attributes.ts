@@ -94,13 +94,9 @@ const attributeCategoriesInternal = {
 		title: "Knowledge",
 		archetypeName: "Scholar",
 		attributes: {
-			alchemy: {
-				name: "Alchemy",
-				description: `Material synthesis and the handling of ingredients to that end.`,
-			},
-			astronomy: {
-				name: "Astronomy",
-				description: `Celestial bodies and the mysterious ways they work.`,
+			materials: {
+				name: "Materials",
+				description: `Materials, substances, their properties, and interactions.`,
 			},
 			world: {
 				name: "World",
@@ -110,17 +106,21 @@ const attributeCategoriesInternal = {
 				name: "Nature",
 				description: `Plants, creatures, weather, spirits, and other natural terrestrial subjects, as well as survival.`,
 			},
-			sorcery: {
-				name: "Sorcery",
-				description: `The act of mana manipulation to various means.`,
-			},
 			taboo: {
 				name: "Taboo",
-				description: `Demons, curses, and other such occultic matters.`,
+				description: `Curses, manipulation of others, and other darker, often forbidden subjects.`,
 			},
 			tech: {
 				name: "Tech",
 				description: `Mechanical contraptions and architecture.`,
+			},
+			metaphysical: {
+				name: "Metaphysical",
+				description: `The laws of physical reality and manipulation thereof.`,
+			},
+			psychic: {
+				name: "Psychic",
+				description: `The Artesian mind and the mysterious ways it works.`,
 			},
 		},
 	},
@@ -148,23 +148,21 @@ const attributeCategoriesById = Object.fromEntries(
 			const category: AttributeCategory = {
 				...categoryBase,
 				id: categoryId as AttributeCategoryId,
-				attributes: Object.entries(categoryBase.attributes).map(
-					([attributeId, attribute]) => ({
+				attributes: Object.entries(categoryBase.attributes)
+					.map(([attributeId, attribute]) => ({
 						...attribute,
 						id: attributeId as AttributeId,
 						get category() {
 							return category
 						},
-					}),
-				),
+					}))
+					.sort((a, b) => a.name.localeCompare(b.name)),
 			}
 			return [categoryId, category]
 		},
 	),
 ) as Record<AttributeCategoryId, AttributeCategory>
-const attributeCategories = Object.values(attributeCategoriesById).sort(
-	(a, b) => a.title.localeCompare(b.title),
-)
+const attributeCategories = Object.values(attributeCategoriesById)
 
 const attributesById = Object.fromEntries(
 	Object.entries(attributeCategoriesInternal).flatMap(
