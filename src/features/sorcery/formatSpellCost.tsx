@@ -1,4 +1,4 @@
-import type { SorcerySpell } from "./data"
+import type { SorcerySpell } from "./spells"
 
 export function formatSpellCost(spell: SorcerySpell) {
 	return [
