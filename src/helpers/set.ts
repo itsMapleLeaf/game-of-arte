@@ -13,9 +13,8 @@ export function setToggle<Item>(
 ): ReadonlySet<Item> {
 	if (set.has(value)) {
 		return setRemove(set, value)
-	} else {
-		return new Set(set).add(value)
 	}
+	return new Set(set).add(value)
 }
 
 export function mapSet(
