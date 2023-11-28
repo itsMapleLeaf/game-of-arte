@@ -28,7 +28,7 @@ export function PopoverPanel({
 					className={panel(
 						radixAnimationSlideBottom(),
 						radixAnimationFade(),
-						"origin-[--radix-popover-content-transform-origin] overflow-clip rounded-md border shadow-md focus-visible:ring-0",
+						"origin-[--radix-popover-content-transform-origin] overflow-clip rounded-md border bg-base-950 shadow-md focus-visible:ring-0",
 						className,
 					)}
 				>

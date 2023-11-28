@@ -1,6 +1,7 @@
 import { LucideChevronLeft } from "lucide-react"
 import type { ComponentPropsWithRef } from "react"
 import { autoRef } from "~/helpers/autoRef.tsx"
+import { useLocalStorageState } from "~/helpers/useLocalStorageState.tsx"
 import { twMerge } from "~/styles/twMerge.ts"
 
 export const Collapse = autoRef(function Collapse(
@@ -11,6 +12,25 @@ export const Collapse = autoRef(function Collapse(
 			{...props}
 			open={props.open ?? false}
 			className={twMerge("collapse-root", props.className)}
+		/>
+	)
+})
+
+export const CollapsePersisted = autoRef(function CollapsePersisted({
+	defaultOpen = false,
+	...props
+}: ComponentPropsWithRef<"details"> & {
+	defaultOpen?: boolean
+	persistenceKey: string
+}) {
+	const [open, setOpen] = useLocalStorageState(props.persistenceKey, (input) =>
+		typeof input === "boolean" ? input : defaultOpen,
+	)
+	return (
+		<Collapse
+			{...props}
+			open={open}
+			onToggle={(event) => setOpen(event.currentTarget.open)}
 		/>
 	)
 })

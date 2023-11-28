@@ -45,12 +45,14 @@ export function DialogPanel(props: React.ComponentPropsWithoutRef<"div">) {
 export function SimpleDialogContent({
 	title,
 	children,
+	className,
 }: {
 	title: React.ReactNode
 	children: React.ReactNode
+	className?: string
 }) {
 	return (
-		<DialogContent className="w-full max-w-md">
+		<DialogContent className={twMerge("w-full max-w-md", className)}>
 			<DialogPanel className="flex flex-col gap-3 p-4">
 				<DialogTitle className="text-center text-3xl font-light">
 					{title}

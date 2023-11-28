@@ -1,13 +1,13 @@
-export function groupBy<Item, Group extends PropertyKey>(
+export function groupBy<Item, Group>(
 	items: Iterable<Item>,
 	getGroup: (item: Item) => Group,
 ) {
-	const groups: Partial<Record<Group, Item[]>> = {}
+	const groups = new Map<Group, Item[]>()
 	for (const item of items) {
 		const name = getGroup(item)
-		const items = groups[name] ?? []
+		const items = groups.get(name) ?? []
 		items.push(item)
-		groups[name] = items
+		groups.set(name, items)
 	}
 	return groups
 }
