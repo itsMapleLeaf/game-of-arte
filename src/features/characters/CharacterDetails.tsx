@@ -32,12 +32,9 @@ import {
 } from "~/features/characters/CharacterDataInput"
 import { CharacterNameInput } from "~/features/characters/CharacterNameInput"
 import {
-	attributeCategories,
-	attributes,
-	knowledgeAttributeCategory,
-	mentalAttributeCategory,
-	physicalAttributeCategory,
-	socialAttributeCategory,
+	getAttributeCategories,
+	getAttributeCategoryById,
+	getAttributes,
 } from "~/features/characters/attributes"
 import { useCurrentCharacter } from "~/features/characters/useCurrentCharacter.tsx"
 import { expectNonNil } from "~/helpers/errors.ts"
@@ -115,8 +112,8 @@ export function CharacterDetails() {
 									<option disabled value="">
 										Select an archetype
 									</option>
-									{attributeCategories.map((category) => (
-										<option key={category.id} value={category.archetypeId}>
+									{getAttributeCategories().map((category) => (
+										<option key={category.id} value={category.id}>
 											{category.archetypeName}
 										</option>
 									))}
@@ -267,19 +264,19 @@ export function CharacterDetails() {
 				</div>
 
 				<div className={row("content-center fluid-cols-36")}>
-					{attributeCategories.map(({ title, attributes, archetypeId }) => (
-						<div key={title} className={column("gap-4")}>
+					{getAttributeCategories().map((category) => (
+						<div key={category.id} className={column("gap-4")}>
 							<h3
 								className={sectionHeading(
 									"transition-colors",
-									character.data.archetype === archetypeId && "text-accent-400",
+									character.data.archetype === category.id && "text-accent-400",
 								)}
 							>
-								{title}
+								{category.title}
 							</h3>
-							{attributes.map((attribute) => (
+							{category.attributes.map((attribute) => (
 								<AttributeInput
-									key={attribute.dataKey}
+									key={attribute.id}
 									attribute={attribute}
 									editable={getAttributesEditable(character)}
 								/>
@@ -352,39 +349,37 @@ function RandomizeStatsButton({ character }: { character: Doc<"characters"> }) {
 	const randomizeStats = async () => {
 		// NOTE: if this function fails again, extract the logic and write a test
 		const newStats = Object.fromEntries(
-			attributes.map((attribute) => [attribute.dataKey, 1]),
+			getAttributes().map((attribute) => [attribute.id, 1]),
 		)
 
 		for (let i = 0; i < world.experience; i++) {
 			const category = randomItemWeighted([
-				[physicalAttributeCategory, 1] as const,
-				[mentalAttributeCategory, 1] as const,
-				[socialAttributeCategory, 1] as const,
-				[knowledgeAttributeCategory, 0.5] as const,
+				[getAttributeCategoryById("physical"), 1],
+				[getAttributeCategoryById("mental"), 1],
+				[getAttributeCategoryById("social"), 1],
+				[getAttributeCategoryById("knowledge"), 0.5],
 			])
 
-			const attributeKey = expectNonNil(
-				randomItem(category.attributes.map((a) => a.dataKey)),
+			const attributeId = expectNonNil(
+				randomItem(Object.keys(category.attributes)),
 			)
 
 			// if the attribute is already at 5, try again
-			if (newStats[attributeKey] === 5) {
+			if (newStats[attributeId] === 5) {
 				i -= 1
 				continue
 			}
 
-			newStats[attributeKey] += 1
+			newStats[attributeId] += 1
 		}
-
-		const archetypes = attributeCategories.map(
-			(category) => category.archetypeId,
-		)
 
 		await updateCharacterData({
 			id: character._id,
 			data: {
 				...newStats,
-				archetype: expectNonNil(randomItem(archetypes)),
+				archetype: expectNonNil(
+					randomItem(getAttributeCategories().map((category) => category.id)),
+				),
 			},
 		})
 	}
@@ -446,8 +441,8 @@ const sectionHeading = (...classes: ClassNameValue[]) =>
 	twMerge("border-b border-base-800 pb-1 text-2xl font-light", ...classes)
 
 function getUsedExperience(character: Doc<"characters">) {
-	return attributes.reduce((sum, attribute) => {
-		const value = toFiniteNumberOrUndefined(character.data[attribute.dataKey])
+	return getAttributes().reduce((sum, attribute) => {
+		const value = toFiniteNumberOrUndefined(character.data[attribute.id])
 		return sum + (value ?? 1) - 1
 	}, 0)
 }
