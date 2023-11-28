@@ -155,14 +155,14 @@ function CastSpellForm({
 				</Field>
 
 				<CharacterAttributeRollForm
-					attribute={getAttributeById("sorcery")}
+					attribute={getAttributeById(spell.attributeId)}
 					extraSnagDiceItems={
 						isAffinity ?
 							[]
 						:	[{ label: "Non-Affinity Spell", value: NON_AFFINITY_PENALTY }]
 					}
 					defaultLabel={`${character.name}: ${
-						getAttributeById("sorcery").name
+						getAttributeById(spell.attributeId).name
 					} - ${spell.name}${amplify ? " (Amplified)" : ""}`}
 					onSuccess={async () => {
 						await Promise.all([
