@@ -338,17 +338,15 @@ function RandomizeStatsButton({ character }: { character: Doc<"characters"> }) {
 				[getAttributeCategoryById("knowledge"), 0.5],
 			])
 
-			const attributeId = expectNonNil(
-				randomItem(Object.keys(category.attributes)),
-			)
+			const attribute = expectNonNil(randomItem(category.attributes))
 
 			// if the attribute is already at 5, try again
-			if (newStats[attributeId] === 5) {
+			if (newStats[attribute.id] === 5) {
 				i -= 1
 				continue
 			}
 
-			newStats[attributeId] += 1
+			newStats[attribute.id] += 1
 		}
 
 		await updateCharacterData({
