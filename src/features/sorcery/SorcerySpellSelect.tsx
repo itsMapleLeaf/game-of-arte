@@ -1,37 +1,40 @@
-import {
-	Composite,
-	CompositeItem,
-	CompositeProvider,
-	CompositeRow,
-} from "@ariakit/react"
-import { LucideCheck, LucideInfo } from "lucide-react"
+import { Composite, CompositeItem, CompositeProvider } from "@ariakit/react"
 import { matchSorter } from "match-sorter"
 import { useState } from "react"
+import { Button } from "~/components/Button.tsx"
+import { CollapsePersisted, CollapseSummary } from "~/components/Collapse.tsx"
+import { ScrollArea } from "~/components/ScrollArea.tsx"
 import { autoRef } from "~/helpers/autoRef.tsx"
+import { groupBy } from "~/helpers/collections.ts"
 import { plural } from "~/helpers/index.ts"
-import { setRemove } from "~/helpers/set.ts"
-import { clearButton, outlineButton, solidButton } from "~/styles/button.ts"
-import { checkbox, input } from "~/styles/index.ts"
-import { SorcerySpellDetailsButton } from "./SorcerySpellDetailsButton"
+import { input } from "~/styles/index.ts"
+import { CharacterContext } from "../characters/CharacterContext.tsx"
+import { getAttributeById } from "../characters/attributes.ts"
+import { getCharacterAttributeValue } from "../characters/data.ts"
 import { type SorcerySpellId, sorcerySpells } from "./spells"
 
 export const SorcerySpellSelect = autoRef(function SorcerySpellSelect({
-	count,
-	initialSpellIds,
-	onSubmit,
+	onSelect,
 }: {
-	count: number
-	initialSpellIds?: Iterable<SorcerySpellId>
-	onSubmit: (spellIds: ReadonlySet<SorcerySpellId>) => void
+	onSelect: (spellId: SorcerySpellId) => void
 }) {
-	const [selected, setSelected] = useState<ReadonlySet<SorcerySpellId>>(
-		() => new Set(initialSpellIds),
-	)
 	const [search, setSearch] = useState("")
 
 	const matchedSpells = matchSorter(Object.entries(sorcerySpells), search, {
-		keys: ["1.name", "1.description", "1.amplifyDescription", "1.caveats"],
+		keys: [
+			"1.name",
+			"1.description",
+			"1.amplifyDescription",
+			"1.caveats",
+			"1.attributeId",
+		],
 	})
+
+	const spellsByAttribute = groupBy(matchedSpells, ([, spell]) =>
+		getAttributeById(spell.attributeId),
+	)
+
+	const character = CharacterContext.useValue()
 
 	return (
 		<div className="flex flex-col gap-3 p-3">
@@ -39,79 +42,71 @@ export const SorcerySpellSelect = autoRef(function SorcerySpellSelect({
 				className={input()}
 				placeholder="Search for spells..."
 				value={search}
-				onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+				onChange={(event) => {
 					setSearch(event.target.value)
 				}}
 			/>
 
-			<CompositeProvider focusLoop="vertical">
-				<Composite
-					render={
-						<div className="h-[calc(100dvh-32rem)] space-y-2 overflow-y-auto" />
-					}
-				>
-					{matchedSpells.map(([id, spell]) => (
-						<CompositeRow key={id} className="flex">
-							<label
-								className={outlineButton(
-									"flex-1 cursor-pointer justify-start gap-2 ring-inset ring-accent-400 [&:has(:checked)]:text-accent-400 [&:has(:focus-visible)]:ring-2",
-								)}
-							>
-								<CompositeItem
-									render={
-										<input
-											type={count === 1 ? "radio" : "checkbox"}
-											className={checkbox("focus-visible:ring-0")}
-											checked={selected.has(id)}
-											onChange={(event) => {
-												setSelected((selected) =>
-													count === 1 ? new Set([id])
-													: event.target.checked ? new Set([...selected, id])
-													: setRemove(selected, id),
-												)
-											}}
-										/>
-									}
-								/>
-								{spell.name}
-							</label>
-
-							<SorcerySpellDetailsButton spell={spell} asChild>
-								<CompositeItem
-									type="button"
-									className={clearButton(
-										"aspect-square opacity-50 hover:bg-transparent hover:opacity-100",
-									)}
+			<CompositeProvider>
+				<Composite className="h-[calc(100dvh-20rem)]">
+					<ScrollArea className="-mr-3 h-full pr-3">
+						{[...spellsByAttribute.entries()]
+							.sort(([a], [b]) => a.name.localeCompare(b.name))
+							.map(([attribute, spells]) => (
+								<CollapsePersisted
+									key={attribute.id}
+									persistenceKey={`spellbook-${attribute.id}`}
+									defaultOpen
+									className="pb-3"
 								>
-									<LucideInfo aria-hidden />
-									<span className="sr-only">Learn more about {spell.name}</span>
-								</CompositeItem>
-							</SorcerySpellDetailsButton>
-						</CompositeRow>
-					))}
+									<CollapseSummary className="py-2 text-3xl font-light">
+										{attribute.name} (
+										{getCharacterAttributeValue(character, attribute.id)})
+									</CollapseSummary>
+
+									<div className="flex flex-col space-y-2">
+										{spells.map(([id, spell]) => (
+											<Button
+												key={id}
+												appearance="outline"
+												onClick={() => onSelect(id)}
+												className="flex-col items-start gap-3 py-3"
+												asChild
+											>
+												<CompositeItem>
+													<h4 className="text-xl font-light">{spell.name}</h4>
+													<p>{spell.description}</p>
+													<section>
+														<h5 className="text-sm/relaxed font-medium uppercase tracking-wide opacity-75">
+															Amplify
+														</h5>
+														<p>{spell.amplifiedDescription}</p>
+													</section>
+													<section>
+														<h5 className="text-sm/relaxed font-medium uppercase tracking-wide opacity-75">
+															Cost
+														</h5>
+														<p>
+															<span>{spell.cost.mana} mana</span>
+															{spell.cost.mentalStress && (
+																<span>, {spell.cost.mentalStress} stress</span>
+															)}
+															{spell.castingTime && (
+																<span>
+																	, {plural(spell.castingTime.turns, "turn")}
+																</span>
+															)}
+														</p>
+													</section>
+												</CompositeItem>
+											</Button>
+										))}
+									</div>
+								</CollapsePersisted>
+							))}
+					</ScrollArea>
 				</Composite>
 			</CompositeProvider>
-
-			<div className="flex h-10 items-end">
-				{selected.size === count ?
-					<button
-						type="button"
-						className={solidButton("w-full")}
-						onClick={() => {
-							onSubmit(selected)
-						}}
-					>
-						<LucideCheck /> Confirm
-					</button>
-				: count === 1 ?
-					<p>Choose a spell to continue.</p>
-				: selected.size > count ?
-					<p>Remove {plural(selected.size - count, "spell")} to continue.</p>
-				:	<p>
-						Choose {plural(count - selected.size, "more spell")} to continue.
-					</p>
-				}
-			</div>
 		</div>
 	)
 })

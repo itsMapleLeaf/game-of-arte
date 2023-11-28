@@ -139,7 +139,10 @@ export function CharacterAttributeRollForm({
 	)
 
 	return (
-		<form onSubmit={withPreventDefault(handleSubmit)} className="grid gap-4">
+		<form
+			onSubmit={withPreventDefault(handleSubmit)}
+			className="grid gap-4 @container"
+		>
 			<Field>
 				<FieldLabel>Label</FieldLabel>
 				<FieldInput
@@ -152,33 +155,33 @@ export function CharacterAttributeRollForm({
 				/>
 			</Field>
 
-			<Field>
-				<FieldLabelText>Boost Dice</FieldLabelText>
-				<CounterInput
-					value={additionalBoostDice}
-					onChange={setAdditionalBoostDice}
-				/>
-			</Field>
-
-			<Field>
-				<FieldLabelText>Snag Dice</FieldLabelText>
-				<CounterInput
-					value={additionalSnagDice}
-					onChange={setAdditionalSnagDice}
-				/>
-			</Field>
-
-			{characterData.resilience > 0 && (
+			<div className="contents grid-flow-col gap-2 @sm:grid">
 				<Field>
-					<FieldLabelText>Use Resilience</FieldLabelText>
+					<FieldLabelText>Boost Dice</FieldLabelText>
 					<CounterInput
-						min={0}
-						max={characterData.resilience}
-						value={resilienceToUse}
-						onChange={setResilienceToUse}
+						value={additionalBoostDice}
+						onChange={setAdditionalBoostDice}
 					/>
 				</Field>
-			)}
+				<Field>
+					<FieldLabelText>Snag Dice</FieldLabelText>
+					<CounterInput
+						value={additionalSnagDice}
+						onChange={setAdditionalSnagDice}
+					/>
+				</Field>
+				{characterData.resilience > 0 && (
+					<Field>
+						<FieldLabelText>Use Resilience</FieldLabelText>
+						<CounterInput
+							min={0}
+							max={characterData.resilience}
+							value={resilienceToUse}
+							onChange={setResilienceToUse}
+						/>
+					</Field>
+				)}
+			</div>
 
 			<dl className="flex flex-col gap-1 tabular-nums">
 				<ReceiptItem
