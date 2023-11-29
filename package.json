@@ -15,7 +15,9 @@
 		"lint-apply-unsafe": "biome check . --apply-unsafe",
 		"typecheck": "tsc -b",
 		"test": "vitest run",
-		"format": "prettier --write --cache --list-different ."
+		"format": "prettier --write --cache --list-different .",
+		"fix": "run-s --continue-on-error lint-apply format typecheck test",
+		"fix-unsafe": "run-s --continue-on-error lint-apply-unsafe format typecheck test"
 	},
 	"dependencies": {
 		"@ariakit/react": "0.3.7",
