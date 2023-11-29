@@ -43,15 +43,10 @@ export const identify = action({
 			})
 		}
 
-		const scheduledFunctionId = await ctx.scheduler.runAfter(
-			1000,
-			internal.users.update,
-			{
-				name: name ?? "unnamed",
-				tokenIdentifier: identity.tokenIdentifier,
-				discordUserId: discordAccount.provider_user_id,
-			},
-		)
-		console.log("Scheduled function", scheduledFunctionId)
+		await ctx.scheduler.runAfter(0, internal.users.update, {
+			name: name ?? "unnamed",
+			tokenIdentifier: identity.tokenIdentifier,
+			discordUserId: discordAccount.provider_user_id,
+		})
 	},
 })
