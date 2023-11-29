@@ -3,12 +3,12 @@ import "tailwindcss/tailwind.css"
 
 import { ClerkProvider, useAuth } from "@clerk/clerk-react"
 import {
-	Scripts,
 	Links,
 	LiveReload,
-	type MetaFunction,
 	Meta,
+	type MetaFunction,
 	Outlet,
+	Scripts,
 } from "@remix-run/react"
 import { ConvexReactClient } from "convex/react"
 import { ConvexProviderWithClerk } from "convex/react-clerk"
