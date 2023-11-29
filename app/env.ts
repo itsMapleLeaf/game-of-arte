@@ -1,14 +1,17 @@
 import * as v from "valibot"
 
 const schema = v.object({
-	CONVEX_URL: v.string([v.minLength(1)]),
-	CLERK_PUBLISHABLE_KEY: v.string([v.minLength(1)]),
+	VITE_PUBLIC_CONVEX_URL: v.string([v.minLength(1)]),
+	VITE_PUBLIC_CLERK_PUBLISHABLE_KEY: v.string([v.minLength(1)]),
 })
 
-const result = v.safeParse(schema, {
-	CONVEX_URL: import.meta.env.VITE_PUBLIC_CONVEX_URL,
-	CLERK_PUBLISHABLE_KEY: import.meta.env.VITE_PUBLIC_CLERK_PUBLISHABLE_KEY,
-})
+const input: Partial<v.Input<typeof schema>> = {
+	VITE_PUBLIC_CONVEX_URL: import.meta.env.VITE_PUBLIC_CONVEX_URL,
+	VITE_PUBLIC_CLERK_PUBLISHABLE_KEY: import.meta.env
+		.VITE_PUBLIC_CLERK_PUBLISHABLE_KEY,
+}
+
+const result = v.safeParse(schema, input)
 
 if (!result.success) {
 	const errorMessage = [
