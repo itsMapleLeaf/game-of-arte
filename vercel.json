@@ -1,6 +1,7 @@
 {
 	"framework": null,
 	"buildCommand": "pnpm run deploy",
+	"outputDirectory": "public",
 	"rewrites": [
 		{
 			"source": "/(.*)",
