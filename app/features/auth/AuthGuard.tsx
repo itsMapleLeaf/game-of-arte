@@ -12,8 +12,8 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 	)
 
 	useEffect(() => {
-		identify()
-	}, [identify])
+		if (auth.isAuthenticated) identify()
+	}, [auth.isAuthenticated, identify])
 
 	const error = identifyState.isError && identifyState.error
 	useEffect(() => {
