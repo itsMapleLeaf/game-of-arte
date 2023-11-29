@@ -5,7 +5,7 @@ import plugin from "tailwindcss/plugin"
 
 /** @satisfies {import("tailwindcss").Config} */
 const config = {
-	content: ["./src/**/*.{ts,tsx}", "./index.html"],
+	content: ["./app/**/*.{ts,tsx}", "./index.html"],
 	presets: [tailwindExtensions],
 	theme: {
 		extend: {

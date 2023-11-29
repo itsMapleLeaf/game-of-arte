@@ -13,7 +13,7 @@ export default defineConfig({
 	],
 	server: { port: 3000 },
 	test: {
-		includeSource: ["src/**/*.{ts,tsx}"],
+		includeSource: ["app/**/*.{ts,tsx}"],
 	},
 	define: {
 		"import.meta.vitest": "undefined",
