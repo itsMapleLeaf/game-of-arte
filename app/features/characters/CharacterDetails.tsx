@@ -32,12 +32,9 @@ import {
 import { CharacterNameInput } from "~/features/characters/CharacterNameInput"
 import {
 	getAttributeCategories,
-	getAttributeCategoryById,
 	getAttributes,
 } from "~/features/characters/attributes"
 import { useCurrentCharacter } from "~/features/characters/useCurrentCharacter.tsx"
-import { randomItem } from "~/helpers/collections.ts"
-import { expect } from "~/helpers/expect.ts"
 import { useLocalStorageState } from "~/helpers/useLocalStorageState.tsx"
 import { useQuerySuspense } from "~/helpers/useQuerySuspense.ts"
 import { solidButton } from "~/styles/button.ts"
@@ -52,6 +49,7 @@ import { CharacterContext } from "./CharacterContext.tsx"
 import { MentalStressIndicator } from "./MentalStressIndicator.tsx"
 import { PhysicalStressIndicator } from "./PhysicalStressIndicator.tsx"
 import { getCharacterAttributeValue, getCharacterStress } from "./data.ts"
+import { generateRandomStats } from "./generateRandomStats.tsx"
 
 export function CharacterDetails() {
 	const character = useCurrentCharacter()
@@ -326,36 +324,13 @@ function RandomizeStatsButton({ character }: { character: Doc<"characters"> }) {
 
 	const randomizeStats = async () => {
 		// NOTE: if this function fails again, extract the logic and write a test
-		const newStats = Object.fromEntries(
-			getAttributes().map((attribute) => [attribute.id, 1]),
-		)
-
-		for (let i = 0; i < world.experience; i++) {
-			const category = randomItemWeighted([
-				[getAttributeCategoryById("physical"), 1],
-				[getAttributeCategoryById("mental"), 1],
-				[getAttributeCategoryById("social"), 1],
-				[getAttributeCategoryById("knowledge"), 0.5],
-			])
-
-			const attribute = expect(randomItem(category.attributes))
-
-			// if the attribute is already at 5, try again
-			if (newStats[attribute.id] === 5) {
-				i -= 1
-				continue
-			}
-
-			newStats[attribute.id] += 1
-		}
+		const { stats, archetype } = generateRandomStats(world.experience)
 
 		await updateCharacterData({
 			id: character._id,
 			data: {
-				...newStats,
-				archetype: expect(
-					randomItem(getAttributeCategories().map((category) => category.id)),
-				),
+				...stats,
+				archetype,
 			},
 		})
 	}
@@ -423,7 +398,7 @@ function getUsedExperience(character: Doc<"characters">) {
 	}, 0)
 }
 
-function randomItemWeighted<
+export function randomItemWeighted<
 	Items extends readonly (readonly [item: unknown, weight: number])[],
 >(items: Items): Items[number][0] {
 	const totalWeight = items.reduce((sum, [, weight]) => sum + weight, 0)
