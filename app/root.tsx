@@ -18,7 +18,7 @@ import { TooltipProvider } from "./components/Tooltip.tsx"
 import { env } from "./env.ts"
 import { AuthGuard } from "./features/auth/AuthGuard.tsx"
 
-const convex = new ConvexReactClient(env.CONVEX_URL)
+const convex = new ConvexReactClient(env.VITE_PUBLIC_CONVEX_URL)
 
 export const meta: MetaFunction = () => [
 	{ title: "Game of Arte" },
@@ -38,7 +38,7 @@ export default function Root() {
 				<Links />
 			</head>
 			<body>
-				<ClerkProvider publishableKey={env.CLERK_PUBLISHABLE_KEY}>
+				<ClerkProvider publishableKey={env.VITE_PUBLIC_CLERK_PUBLISHABLE_KEY}>
 					<ConvexProviderWithClerk client={convex} useAuth={useAuth}>
 						<TooltipProvider delayDuration={250}>
 							<AuthGuard>
