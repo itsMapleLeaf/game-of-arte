@@ -31,10 +31,24 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build
+        id: build
         run: pnpm build
 
-      - name: Run tests
-        run: pnpm run-s --continue-on-error lint-apply test typecheck format
+      - name: Lint & apply
+        if: ${{ steps.build.outcome == 'success' }}
+        run: pnpm lint-apply
+
+      - name: Test
+        if: ${{ steps.build.outcome == 'success' }}
+        run: pnpm test
+
+      - name: Typecheck
+        if: ${{ steps.build.outcome == 'success' }}
+        run: pnpm typecheck
+
+      - name: Format
+        if: ${{ steps.build.outcome == 'success' }}
+        run: pnpm format
 
       - name: Commit changes
         if: always()
