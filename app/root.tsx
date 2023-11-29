@@ -12,6 +12,7 @@ import {
 } from "@remix-run/react"
 import { ConvexReactClient } from "convex/react"
 import { ConvexProviderWithClerk } from "convex/react-clerk"
+import faviconUrl from "./assets/favicon.svg"
 import { LoadingSuspense } from "./components/LoadingPlaceholder.tsx"
 import { TooltipProvider } from "./components/Tooltip.tsx"
 import { env } from "./env.ts"
@@ -19,7 +20,10 @@ import { AuthGuard } from "./features/auth/AuthGuard.tsx"
 
 const convex = new ConvexReactClient(env.CONVEX_URL)
 
-export const meta: MetaFunction = () => [{ title: "Game of Arte" }]
+export const meta: MetaFunction = () => [
+	{ title: "Game of Arte" },
+	{ rel: "icon", href: faviconUrl },
+]
 
 export default function Root() {
 	return (
