@@ -5,11 +5,16 @@ import { useSpinDelay } from "spin-delay"
 import { autoRef } from "~/helpers/autoRef.tsx"
 import { useQueriesSuspense } from "../../helpers/useQuerySuspense.ts"
 
-const characterIdAtom = atom(localStorage.getItem("characterId"))
+const localStorage =
+	typeof window !== "undefined" && typeof window.localStorage !== "undefined" ?
+		window.localStorage
+	:	undefined
+
+const characterIdAtom = atom(localStorage?.getItem("characterId") ?? null)
 
 characterIdAtom.listen((characterId) => {
 	if (characterId) {
-		localStorage.setItem("characterId", characterId)
+		localStorage?.setItem("characterId", characterId)
 	}
 })
 

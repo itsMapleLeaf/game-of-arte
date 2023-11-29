@@ -4,7 +4,7 @@
 		"preserveWatchOutput": true,
 		"skipLibCheck": true,
 		"paths": {
-			"~/*": ["./src/*"],
+			"~/*": ["./app/*"],
 			"convex/*": ["./convex/*"]
 		}
 	},
