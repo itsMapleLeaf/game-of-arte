@@ -10,10 +10,8 @@ export const update = internalMutation({
 	handler: async (ctx, { tokenIdentifier, ...args }) => {
 		const user = await findUserByTokenIdentifier(ctx)
 		if (user) {
-			console.log("updating user", user._id, args)
 			await ctx.db.patch(user._id, { ...args })
 		} else {
-			console.log("creating user", args)
 			await ctx.db.insert("users", { tokenIdentifier, ...args })
 		}
 	},
