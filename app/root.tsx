@@ -10,6 +10,7 @@ import {
 	Outlet,
 	Scripts,
 } from "@remix-run/react"
+import type { LinksFunction } from "@remix-run/react/dist/routeModules"
 import { ConvexReactClient } from "convex/react"
 import { ConvexProviderWithClerk } from "convex/react-clerk"
 import faviconUrl from "./assets/favicon.svg"
@@ -20,10 +21,9 @@ import { AuthGuard } from "./features/auth/AuthGuard.tsx"
 
 const convex = new ConvexReactClient(env.VITE_PUBLIC_CONVEX_URL)
 
-export const meta: MetaFunction = () => [
-	{ title: "Game of Arte" },
-	{ rel: "icon", href: faviconUrl },
-]
+export const meta: MetaFunction = () => [{ title: "Game of Arte" }]
+
+export const links: LinksFunction = () => [{ rel: "icon", href: faviconUrl }]
 
 export default function Root() {
 	return (
