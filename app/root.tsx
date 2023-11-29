@@ -1,7 +1,9 @@
 import "@fontsource-variable/rubik"
 import "tailwindcss/tailwind.css"
 
-import { ClerkProvider, useAuth } from "@clerk/clerk-react"
+import { ClerkApp, ClerkErrorBoundary, useAuth } from "@clerk/remix"
+import { rootAuthLoader } from "@clerk/remix/ssr.server"
+import type { LoaderFunctionArgs } from "@remix-run/node"
 import {
 	Links,
 	LiveReload,
@@ -17,7 +19,6 @@ import faviconUrl from "./assets/favicon.svg"
 import { LoadingSuspense } from "./components/LoadingPlaceholder.tsx"
 import { TooltipProvider } from "./components/Tooltip.tsx"
 import { env } from "./env.ts"
-import { AuthGuard } from "./features/auth/AuthGuard.tsx"
 
 const convex = new ConvexReactClient(env.VITE_PUBLIC_CONVEX_URL)
 
@@ -29,7 +30,11 @@ export const meta: MetaFunction = () => [
 
 export const links: LinksFunction = () => [{ rel: "icon", href: faviconUrl }]
 
-export default function Root() {
+export function loader(args: LoaderFunctionArgs) {
+	return rootAuthLoader(args)
+}
+
+function Document({ children }: { children: React.ReactNode }) {
 	return (
 		<html
 			lang="en"
@@ -40,20 +45,26 @@ export default function Root() {
 				<Links />
 			</head>
 			<body>
-				<ClerkProvider publishableKey={env.VITE_PUBLIC_CLERK_PUBLISHABLE_KEY}>
-					<ConvexProviderWithClerk client={convex} useAuth={useAuth}>
-						<TooltipProvider delayDuration={250}>
-							<AuthGuard>
-								<LoadingSuspense className="fixed inset-0">
-									<Outlet />
-								</LoadingSuspense>
-							</AuthGuard>
-						</TooltipProvider>
-					</ConvexProviderWithClerk>
-				</ClerkProvider>
+				<TooltipProvider delayDuration={250}>
+					<LoadingSuspense className="fixed inset-0">
+						{children}
+					</LoadingSuspense>
+				</TooltipProvider>
 				<Scripts />
 				<LiveReload />
 			</body>
 		</html>
 	)
 }
+
+export default ClerkApp(function Root() {
+	return (
+		<Document>
+			<ConvexProviderWithClerk client={convex} useAuth={useAuth}>
+				<Outlet />
+			</ConvexProviderWithClerk>
+		</Document>
+	)
+})
+
+export const ErrorBoundary = ClerkErrorBoundary()
