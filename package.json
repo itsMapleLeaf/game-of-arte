@@ -9,7 +9,6 @@
 		"dev:test": "vitest dev",
 		"dev:types": "tsc --noEmit --watch",
 		"build": "vite build && vite build --ssr",
-		"deploy": "convex deploy && pnpm run build",
 		"preview": "vite preview",
 		"lint": "biome check .",
 		"lint-apply": "biome check . --apply",
