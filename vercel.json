@@ -1,6 +1,6 @@
 {
 	"framework": null,
-	"buildCommand": "convex deploy && VITE_PUBLIC_CONVEX_URL=$CONVEX_URL pnpm run build",
+	"buildCommand": "convex deploy --cmd 'pnpm run build' --cmd-url-env-var-name VITE_PUBLIC_CONVEX_URL",
 	"outputDirectory": "public",
 	"rewrites": [
 		{
