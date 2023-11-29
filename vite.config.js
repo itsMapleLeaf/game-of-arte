@@ -1,5 +1,6 @@
 import { unstable_vitePlugin as remix } from "@remix-run/dev"
 import { defineConfig } from "vite"
+import vercel from "vite-plugin-vercel"
 import tsconfigPaths from "vite-tsconfig-paths"
 
 export default defineConfig({
@@ -10,6 +11,7 @@ export default defineConfig({
 			},
 		}),
 		tsconfigPaths(),
+		vercel(),
 	],
 	server: { port: 3000 },
 	test: {
