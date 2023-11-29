@@ -25,7 +25,11 @@ export const meta: MetaFunction = () => [{ title: "Game of Arte" }]
 
 export const links: LinksFunction = () => [{ rel: "icon", href: faviconUrl }]
 
-export default function Root() {
+export default function Root      (
+
+
+	              
+) {
 	return (
 		<html
 			lang="en"
