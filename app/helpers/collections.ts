@@ -1,5 +1,3 @@
-import type { SafeArrayIndex } from "./types.ts"
-
 export function groupBy<Item, Group>(
 	items: Iterable<Item>,
 	getGroup: (item: Item) => Group,
@@ -12,12 +10,6 @@ export function groupBy<Item, Group>(
 		groups.set(name, items)
 	}
 	return groups
-}
-
-export function randomItem<Items extends readonly unknown[]>(
-	items: Items,
-): SafeArrayIndex<Items> {
-	return items[Math.floor(Math.random() * items.length)]
 }
 
 export function compareKey<K extends PropertyKey>(key: K) {

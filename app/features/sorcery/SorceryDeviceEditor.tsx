@@ -7,7 +7,7 @@ import {
 	FieldInput,
 	FieldLabel,
 } from "~/components/Field.tsx"
-import { randomItem } from "~/helpers/collections.ts"
+import { randomItem } from "~/helpers/random.ts"
 import type { NonEmptyArray } from "~/helpers/types.ts"
 import { textArea } from "~/styles/index.ts"
 import { useSetSorceryDeviceMutation } from "./useSetSorceryDeviceMutation.tsx"

@@ -5,10 +5,9 @@ import {
 	getAttributeCategoryById,
 	getAttributes,
 } from "~/features/characters/attributes"
-import { randomItem } from "~/helpers/collections.ts"
 import { expect } from "~/helpers/expect.ts"
 import { sum } from "~/helpers/math.ts"
-import { randomItemWeighted } from "./CharacterDetails.tsx"
+import { randomItem, randomItemWeighted } from "~/helpers/random.ts"
 import { ATTRIBUTE_MAX, ATTRIBUTE_MIN } from "./constants.ts"
 
 export function generateRandomStats(experience: number) {
