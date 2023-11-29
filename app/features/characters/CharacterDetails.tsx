@@ -397,19 +397,3 @@ function getUsedExperience(character: Doc<"characters">) {
 		return sum + (value ?? 1) - 1
 	}, 0)
 }
-
-export function randomItemWeighted<
-	Items extends readonly (readonly [item: unknown, weight: number])[],
->(items: Items): Items[number][0] {
-	const totalWeight = items.reduce((sum, [, weight]) => sum + weight, 0)
-
-	const itemsWithDistributions: [Items[number][0], number][] = []
-	let currentDistribution = 0
-	for (const [item, weight] of items) {
-		currentDistribution += weight / totalWeight
-		itemsWithDistributions.push([item, currentDistribution])
-	}
-
-	const randomValue = Math.random()
-	return itemsWithDistributions.find(([, weight]) => randomValue < weight)?.[0]
-}
