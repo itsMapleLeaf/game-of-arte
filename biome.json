@@ -1,7 +1,13 @@
 {
 	"$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
 	"files": {
-		"ignore": ["node_modules/**", "dist/**", "convex/_generated/**"]
+		"ignore": [
+			"node_modules/**",
+			"dist/**",
+			"convex/_generated/**",
+			"build/**",
+			"public/build/**"
+		]
 	},
 	"organizeImports": {
 		"enabled": true
