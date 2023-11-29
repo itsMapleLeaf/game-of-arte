@@ -19,7 +19,3 @@ export function raise(
 
 	throw value
 }
-
-export function expectNonNil<T>(value: T): NonNullable<T> {
-	return value ?? raise("Expected non-nil value", expectNonNil)
-}

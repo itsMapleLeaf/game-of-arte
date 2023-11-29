@@ -4,6 +4,7 @@ import { useMutation } from "convex/react"
 import { LucideUserPlus, LucideX } from "lucide-react"
 import { useRef } from "react"
 import { useSpinDelay } from "spin-delay"
+import { expect } from "~/helpers/expect.ts"
 import { AsyncButton } from "../../components/AsyncButton.tsx"
 import { LoadingSpinner } from "../../components/LoadingPlaceholder.tsx"
 import {
@@ -12,7 +13,6 @@ import {
 	MenuPanel,
 	MenuTrigger,
 } from "../../components/Menu.tsx"
-import { expectNonNil } from "../../helpers/errors.ts"
 import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
 import { useQuerySuspense } from "../../helpers/useQuerySuspense.ts"
 
@@ -40,7 +40,7 @@ function NewPlayerForm() {
 
 	const [addPlayer, state] = useAsyncCallback(useMutation(api.players.add), {
 		onSuccess() {
-			expectNonNil(formRef.current).reset()
+			expect(formRef.current).reset()
 		},
 	})
 

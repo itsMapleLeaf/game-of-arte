@@ -10,31 +10,32 @@ import {
 	RESILIENCE_MIN,
 } from "./constants.ts"
 
-function toNumberValue(
+export function toCharacterDataNumberValue(
 	input: unknown,
-	{ min = 0, max = Infinity, fallback = 0 } = {},
+	{ min = -Infinity, max = Infinity } = {},
 ) {
 	const number = Number(input)
-	return Number.isFinite(number) ?
-			clamp(Math.round(number), min, max)
-		:	fallback
+	if (!Number.isFinite(number)) return undefined
+	return clamp(Math.round(number), min, max)
 }
 
 function toAttributeValue(input: unknown) {
-	return toNumberValue(input, {
-		min: ATTRIBUTE_MIN,
-		max: ATTRIBUTE_MAX,
-		fallback: ATTRIBUTE_DEFAULT,
-	})
+	return (
+		toCharacterDataNumberValue(input, {
+			min: ATTRIBUTE_MIN,
+			max: ATTRIBUTE_MAX,
+		}) ?? ATTRIBUTE_DEFAULT
+	)
 }
 
 export type CharacterData = v.Output<typeof characterDataSchema>
 const characterDataSchema = v.object({
-	resilience: v.transform(v.unknown(), (input) =>
-		toNumberValue(input, {
-			min: RESILIENCE_MIN,
-			fallback: RESILIENCE_DEFAULT,
-		}),
+	resilience: v.transform(
+		v.unknown(),
+		(input) =>
+			toCharacterDataNumberValue(input, {
+				min: RESILIENCE_MIN,
+			}) ?? RESILIENCE_DEFAULT,
 	),
 
 	archetype: v.fallback(

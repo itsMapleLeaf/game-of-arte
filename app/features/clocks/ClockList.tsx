@@ -3,9 +3,9 @@ import type { Doc } from "convex/_generated/dataModel.js"
 import { useMutation } from "convex/react"
 import { LucidePlus, LucideX } from "lucide-react"
 import { useEffect, useId, useRef } from "react"
+import { expect } from "~/helpers/expect.ts"
 import { mapIterable } from "~/helpers/iterable.ts"
 import { Field, FieldInput, FieldLabel } from "../../components/Field.tsx"
-import { expectNonNil } from "../../helpers/errors.ts"
 import { clamp } from "../../helpers/math.ts"
 import { range } from "../../helpers/range.ts"
 import { useQuerySuspense } from "../../helpers/useQuerySuspense.ts"
@@ -173,7 +173,7 @@ function ClockRangeInput({
 	const handleSliderUpdate = (
 		event: React.PointerEvent<HTMLLabelElement> | PointerEvent,
 	) => {
-		const rect = expectNonNil(labelRef.current).getBoundingClientRect()
+		const rect = expect(labelRef.current).getBoundingClientRect()
 		const value = Math.round(
 			((event.clientX - (rect.left + 2)) / rect.width) * maxValue,
 		)

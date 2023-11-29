@@ -36,8 +36,8 @@ import {
 	getAttributes,
 } from "~/features/characters/attributes"
 import { useCurrentCharacter } from "~/features/characters/useCurrentCharacter.tsx"
-import { expectNonNil } from "~/helpers/errors.ts"
-import { randomItem, toFiniteNumberOrUndefined } from "~/helpers/index.ts"
+import { randomItem } from "~/helpers/collections.ts"
+import { expect } from "~/helpers/expect.ts"
 import { useLocalStorageState } from "~/helpers/useLocalStorageState.tsx"
 import { useQuerySuspense } from "~/helpers/useQuerySuspense.ts"
 import { solidButton } from "~/styles/button.ts"
@@ -51,7 +51,7 @@ import { CharacterConditions } from "./CharacterConditions.tsx"
 import { CharacterContext } from "./CharacterContext.tsx"
 import { MentalStressIndicator } from "./MentalStressIndicator.tsx"
 import { PhysicalStressIndicator } from "./PhysicalStressIndicator.tsx"
-import { getCharacterStress } from "./data.ts"
+import { getCharacterAttributeValue, getCharacterStress } from "./data.ts"
 
 export function CharacterDetails() {
 	const character = useCurrentCharacter()
@@ -338,7 +338,7 @@ function RandomizeStatsButton({ character }: { character: Doc<"characters"> }) {
 				[getAttributeCategoryById("knowledge"), 0.5],
 			])
 
-			const attribute = expectNonNil(randomItem(category.attributes))
+			const attribute = expect(randomItem(category.attributes))
 
 			// if the attribute is already at 5, try again
 			if (newStats[attribute.id] === 5) {
@@ -353,7 +353,7 @@ function RandomizeStatsButton({ character }: { character: Doc<"characters"> }) {
 			id: character._id,
 			data: {
 				...newStats,
-				archetype: expectNonNil(
+				archetype: expect(
 					randomItem(getAttributeCategories().map((category) => category.id)),
 				),
 			},
@@ -418,7 +418,7 @@ const sectionHeading = (...classes: ClassNameValue[]) =>
 
 function getUsedExperience(character: Doc<"characters">) {
 	return getAttributes().reduce((sum, attribute) => {
-		const value = toFiniteNumberOrUndefined(character.data[attribute.id])
+		const value = getCharacterAttributeValue(character, attribute.id)
 		return sum + (value ?? 1) - 1
 	}, 0)
 }
