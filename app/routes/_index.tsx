@@ -8,26 +8,26 @@ import {
 	LucideWrench,
 } from "lucide-react"
 import { useRef } from "react"
-import { Collapse, CollapseSummary } from "./components/Collapse.tsx"
-import { LoadingSuspense } from "./components/LoadingPlaceholder.tsx"
+import { Collapse, CollapseSummary } from "~/components/Collapse.tsx"
+import { LoadingSuspense } from "~/components/LoadingPlaceholder.tsx"
 import {
 	ScrollAreaRoot,
 	ScrollAreaScrollbar,
 	ScrollAreaViewport,
-} from "./components/ScrollArea.tsx"
-import { AuthButton } from "./features/auth/AuthButton.tsx"
-import { CharacterDetails } from "./features/characters/CharacterDetails.tsx"
-import { CharacterList } from "./features/characters/CharacterList.tsx"
-import { ClockList } from "./features/clocks/ClockList.tsx"
-import { DiceRolls } from "./features/dice/DiceRolls.tsx"
-import { PlayerList } from "./features/players/PlayerList.tsx"
-import { WorldSettings } from "./features/worlds/WorldSettings.tsx"
-import { useLocalStorageState } from "./helpers/useLocalStorageState.tsx"
-import { useQuerySuspense } from "./helpers/useQuerySuspense.ts"
-import { container } from "./styles/container.ts"
-import { panel } from "./styles/panel.ts"
+} from "~/components/ScrollArea.tsx"
+import { AuthButton } from "~/features/auth/AuthButton.tsx"
+import { CharacterDetails } from "~/features/characters/CharacterDetails.tsx"
+import { CharacterList } from "~/features/characters/CharacterList.tsx"
+import { ClockList } from "~/features/clocks/ClockList.tsx"
+import { DiceRolls } from "~/features/dice/DiceRolls.tsx"
+import { PlayerList } from "~/features/players/PlayerList.tsx"
+import { WorldSettings } from "~/features/worlds/WorldSettings.tsx"
+import { useLocalStorageState } from "~/helpers/useLocalStorageState.tsx"
+import { useQuerySuspense } from "~/helpers/useQuerySuspense.ts"
+import { container } from "~/styles/container.ts"
+import { panel } from "~/styles/panel.ts"
 
-export function App() {
+export default function GamePage() {
 	return (
 		<div className={container("flex min-h-[100dvh] flex-col gap-4 p-4")}>
 			<header className="flex">
