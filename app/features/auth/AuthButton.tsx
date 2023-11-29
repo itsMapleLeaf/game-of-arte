@@ -1,4 +1,4 @@
-import { SignInButton, SignOutButton, useUser } from "@clerk/clerk-react"
+import { SignInButton, SignOutButton, useUser } from "@clerk/remix"
 import { LucideLogIn } from "lucide-react"
 import { LoadingSpinner } from "../../components/LoadingPlaceholder.tsx"
 
