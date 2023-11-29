@@ -1,4 +1,4 @@
 {
-	"framework": "remix",
+	"framework": "vite",
 	"buildCommand": "pnpm run deploy"
 }
