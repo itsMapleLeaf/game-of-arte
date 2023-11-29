@@ -1,5 +1,5 @@
 import { v } from "convex/values"
-import type { Simplify } from "../src/helpers/types.ts"
+import type { Simplify } from "../app/helpers/types.ts"
 import type { Doc } from "./_generated/dataModel"
 import { type MutationCtx, mutation, query } from "./_generated/server.js"
 import { requireAdmin, requirePlayerUser } from "./roles.ts"
