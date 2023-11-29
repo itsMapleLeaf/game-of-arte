@@ -43,7 +43,7 @@ export const identify = action({
 			})
 		}
 
-		await ctx.runMutation(internal.users.update, {
+		await ctx.scheduler.runAfter(0, internal.users.update, {
 			name: name ?? "unnamed",
 			tokenIdentifier: identity.tokenIdentifier,
 			discordUserId: discordAccount.provider_user_id,
