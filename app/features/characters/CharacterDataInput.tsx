@@ -6,9 +6,8 @@ import {
 	type CounterInputProps,
 } from "../../components/CounterInput.tsx"
 import { ImageInput } from "../../components/ImageInput.tsx"
-import { toFiniteNumberOrUndefined } from "../../helpers/index.ts"
 import type { Spread } from "../../helpers/types.ts"
-import type { CharacterData } from "./data.ts"
+import { type CharacterData, toCharacterDataNumberValue } from "./data.ts"
 import { useCharacterDataValue } from "./useCharacterDataValue.ts"
 
 export function CharacterDataInput({
@@ -77,7 +76,7 @@ export function CharacterDataCounterInput({
 	return (
 		<CounterInput
 			{...props}
-			value={toFiniteNumberOrUndefined(value) ?? defaultValue}
+			value={toCharacterDataNumberValue(value) ?? defaultValue}
 			onChange={setValue}
 		/>
 	)

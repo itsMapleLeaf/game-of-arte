@@ -1,7 +1,7 @@
 import { type QueryCtx, mutation, query } from "convex/_generated/server"
 import { v } from "convex/values"
 import randimals from "randimals"
-import { compareKey } from "../src/helpers/index.ts"
+import { compareKey } from "~/helpers/collections.ts"
 import type { Id } from "./_generated/dataModel"
 import {
 	conditionValidator,

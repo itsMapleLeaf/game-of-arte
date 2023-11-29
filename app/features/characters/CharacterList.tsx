@@ -12,6 +12,7 @@ import {
 import { startTransition } from "react"
 import { twMerge } from "tailwind-merge"
 import { Collapse, CollapseSummary } from "~/components/Collapse.tsx"
+import { tryUntilNonNil } from "~/helpers/async.ts"
 import { LoadingSpinner } from "../../components/LoadingPlaceholder.tsx"
 import {
 	Menu,
@@ -19,7 +20,6 @@ import {
 	MenuPanel,
 	MenuTrigger,
 } from "../../components/Menu.tsx"
-import { tryUntilNonNil } from "../../helpers/tryUntilNonNil.ts"
 import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
 import { useQuerySuspense } from "../../helpers/useQuerySuspense.ts"
 import { characterNameInputId } from "./CharacterNameInput.tsx"

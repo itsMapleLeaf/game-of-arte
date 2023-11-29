@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises"
 import path from "node:path"
 import { fileURLToPath } from "node:url"
 import chalk from "chalk"
-import { expectNonNil } from "../src/helpers/errors.ts"
+import { expect } from "~/helpers/expect.ts"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const projectRoot = path.resolve(__dirname, "..")
@@ -15,7 +15,7 @@ const envExampleContent = await readFile(
 const variables = envExampleContent
 	.split("\n")
 	.filter((line) => line.startsWith("VITE_PUBLIC_"))
-	.map((line) => expectNonNil(line.split("=")[0]))
+	.map((line) => expect(line.split("=")[0]))
 
 const missing = variables.filter((variable) => !process.env[variable])
 
