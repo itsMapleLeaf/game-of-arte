@@ -9,15 +9,14 @@
 		"dev:test": "vitest dev",
 		"dev:types": "tsc --noEmit --watch",
 		"build": "vite build && vite build --ssr",
-		"deploy": "tsx scripts/validate-env.ts && convex deploy && pnpm run build",
+		"deploy": "convex deploy && pnpm run build && tsx app/env.ts",
 		"preview": "vite preview",
 		"lint": "biome check .",
 		"lint-apply": "biome check . --apply",
 		"lint-apply-unsafe": "biome check . --apply-unsafe",
 		"typecheck": "tsc -b",
 		"test": "vitest run",
-		"format": "prettier --write --cache --list-different .",
-		"validate-env": "tsx scripts/validate-env.ts"
+		"format": "prettier --write --cache --list-different ."
 	},
 	"dependencies": {
 		"@ariakit/react": "0.3.7",

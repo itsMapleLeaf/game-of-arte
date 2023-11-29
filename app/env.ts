@@ -1,11 +1,11 @@
 import * as v from "valibot"
 
-const envSchema = v.object({
+const schema = v.object({
 	CONVEX_URL: v.string([v.minLength(1)]),
 	CLERK_PUBLISHABLE_KEY: v.string([v.minLength(1)]),
 })
 
-const result = v.safeParse(envSchema, {
+const result = v.safeParse(schema, {
 	CONVEX_URL: import.meta.env.VITE_PUBLIC_CONVEX_URL,
 	CLERK_PUBLISHABLE_KEY: import.meta.env.VITE_PUBLIC_CLERK_PUBLISHABLE_KEY,
 })
