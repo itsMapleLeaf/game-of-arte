@@ -8,5 +8,11 @@
 			"convex/*": ["./convex/*"]
 		}
 	},
-	"exclude": ["node_modules", "build", "public/build", "convex/_generated"]
+	"exclude": [
+		"node_modules",
+		"build",
+		"public/build",
+		"api",
+		"convex/_generated"
+	]
 }
