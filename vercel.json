@@ -1,4 +1,10 @@
 {
 	"framework": "vite",
-	"buildCommand": "pnpm run deploy"
+	"buildCommand": "pnpm run deploy",
+	"rewrites": [
+		{
+			"source": "/(.*)",
+			"destination": "/api/handler"
+		}
+	]
 }
