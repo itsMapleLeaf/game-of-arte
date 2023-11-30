@@ -50,8 +50,8 @@ dependencies:
     specifier: 0.18.0
     version: 0.18.0(react-dom@18.2.0)(react@18.2.0)
   '@remix-run/node':
-    specifier: npm:@vercel/remix
-    version: /@vercel/remix@2.2.0(react-dom@18.2.0)(react@18.2.0)(typescript@5.3.2)
+    specifier: 2.3.1
+    version: 2.3.1(typescript@5.3.2)
   '@remix-run/react':
     specifier: 2.3.1
     version: 2.3.1(react-dom@18.2.0)(react@18.2.0)(typescript@5.3.2)
@@ -3916,7 +3916,6 @@ packages:
       source-map-support: 0.5.21
       stream-slice: 0.1.2
       typescript: 5.3.2
-    dev: true
 
   /@remix-run/react@2.3.1(react-dom@18.2.0)(react@18.2.0)(typescript@5.3.2):
     resolution: {integrity: sha512-7NozlZtbL5jtRGJhSrMydUGJGVp8kSjnv7APcsDojLbRHZJsLw8B0eXlVqKDg2M+WfRcBkuTI/ipgwIyLPRRyw==}

@@ -32,7 +32,7 @@
 		"@radix-ui/react-slot": "1.0.2",
 		"@radix-ui/react-tooltip": "1.0.7",
 		"@reach/rect": "0.18.0",
-		"@remix-run/node": "npm:@vercel/remix",
+		"@remix-run/node": "2.3.1",
 		"@remix-run/react": "2.3.1",
 		"@vercel/remix": "2.2.0",
 		"cmdk": "0.2.0",
