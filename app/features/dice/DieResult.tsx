@@ -1,6 +1,5 @@
 import type { Die } from "convex/diceRolls.validators.ts"
 import { LucideStar, LucideX } from "lucide-react"
-import { startTransition, useEffect, useState } from "react"
 import {
 	Tooltip,
 	TooltipContent,
@@ -52,22 +51,14 @@ export function DieTooltip({
 	die: Die
 	children: React.ReactElement
 }) {
-	// delay rendering for perf, the tooltip is expensive when we render a lot of them
-	const [renderTooltip, setRenderTooltip] = useState(false)
-	useEffect(() => {
-		startTransition(() => {
-			setRenderTooltip(true)
-		})
-	}, [])
-
-	return renderTooltip ?
-			<Tooltip disableHoverableContent>
-				<TooltipTrigger tabIndex={0} asChild>
-					{children}
-				</TooltipTrigger>
-				<TooltipContent className="pointer-events-none">
-					{die.tooltip ?? `d${die.sides}: ${die.result}`}
-				</TooltipContent>
-			</Tooltip>
-		:	children
+	return (
+		<Tooltip disableHoverableContent>
+			<TooltipTrigger tabIndex={0} asChild>
+				{children}
+			</TooltipTrigger>
+			<TooltipContent className="pointer-events-none">
+				{die.tooltip ?? `d${die.sides}: ${die.result}`}
+			</TooltipContent>
+		</Tooltip>
+	)
 }

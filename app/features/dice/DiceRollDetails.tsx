@@ -3,6 +3,7 @@ import type { Doc } from "convex/_generated/dataModel.js"
 import type { DiceRollListItem } from "convex/diceRolls.ts"
 import { useMutation } from "convex/react"
 import { LucideX } from "lucide-react"
+import { startTransition, useEffect, useState } from "react"
 import { Button } from "~/components/Button.tsx"
 import { SrOnly } from "~/components/SrOnly.tsx"
 import { sum } from "~/helpers/math.ts"
@@ -26,16 +27,27 @@ export function DiceRollDetails({
 
 	const hints = parseDiceHints(roll.hints)
 
+	// defer rendering for perf, the tooltip is expensive when we render a lot of them
+	const [tooltipsRendered, setTooltipsRendered] = useState(false)
+	useEffect(() => {
+		startTransition(() => {
+			setTooltipsRendered(true)
+		})
+	}, [])
+
 	return (
 		<div className="grid content-between gap-2">
 			{roll.label && <h2 className="text-lg/tight font-light">{roll.label}</h2>}
 			<ul className="group/diecon-list -mx-1 flex flex-wrap items-center">
-				{roll.dice.map((die, index) => (
-					// biome-ignore lint/suspicious/noArrayIndexKey: no better key
-					<DieTooltip die={die} key={index}>
-						<DieResult die={die} />
-					</DieTooltip>
-				))}
+				{roll.dice.map((die, index) =>
+					tooltipsRendered ?
+						// biome-ignore lint/suspicious/noArrayIndexKey: no better key
+						<DieTooltip die={die} key={index}>
+							<DieResult die={die} />
+						</DieTooltip>
+						// biome-ignore lint/suspicious/noArrayIndexKey: no better key
+					:	<DieResult die={die} key={index} />,
+				)}
 			</ul>
 			<p className="text-sm leading-tight">
 				{totalSuccesses != null && (
