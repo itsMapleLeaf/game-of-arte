@@ -15,12 +15,11 @@ import {
 import type { LinksFunction } from "@remix-run/react/dist/routeModules"
 import { ConvexReactClient } from "convex/react"
 import { ConvexProviderWithClerk } from "convex/react-clerk"
+import { useState } from "react"
 import faviconUrl from "./assets/favicon.svg"
 import { LoadingSuspense } from "./components/LoadingPlaceholder.tsx"
 import { TooltipProvider } from "./components/Tooltip.tsx"
 import { env } from "./env.ts"
-
-const convex = new ConvexReactClient(env.VITE_PUBLIC_CONVEX_URL)
 
 export const meta: MetaFunction = () => [
 	{ title: "Game of Arte" },
@@ -58,9 +57,12 @@ function Document({ children }: { children: React.ReactNode }) {
 }
 
 export default ClerkApp(function Root() {
+	const [convexClient] = useState(
+		() => new ConvexReactClient(env.VITE_PUBLIC_CONVEX_URL),
+	)
 	return (
 		<Document>
-			<ConvexProviderWithClerk client={convex} useAuth={useAuth}>
+			<ConvexProviderWithClerk client={convexClient} useAuth={useAuth}>
 				<Outlet />
 			</ConvexProviderWithClerk>
 		</Document>
