@@ -85,6 +85,7 @@
 		}
 	},
 	"resolutions": {
+		"@remix-run/server-runtime": "2.3.1",
 		"vite": "5.0.3"
 	}
 }
