@@ -18,12 +18,13 @@ export const Collapse = autoRef(function Collapse(
 
 export const CollapsePersisted = autoRef(function CollapsePersisted({
 	defaultOpen = false,
+	persistenceKey,
 	...props
 }: ComponentPropsWithRef<"details"> & {
 	defaultOpen?: boolean
 	persistenceKey: string
 }) {
-	const [open, setOpen] = useLocalStorageState(props.persistenceKey, (input) =>
+	const [open, setOpen] = useLocalStorageState(persistenceKey, (input) =>
 		typeof input === "boolean" ? input : defaultOpen,
 	)
 	return (

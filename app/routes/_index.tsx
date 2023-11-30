@@ -7,8 +7,8 @@ import {
 	LucideUsers,
 	LucideWrench,
 } from "lucide-react"
-import { useRef } from "react"
-import { Collapse, CollapseSummary } from "~/components/Collapse.tsx"
+import { useLayoutEffect, useRef } from "react"
+import { CollapsePersisted, CollapseSummary } from "~/components/Collapse.tsx"
 import { LoadingSuspense } from "~/components/LoadingPlaceholder.tsx"
 import {
 	ScrollAreaRoot,
@@ -22,7 +22,7 @@ import { ClockList } from "~/features/clocks/ClockList.tsx"
 import { DiceRolls } from "~/features/dice/DiceRolls.tsx"
 import { PlayerList } from "~/features/players/PlayerList.tsx"
 import { WorldSettings } from "~/features/worlds/WorldSettings.tsx"
-import { useLocalStorageState } from "~/helpers/useLocalStorageState.tsx"
+import { expect } from "~/helpers/expect.ts"
 import { useQuerySuspense } from "~/helpers/useQuerySuspense.ts"
 import { container } from "~/styles/container.ts"
 import { panel } from "~/styles/panel.ts"
@@ -89,14 +89,11 @@ function SideNavCollapse({
 	defaultOpen?: boolean
 	children: React.ReactNode
 }) {
-	const [open, setOpen] = useLocalStorageState(`collapse:${title}`, (input) => {
-		return typeof input === "boolean" ? input : defaultOpen
-	})
 	return (
-		<Collapse
+		<CollapsePersisted
+			persistenceKey={`side-nav-collapse:${title}`}
+			defaultOpen={defaultOpen}
 			className={panel("group rounded-md border bg-base-800")}
-			open={open}
-			onToggle={(event) => setOpen(event.currentTarget.open)}
 		>
 			<CollapseSummary className="p-2">
 				<div className="flex items-center gap-2 rounded-t-md">
@@ -107,7 +104,7 @@ function SideNavCollapse({
 			<div className="bg-base-900">
 				<LoadingSuspense>{children}</LoadingSuspense>
 			</div>
-		</Collapse>
+		</CollapsePersisted>
 	)
 }
 
@@ -115,24 +112,18 @@ function ViewportHeightScrollArea({ children }: { children: React.ReactNode }) {
 	const referenceRef = useRef<HTMLDivElement>(null)
 	const rect = useRect(referenceRef)
 
-	const scrollAreaTop = referenceRef.current?.offsetTop
-
-	const scrollAreaBottom =
-		document.documentElement.scrollHeight -
-		((referenceRef.current?.offsetTop ?? 0) +
-			(referenceRef.current?.offsetHeight ?? 0))
+	useLayoutEffect(() => {
+		const reference = expect(referenceRef.current)
+		const { offsetTop, offsetHeight, style } = reference
+		style.setProperty("--scroll-area-top", `${offsetTop}px`)
+		style.setProperty(
+			"--scroll-area-bottom",
+			`${document.documentElement.scrollHeight - (offsetTop + offsetHeight)}px`,
+		)
+	})
 
 	return (
-		<div
-			className="w-[280px]"
-			style={
-				{
-					"--scroll-area-top": `${scrollAreaTop ?? 0}px`,
-					"--scroll-area-bottom": `${scrollAreaBottom ?? 0}px`,
-				} as React.CSSProperties
-			}
-			ref={referenceRef}
-		>
+		<div className="w-[280px]" ref={referenceRef}>
 			<div
 				className="fixed bottom-0 top-0"
 				style={{
