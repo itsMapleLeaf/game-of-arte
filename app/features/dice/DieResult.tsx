@@ -30,7 +30,7 @@ export const DieResult = autoRef(function DieResult({
 			<span
 				className={twMerge(
 					"absolute",
-					(die.sides === 4 || die.sides === 12) && "translate-y-[3px]",
+					(die.sides === 4 || die.sides === 12) && "translate-y-[2px]",
 				)}
 			>
 				{die.face === "blank" ?
