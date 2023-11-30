@@ -34,6 +34,7 @@
 		"@reach/rect": "0.18.0",
 		"@remix-run/node": "npm:@vercel/remix",
 		"@remix-run/react": "2.3.1",
+		"@vercel/remix": "2.2.0",
 		"cmdk": "0.2.0",
 		"convex": "1.6.2",
 		"fast-deep-equal": "3.1.3",
