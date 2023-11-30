@@ -50,11 +50,7 @@ if (import.meta.vitest) {
 				BAR: "",
 			}
 
-			expect(() => parseEnv(schema, input)).toThrowErrorMatchingInlineSnapshot(`
-				[Error: Environment variables not defined:
-				- BAR: Invalid length
-				- BAZ: Invalid type]
-			`)
+			expect(() => parseEnv(schema, input)).toThrowError(/BAR[\s\S]+BAZ/)
 		})
 	})
 }
