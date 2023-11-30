@@ -50,6 +50,7 @@
 		"react-expanding-textarea": "2.3.6",
 		"react-virtuoso": "4.6.2",
 		"spin-delay": "1.2.0",
+		"svix": "1.14.0",
 		"tailwind-merge": "2.0.0",
 		"valibot": "0.21.0",
 		"zod": "3.22.4"
