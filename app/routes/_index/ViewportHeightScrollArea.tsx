@@ -5,6 +5,8 @@ import {
 	ScrollAreaViewport,
 } from "~/components/ScrollArea.tsx"
 import { expect } from "~/helpers/expect.ts"
+import { useEffectEvent } from "~/helpers/useEffectEvent.ts"
+import { useWindowEvent } from "~/helpers/useWindowEvent.tsx"
 import { useIsomorphicLayoutEffect } from "../../helpers/useIsomorphicLayoutEffect.tsx"
 
 export function ViewportHeightScrollArea({
@@ -14,7 +16,7 @@ export function ViewportHeightScrollArea({
 }) {
 	const referenceRef = useRef<HTMLDivElement>(null)
 
-	useIsomorphicLayoutEffect(() => {
+	const update = useEffectEvent(() => {
 		const reference = expect(referenceRef.current)
 		const { offsetTop, offsetHeight, style } = reference
 		const rect = reference.getBoundingClientRect()
@@ -25,6 +27,9 @@ export function ViewportHeightScrollArea({
 			`${document.documentElement.scrollHeight - (offsetTop + offsetHeight)}px`,
 		)
 	})
+
+	useIsomorphicLayoutEffect(update)
+	useWindowEvent("resize", update)
 
 	return (
 		<div
