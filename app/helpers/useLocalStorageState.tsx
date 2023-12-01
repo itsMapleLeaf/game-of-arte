@@ -1,13 +1,21 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useEffectEvent } from "./useEffectEvent.ts"
 
 export function useLocalStorageState<T>(
 	key: string,
 	parse: (input: unknown) => T,
 ) {
-	const [value, setValueInternal] = useState<T>(() => {
+	const [value, setValueInternal] = useState(() => parse(null))
+
+	const init = useEffectEvent(function init() {
 		const storedValue = localStorage.getItem(key)
-		return parse(storedValue === null ? undefined : JSON.parse(storedValue))
+		setValueInternal(
+			parse(storedValue === null ? null : JSON.parse(storedValue)),
+		)
 	})
+	useEffect(() => {
+		init()
+	}, [init])
 
 	const setValue = (newValue: T) => {
 		setValueInternal(newValue)
