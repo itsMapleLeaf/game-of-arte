@@ -24,7 +24,7 @@ export type ButtonIconComponent = (props: {
 export const Button = autoRef(function Button(props: ButtonProps) {
 	const [handleClick, state] = useAsyncCallback(
 		async (event: React.MouseEvent<HTMLButtonElement>) => {
-			await onClick?.(event)
+			await props.onClick?.(event)
 		},
 	)
 

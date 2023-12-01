@@ -81,6 +81,7 @@ function AuthLoadingCover({ children }: { children: React.ReactNode }) {
 	)
 }
 
+/* @forgetti skip */
 function useStableQuery<FuncRef extends FunctionReference<"query", "public">>(
 	func: FuncRef,
 	...args: OptionalRestArgs<FuncRef>
