@@ -95,7 +95,7 @@ export function buttonStyle({
 }
 
 const baseAppearanceStyle = twStyle(
-	"inline-flex min-h-10 items-center justify-center gap-3 rounded-md border border-transparent px-3 py-1 leading-tight text-white ring-accent-300 transition focus:outline-none focus-visible:ring-2 disabled:opacity-50",
+	"inline-flex min-h-10 items-center justify-center gap-3 rounded-md border border-transparent px-3 py-2 leading-tight text-white ring-accent-300 transition focus:outline-none focus-visible:ring-2 disabled:opacity-50",
 )
 
 const buttonAppearanceStyles = {
