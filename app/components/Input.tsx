@@ -2,7 +2,6 @@ import { autoRef } from "~/helpers/autoRef.tsx"
 import { panel } from "~/styles/panel.ts"
 import { twStyle } from "~/styles/twStyle.ts"
 
-// biome-ignore lint/suspicious/noEmptyInterface: there will probably be more props later
 export interface InputProps extends React.ComponentPropsWithRef<"input"> {}
 
 export const Input = autoRef(function Input(props: InputProps) {
