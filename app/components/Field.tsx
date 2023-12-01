@@ -1,4 +1,4 @@
-import { Slot } from "@radix-ui/react-slot"
+import { Slot, Slottable } from "@radix-ui/react-slot"
 import { LucideInfo } from "lucide-react"
 import {
 	type ComponentPropsWithRef,
@@ -6,6 +6,7 @@ import {
 	type ForwardedRef,
 	type ReactNode,
 	createContext,
+	isValidElement,
 	useContext,
 	useId,
 	useMemo,
@@ -26,11 +27,20 @@ export function useFieldContext() {
 }
 
 export const Field = autoRef(function Field({
+	children,
 	asChild,
+	label,
+	labelText,
+	labelTooltip,
+	description,
 	errors,
 	...props
 }: ComponentPropsWithRef<"div"> & {
 	asChild?: boolean
+	label?: string | React.ReactElement
+	labelText?: string | React.ReactElement
+	labelTooltip?: React.ReactNode
+	description?: string | React.ReactElement
 	errors?: FieldErrorList
 }) {
 	const labelId = useId()
@@ -42,14 +52,38 @@ export const Field = autoRef(function Field({
 		[labelId, inputId, descriptionId],
 	)
 
+	let labelElement =
+		label ? <FieldLabel asChild={isValidElement(label)}>{label}</FieldLabel>
+		: labelText ?
+			<FieldLabelText asChild={isValidElement(labelText)}>
+				{labelText}
+			</FieldLabelText>
+		:	null
+
+	if (labelTooltip) {
+		labelElement = (
+			<FieldLabelTooltip content={labelTooltip}>
+				{labelElement}
+			</FieldLabelTooltip>
+		)
+	}
+
 	const Component = asChild ? Slot : "div"
 	return (
 		<FieldContext.Provider value={context}>
 			<Component
 				{...props}
 				className={twMerge("flex min-w-0 flex-col gap-1", props.className)}
-			/>
-			<FieldErrors errors={errors} />
+			>
+				{labelElement}
+				{description && (
+					<FieldDescription asChild={isValidElement(description)}>
+						{description}
+					</FieldDescription>
+				)}
+				<Slottable>{children}</Slottable>
+				<FieldErrors errors={errors} />
+			</Component>
 		</FieldContext.Provider>
 	)
 })
