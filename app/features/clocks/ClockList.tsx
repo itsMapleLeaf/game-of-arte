@@ -2,13 +2,14 @@ import { api } from "convex/_generated/api.js"
 import type { Doc } from "convex/_generated/dataModel.js"
 import { useMutation, useQuery } from "convex/react"
 import { LucidePlus, LucideX } from "lucide-react"
-import { useEffect, useId, useRef } from "react"
+import { useId, useRef } from "react"
 import { LoadingPlaceholder } from "~/components/LoadingPlaceholder.tsx"
 import { expect } from "~/helpers/expect.ts"
 import { mapIterable } from "~/helpers/iterable.ts"
 import { Field, FieldInput, FieldLabel } from "../../components/Field.tsx"
 import { clamp } from "../../helpers/math.ts"
 import { range } from "../../helpers/range.ts"
+import { useWindowEvent } from "../../helpers/useWindowEvent.tsx"
 import { AdminRoleGuard } from "../auth/AdminRoleGuard.tsx"
 
 export function ClockList() {
@@ -251,17 +252,4 @@ function ClockRangeInput({
 			</label>
 		</div>
 	)
-}
-
-function useWindowEvent<T extends keyof WindowEventMap>(
-	event: T,
-	listener: (event: WindowEventMap[T]) => void,
-	options?: boolean | AddEventListenerOptions,
-) {
-	useEffect(() => {
-		window.addEventListener(event, listener, options)
-		return () => {
-			window.removeEventListener(event, listener, options)
-		}
-	}, [event, listener, options])
 }
