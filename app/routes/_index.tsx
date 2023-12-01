@@ -110,11 +110,12 @@ function SideNavCollapse({
 
 function ViewportHeightScrollArea({ children }: { children: React.ReactNode }) {
 	const referenceRef = useRef<HTMLDivElement>(null)
-	const rect = useRect(referenceRef)
 
-	useLayoutEffect(() => {
+	useIsomorphicLayoutEffect(() => {
 		const reference = expect(referenceRef.current)
 		const { offsetTop, offsetHeight, style } = reference
+		const rect = reference.getBoundingClientRect()
+		style.setProperty("--scroll-area-left", `${rect.left}px`)
 		style.setProperty("--scroll-area-top", `${offsetTop}px`)
 		style.setProperty(
 			"--scroll-area-bottom",
@@ -123,14 +124,18 @@ function ViewportHeightScrollArea({ children }: { children: React.ReactNode }) {
 	})
 
 	return (
-		<div className="w-[280px]" ref={referenceRef}>
-			<div
-				className="fixed bottom-0 top-0"
-				style={{
-					left: rect?.left,
-					width: rect?.width,
-				}}
-			>
+		<div
+			style={
+				{
+					"--scroll-area-width": "280px",
+					"--scroll-area-top": "64px",
+					"--scroll-area-bottom": "0px",
+				} as React.CSSProperties
+			}
+			className="w-[--scroll-area-width]"
+			ref={referenceRef}
+		>
+			<div className="fixed bottom-0 left-[--scroll-area-left] top-0 w-[--scroll-area-width] overflow-hidden">
 				<ScrollAreaRoot className="s-full">
 					<ScrollAreaViewport className="pb-[--scroll-area-bottom] pr-3 pt-[--scroll-area-top]">
 						{children}
