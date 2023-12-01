@@ -17,7 +17,7 @@ export default function GamePage() {
 	return (
 		<AuthLoadingCover>
 			<div className={container("flex min-h-[100dvh] flex-col gap-4 p-4")}>
-				<header className="flex">
+				<header className="flex h-12">
 					<div className="flex flex-1 items-center justify-end">
 						<AuthButton />
 					</div>

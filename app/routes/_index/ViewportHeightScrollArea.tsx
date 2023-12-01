@@ -36,7 +36,7 @@ export function ViewportHeightScrollArea({
 			style={
 				{
 					"--scroll-area-width": "280px",
-					"--scroll-area-top": "64px",
+					"--scroll-area-top": "80px",
 					"--scroll-area-bottom": "0px",
 				} as React.CSSProperties
 			}
