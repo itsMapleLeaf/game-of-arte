@@ -22,7 +22,8 @@
 				"useExhaustiveDependencies": "error"
 			},
 			"suspicious": {
-				"noConsoleLog": "warn"
+				"noConsoleLog": "warn",
+				"noEmptyInterface": "off"
 			},
 			"nursery": {
 				"useGroupedTypeImport": "warn"
