@@ -1,13 +1,10 @@
 import { SignInButton, SignOutButton, useUser } from "@clerk/remix"
 import { LucideLogIn } from "lucide-react"
 import { Button } from "~/components/Button.tsx"
-import { LoadingSpinner } from "../../components/LoadingPlaceholder.tsx"
 
 export function AuthButton() {
-	const { user, isLoaded } = useUser()
-	return (
-		isLoaded === false ? <LoadingSpinner className="s-8" />
-		: user ?
+	const { user } = useUser()
+	return user ?
 			<SignOutButton>
 				<Button appearance="outline">
 					Sign Out{" "}
@@ -17,5 +14,4 @@ export function AuthButton() {
 		:	<SignInButton>
 				<Button icon={{ end: LucideLogIn }}>Sign In</Button>
 			</SignInButton>
-	)
 }

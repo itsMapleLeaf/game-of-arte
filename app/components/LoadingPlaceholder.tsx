@@ -1,5 +1,5 @@
 import { LucideLoader2, type LucideProps } from "lucide-react"
-import { type ReactNode, Suspense } from "react"
+import { type ReactElement, type ReactNode, Suspense } from "react"
 import { twMerge } from "tailwind-merge"
 
 export function LoadingSpinner(props: LucideProps) {
@@ -11,15 +11,24 @@ export function LoadingSpinner(props: LucideProps) {
 	)
 }
 
-export function LoadingPlaceholder(props: { className?: string }) {
+export function LoadingPlaceholder({
+	className,
+	children,
+}: {
+	className?: string
+	children?: string | ReactElement
+}) {
 	return (
 		<div
 			className={twMerge(
-				"flex flex-col items-center justify-center p-8",
-				props.className,
+				"flex flex-col items-center justify-center gap-3 p-8",
+				className,
 			)}
 		>
-			<LoadingSpinner className="s-12" />
+			<LoadingSpinner className="s-12" aria-hidden />
+			{typeof children === "string" ?
+				<p className="text-xl font-light">{children}</p>
+			:	children}
 		</div>
 	)
 }

@@ -1,7 +1,8 @@
+import { useUser } from "@clerk/remix"
 import { useSearchParams } from "@remix-run/react"
 import { api } from "convex/_generated/api.js"
 import type { Id } from "convex/_generated/dataModel.js"
-import { useQuery } from "convex/react"
+import { useConvexAuth, useQuery } from "convex/react"
 import type { FunctionReference, OptionalRestArgs } from "convex/server"
 import {
 	LucideClock,
@@ -30,27 +31,49 @@ import { WorldSettings } from "~/features/worlds/WorldSettings.tsx"
 import { expect } from "~/helpers/expect.ts"
 import { container } from "~/styles/container.ts"
 import { panel } from "~/styles/panel.ts"
+import { twMerge } from "~/styles/twMerge.ts"
 import { useIsomorphicLayoutEffect } from "../helpers/useIsomorphicLayoutEffect"
 
 export default function GamePage() {
 	return (
-		<div className={container("flex min-h-[100dvh] flex-col gap-4 p-4")}>
-			<header className="flex">
-				<div className="flex flex-1 items-center justify-end">
-					<AuthButton />
+		<AuthLoadingCover>
+			<div className={container("flex min-h-[100dvh] flex-col gap-4 p-4")}>
+				<header className="flex">
+					<div className="flex flex-1 items-center justify-end">
+						<AuthButton />
+					</div>
+				</header>
+				<div className="flex flex-1 gap-4">
+					<ViewportHeightScrollArea>
+						<nav className="flex flex-col gap-4">
+							<SideNav />
+						</nav>
+					</ViewportHeightScrollArea>
+					<main className="flex-1">
+						<MainContent />
+					</main>
 				</div>
-			</header>
-			<div className="flex flex-1 gap-4">
-				<ViewportHeightScrollArea>
-					<nav className="flex flex-col gap-4">
-						<SideNav />
-					</nav>
-				</ViewportHeightScrollArea>
-				<main className="flex-1">
-					<MainContent />
-				</main>
 			</div>
-		</div>
+		</AuthLoadingCover>
+	)
+}
+
+function AuthLoadingCover({ children }: { children: React.ReactNode }) {
+	const clerkAuth = useUser()
+	const convexAuth = useConvexAuth()
+	const authLoading = !clerkAuth.isLoaded || convexAuth.isLoading
+	return (
+		<>
+			{children}
+			<LoadingPlaceholder
+				className={twMerge(
+					"fixed inset-0 bg-base-950 transition-all duration-300",
+					authLoading ? "visible opacity-100" : "invisible opacity-0",
+				)}
+			>
+				Just a moment...
+			</LoadingPlaceholder>
+		</>
 	)
 }
 
