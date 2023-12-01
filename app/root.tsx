@@ -3,18 +3,20 @@ import "tailwindcss/tailwind.css"
 
 import { ClerkApp, ClerkErrorBoundary, useAuth } from "@clerk/remix"
 import { rootAuthLoader } from "@clerk/remix/ssr.server"
-import type { LoaderFunctionArgs } from "@remix-run/node"
+import type {
+	LinksFunction,
+	LoaderFunctionArgs,
+	MetaFunction,
+} from "@remix-run/node"
 import {
 	Links,
 	LiveReload,
 	Meta,
-	type MetaFunction,
 	Outlet,
 	Scripts,
 	ScrollRestoration,
 	type ShouldRevalidateFunction,
 } from "@remix-run/react"
-import type { LinksFunction } from "@remix-run/react/dist/routeModules"
 import { ConvexReactClient } from "convex/react"
 import { ConvexProviderWithClerk } from "convex/react-clerk"
 import { useState } from "react"
