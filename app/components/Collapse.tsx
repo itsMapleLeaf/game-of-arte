@@ -19,9 +19,9 @@ export const Collapse = autoRef(function PersistedCollapse({
 	return (
 		<Ariakit.DisclosureProvider
 			animated
-			open={open}
-			setOpen={setOpen}
 			{...props}
+			open={props.open ?? open}
+			setOpen={props.setOpen ?? setOpen}
 		/>
 	)
 })
@@ -71,3 +71,5 @@ export const CollapseContent = autoRef(function CollapseContent({
 		</Ariakit.DisclosureContent>
 	)
 })
+
+export const useCollapseContext = Ariakit.useDisclosureContext
