@@ -1,6 +1,7 @@
 import { api } from "convex/_generated/api.js"
 import { useMutation, useQuery } from "convex/react"
 import { LucideDices, LucideList } from "lucide-react"
+import { useEffect } from "react"
 import { type ScrollerProps, Virtuoso } from "react-virtuoso"
 import { Button } from "~/components/Button.tsx"
 import { CounterInput } from "~/components/CounterInput.tsx"
@@ -21,30 +22,42 @@ import {
 	ScrollAreaScrollbar,
 	ScrollAreaViewport,
 } from "~/components/ScrollArea.tsx"
+import { showDiceRolls } from "~/components/SideNav.tsx"
+import { sleep } from "~/helpers/async.ts"
 import { autoRef } from "~/helpers/autoRef.tsx"
 import { useAsyncCallback } from "~/helpers/useAsyncCallback.ts"
 import { panel } from "~/styles/panel.ts"
 import { EmptyState } from "../../components/EmptyState.tsx"
-import { DiceRollDetails } from "./DiceRollDetails.tsx"
+import { DiceRollDetails, waitForDiceRollElement } from "./DiceRollDetails.tsx"
 
-export function DiceRolls() {
-	return (
-		<div className="flex h-full flex-col divide-y divide-base-800">
-			<div className="-mt-px flex-1">
-				<DiceRollList />
-			</div>
-			<DiceRollForm />
-		</div>
-	)
-}
-
-function DiceRollList() {
+export function DiceRollList() {
 	const pageSize = 5
 	const listResult = useQuery(api.diceRolls.list, { limit: pageSize })
+	const latestRoll = listResult?.page[0]
 	const characters = useQuery(api.characters.list)
 	const charactersById = new Map(
 		characters?.map((character) => [character._id, character]),
 	)
+
+	// if we have a recent roll, scroll to it
+	const recentRollId =
+		latestRoll && Date.now() - latestRoll._creationTime < 5000 && latestRoll._id
+	useEffect(() => {
+		if (!recentRollId) return
+		void (async () => {
+			// this could fail in various ways - let's not take chances
+			try {
+				if (showDiceRolls()) {
+					await sleep(300) // janky temporary wait for animation
+				}
+				const diceRollElement = await waitForDiceRollElement(recentRollId)
+				diceRollElement?.scrollIntoView({ behavior: "smooth" })
+				diceRollElement?.classList.add("animate-flash-accent")
+			} catch (error) {
+				console.error("Failed to scroll to dice roll element:", error)
+			}
+		})()
+	}, [recentRollId])
 
 	return (
 		listResult == null ? <LoadingPlaceholder />
@@ -71,10 +84,7 @@ function DiceRollList() {
 						.slice(0, pageSize)
 						.toReversed()
 						.map((roll) => (
-							<li
-								key={roll._id}
-								className={panel("animate-flash-accent rounded-md border p-2")}
-							>
+							<li key={roll._id} className={panel("rounded-md border p-2")}>
 								<DiceRollDetails
 									roll={roll}
 									character={
@@ -137,7 +147,7 @@ const VirtuosoScroller = autoRef(function VirtuosoScroller(
 	)
 })
 
-function DiceRollForm() {
+export function DiceRollForm() {
 	const [roll, state] = useAsyncCallback(useMutation(api.diceRolls.roll))
 	return (
 		<form
