@@ -11,7 +11,7 @@ import {
 	LucideUsers,
 	LucideWrench,
 } from "lucide-react"
-import { useDeferredValue, useRef } from "react"
+import { useRef } from "react"
 import {
 	Collapse,
 	CollapseButton,
@@ -96,9 +96,7 @@ function useStableQuery<FuncRef extends FunctionReference<"query", "public">>(
 function MainContent() {
 	const [searchParams] = useSearchParams()
 	const characterId = searchParams.get("characterId") as Id<"characters"> | null
-	const character = useDeferredValue(
-		useStableQuery(api.characters.get, { id: characterId }),
-	)
+	const character = useStableQuery(api.characters.get, { id: characterId })
 	return (
 		characterId === null ? <p>No character selected.</p>
 		: character === undefined ? <LoadingPlaceholder />
