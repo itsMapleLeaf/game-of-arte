@@ -8,6 +8,7 @@ import {
 	LucideUnlock,
 	LucideWand,
 } from "lucide-react"
+import { useEffect } from "react"
 import ExpandingTextArea from "react-expanding-textarea"
 import * as v from "valibot"
 import { AsyncButton } from "~/components/AsyncButton.tsx"
@@ -73,6 +74,13 @@ export function CharacterDetails({
 }: {
 	character: Doc<"characters">
 }) {
+	useEffect(() => {
+		document.title = `${character.name} | Game of Arte`
+		return () => {
+			document.title = "Game of Arte"
+		}
+	})
+
 	const roles = useQuery(api.roles.get)
 	const self = useQuery(api.players.self)
 
