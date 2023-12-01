@@ -2,7 +2,11 @@ import { Composite, CompositeItem, CompositeProvider } from "@ariakit/react"
 import { matchSorter } from "match-sorter"
 import { useState } from "react"
 import { Button } from "~/components/Button.tsx"
-import { CollapsePersisted, CollapseSummary } from "~/components/Collapse.tsx"
+import {
+	Collapse,
+	CollapseButton,
+	CollapseContent,
+} from "~/components/Collapse.tsx"
 import { ScrollArea } from "~/components/ScrollArea.tsx"
 import { autoRef } from "~/helpers/autoRef.tsx"
 import { groupBy } from "~/helpers/collections.ts"
@@ -53,56 +57,57 @@ export const SorcerySpellSelect = autoRef(function SorcerySpellSelect({
 						{[...spellsByAttribute.entries()]
 							.sort(([a], [b]) => a.name.localeCompare(b.name))
 							.map(([attribute, spells]) => (
-								<CollapsePersisted
-									key={attribute.id}
-									persistenceKey={`spellbook-${attribute.id}`}
-									defaultOpen
-									className="pb-3"
-								>
-									<CollapseSummary className="py-2 text-3xl font-light">
-										{attribute.name} (
-										{getCharacterAttributeValue(character, attribute.id)})
-									</CollapseSummary>
-
-									<div className="flex flex-col space-y-2">
-										{spells.map(([id, spell]) => (
-											<Button
-												key={id}
-												appearance="outline"
-												onClick={() => onSelect(id)}
-												className="flex-col items-start gap-3 py-3"
-												asChild
-											>
-												<CompositeItem>
-													<h4 className="text-xl font-light">{spell.name}</h4>
-													<p>{spell.description}</p>
-													<section>
-														<h5 className="text-sm/relaxed font-medium uppercase tracking-wide opacity-75">
-															Amplify
-														</h5>
-														<p>{spell.amplifiedDescription}</p>
-													</section>
-													<section>
-														<h5 className="text-sm/relaxed font-medium uppercase tracking-wide opacity-75">
-															Cost
-														</h5>
-														<p>
-															<span>{spell.cost.mana} mana</span>
-															{spell.cost.mentalStress && (
-																<span>, {spell.cost.mentalStress} stress</span>
-															)}
-															{spell.castingTime && (
-																<span>
-																	, {plural(spell.castingTime.turns, "turn")}
-																</span>
-															)}
-														</p>
-													</section>
-												</CompositeItem>
-											</Button>
-										))}
-									</div>
-								</CollapsePersisted>
+								<div key={attribute.id} className="pb-3">
+									<Collapse
+										persistenceKey={`spellbook-${attribute.id}`}
+										defaultOpen
+									>
+										<CollapseButton className="py-2 text-3xl font-light">
+											{attribute.name} (
+											{getCharacterAttributeValue(character, attribute.id)})
+										</CollapseButton>
+										<CollapseContent className="flex flex-col space-y-2">
+											{spells.map(([id, spell]) => (
+												<Button
+													key={id}
+													appearance="outline"
+													onClick={() => onSelect(id)}
+													className="shrink-0 flex-col items-start gap-3 py-3"
+													asChild
+												>
+													<CompositeItem>
+														<h4 className="text-xl font-light">{spell.name}</h4>
+														<p>{spell.description}</p>
+														<section>
+															<h5 className="text-sm/relaxed font-medium uppercase tracking-wide opacity-75">
+																Amplify
+															</h5>
+															<p>{spell.amplifiedDescription}</p>
+														</section>
+														<section>
+															<h5 className="text-sm/relaxed font-medium uppercase tracking-wide opacity-75">
+																Cost
+															</h5>
+															<p>
+																<span>{spell.cost.mana} mana</span>
+																{spell.cost.mentalStress && (
+																	<span>
+																		, {spell.cost.mentalStress} stress
+																	</span>
+																)}
+																{spell.castingTime && (
+																	<span>
+																		, {plural(spell.castingTime.turns, "turn")}
+																	</span>
+																)}
+															</p>
+														</section>
+													</CompositeItem>
+												</Button>
+											))}
+										</CollapseContent>
+									</Collapse>
+								</div>
 							))}
 					</ScrollArea>
 				</Composite>

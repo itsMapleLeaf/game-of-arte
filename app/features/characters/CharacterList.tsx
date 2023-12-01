@@ -11,7 +11,11 @@ import {
 	LucideUser,
 } from "lucide-react"
 import { twMerge } from "tailwind-merge"
-import { CollapsePersisted, CollapseSummary } from "~/components/Collapse.tsx"
+import {
+	Collapse,
+	CollapseButton,
+	CollapseContent,
+} from "~/components/Collapse.tsx"
 import { tryUntilNonNil } from "~/helpers/async.ts"
 import {
 	LoadingPlaceholder,
@@ -42,16 +46,18 @@ export function CharacterList() {
 					characters={characters.filter((character) => !character.hidden) ?? []}
 				/>
 				<AdminRoleGuard>
-					<CollapsePersisted persistenceKey="characterListHidden">
-						<CollapseSummary className="px-3 py-2 text-sm font-medium uppercase opacity-75">
+					<Collapse persistenceKey="characterListHidden">
+						<CollapseButton className="px-3 py-2 text-sm font-medium uppercase opacity-75">
 							Hidden
-						</CollapseSummary>
-						<CharacterListItems
-							characters={
-								characters.filter((character) => character.hidden) ?? []
-							}
-						/>
-					</CollapsePersisted>
+						</CollapseButton>
+						<CollapseContent>
+							<CharacterListItems
+								characters={
+									characters.filter((character) => character.hidden) ?? []
+								}
+							/>
+						</CollapseContent>
+					</Collapse>
 				</AdminRoleGuard>
 			</div>
 		</div>

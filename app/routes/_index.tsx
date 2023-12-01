@@ -12,7 +12,11 @@ import {
 	LucideWrench,
 } from "lucide-react"
 import { useDeferredValue, useRef } from "react"
-import { CollapsePersisted, CollapseSummary } from "~/components/Collapse.tsx"
+import {
+	Collapse,
+	CollapseButton,
+	CollapseContent,
+} from "~/components/Collapse.tsx"
 import { LoadingPlaceholder } from "~/components/LoadingPlaceholder.tsx"
 import {
 	ScrollAreaRoot,
@@ -145,19 +149,20 @@ function SideNavCollapse({
 	children: React.ReactNode
 }) {
 	return (
-		<CollapsePersisted
-			persistenceKey={`side-nav-collapse:${title}`}
-			defaultOpen={defaultOpen}
-			className={panel("group rounded-md border bg-base-800")}
-		>
-			<CollapseSummary className="p-2">
-				<div className="flex items-center gap-2 rounded-t-md">
-					{icon}
-					{title}
-				</div>
-			</CollapseSummary>
-			<div className="bg-base-900">{children}</div>
-		</CollapsePersisted>
+		<div className={panel("group rounded-md border bg-base-800")}>
+			<Collapse
+				persistenceKey={`side-nav-collapse:${title}`}
+				defaultOpen={defaultOpen}
+			>
+				<CollapseButton className="p-2">
+					<div className="flex items-center gap-2 rounded-t-md">
+						{icon}
+						{title}
+					</div>
+				</CollapseButton>
+				<CollapseContent className="bg-base-900">{children}</CollapseContent>
+			</Collapse>
+		</div>
 	)
 }
 
