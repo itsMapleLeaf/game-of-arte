@@ -1,6 +1,7 @@
 import { api } from "convex/_generated/api.js"
-import { useMutation } from "convex/react"
+import { useMutation, useQuery } from "convex/react"
 import { LucideRotateCw } from "lucide-react"
+import { LoadingPlaceholder } from "~/components/LoadingPlaceholder.tsx"
 import { ConfirmDialog } from "../../components/ConfirmDialog.tsx"
 import {
 	Field,
@@ -9,49 +10,51 @@ import {
 	FieldLabel,
 } from "../../components/Field.tsx"
 import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
-import { useQuerySuspense } from "../../helpers/useQuerySuspense.ts"
 import { solidButton } from "../../styles/button.ts"
 import { input } from "../../styles/index.ts"
 
 export function WorldSettings() {
-	const world = useQuerySuspense(api.world.get)
+	const world = useQuery(api.world.get)
 
 	const update = useMutation(api.world.update).withOptimisticUpdate(
 		(store, args) => {
+			if (!world) return
 			store.setQuery(api.world.get, {}, { ...world, ...args })
 		},
 	)
 
-	return (
-		<div className="grid gap-3 p-3">
-			<ResetResilienceButton />
-			<Field>
-				<FieldLabel>Experience</FieldLabel>
-				<FieldDescription>Set the power level of your party.</FieldDescription>
-				<FieldInput
-					className={input()}
-					type="number"
-					placeholder="10"
-					value={world.experience}
-					onChange={(event) => {
-						void update({ experience: event.currentTarget.valueAsNumber })
-					}}
-				/>
-			</Field>
-		</div>
-	)
+	return world === undefined ?
+			<LoadingPlaceholder />
+		:	<div className="grid gap-3 p-3">
+				<ResetResilienceButton />
+				<Field>
+					<FieldLabel>Experience</FieldLabel>
+					<FieldDescription>
+						Set the power level of your party.
+					</FieldDescription>
+					<FieldInput
+						className={input()}
+						type="number"
+						placeholder="10"
+						value={world.experience}
+						onChange={(event) => {
+							void update({ experience: event.currentTarget.valueAsNumber })
+						}}
+					/>
+				</Field>
+			</div>
 }
 
 function ResetResilienceButton() {
-	const characters = useQuerySuspense(api.characters.list)
+	const characters = useQuery(api.characters.list)
 	const updateCharacterData = useMutation(api.characters.updateData)
 
 	// TODO: make this one mutation in the backend (probably)
 	const [resetResilience, resetResilienceState] = useAsyncCallback(async () => {
 		await Promise.all(
-			characters.map((character) =>
+			characters?.map((character) =>
 				updateCharacterData({ id: character._id, data: { resilience: 2 } }),
-			),
+			) ?? [],
 		)
 	})
 

@@ -1,5 +1,8 @@
-import { useRect } from "@reach/rect"
+import { useSearchParams } from "@remix-run/react"
 import { api } from "convex/_generated/api.js"
+import type { Id } from "convex/_generated/dataModel.js"
+import { useQuery } from "convex/react"
+import type { FunctionReference, OptionalRestArgs } from "convex/server"
 import {
 	LucideClock,
 	LucideDices,
@@ -7,15 +10,17 @@ import {
 	LucideUsers,
 	LucideWrench,
 } from "lucide-react"
-import { useLayoutEffect, useRef } from "react"
+import { useDeferredValue, useRef } from "react"
 import { CollapsePersisted, CollapseSummary } from "~/components/Collapse.tsx"
-import { LoadingSuspense } from "~/components/LoadingPlaceholder.tsx"
+import { LoadingPlaceholder } from "~/components/LoadingPlaceholder.tsx"
 import {
 	ScrollAreaRoot,
 	ScrollAreaScrollbar,
 	ScrollAreaViewport,
 } from "~/components/ScrollArea.tsx"
+import { AdminRoleGuard } from "~/features/auth/AdminRoleGuard.tsx"
 import { AuthButton } from "~/features/auth/AuthButton.tsx"
+import { CharacterContext } from "~/features/characters/CharacterContext.tsx"
 import { CharacterDetails } from "~/features/characters/CharacterDetails.tsx"
 import { CharacterList } from "~/features/characters/CharacterList.tsx"
 import { ClockList } from "~/features/clocks/ClockList.tsx"
@@ -23,9 +28,9 @@ import { DiceRolls } from "~/features/dice/DiceRolls.tsx"
 import { PlayerList } from "~/features/players/PlayerList.tsx"
 import { WorldSettings } from "~/features/worlds/WorldSettings.tsx"
 import { expect } from "~/helpers/expect.ts"
-import { useQuerySuspense } from "~/helpers/useQuerySuspense.ts"
 import { container } from "~/styles/container.ts"
 import { panel } from "~/styles/panel.ts"
+import { useIsomorphicLayoutEffect } from "../helpers/useIsomorphicLayoutEffect"
 
 export default function GamePage() {
 	return (
@@ -37,20 +42,49 @@ export default function GamePage() {
 			</header>
 			<div className="flex flex-1 gap-4">
 				<ViewportHeightScrollArea>
-					<SideNav />
+					<nav className="flex flex-col gap-4">
+						<SideNav />
+					</nav>
 				</ViewportHeightScrollArea>
-				<LoadingSuspense className="flex-1 justify-start">
-					<CharacterDetails />
-				</LoadingSuspense>
+				<main className="flex-1">
+					<MainContent />
+				</main>
 			</div>
 		</div>
 	)
 }
 
-function SideNav() {
-	const roles = useQuerySuspense(api.roles.get)
+function useStableQuery<FuncRef extends FunctionReference<"query", "public">>(
+	func: FuncRef,
+	...args: OptionalRestArgs<FuncRef>
+) {
+	const data = useQuery(func, ...args)
+	const ref = useRef(data)
+	if (data !== undefined) {
+		ref.current = data
+	}
+	return ref.current
+}
+
+function MainContent() {
+	const [searchParams] = useSearchParams()
+	const characterId = searchParams.get("characterId") as Id<"characters"> | null
+	const character = useDeferredValue(
+		useStableQuery(api.characters.get, { id: characterId }),
+	)
 	return (
-		<div className="flex flex-col gap-4">
+		characterId === null ? <p>No character selected.</p>
+		: character === undefined ? <LoadingPlaceholder />
+		: character === null ? <p>Character not found.</p>
+		: <CharacterContext.Provider value={character}>
+				<CharacterDetails character={character} />
+			</CharacterContext.Provider>
+	)
+}
+
+function SideNav() {
+	return (
+		<>
 			<SideNavCollapse title="Characters" icon={<LucideUsers />} defaultOpen>
 				<CharacterList />
 			</SideNavCollapse>
@@ -63,18 +97,16 @@ function SideNav() {
 				<ClockList />
 			</SideNavCollapse>
 
-			{roles.isAdmin && (
+			<AdminRoleGuard>
 				<SideNavCollapse title="Players" icon={<LucideGamepad2 />}>
 					<PlayerList />
 				</SideNavCollapse>
-			)}
 
-			{roles.isAdmin && (
 				<SideNavCollapse title="Manage World" icon={<LucideWrench />}>
 					<WorldSettings />
 				</SideNavCollapse>
-			)}
-		</div>
+			</AdminRoleGuard>
+		</>
 	)
 }
 
@@ -101,9 +133,7 @@ function SideNavCollapse({
 					{title}
 				</div>
 			</CollapseSummary>
-			<div className="bg-base-900">
-				<LoadingSuspense>{children}</LoadingSuspense>
-			</div>
+			<div className="bg-base-900">{children}</div>
 		</CollapsePersisted>
 	)
 }

@@ -11,13 +11,14 @@ import {
 	type MetaFunction,
 	Outlet,
 	Scripts,
+	ScrollRestoration,
+	type ShouldRevalidateFunction,
 } from "@remix-run/react"
 import type { LinksFunction } from "@remix-run/react/dist/routeModules"
 import { ConvexReactClient } from "convex/react"
 import { ConvexProviderWithClerk } from "convex/react-clerk"
 import { useState } from "react"
 import faviconUrl from "./assets/favicon.svg"
-import { LoadingSuspense } from "./components/LoadingPlaceholder.tsx"
 import { TooltipProvider } from "./components/Tooltip.tsx"
 import { env } from "./env.ts"
 
@@ -28,6 +29,8 @@ export const links: LinksFunction = () => [{ rel: "icon", href: faviconUrl }]
 export function loader(args: LoaderFunctionArgs) {
 	return rootAuthLoader(args)
 }
+
+export const shouldRevalidate: ShouldRevalidateFunction = () => false
 
 function Document({ children }: { children: React.ReactNode }) {
 	return (
@@ -42,11 +45,8 @@ function Document({ children }: { children: React.ReactNode }) {
 				<Links />
 			</head>
 			<body>
-				<TooltipProvider delayDuration={250}>
-					<LoadingSuspense className="fixed inset-0">
-						{children}
-					</LoadingSuspense>
-				</TooltipProvider>
+				<TooltipProvider delayDuration={250}>{children}</TooltipProvider>
+				<ScrollRestoration />
 				<Scripts />
 				<LiveReload />
 			</body>

@@ -76,3 +76,27 @@ export type IsEqual<A, B> =
 export function typesAreEqual<A, B>(_isTrue: IsEqual<A, B>) {
 	raise("This function is only used for type tests", typesAreEqual)
 }
+
+/**
+ * Returns the keys of an object where the value is assignable to the test type
+ *
+ * @example
+ * 	type Foo = { a: string; b: number; c: string }
+ * 	type Keys = FilterKeysByValue<Foo, string> // "a" | "c"
+ */
+export type FilterKeysByValue<Object, Test> = keyof {
+	[K in keyof Object as Object[K] extends Test ? K : never]: Object[K]
+}
+
+typesAreEqual<
+	FilterKeysByValue<{ a: string; b: number; c: string }, string>,
+	"a" | "c"
+>(true)
+typesAreEqual<
+	FilterKeysByValue<{ a?: string; b: number; c: string }, string>,
+	"a" | "c"
+>(false)
+typesAreEqual<
+	FilterKeysByValue<{ a?: string; b: number; c: string }, string | undefined>,
+	"a" | "c"
+>(true)

@@ -1,20 +1,22 @@
 import { api } from "convex/_generated/api.js"
 import type { Doc } from "convex/_generated/dataModel.js"
-import { useMutation } from "convex/react"
+import { useMutation, useQuery } from "convex/react"
 import { LucidePlus, LucideX } from "lucide-react"
 import { useEffect, useId, useRef } from "react"
+import { LoadingPlaceholder } from "~/components/LoadingPlaceholder.tsx"
 import { expect } from "~/helpers/expect.ts"
 import { mapIterable } from "~/helpers/iterable.ts"
 import { Field, FieldInput, FieldLabel } from "../../components/Field.tsx"
 import { clamp } from "../../helpers/math.ts"
 import { range } from "../../helpers/range.ts"
-import { useQuerySuspense } from "../../helpers/useQuerySuspense.ts"
+import { AdminRoleGuard } from "../auth/AdminRoleGuard.tsx"
 
 export function ClockList() {
-	const roles = useQuerySuspense(api.roles.get)
 	return (
 		<div className="flex h-full flex-col divide-y divide-base-800">
-			{roles.isAdmin && <AddClockButton />}
+			<AdminRoleGuard>
+				<AddClockButton />
+			</AdminRoleGuard>
 			<ClockItems />
 		</div>
 	)
@@ -36,18 +38,20 @@ function AddClockButton() {
 }
 
 function ClockItems() {
-	const clocks = useQuerySuspense(api.clocks.list)
-
+	const clocks = useQuery(api.clocks.list)
 	return (
 		<ul className="min-h-0 flex-1 divide-y divide-base-800 overflow-y-auto">
 			<li className="flex flex-col gap-2 p-3">
 				<WorldManaClock />
 			</li>
-			{clocks.map((clock) => (
-				<li key={clock._id} className="flex flex-col gap-2 p-3">
-					<ClockEditor clock={clock} />
-				</li>
-			))}
+			{clocks === undefined ?
+				<LoadingPlaceholder />
+			:	clocks.map((clock) => (
+					<li key={clock._id} className="flex flex-col gap-2 p-3">
+						<ClockEditor clock={clock} />
+					</li>
+				))
+			}
 		</ul>
 	)
 }
@@ -55,10 +59,11 @@ function ClockItems() {
 const manaClockSize = 10
 
 function WorldManaClock() {
-	const world = useQuerySuspense(api.world.get)
+	const world = useQuery(api.world.get)
 
 	const update = useMutation(api.world.update).withOptimisticUpdate(
 		(store, args) => {
+			if (!world) return
 			store.setQuery(api.world.get, {}, { ...world, ...args })
 		},
 	)
@@ -66,18 +71,19 @@ function WorldManaClock() {
 	return (
 		<>
 			<h3 className="text-center text-xl font-light">Mana</h3>
-			<ClockRangeInput
-				value={world.mana ?? manaClockSize}
-				maxValue={manaClockSize}
-				onChange={(mana) => update({ mana })}
-			/>
+			{world === undefined ?
+				<LoadingPlaceholder />
+			:	<ClockRangeInput
+					value={world.mana ?? manaClockSize}
+					maxValue={manaClockSize}
+					onChange={(mana) => update({ mana })}
+				/>
+			}
 		</>
 	)
 }
 
 function ClockEditor({ clock }: { clock: Doc<"clocks"> }) {
-	const roles = useQuerySuspense(api.roles.get)
-
 	const update = useMutation(api.clocks.update).withOptimisticUpdate(
 		(store, args) => {
 			const clocks = store.getQuery(api.clocks.list) ?? []
@@ -134,7 +140,7 @@ function ClockEditor({ clock }: { clock: Doc<"clocks"> }) {
 					/>
 				</Field>
 
-				{roles.isAdmin && (
+				<AdminRoleGuard>
 					<button
 						type="button"
 						className="-mx-1.5 self-end p-1.5 opacity-75 transition hover:opacity-100"
@@ -145,7 +151,7 @@ function ClockEditor({ clock }: { clock: Doc<"clocks"> }) {
 						<LucideX />
 						<span className="sr-only">Remove</span>
 					</button>
-				)}
+				</AdminRoleGuard>
 			</div>
 			<ClockRangeInput
 				value={clock.value}

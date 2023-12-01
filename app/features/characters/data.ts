@@ -1,7 +1,7 @@
 import type { Doc } from "convex/_generated/dataModel.js"
-import * as v from "valibot"
+import * as z from "zod"
 import { clamp, sum } from "~/helpers/math.ts"
-import type { AttributeCategoryId, AttributeId } from "./attributes.ts"
+import type { AttributeId } from "./attributes.ts"
 import {
 	ATTRIBUTE_DEFAULT,
 	ATTRIBUTE_MAX,
@@ -10,7 +10,33 @@ import {
 	RESILIENCE_MIN,
 } from "./constants.ts"
 
-export function toCharacterDataNumberValue(
+export type CharacterDataInput = z.input<typeof characterDataSchema>
+export type CharacterData = z.output<typeof characterDataSchema>
+const characterDataSchema = z.object({
+	resilience: z.coerce
+		.number()
+		.int()
+		.min(RESILIENCE_MIN)
+		.catch(RESILIENCE_DEFAULT),
+
+	archetype: z
+		.string()
+		.pipe(z.enum(["physical", "mental", "social", "knowledge"]))
+		.optional()
+		.catch(undefined),
+
+	pronouns: z.string().optional().catch(""),
+	image: z.string().optional().catch(""),
+	notes: z.string().optional().catch(""),
+	inventory: z.string().optional().catch(""),
+	background: z.string().optional().catch(""),
+})
+
+export function parseCharacterData(data: Record<string, string | number>) {
+	return characterDataSchema.parse(data)
+}
+
+function toCharacterDataNumberValue(
 	input: unknown,
 	{ min = -Infinity, max = Infinity } = {},
 ) {
@@ -19,51 +45,16 @@ export function toCharacterDataNumberValue(
 	return clamp(Math.round(number), min, max)
 }
 
-function toAttributeValue(input: unknown) {
-	return (
-		toCharacterDataNumberValue(input, {
-			min: ATTRIBUTE_MIN,
-			max: ATTRIBUTE_MAX,
-		}) ?? ATTRIBUTE_DEFAULT
-	)
-}
-
-export type CharacterData = v.Output<typeof characterDataSchema>
-const characterDataSchema = v.object({
-	resilience: v.transform(
-		v.unknown(),
-		(input) =>
-			toCharacterDataNumberValue(input, {
-				min: RESILIENCE_MIN,
-			}) ?? RESILIENCE_DEFAULT,
-	),
-
-	archetype: v.fallback(
-		v.optional(
-			v.picklist<
-				AttributeCategoryId,
-				[AttributeCategoryId, ...AttributeCategoryId[]]
-			>(["physical", "mental", "social", "knowledge"]),
-		),
-		undefined,
-	),
-
-	pronouns: v.optional(v.string()),
-	image: v.optional(v.string()),
-	notes: v.optional(v.string()),
-	inventory: v.optional(v.string()),
-	background: v.optional(v.string()),
-})
-
-export function parseCharacterData(data: Record<string, string | number>) {
-	return v.parse(characterDataSchema, data)
-}
-
 export function getCharacterAttributeValue(
 	character: Doc<"characters">,
 	attributeId: AttributeId,
 ) {
-	return toAttributeValue(character.data[attributeId])
+	return (
+		toCharacterDataNumberValue(character.data[attributeId], {
+			min: ATTRIBUTE_MIN,
+			max: ATTRIBUTE_MAX,
+		}) ?? ATTRIBUTE_DEFAULT
+	)
 }
 
 export function getCharacterStress(character: Doc<"characters">) {

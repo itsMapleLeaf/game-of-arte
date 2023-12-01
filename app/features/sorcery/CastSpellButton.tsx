@@ -1,6 +1,6 @@
 import type { DialogTriggerProps } from "@radix-ui/react-dialog"
 import { api } from "convex/_generated/api.js"
-import { useMutation } from "convex/react"
+import { useMutation, useQuery } from "convex/react"
 import {
 	LucideAlertTriangle,
 	LucideArrowRight,
@@ -19,7 +19,7 @@ import {
 	FieldInput,
 	FieldLabel,
 } from "~/components/Field.tsx"
-import { useQuerySuspense } from "~/helpers/useQuerySuspense.ts"
+import { LoadingPlaceholder } from "~/components/LoadingPlaceholder.tsx"
 import { checkbox } from "~/styles/index.ts"
 import { twMerge } from "~/styles/twMerge.ts"
 import { CharacterAttributeRollForm } from "../characters/CharacterAttributeRollForm.tsx"
@@ -83,15 +83,19 @@ function CastSpellForm({
 	onSuccess: () => void
 	onBack: () => void
 }) {
-	const world = useQuerySuspense(api.world.get)
+	const world = useQuery(api.world.get)
 	const subtractWorldMana = useMutation(api.world.subtractMana)
 	const updateCharacterData = useMutation(api.characters.updateData)
+	const [amplify, setAmplify] = useState(false)
+	const character = CharacterContext.useValue()
+
+	if (!world) {
+		return <LoadingPlaceholder />
+	}
+
 	const worldMana = world.mana ?? WORLD_MANA_MAX
 	const finalWorldMana = Math.max(0, worldMana - spell.cost.mana)
 
-	const [amplify, setAmplify] = useState(false)
-
-	const character = CharacterContext.useValue()
 	const { mentalStress } = getCharacterStress(character)
 	const mentalStressCost = (spell?.cost.mentalStress ?? 0) + (amplify ? 1 : 0)
 	const finalMentalStress = Math.min(

@@ -1,36 +1,56 @@
 import type { Doc } from "convex/_generated/dataModel.js"
 import type { ComponentPropsWithoutRef } from "react"
 import ExpandingTextArea from "react-expanding-textarea"
+import { clamp } from "~/helpers/math.ts"
 import {
 	CounterInput,
 	type CounterInputProps,
 } from "../../components/CounterInput.tsx"
 import { ImageInput } from "../../components/ImageInput.tsx"
-import type { Spread } from "../../helpers/types.ts"
-import { type CharacterData, toCharacterDataNumberValue } from "./data.ts"
+import type { FilterKeysByValue, Spread } from "../../helpers/types.ts"
+import { useCurrentCharacter } from "./currentCharacter.tsx"
+import { type CharacterData, parseCharacterData } from "./data.ts"
 import { useCharacterDataValue } from "./useCharacterDataValue.ts"
+import { useUpdateCharacterData } from "./useUpdateCharacterData.ts"
 
-export function CharacterDataInput({
-	character,
+type CharacterDataInputProps<K extends keyof CharacterData> = {
+	dataKey: K
+}
+
+function useCharacterDataInput<K extends keyof CharacterData>({
 	dataKey,
-	...props
-}: Omit<
-	Spread<
-		ComponentPropsWithoutRef<"input">,
-		{ character: Doc<"characters">; dataKey: keyof CharacterData }
-	>,
-	"children"
->) {
-	const [value, setValue] = useCharacterDataValue(character, dataKey)
-	return (
-		<input
-			{...props}
-			value={String(value ?? "")}
-			onChange={(event) => {
-				setValue(event.currentTarget.value)
-			}}
-		/>
-	)
+}: CharacterDataInputProps<K>) {
+	const character = useCurrentCharacter()
+	const characterData = parseCharacterData(character.data)
+	const updateCharacterData = useUpdateCharacterData()
+	return {
+		value: characterData[dataKey],
+		onChange: (
+			valueOrEvent:
+				| { currentTarget: { value: CharacterData[K] } }
+				| CharacterData[K],
+		) => {
+			updateCharacterData(character._id, {
+				...characterData,
+				[dataKey]:
+					valueOrEvent && "currentTarget" in valueOrEvent ?
+						valueOrEvent.currentTarget.value
+					:	valueOrEvent,
+			})
+		},
+	}
+}
+
+interface CharacterDataTextInputProps<
+	K extends FilterKeysByValue<CharacterData, string>,
+> extends ComponentPropsWithoutRef<"input">,
+		CharacterDataInputProps<K> {}
+
+export function CharacterDataTextInput<
+	K extends FilterKeysByValue<CharacterData, string>,
+>({ dataKey, ...props }: CharacterDataTextInputProps<K>) {
+	// @ts-expect-error: we're deleting this file
+	return <input {...props} {...useCharacterDataInput({ dataKey })} />
 }
 
 interface CharacterDataTextAreaProps
@@ -57,6 +77,15 @@ export function CharacterDataTextArea({
 			}}
 		/>
 	)
+}
+
+function toCharacterDataNumberValue(
+	input: unknown,
+	{ min = -Infinity, max = Infinity } = {},
+) {
+	const number = Number(input)
+	if (!Number.isFinite(number)) return undefined
+	return clamp(Math.round(number), min, max)
 }
 
 export function CharacterDataCounterInput({

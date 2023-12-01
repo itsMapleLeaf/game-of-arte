@@ -1,6 +1,6 @@
 import { api } from "convex/_generated/api"
 import type { Doc } from "convex/_generated/dataModel"
-import { useMutation } from "convex/react"
+import { useMutation, useQuery } from "convex/react"
 import {
 	LucideBookOpenText,
 	LucideDices,
@@ -8,324 +8,349 @@ import {
 	LucideUnlock,
 	LucideWand,
 } from "lucide-react"
-import { cloneElement } from "react"
-import type { ClassNameValue } from "tailwind-merge"
+import ExpandingTextArea from "react-expanding-textarea"
 import * as v from "valibot"
 import { AsyncButton } from "~/components/AsyncButton.tsx"
-import { Button } from "~/components/Button.tsx"
+import { Button, type ButtonProps } from "~/components/Button.tsx"
 import { ConfirmDialog } from "~/components/ConfirmDialog.tsx"
-import {
-	Field,
-	FieldDescription,
-	FieldInput,
-	FieldLabel,
-	FieldLabelText,
-} from "~/components/Field.tsx"
+import { CounterInput } from "~/components/CounterInput.tsx"
+import { Field, FieldInput } from "~/components/Field.tsx"
+import { ImageInput } from "~/components/ImageInput.tsx"
+import { Input } from "~/components/Input.tsx"
+import { LoadingPlaceholder } from "~/components/LoadingPlaceholder.tsx"
 import { AttributeInput } from "~/features/characters/AttributeInput"
-import {
-	CharacterDataCounterInput,
-	CharacterDataImageInput,
-	CharacterDataInput,
-	CharacterDataSelectInput,
-	CharacterDataTextArea,
-} from "~/features/characters/CharacterDataInput"
-import { CharacterNameInput } from "~/features/characters/CharacterNameInput"
 import {
 	getAttributeCategories,
 	getAttributes,
 } from "~/features/characters/attributes"
-import { useCurrentCharacter } from "~/features/characters/useCurrentCharacter.tsx"
 import { useLocalStorageState } from "~/helpers/useLocalStorageState.tsx"
-import { useQuerySuspense } from "~/helpers/useQuerySuspense.ts"
 import { solidButton } from "~/styles/button.ts"
 import { center, input, textArea } from "~/styles/index.ts"
 import { panel } from "~/styles/panel.ts"
-import { twMerge } from "~/styles/twMerge.ts"
+import { twStyle } from "~/styles/twStyle.ts"
 import { CastSpellButton } from "../sorcery/CastSpellButton.tsx"
 import { RemoveSorceryDeviceButton } from "../sorcery/RemoveSorceryDeviceButton.tsx"
 import { SorceryDeviceEditor } from "../sorcery/SorceryDeviceEditor.tsx"
 import { CharacterConditions } from "./CharacterConditions.tsx"
-import { CharacterContext } from "./CharacterContext.tsx"
 import { MentalStressIndicator } from "./MentalStressIndicator.tsx"
 import { PhysicalStressIndicator } from "./PhysicalStressIndicator.tsx"
-import { getCharacterAttributeValue, getCharacterStress } from "./data.ts"
+import {
+	type CharacterDataInput,
+	getCharacterAttributeValue,
+	getCharacterStress,
+	parseCharacterData,
+} from "./data.ts"
 import { generateRandomStats } from "./generateRandomStats.tsx"
+import {
+	type UpdateCharacterArgs,
+	useUpdateCharacter,
+} from "./useUpdateCharacter.tsx"
+import { useUpdateCharacterData } from "./useUpdateCharacterData.ts"
 
-export function CharacterDetails() {
-	const character = useCurrentCharacter()
-	const ownedCharacter = useQuerySuspense(api.characters.getOwned)
-	const roles = useQuerySuspense(api.roles.get)
+export const characterNameInputId = "characterNameInput"
+
+const row = twStyle("grid gap-3 fluid-cols-auto-fit fluid-cols-24")
+
+const column = twStyle("grid content-start gap-4")
+
+const sectionHeading = twStyle(
+	"border-b border-base-800 pb-1 text-2xl font-light",
+)
+
+type OnChangeArg<T> = { currentTarget: { value: T } } | T
+
+const resolveOnChangeArg = <T,>(eventOrValue: OnChangeArg<T>) =>
+	(
+		typeof eventOrValue === "object" &&
+		eventOrValue !== null &&
+		"currentTarget" in eventOrValue
+	) ?
+		eventOrValue.currentTarget.value
+	:	eventOrValue
+
+export function CharacterDetails({
+	character,
+}: {
+	character: Doc<"characters">
+}) {
+	const roles = useQuery(api.roles.get)
+	const self = useQuery(api.players.self)
+
+	const updateCharacter = useUpdateCharacter().bind(null, character._id)
+	const updateCharacterData = useUpdateCharacterData().bind(null, character._id)
+	const characterData = parseCharacterData(character.data)
+	const { physicalStress, mentalStress } = getCharacterStress(character)
 
 	const [attributesLocked, setAttributesLocked] = useLocalStorageState(
 		"attributesLocked",
 		(value) => v.parse(v.fallback(v.boolean(), false), value),
 	)
 
-	function getAttributesEditable(character: Doc<"characters">) {
-		if (!roles.isAdmin && character._id !== ownedCharacter?._id) return false
+	const characterInputProps = <K extends keyof UpdateCharacterArgs>(
+		key: K,
+	) => ({
+		value: character[key],
+		onChange: (arg: OnChangeArg<UpdateCharacterArgs[K]>) => {
+			updateCharacter({ [key]: resolveOnChangeArg(arg) })
+		},
+	})
+
+	const characterDataInputProps = <K extends keyof CharacterDataInput>(
+		key: K,
+	) => ({
+		value: characterData[key],
+		onChange: (arg: OnChangeArg<CharacterDataInput[K]>) => {
+			updateCharacterData({ [key]: resolveOnChangeArg(arg) })
+		},
+	})
+
+	const attributesEditable = (() => {
+		if (!roles?.isAdmin && character._id !== self?.ownedCharacterId)
+			return false
 		return !attributesLocked
-	}
-
-	if (!character) {
-		return <p>No characters found.</p>
-	}
-
-	const { physicalStress, mentalStress } = getCharacterStress(character)
+	})()
 
 	return (
-		<CharacterContext.Provider value={character}>
-			<div className="grid flex-1 content-start gap-8 self-start">
-				<div className={row("fluid-cols-48")}>
-					<section className={column()}>
-						<h3 className={sectionHeading()}>Identity</h3>
-
-						<CharacterNameInput character={character} />
-
-						<Field>
-							<FieldLabel>Pronouns</FieldLabel>
-							<FieldDescription>How do they identify?</FieldDescription>
-							<FieldInput asChild>
-								<CharacterDataInput
-									character={character}
-									dataKey="pronouns"
-									className={input()}
-								/>
-							</FieldInput>
-						</Field>
-
-						<Field>
-							<FieldLabel>Archetype</FieldLabel>
-							<FieldDescription>
-								The backbone of your character. Gives +2 dice to the
-								corresponding attribute category.
-							</FieldDescription>
-							<FieldInput asChild>
-								<CharacterDataSelectInput
-									character={character}
-									dataKey="archetype"
-									className={input("py-0")}
-								>
-									<option disabled value="">
-										Select an archetype
-									</option>
-									{getAttributeCategories().map((category) => (
-										<option key={category.id} value={category.id}>
-											{category.archetypeName}
-										</option>
-									))}
-								</CharacterDataSelectInput>
-							</FieldInput>
-						</Field>
-
-						<Field>
-							<FieldLabel>Notes</FieldLabel>
-							<FieldDescription>
-								Anything else important about the character.
-							</FieldDescription>
-							<FieldInput asChild>
-								<CharacterDataTextArea
-									character={character}
-									dataKey="notes"
-									className={textArea()}
-									rows={4}
-									fixedHeight
-								/>
-							</FieldInput>
-						</Field>
-
-						<Field>
-							<FieldLabel>Reference Image</FieldLabel>
-							<FieldDescription>What do they look like?</FieldDescription>
-							<FieldInput asChild>
-								<CharacterDataImageInput
-									character={character}
-									dataKey="image"
-								/>
-							</FieldInput>
-						</Field>
-					</section>
-
-					<div className={column()}>
-						<section className={column()}>
-							<h3 className={sectionHeading()}>Status</h3>
-
-							<div className={row("items-end gap-2")}>
-								<Field>
-									<FieldLabelText>Resilience</FieldLabelText>
-									<CharacterDataCounterInput
-										character={character}
-										dataKey="resilience"
-										min={0}
-										defaultValue={2}
-									/>
-								</Field>
-
-								<Field>
-									<FieldLabelText>Stress</FieldLabelText>
-									<FieldInput asChild>
-										<p className={panel(input(), center(), "h-10 gap-3")}>
-											<PhysicalStressIndicator value={physicalStress} />
-											<MentalStressIndicator value={mentalStress} />
-										</p>
-									</FieldInput>
-								</Field>
-							</div>
-
-							<Field>
-								<FieldLabel>Conditions</FieldLabel>
-								<FieldDescription>
-									List your character's sources of stress.
-								</FieldDescription>
-								<CharacterConditions />
-							</Field>
-						</section>
-
-						<section className={column()}>
-							<h3 className={sectionHeading()}>Sorcery</h3>
-
-							{character.sorceryDevice == null ?
-								<AddSorceryDeviceButton character={character} />
-							:	<>
-									<SorceryDeviceEditor
-										character={character}
-										sorceryDevice={character.sorceryDevice}
-									/>
-
-									{(character._id === ownedCharacter?._id || roles.isAdmin) && (
-										<section className={column("gap-2")}>
-											<CastSpellButton asChild>
-												<Button icon={{ start: LucideBookOpenText }}>
-													Spellbook
-												</Button>
-											</CastSpellButton>
-											<RemoveSorceryDeviceButton character={character} />
-										</section>
-									)}
-								</>
-							}
-						</section>
-
-						<section className={column()}>
-							<h3 className={sectionHeading()}>Progression</h3>
-
-							<Field>
-								<FieldLabelText>Experience</FieldLabelText>
-								<FieldDescription>
-									Spend these points on attributes!
-								</FieldDescription>
-								<ExperienceDisplay character={character} />
-							</Field>
-
-							<div className={row("fluid-cols-36")}>
-								<RandomizeStatsButton character={character} />
-								{attributesLocked ?
-									<Button
-										appearance="outline"
-										icon={{ start: LucideUnlock }}
-										onClick={() => setAttributesLocked(!attributesLocked)}
-									>
-										Unlock Stats
-									</Button>
-								:	<Button
-										appearance="outline"
-										icon={{ start: LucideLock }}
-										onClick={() => setAttributesLocked(!attributesLocked)}
-									>
-										Lock Stats
-									</Button>
-								}
-							</div>
-						</section>
-					</div>
-				</div>
-
-				<div className={row("content-center fluid-cols-36")}>
-					{getAttributeCategories().map((category) => (
-						<div key={category.id} className={column("gap-4")}>
-							<h3
-								className={sectionHeading(
-									"transition-colors",
-									character.data.archetype === category.id && "text-accent-400",
-								)}
-							>
-								{category.title}
-							</h3>
-							{category.attributes.map((attribute) => (
-								<AttributeInput
-									key={attribute.id}
-									attribute={attribute}
-									editable={getAttributesEditable(character)}
-								/>
-							))}
-						</div>
-					))}
-				</div>
-
+		<div className="grid flex-1 content-start gap-8 self-start">
+			<div className={row("fluid-cols-48")}>
 				<section className={column()}>
-					<h3 className={sectionHeading()}>Description</h3>
+					<h3 className={sectionHeading()}>Identity</h3>
 
-					<Field>
-						<FieldLabel>Inventory</FieldLabel>
-						<FieldDescription>What are you carrying?</FieldDescription>
+					<Field label="Name" description="What should we call them?">
 						<FieldInput asChild>
-							<CharacterDataTextArea
-								character={character}
-								dataKey="inventory"
-								className={textArea()}
-								rows={3}
+							<Input
+								{...characterInputProps("name")}
+								id={characterNameInputId}
 							/>
 						</FieldInput>
 					</Field>
 
-					<Field>
-						<FieldLabel>Background</FieldLabel>
-						<FieldDescription>
-							{`Write your character's backstory. Doesn't have to be too long. Unless you want it
-						to be!`}
-						</FieldDescription>
-						<CharacterDataTextArea
-							character={character}
-							dataKey="background"
-							rows={3}
-							className={textArea()}
-						/>
+					<Field label="Name" description="How do they identify?">
+						<FieldInput asChild>
+							<Input {...characterDataInputProps("pronouns")} />
+						</FieldInput>
+					</Field>
+
+					<Field
+						label="Archetype"
+						description={`The backbone of your character. Gives +2 dice to the corresponding attribute category.`}
+					>
+						<FieldInput asChild>
+							<select
+								{...characterDataInputProps("archetype")}
+								className={input("py-0")}
+							>
+								<option disabled value="">
+									Select an archetype
+								</option>
+								{getAttributeCategories().map((category) => (
+									<option key={category.id} value={category.id}>
+										{category.archetypeName}
+									</option>
+								))}
+							</select>
+						</FieldInput>
+					</Field>
+
+					<Field
+						label="Notes"
+						description="Anything else important about the character."
+					>
+						<FieldInput asChild>
+							<textarea
+								{...characterDataInputProps("notes")}
+								className={textArea()}
+								rows={4}
+							/>
+						</FieldInput>
+					</Field>
+
+					<Field label="Reference Image" description="Do they have a cool hat?">
+						<FieldInput asChild>
+							<ImageInput {...characterDataInputProps("image")} />
+						</FieldInput>
 					</Field>
 				</section>
+
+				<div className={column()}>
+					<section className={column()}>
+						<h3 className={sectionHeading()}>Status</h3>
+
+						<div className={row("items-end gap-2")}>
+							<Field labelText="Resilience">
+								<CounterInput
+									{...characterDataInputProps("resilience")}
+									min={0}
+									defaultValue={2}
+								/>
+							</Field>
+
+							<Field labelText="Stress">
+								<FieldInput asChild>
+									<p className={panel(input(), center(), "h-10 gap-3")}>
+										<PhysicalStressIndicator value={physicalStress} />
+										<MentalStressIndicator value={mentalStress} />
+									</p>
+								</FieldInput>
+							</Field>
+						</div>
+
+						<Field
+							labelText="Conditions"
+							description="List your character's sources of stress."
+						>
+							<CharacterConditions />
+						</Field>
+					</section>
+
+					<section className={column()}>
+						<h3 className={sectionHeading()}>Sorcery</h3>
+
+						{character.sorceryDevice == null ?
+							<AddSorceryDeviceButton character={character} />
+						:	<>
+								<SorceryDeviceEditor
+									character={character}
+									sorceryDevice={character.sorceryDevice}
+								/>
+
+								{(character._id === self?.ownedCharacterId ||
+									roles?.isAdmin) && (
+									<section className={column("gap-2")}>
+										<CastSpellButton asChild>
+											<Button icon={{ start: LucideBookOpenText }}>
+												Spellbook
+											</Button>
+										</CastSpellButton>
+										<RemoveSorceryDeviceButton character={character} />
+									</section>
+								)}
+							</>
+						}
+					</section>
+
+					<section className={column()}>
+						<h3 className={sectionHeading()}>Progression</h3>
+
+						<Field
+							labelText="Experience"
+							description="Spend these points on attributes!"
+						>
+							<ExperienceDisplay character={character} />
+						</Field>
+
+						<div className={row("fluid-cols-36")}>
+							<RandomizeStatsButton character={character} />
+							{attributesLocked ?
+								<Button
+									appearance="outline"
+									icon={{ start: LucideUnlock }}
+									onClick={() => setAttributesLocked(!attributesLocked)}
+								>
+									Unlock Stats
+								</Button>
+							:	<Button
+									appearance="outline"
+									icon={{ start: LucideLock }}
+									onClick={() => setAttributesLocked(!attributesLocked)}
+								>
+									Lock Stats
+								</Button>
+							}
+						</div>
+					</section>
+				</div>
 			</div>
-		</CharacterContext.Provider>
+
+			<div className={row("content-center fluid-cols-36")}>
+				{getAttributeCategories().map((category) => (
+					<div key={category.id} className={column("gap-4")}>
+						<h3
+							className={sectionHeading(
+								"transition-colors",
+								character.data.archetype === category.id && "text-accent-400",
+							)}
+						>
+							{category.title}
+						</h3>
+						{category.attributes.map((attribute) => (
+							<AttributeInput
+								key={attribute.id}
+								attribute={attribute}
+								editable={attributesEditable}
+							/>
+						))}
+					</div>
+				))}
+			</div>
+
+			<section className={column()}>
+				<h3 className={sectionHeading()}>Description</h3>
+
+				<Field label="Inventory" description="What are you carrying?">
+					<FieldInput asChild>
+						<ExpandingTextArea
+							{...characterDataInputProps("inventory")}
+							className={textArea()}
+						/>
+					</FieldInput>
+				</Field>
+
+				<Field
+					label="Background"
+					description={`Write your character's backstory. Doesn't have to be too long. Unless you want it to be!`}
+				>
+					<ExpandingTextArea
+						{...characterDataInputProps("background")}
+						className={textArea()}
+					/>
+				</Field>
+			</section>
+		</div>
 	)
 }
 
 function ExperienceDisplay({ character }: { character: Doc<"characters"> }) {
-	const world = useQuerySuspense(api.world.get)
+	const world = useQuery(api.world.get)
 	const usedExperience = getUsedExperience(character)
 
 	return (
 		<FieldInput asChild>
-			<p
-				data-negative={usedExperience > world.experience}
-				className={panel(
-					input(),
-					center(),
-					"h-auto tabular-nums data-[negative=true]:text-error-400",
-				)}
-			>
-				{world.experience - usedExperience} <span aria-label="out of">/</span>{" "}
-				{world.experience}
-			</p>
+			{world === undefined ?
+				<LoadingPlaceholder />
+			:	<p
+					data-negative={usedExperience > world.experience}
+					className={panel(
+						input(),
+						center(),
+						"h-auto tabular-nums data-[negative=true]:text-error-400",
+					)}
+				>
+					{world.experience - usedExperience} <span aria-label="out of">/</span>{" "}
+					{world.experience}
+				</p>
+			}
 		</FieldInput>
 	)
 }
 
 function RandomizeStatsButton({ character }: { character: Doc<"characters"> }) {
-	const world = useQuerySuspense(api.world.get)
+	const world = useQuery(api.world.get)
 	const updateCharacterData = useMutation(api.characters.updateData)
 	const usedExperience = getUsedExperience(character)
 
-	const randomizeStats = async () => {
-		// NOTE: if this function fails again, extract the logic and write a test
-		const { stats, archetype } = generateRandomStats(world.experience)
+	const buttonProps: ButtonProps = {
+		appearance: "outline",
+		icon: { start: LucideDices },
+		children: "Random Stats",
+	}
 
+	if (world === undefined) {
+		return <Button {...buttonProps} pending />
+	}
+
+	const randomizeStats = async () => {
+		const { stats, archetype } = generateRandomStats(world.experience)
 		await updateCharacterData({
 			id: character._id,
 			data: {
@@ -335,14 +360,8 @@ function RandomizeStatsButton({ character }: { character: Doc<"characters"> }) {
 		})
 	}
 
-	const button = (
-		<Button appearance="outline" icon={{ start: LucideDices }}>
-			Random Stats
-		</Button>
-	)
-
 	if (usedExperience === 0) {
-		return cloneElement(button, { onClick: randomizeStats })
+		return <Button {...buttonProps} onClick={randomizeStats} />
 	}
 
 	return (
@@ -352,7 +371,7 @@ function RandomizeStatsButton({ character }: { character: Doc<"characters"> }) {
 			confirmText="Randomize Stats"
 			onConfirm={randomizeStats}
 		>
-			{button}
+			<Button {...buttonProps} />
 		</ConfirmDialog>
 	)
 }
@@ -381,15 +400,6 @@ function AddSorceryDeviceButton({
 		</AsyncButton>
 	)
 }
-
-const row = (...classes: ClassNameValue[]) =>
-	twMerge("grid gap-3 fluid-cols-auto-fit fluid-cols-24", ...classes)
-
-const column = (...classes: ClassNameValue[]) =>
-	twMerge("grid content-start gap-4", ...classes)
-
-const sectionHeading = (...classes: ClassNameValue[]) =>
-	twMerge("border-b border-base-800 pb-1 text-2xl font-light", ...classes)
 
 function getUsedExperience(character: Doc<"characters">) {
 	return getAttributes().reduce((sum, attribute) => {

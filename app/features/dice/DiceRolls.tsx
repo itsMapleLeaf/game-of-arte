@@ -1,5 +1,5 @@
 import { api } from "convex/_generated/api.js"
-import { useMutation } from "convex/react"
+import { useMutation, useQuery } from "convex/react"
 import { LucideDices, LucideList } from "lucide-react"
 import { type ScrollerProps, Virtuoso } from "react-virtuoso"
 import { Button } from "~/components/Button.tsx"
@@ -15,7 +15,7 @@ import {
 	FieldLabel,
 	FieldLabelText,
 } from "~/components/Field.tsx"
-import { LoadingSuspense } from "~/components/LoadingPlaceholder.tsx"
+import { LoadingPlaceholder } from "~/components/LoadingPlaceholder.tsx"
 import {
 	ScrollAreaRoot,
 	ScrollAreaScrollbar,
@@ -23,7 +23,6 @@ import {
 } from "~/components/ScrollArea.tsx"
 import { autoRef } from "~/helpers/autoRef.tsx"
 import { useAsyncCallback } from "~/helpers/useAsyncCallback.ts"
-import { useQuerySuspense } from "~/helpers/useQuerySuspense.ts"
 import { panel } from "~/styles/panel.ts"
 import { EmptyState } from "../../components/EmptyState.tsx"
 import { DiceRollDetails } from "./DiceRollDetails.tsx"
@@ -32,9 +31,7 @@ export function DiceRolls() {
 	return (
 		<div className="flex h-full flex-col divide-y divide-base-800">
 			<div className="-mt-px flex-1">
-				<LoadingSuspense>
-					<DiceRollList />
-				</LoadingSuspense>
+				<DiceRollList />
 			</div>
 			<DiceRollForm />
 		</div>
@@ -43,13 +40,15 @@ export function DiceRolls() {
 
 function DiceRollList() {
 	const pageSize = 5
-	const listResult = useQuerySuspense(api.diceRolls.list, { limit: pageSize })
-	const characters = useQuerySuspense(api.characters.list)
+	const listResult = useQuery(api.diceRolls.list, { limit: pageSize })
+	const characters = useQuery(api.characters.list)
 	const charactersById = new Map(
-		characters.map((character) => [character._id, character]),
+		characters?.map((character) => [character._id, character]),
 	)
 
-	return listResult.page.length === 0 && listResult.isDone ?
+	return (
+		listResult == null ? <LoadingPlaceholder />
+		: listResult.page.length === 0 && listResult.isDone ?
 			<EmptyState icon={LucideDices}>Nothing yet!</EmptyState>
 		:	<div className="flex flex-col gap-2 p-2">
 				{!listResult.isDone && (
@@ -61,9 +60,7 @@ function DiceRollList() {
 						</DialogTrigger>
 						<SimpleDialogContent title="Dice Rolls">
 							<div className="h-[calc(100vh-16rem)]">
-								<LoadingSuspense className="h-full">
-									<FullDiceRollList />
-								</LoadingSuspense>
+								<FullDiceRollList />
 							</div>
 						</SimpleDialogContent>
 					</Dialog>
@@ -90,36 +87,40 @@ function DiceRollList() {
 						))}
 				</ul>
 			</div>
+	)
 }
 
 function FullDiceRollList() {
-	const listResult = useQuerySuspense(api.diceRolls.list, {})
-	const characters = useQuerySuspense(api.characters.list)
+	const listResult = useQuery(api.diceRolls.list, {})
+	const characters = useQuery(api.characters.list)
 	const charactersById = new Map(
-		characters.map((character) => [character._id, character]),
+		characters?.map((character) => [character._id, character]),
 	)
 
 	return (
 		<ScrollAreaRoot className="h-full">
-			<Virtuoso
-				increaseViewportBy={1800}
-				data={listResult.page}
-				itemContent={(_index, roll) => (
-					<div className={panel("rounded-md border p-2")}>
-						<DiceRollDetails
-							roll={roll}
-							character={
-								roll.characterId ?
-									charactersById.get(roll.characterId)
-								:	undefined
-							}
-						/>
-					</div>
-				)}
-				components={{
-					Scroller: VirtuosoScroller,
-				}}
-			/>
+			{listResult == null ?
+				<LoadingPlaceholder />
+			:	<Virtuoso
+					increaseViewportBy={1800}
+					data={listResult.page}
+					itemContent={(_index, roll) => (
+						<div className={panel("rounded-md border p-2")}>
+							<DiceRollDetails
+								roll={roll}
+								character={
+									roll.characterId ?
+										charactersById.get(roll.characterId)
+									:	undefined
+								}
+							/>
+						</div>
+					)}
+					components={{
+						Scroller: VirtuosoScroller,
+					}}
+				/>
+			}
 			<ScrollAreaScrollbar />
 		</ScrollAreaRoot>
 	)

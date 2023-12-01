@@ -20,7 +20,8 @@ export function useUpdateCharacterData() {
 			)
 		},
 	)
-	return function updateCharacterData(
+
+	return function useUpdateCharacterData(
 		characterId: Id<"characters">,
 		data: Partial<CharacterData & Record<AttributeId, number>>,
 	) {

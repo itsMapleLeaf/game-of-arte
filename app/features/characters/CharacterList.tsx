@@ -1,6 +1,7 @@
+import { Link, useSearchParams } from "@remix-run/react"
 import { api } from "convex/_generated/api"
 import type { Doc } from "convex/_generated/dataModel.js"
-import { useMutation } from "convex/react"
+import { useMutation, useQuery } from "convex/react"
 import {
 	LucideEye,
 	LucideEyeOff,
@@ -9,11 +10,13 @@ import {
 	LucideTrash,
 	LucideUser,
 } from "lucide-react"
-import { startTransition } from "react"
 import { twMerge } from "tailwind-merge"
-import { Collapse, CollapseSummary } from "~/components/Collapse.tsx"
+import { CollapsePersisted, CollapseSummary } from "~/components/Collapse.tsx"
 import { tryUntilNonNil } from "~/helpers/async.ts"
-import { LoadingSpinner } from "../../components/LoadingPlaceholder.tsx"
+import {
+	LoadingPlaceholder,
+	LoadingSpinner,
+} from "../../components/LoadingPlaceholder.tsx"
 import {
 	Menu,
 	MenuItem,
@@ -21,34 +24,35 @@ import {
 	MenuTrigger,
 } from "../../components/Menu.tsx"
 import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
-import { useQuerySuspense } from "../../helpers/useQuerySuspense.ts"
-import { characterNameInputId } from "./CharacterNameInput.tsx"
-import {
-	SetCharacterButton,
-	useCurrentCharacterId,
-	useSetCurrentCharacterId,
-} from "./useCurrentCharacter.tsx"
+import { AdminRoleGuard } from "../auth/AdminRoleGuard.tsx"
+import { characterNameInputId } from "./CharacterDetails.tsx"
 
 export function CharacterList() {
-	const characters = useQuerySuspense(api.characters.list)
-	const roles = useQuerySuspense(api.roles.get)
+	const characters = useQuery(api.characters.list)
+	if (!characters) {
+		return <LoadingPlaceholder />
+	}
 	return (
 		<div className="flex h-full flex-col divide-y divide-base-800">
-			{roles.isAdmin && <NewCharacterButton />}
+			<AdminRoleGuard>
+				<NewCharacterButton />
+			</AdminRoleGuard>
 			<div className="min-h-0 flex-1 overflow-y-auto">
 				<CharacterListItems
-					characters={characters.filter((character) => !character.hidden)}
+					characters={characters.filter((character) => !character.hidden) ?? []}
 				/>
-				{roles.isAdmin && (
-					<Collapse>
+				<AdminRoleGuard>
+					<CollapsePersisted persistenceKey="characterListHidden">
 						<CollapseSummary className="px-3 py-2 text-sm font-medium uppercase opacity-75">
 							Hidden
 						</CollapseSummary>
 						<CharacterListItems
-							characters={characters.filter((character) => character.hidden)}
+							characters={
+								characters.filter((character) => character.hidden) ?? []
+							}
 						/>
-					</Collapse>
-				)}
+					</CollapsePersisted>
+				</AdminRoleGuard>
 			</div>
 		</div>
 	)
@@ -59,9 +63,9 @@ function CharacterListItems({
 }: {
 	characters: Array<Doc<"characters">>
 }) {
-	const roles = useQuerySuspense(api.roles.get)
-	const player = useQuerySuspense(api.players.self)
-	const currentCharacterId = useCurrentCharacterId()
+	const player = useQuery(api.players.self)
+	const [searchParams] = useSearchParams()
+	const currentCharacterId = searchParams.get("characterId")
 
 	return characters.length === 0 ?
 			<p className="px-3 py-2 opacity-75">No characters found.</p>
@@ -77,8 +81,8 @@ function CharacterListItems({
 							key={character._id}
 							className="group/character-list-item relative"
 						>
-							<SetCharacterButton
-								characterId={character._id}
+							<Link
+								to={`?characterId=${character._id}`}
 								className={twMerge(
 									"group flex w-full gap-2 p-2 transition",
 									currentCharacterId === character._id ?
@@ -91,8 +95,9 @@ function CharacterListItems({
 								<LucideUser className="group-data-[pending]:hidden" />
 								<LoadingSpinner className="hidden group-data-[pending]:block" />
 								<div className="min-w-0 flex-1">{character.name}</div>
-							</SetCharacterButton>
-							{roles.isAdmin && (
+							</Link>
+
+							<AdminRoleGuard>
 								<CharacterMenu character={character}>
 									<button
 										type="button"
@@ -101,7 +106,7 @@ function CharacterListItems({
 										<LucideMoreVertical className="s-5" />
 									</button>
 								</CharacterMenu>
-							)}
+							</AdminRoleGuard>
 						</li>
 					))}
 			</ul>
@@ -155,15 +160,13 @@ function DeleteItem({ character }: { character: Doc<"characters"> }) {
 }
 
 function NewCharacterButton() {
-	const setCurrentCharacterId = useSetCurrentCharacterId()
+	const [, setSearchParams] = useSearchParams()
 
 	const [handleClick, state] = useAsyncCallback(
 		useMutation(api.characters.create),
 		{
 			async onSuccess(result) {
-				startTransition(() => {
-					setCurrentCharacterId(result._id)
-				})
+				setSearchParams((prev) => ({ ...prev, characterId: result._id }))
 				const nameInput = await tryUntilNonNil(() =>
 					document.getElementById(characterNameInputId),
 				)

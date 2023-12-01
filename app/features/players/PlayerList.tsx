@@ -1,12 +1,15 @@
 import { api } from "convex/_generated/api.js"
 import type { Doc } from "convex/_generated/dataModel.js"
-import { useMutation } from "convex/react"
+import { useMutation, useQuery } from "convex/react"
 import { LucideUserPlus, LucideX } from "lucide-react"
 import { useRef } from "react"
 import { useSpinDelay } from "spin-delay"
 import { expect } from "~/helpers/expect.ts"
 import { AsyncButton } from "../../components/AsyncButton.tsx"
-import { LoadingSpinner } from "../../components/LoadingPlaceholder.tsx"
+import {
+	LoadingPlaceholder,
+	LoadingSpinner,
+} from "../../components/LoadingPlaceholder.tsx"
 import {
 	Menu,
 	MenuItem,
@@ -14,14 +17,15 @@ import {
 	MenuTrigger,
 } from "../../components/Menu.tsx"
 import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
-import { useQuerySuspense } from "../../helpers/useQuerySuspense.ts"
 
 export function PlayerList() {
-	const players = useQuerySuspense(api.players.list)
+	const players = useQuery(api.players.list)
 	return (
 		<div className="flex h-full flex-col divide-y divide-base-800">
 			<NewPlayerForm />
-			{players.length === 0 ?
+			{players === undefined ?
+				<LoadingPlaceholder />
+			: players.length === 0 ?
 				<p className="p-3">No players have been added yet.</p>
 			:	<ul className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-3">
 					{players.map((player) => (
@@ -79,7 +83,7 @@ function PlayerListItem({
 }: {
 	player: Doc<"players"> & { name: string | undefined }
 }) {
-	const character = useQuerySuspense(api.characters.get, {
+	const character = useQuery(api.characters.get, {
 		id: player.ownedCharacterId,
 	})
 	const removePlayer = useMutation(api.players.remove)
@@ -121,34 +125,34 @@ function PlayerListItem({
 }
 
 function SetCharacterMenu({ player }: { player: Doc<"players"> }) {
-	const characters = useQuerySuspense(api.characters.list)
+	const characters = useQuery(api.characters.list)
 	const updatePlayer = useMutation(api.players.update)
 
-	return (
-		<Menu>
-			<MenuTrigger className="flex items-center gap-1 rounded border border-base-600 bg-base-700/50 p-1.5 text-sm leading-none transition hover:bg-base-800">
-				<LucideUserPlus className="s-4" /> Set Character
-			</MenuTrigger>
-			<MenuPanel
-				side="bottom"
-				align="center"
-				className="max-h-64 max-w-48 overflow-y-auto"
-			>
-				{characters.map((character) => (
-					<MenuItem key={character._id} asChild>
-						<AsyncButton
-							onClick={() =>
-								updatePlayer({
-									id: player._id,
-									ownedCharacterId: character._id,
-								})
-							}
-						>
-							{character.name}
-						</AsyncButton>
-					</MenuItem>
-				))}
-			</MenuPanel>
-		</Menu>
-	)
+	return characters === undefined ?
+			<LoadingSpinner />
+		:	<Menu>
+				<MenuTrigger className="flex items-center gap-1 rounded border border-base-600 bg-base-700/50 p-1.5 text-sm leading-none transition hover:bg-base-800">
+					<LucideUserPlus className="s-4" /> Set Character
+				</MenuTrigger>
+				<MenuPanel
+					side="bottom"
+					align="center"
+					className="max-h-64 max-w-48 overflow-y-auto"
+				>
+					{characters.map((character) => (
+						<MenuItem key={character._id} asChild>
+							<AsyncButton
+								onClick={() =>
+									updatePlayer({
+										id: player._id,
+										ownedCharacterId: character._id,
+									})
+								}
+							>
+								{character.name}
+							</AsyncButton>
+						</MenuItem>
+					))}
+				</MenuPanel>
+			</Menu>
 }
