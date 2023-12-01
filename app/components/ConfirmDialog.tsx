@@ -1,5 +1,5 @@
 import type { ReactNode } from "react"
-import { clearButton, solidButton } from "../styles/button.ts"
+import { Button } from "./Button.tsx"
 import {
 	Dialog,
 	DialogClose,
@@ -22,7 +22,7 @@ export function ConfirmDialog({
 	description: ReactNode
 	cancelText?: ReactNode
 	confirmText?: ReactNode
-	onConfirm: () => void
+	onConfirm: () => unknown
 	children: React.ReactNode
 }) {
 	return (
@@ -35,13 +35,13 @@ export function ConfirmDialog({
 					</DialogTitle>
 					<DialogDescription className="my-4">{description}</DialogDescription>
 					<div className="flex justify-end gap-2">
-						<DialogClose className={clearButton()}>{cancelText}</DialogClose>
-						<DialogClose
-							type="button"
-							className={solidButton()}
-							onClick={onConfirm}
-						>
-							{confirmText}
+						<DialogClose asChild>
+							<Button appearance="clear">{cancelText}</Button>
+						</DialogClose>
+						<DialogClose asChild>
+							<Button appearance="solid" onClick={onConfirm}>
+								{confirmText}
+							</Button>
 						</DialogClose>
 					</div>
 				</DialogPanel>
