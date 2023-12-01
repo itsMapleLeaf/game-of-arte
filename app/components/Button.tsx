@@ -36,7 +36,6 @@ export const Button = autoRef(function Button(props: ButtonProps) {
 		children,
 		appearance: _appearance,
 		square: _square,
-		onClick,
 		...buttonProps
 	} = props
 
