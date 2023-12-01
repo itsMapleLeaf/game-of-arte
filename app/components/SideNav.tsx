@@ -1,3 +1,5 @@
+import { api } from "convex/_generated/api.js"
+import { useQuery } from "convex/react"
 import {
 	LucideClock,
 	LucideDices,
@@ -5,6 +7,7 @@ import {
 	LucideUsers,
 	LucideWrench,
 } from "lucide-react"
+import { useEffect, useState } from "react"
 import {
 	Collapse,
 	CollapseButton,
@@ -13,22 +16,14 @@ import {
 import { AdminRoleGuard } from "~/features/auth/AdminRoleGuard.tsx"
 import { CharacterList } from "~/features/characters/CharacterList.tsx"
 import { ClockList } from "~/features/clocks/ClockList.tsx"
-import { DiceRollForm, DiceRollList } from "~/features/dice/DiceRolls"
+import { DiceRollForm } from "~/features/dice/DiceRollForm.tsx"
+import { DiceRollList } from "~/features/dice/DiceRollList.tsx"
 import { PlayerList } from "~/features/players/PlayerList.tsx"
 import { WorldSettings } from "~/features/worlds/WorldSettings.tsx"
-import { expect } from "~/helpers/expect.ts"
+import { useLocalStorageState } from "~/helpers/useLocalStorageState.tsx"
 import { panel } from "~/styles/panel.ts"
-
-const sideNavDiceCollapseButtonId = "sideNavDiceCollapseButton"
-
-export function showDiceRolls() {
-	const button = expect(document.getElementById(sideNavDiceCollapseButtonId))
-	if (button.ariaExpanded !== "true") {
-		button.click()
-		return true
-	}
-	return false
-}
+import { useNow } from "../helpers/useNow.tsx"
+import { LoadingPlaceholder } from "./LoadingPlaceholder.tsx"
 
 export function SideNav() {
 	return (
@@ -37,18 +32,7 @@ export function SideNav() {
 				<CharacterList />
 			</SideNavCollapse>
 
-			<SideNavCollapse
-				title="Dice"
-				icon={<LucideDices />}
-				buttonId={sideNavDiceCollapseButtonId}
-			>
-				<div className="flex h-full flex-col divide-y divide-base-800">
-					<div className="-mt-px flex-1">
-						<DiceRollList />
-					</div>
-					<DiceRollForm />
-				</div>
-			</SideNavCollapse>
+			<DiceCollapse />
 
 			<SideNavCollapse title="Clocks" icon={<LucideClock />}>
 				<ClockList />
@@ -67,17 +51,74 @@ export function SideNav() {
 	)
 }
 
+function DiceCollapse() {
+	const [open, setOpen] = useLocalStorageState("dice-collapse", (input) =>
+		typeof input === "boolean" ? input : false,
+	)
+	const [indicatorVisible, setIndicatorVisible] = useState(false)
+
+	const pageSize = 5
+	const listResult = useQuery(api.diceRolls.list, { limit: pageSize })
+	const latestRoll = listResult?.page[0]
+
+	const now = useNow()
+	const recentRollId =
+		latestRoll && now - latestRoll._creationTime < 2000 ?
+			latestRoll._id
+		:	undefined
+
+	useEffect(() => {
+		if (recentRollId && !open) {
+			setIndicatorVisible(true)
+		}
+	}, [recentRollId, open])
+
+	return (
+		<SideNavCollapse
+			title="Dice"
+			indicatorVisible={indicatorVisible && !open}
+			icon={<LucideDices />}
+			open={open}
+			setOpen={(open) => {
+				setOpen(open)
+				setIndicatorVisible(false)
+			}}
+		>
+			<div className="flex flex-col divide-y divide-base-800">
+				<div className="-mt-px flex-1">
+					{listResult === undefined ?
+						<LoadingPlaceholder />
+					:	<DiceRollList
+							listResult={{
+								...listResult,
+								// we need to slice since new items can make the page bigger (lol)
+								page: listResult.page.slice(0, pageSize),
+							}}
+							recentRollId={recentRollId}
+						/>
+					}
+				</div>
+				<DiceRollForm />
+			</div>
+		</SideNavCollapse>
+	)
+}
+
 function SideNavCollapse({
 	title,
 	icon,
 	defaultOpen = false,
-	buttonId,
+	open,
+	setOpen,
+	indicatorVisible,
 	children,
 }: {
 	title: string
 	icon: React.ReactNode
 	defaultOpen?: boolean
-	buttonId?: string
+	open?: boolean
+	setOpen?: (open: boolean) => void
+	indicatorVisible?: boolean
 	children: React.ReactNode
 }) {
 	return (
@@ -85,26 +126,20 @@ function SideNavCollapse({
 			<Collapse
 				persistenceKey={`side-nav-collapse:${title}`}
 				defaultOpen={defaultOpen}
+				open={open}
+				setOpen={setOpen}
 			>
-				<CollapseButton className="p-2" id={buttonId}>
+				<CollapseButton className="p-2">
 					<div className="flex items-center gap-2 rounded-t-md">
 						{icon}
 						{title}
+						{indicatorVisible && (
+							<span className="inline-flex animate-ping rounded-full bg-accent-400 opacity-75 s-2" />
+						)}
 					</div>
 				</CollapseButton>
 				<CollapseContent className="bg-base-900">{children}</CollapseContent>
 			</Collapse>
-		</div>
-	)
-}
-
-export function DiceRolls() {
-	return (
-		<div className="flex h-full flex-col divide-y divide-base-800">
-			<div className="-mt-px flex-1">
-				<DiceRollList />
-			</div>
-			<DiceRollForm />
 		</div>
 	)
 }
