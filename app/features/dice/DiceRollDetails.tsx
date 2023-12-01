@@ -107,7 +107,9 @@ function CollectResilienceButton({
 				size="small"
 				square
 				pending={state.isLoading}
-				onClick={collectResilience}
+				onClick={async () => {
+					await setHints({ rollId: roll._id, hints: [] })
+				}}
 				icon={{ start: LucideX }}
 			>
 				<SrOnly>Hide resilience button</SrOnly>
