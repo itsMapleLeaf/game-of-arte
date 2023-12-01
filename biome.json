@@ -21,6 +21,9 @@
 				"useHookAtTopLevel": "error",
 				"useExhaustiveDependencies": "error"
 			},
+			"suspicious": {
+				"noConsoleLog": "warn"
+			},
 			"nursery": {
 				"useGroupedTypeImport": "warn"
 			},

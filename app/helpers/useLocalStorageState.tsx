@@ -8,9 +8,7 @@ export function useLocalStorageState<T>(
 ) {
 	const [value, setValueInternal] = useState(() => parse(null))
 
-	console.log("render")
 	const init = useEffectEvent(function init() {
-		console.log("init?")
 		const storedValue = localStorage.getItem(key)
 		setValueInternal(
 			parse(storedValue === null ? null : JSON.parse(storedValue)),
