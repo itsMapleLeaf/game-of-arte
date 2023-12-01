@@ -146,6 +146,7 @@ export function CharacterDetails({
 						<FieldInput asChild>
 							<select
 								{...characterDataInputProps("archetype")}
+								value={character.data.archetype ?? ""} // need to use empty string to set the default value
 								className={input("py-0")}
 							>
 								<option disabled value="">

@@ -10,7 +10,9 @@ import {
 	RESILIENCE_MIN,
 } from "./constants.ts"
 
-export type CharacterDataInput = z.input<typeof characterDataSchema>
+export type CharacterDataInput = Partial<
+	Record<keyof CharacterData, string | number>
+>
 export type CharacterData = z.output<typeof characterDataSchema>
 const characterDataSchema = z.object({
 	resilience: z.coerce
@@ -20,16 +22,15 @@ const characterDataSchema = z.object({
 		.catch(RESILIENCE_DEFAULT),
 
 	archetype: z
-		.string()
-		.pipe(z.enum(["physical", "mental", "social", "knowledge"]))
+		.enum(["physical", "mental", "social", "knowledge"])
 		.optional()
 		.catch(undefined),
 
-	pronouns: z.string().optional().catch(""),
-	image: z.string().optional().catch(""),
-	notes: z.string().optional().catch(""),
-	inventory: z.string().optional().catch(""),
-	background: z.string().optional().catch(""),
+	pronouns: z.string().catch(""),
+	image: z.string().catch(""),
+	notes: z.string().catch(""),
+	inventory: z.string().catch(""),
+	background: z.string().catch(""),
 })
 
 export function parseCharacterData(data: Record<string, string | number>) {
