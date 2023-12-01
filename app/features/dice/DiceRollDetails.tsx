@@ -1,11 +1,12 @@
 import { api } from "convex/_generated/api.js"
-import type { Doc } from "convex/_generated/dataModel.js"
+import type { Doc, Id } from "convex/_generated/dataModel.js"
 import type { DiceRollListItem } from "convex/diceRolls.ts"
 import { useMutation } from "convex/react"
 import { LucideX } from "lucide-react"
 import { startTransition, useEffect, useState } from "react"
 import { Button } from "~/components/Button.tsx"
 import { SrOnly } from "~/components/SrOnly.tsx"
+import { tryUntilNonNil } from "~/helpers/async.ts"
 import { sum } from "~/helpers/math.ts"
 import { plural } from "~/helpers/string.ts"
 import { useAsyncCallback } from "~/helpers/useAsyncCallback.ts"
@@ -36,7 +37,7 @@ export function DiceRollDetails({
 	}, [])
 
 	return (
-		<div className="grid content-between gap-2">
+		<div className="grid content-between gap-2" data-dice-roll-id={roll._id}>
 			{roll.label && <h2 className="text-lg/tight font-light">{roll.label}</h2>}
 			<ul className="group/diecon-list -mx-1 flex flex-wrap items-center">
 				{roll.dice.map((die, index) =>
@@ -66,6 +67,12 @@ export function DiceRollDetails({
 				<CollectResilienceButton roll={roll} character={character} />
 			)}
 		</div>
+	)
+}
+
+export async function waitForDiceRollElement(id: Id<"diceRolls">) {
+	return await tryUntilNonNil(() =>
+		document.querySelector(`[data-dice-roll-id="${id}"]`),
 	)
 }
 
