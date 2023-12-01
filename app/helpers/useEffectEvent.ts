@@ -9,7 +9,7 @@ export function useEffectEvent<Args extends unknown[], Return>(
 
 	useInsertionEffect(() => {
 		ref.current = callback
-	}, [callback])
+	})
 
 	return useCallback((...args: Args) => ref.current(...args), [])
 }
