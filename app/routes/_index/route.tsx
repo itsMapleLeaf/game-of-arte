@@ -2,23 +2,16 @@ import { useUser } from "@clerk/remix"
 import { useSearchParams } from "@remix-run/react"
 import { api } from "convex/_generated/api.js"
 import type { Id } from "convex/_generated/dataModel.js"
-import { useConvexAuth, useQuery } from "convex/react"
-import type { FunctionReference, OptionalRestArgs } from "convex/server"
-import { useRef } from "react"
+import { useConvexAuth } from "convex/react"
 import { LoadingPlaceholder } from "~/components/LoadingPlaceholder.tsx"
-import {
-	ScrollAreaRoot,
-	ScrollAreaScrollbar,
-	ScrollAreaViewport,
-} from "~/components/ScrollArea.tsx"
 import { AuthButton } from "~/features/auth/AuthButton.tsx"
 import { CharacterContext } from "~/features/characters/CharacterContext.tsx"
 import { CharacterDetails } from "~/features/characters/CharacterDetails.tsx"
-import { expect } from "~/helpers/expect.ts"
 import { container } from "~/styles/container.ts"
 import { twMerge } from "~/styles/twMerge.ts"
-import { SideNav } from "../components/SideNav.tsx"
-import { useIsomorphicLayoutEffect } from "../helpers/useIsomorphicLayoutEffect.tsx"
+import { useStableQuery } from "../../helpers/useStableQuery.tsx"
+import { SideNav } from "./SideNav.tsx"
+import { ViewportHeightScrollArea } from "./ViewportHeightScrollArea.tsx"
 
 export default function GamePage() {
 	return (
@@ -63,19 +56,6 @@ function AuthLoadingCover({ children }: { children: React.ReactNode }) {
 	)
 }
 
-/* @forgetti skip */
-function useStableQuery<FuncRef extends FunctionReference<"query", "public">>(
-	func: FuncRef,
-	...args: OptionalRestArgs<FuncRef>
-) {
-	const data = useQuery(func, ...args)
-	const ref = useRef(data)
-	if (data !== undefined) {
-		ref.current = data
-	}
-	return ref.current
-}
-
 function MainContent() {
 	const [searchParams] = useSearchParams()
 	const characterId = searchParams.get("characterId") as Id<"characters"> | null
@@ -87,44 +67,5 @@ function MainContent() {
 		: <CharacterContext.Provider value={character}>
 				<CharacterDetails character={character} />
 			</CharacterContext.Provider>
-	)
-}
-
-function ViewportHeightScrollArea({ children }: { children: React.ReactNode }) {
-	const referenceRef = useRef<HTMLDivElement>(null)
-
-	useIsomorphicLayoutEffect(() => {
-		const reference = expect(referenceRef.current)
-		const { offsetTop, offsetHeight, style } = reference
-		const rect = reference.getBoundingClientRect()
-		style.setProperty("--scroll-area-left", `${rect.left}px`)
-		style.setProperty("--scroll-area-top", `${offsetTop}px`)
-		style.setProperty(
-			"--scroll-area-bottom",
-			`${document.documentElement.scrollHeight - (offsetTop + offsetHeight)}px`,
-		)
-	})
-
-	return (
-		<div
-			style={
-				{
-					"--scroll-area-width": "280px",
-					"--scroll-area-top": "64px",
-					"--scroll-area-bottom": "0px",
-				} as React.CSSProperties
-			}
-			className="w-[--scroll-area-width]"
-			ref={referenceRef}
-		>
-			<div className="fixed bottom-0 left-[--scroll-area-left] top-0 w-[--scroll-area-width] overflow-hidden">
-				<ScrollAreaRoot className="s-full">
-					<ScrollAreaViewport className="pb-[--scroll-area-bottom] pr-3 pt-[--scroll-area-top]">
-						{children}
-					</ScrollAreaViewport>
-					<ScrollAreaScrollbar className="pb-[--scroll-area-bottom] pt-[--scroll-area-top]" />
-				</ScrollAreaRoot>
-			</div>
-		</div>
 	)
 }

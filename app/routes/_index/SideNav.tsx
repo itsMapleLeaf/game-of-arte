@@ -13,6 +13,7 @@ import {
 	CollapseButton,
 	CollapseContent,
 } from "~/components/Collapse.tsx"
+import { LoadingPlaceholder } from "~/components/LoadingPlaceholder.tsx"
 import { AdminRoleGuard } from "~/features/auth/AdminRoleGuard.tsx"
 import { CharacterList } from "~/features/characters/CharacterList.tsx"
 import { ClockList } from "~/features/clocks/ClockList.tsx"
@@ -21,9 +22,8 @@ import { DiceRollList } from "~/features/dice/DiceRollList.tsx"
 import { PlayerList } from "~/features/players/PlayerList.tsx"
 import { WorldSettings } from "~/features/worlds/WorldSettings.tsx"
 import { useLocalStorageState } from "~/helpers/useLocalStorageState.tsx"
+import { useNow } from "~/helpers/useNow.tsx"
 import { panel } from "~/styles/panel.ts"
-import { useNow } from "../helpers/useNow.tsx"
-import { LoadingPlaceholder } from "./LoadingPlaceholder.tsx"
 
 export function SideNav() {
 	return (
