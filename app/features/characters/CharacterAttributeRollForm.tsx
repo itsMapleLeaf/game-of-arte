@@ -162,6 +162,7 @@ export function CharacterAttributeRollForm({
 				<Field>
 					<FieldLabelText>Boost Dice</FieldLabelText>
 					<CounterInput
+						min={0}
 						value={additionalBoostDice}
 						onChange={setAdditionalBoostDice}
 					/>
@@ -169,6 +170,7 @@ export function CharacterAttributeRollForm({
 				<Field>
 					<FieldLabelText>Snag Dice</FieldLabelText>
 					<CounterInput
+						min={0}
 						value={additionalSnagDice}
 						onChange={setAdditionalSnagDice}
 					/>
