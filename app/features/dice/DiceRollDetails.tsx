@@ -6,6 +6,7 @@ import { LucideEye, LucideEyeOff, LucideX } from "lucide-react"
 import { startTransition, useEffect, useState } from "react"
 import { Button } from "~/components/Button.tsx"
 import { EmptyState } from "~/components/EmptyState.tsx"
+import { Foldable } from "~/components/Foldable.tsx"
 import { SrOnly } from "~/components/SrOnly.tsx"
 import { sum } from "~/helpers/math.ts"
 import { plural } from "~/helpers/string.ts"
@@ -41,17 +42,21 @@ export function DiceRollDetails({
 				{roll.label && (
 					<h2 className="text-lg/tight font-light">{roll.label}</h2>
 				)}
-				<ul className="group/diecon-list -mx-1 flex flex-wrap items-center">
-					{roll.dice.map((die, index) =>
-						tooltipsRendered ?
-							// biome-ignore lint/suspicious/noArrayIndexKey: no better key
-							<DieTooltip die={die} key={index}>
-								<DieResult die={die} />
-							</DieTooltip>
-							// biome-ignore lint/suspicious/noArrayIndexKey: no better key
-						:	<DieResult die={die} key={index} />,
-					)}
-				</ul>
+
+				<Foldable>
+					<ul className="group/diecon-list -mx-1 flex flex-wrap items-center">
+						{roll.dice.map((die, index) =>
+							tooltipsRendered ?
+								// biome-ignore lint/suspicious/noArrayIndexKey: no better key
+								<DieTooltip die={die} key={index}>
+									<DieResult die={die} />
+								</DieTooltip>
+								// biome-ignore lint/suspicious/noArrayIndexKey: no better key
+							:	<DieResult die={die} key={index} />,
+						)}
+					</ul>
+				</Foldable>
+
 				<p className="text-sm leading-tight">
 					{totalSuccesses != null && (
 						<>
