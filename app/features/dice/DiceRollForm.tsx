@@ -1,7 +1,7 @@
 import { api } from "convex/_generated/api.js"
 import { useMutation } from "convex/react"
 import { LucideDices } from "lucide-react"
-import { CounterInput } from "~/components/CounterInput.tsx"
+import { CounterInputUncontrolled } from "~/components/CounterInput.tsx"
 import {
 	Field,
 	FieldInput,
@@ -35,12 +35,14 @@ export function DiceRollForm() {
 			</div>
 			<Field>
 				<FieldLabelText>Dice Count</FieldLabelText>
-				<CounterInput
-					name="count"
-					defaultValue={1}
-					min={1}
-					className="h-10 border-0 bg-black/50"
-				/>
+				<FieldInput asChild>
+					<CounterInputUncontrolled
+						name="count"
+						defaultValue={1}
+						min={1}
+						className="h-10 border-0 bg-black/50"
+					/>
+				</FieldInput>
 			</Field>
 			<button
 				type="submit"

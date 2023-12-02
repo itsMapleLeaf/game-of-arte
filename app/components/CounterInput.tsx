@@ -1,63 +1,109 @@
 import { LucideMinus, LucidePlus } from "lucide-react"
 import { useState } from "react"
+import { autoRef } from "~/helpers/autoRef.tsx"
+import type { PartialKeys, StrictOmit } from "~/helpers/types.ts"
 import { clamp } from "../helpers/math.ts"
 import { panel } from "../styles/panel.ts"
 
-export type CounterInputProps = {
-	value?: number
-	defaultValue?: number
+export interface CounterInputProps
+	extends StrictOmit<React.ComponentPropsWithRef<"input">, "onChange"> {
+	value: number
 	min?: number
 	max?: number
+	defaultValue?: number
 	name?: string
 	className?: string
-	onChange?: (value: number) => void
+	onChange: (value: number) => void
 }
 
-export function CounterInput({
-	defaultValue,
-	min = -Infinity,
+export const CounterInput = autoRef(function CounterInput({
+	value: valueProp,
+	min = 0,
 	max = Infinity,
-	name,
+	defaultValue = clamp(valueProp, min, max),
 	className,
 	onChange,
 	...props
 }: CounterInputProps) {
-	const [valueInternal, setValueInternal] = useState(defaultValue ?? 0)
-	const value = props.value ?? valueInternal
+	const value = clamp(valueProp, min, max)
+
+	const setValue = (newValue: number) => {
+		onChange(clamp(newValue, min, max))
+	}
+
 	return (
 		<div
 			className={panel(
 				"flex h-10 items-center justify-center gap-2 rounded-md border py-1",
 				className,
 			)}
+			// biome-ignore lint/a11y/noNoninteractiveTabindex: keyboard interaction is handled
+			tabIndex={0}
+			onKeyDown={(event) => {
+				if (event.key === "ArrowUp" || event.key === "ArrowRight") {
+					event.preventDefault()
+					setValue(value + 1)
+				}
+				if (event.key === "ArrowDown" || event.key === "ArrowLeft") {
+					event.preventDefault()
+					setValue(value - 1)
+				}
+				if (event.key === "KeyR") {
+					event.preventDefault()
+					setValue(defaultValue)
+				}
+			}}
 		>
-			<input type="hidden" name={name} value={value} />
+			<input {...props} type="hidden" value={value} />
 			<button
 				type="button"
 				className="rounded-full p-1 transition hover:bg-base-800"
+				tabIndex={-1}
 				onClick={() => {
-					const newValue = clamp(value - 1, min, max)
-					setValueInternal(newValue)
-					onChange?.(newValue)
+					setValue(value - 1)
 				}}
 			>
 				<LucideMinus className="s-5" />
 			</button>
-			<p className="min-w-8 text-center tabular-nums">
+			<p className="min-w-7 text-center tabular-nums">
 				{value}
 				{max !== Infinity ? `/${max}` : ""}
 			</p>
 			<button
 				type="button"
 				className="rounded-full p-1 transition hover:bg-base-800"
+				tabIndex={-1}
 				onClick={() => {
-					const newValue = clamp(value + 1, min, max)
-					setValueInternal(newValue)
-					onChange?.(newValue)
+					setValue(value + 1)
 				}}
 			>
 				<LucidePlus className="s-5" />
 			</button>
 		</div>
 	)
-}
+})
+
+export const CounterInputUncontrolled = autoRef(
+	function CounterInputUncontrolled({
+		min = 0,
+		max = Infinity,
+		defaultValue = min,
+		onChange,
+		...props
+	}: PartialKeys<Omit<CounterInputProps, "value">, "onChange">) {
+		const [value, setValue] = useState(defaultValue)
+		return (
+			<CounterInput
+				{...props}
+				value={value}
+				min={min}
+				max={max}
+				defaultValue={defaultValue}
+				onChange={(newValue) => {
+					setValue(newValue)
+					onChange?.(newValue)
+				}}
+			/>
+		)
+	},
+)
