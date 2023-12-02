@@ -11,6 +11,7 @@ import { clamp } from "../../helpers/math.ts"
 import { range } from "../../helpers/range.ts"
 import { useWindowEvent } from "../../helpers/useWindowEvent.tsx"
 import { AdminRoleGuard } from "../auth/AdminRoleGuard.tsx"
+import { WORLD_MANA_MAX } from "../worlds/constants.ts"
 
 export function ClockList() {
 	return (
@@ -57,8 +58,6 @@ function ClockItems() {
 	)
 }
 
-const manaClockSize = 10
-
 function WorldManaClock() {
 	const world = useQuery(api.world.get)
 
@@ -75,8 +74,8 @@ function WorldManaClock() {
 			{world === undefined ?
 				<LoadingPlaceholder />
 			:	<ClockRangeInput
-					value={world.mana ?? manaClockSize}
-					maxValue={manaClockSize}
+					value={world.mana ?? WORLD_MANA_MAX}
+					maxValue={WORLD_MANA_MAX}
 					onChange={(mana) => update({ mana })}
 				/>
 			}
