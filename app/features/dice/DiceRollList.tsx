@@ -85,7 +85,11 @@ function ListItem({
 		void (async () => {
 			// this could fail in various ways - let's not take chances
 			try {
-				ref.current?.scrollIntoView({ behavior: "smooth" })
+				ref.current?.scrollIntoView({
+					behavior: "smooth",
+					block: "center",
+					inline: "center",
+				})
 			} catch (error) {
 				console.error("Failed to scroll to dice roll element:", error)
 			}
