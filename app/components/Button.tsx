@@ -42,18 +42,23 @@ export const Button = autoRef(function Button(props: ButtonProps) {
 	let iconStart
 	let iconEnd
 	if (iconProp) {
-		const iconStyle = buttonIconSizeStyles[size]
 		if ("start" in iconProp) {
 			iconStart =
 				pending ?
-					<LucideLoader2 aria-hidden className={iconStyle("animate-spin")} />
-				:	<iconProp.start aria-hidden className={iconStyle()} />
+					<LucideLoader2
+						aria-hidden
+						className={buttonIconStyle({ size, className: "animate-spin" })}
+					/>
+				:	<iconProp.start aria-hidden className={buttonIconStyle({ size })} />
 		}
 		if ("end" in iconProp) {
 			iconEnd =
 				pending ?
-					<LucideLoader2 aria-hidden className={iconStyle("animate-spin")} />
-				:	<iconProp.end aria-hidden className={iconStyle()} />
+					<LucideLoader2
+						aria-hidden
+						className={buttonIconStyle({ size, className: "animate-spin" })}
+					/>
+				:	<iconProp.end aria-hidden className={buttonIconStyle({ size })} />
 		}
 	}
 
@@ -123,4 +128,11 @@ const buttonSizeStyles = {
 const buttonIconSizeStyles: Record<keyof typeof buttonSizeStyles, TwStyle> = {
 	default: twStyle("-mx-1 flex-shrink-0 s-5"),
 	small: twStyle("-mx-0.5 flex-shrink-0 s-4"),
+}
+
+export function buttonIconStyle({
+	size = "default",
+	className,
+}: Pick<ButtonStyleProps, "size" | "className"> = {}) {
+	return buttonIconSizeStyles[size](className)
 }
