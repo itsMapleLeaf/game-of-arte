@@ -71,7 +71,7 @@ export function DiceRollDetails({
 				{roll.secret && (
 					<aside className="flex items-center gap-2 text-sm opacity-50 transition-opacity hover:opacity-100">
 						<LucideEyeOff className="inline-block s-5" aria-hidden />
-						<p>Only you and the GM can see this.</p>
+						<p>Only visible to you and the GM.</p>
 					</aside>
 				)}
 
