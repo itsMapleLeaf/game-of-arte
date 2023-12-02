@@ -1,6 +1,5 @@
 import { unstable_vitePlugin as remix } from "@remix-run/dev"
 import { defineConfig } from "vite"
-import forgetti from "vite-plugin-forgetti"
 import tsconfigPaths from "vite-tsconfig-paths"
 
 export default defineConfig({
@@ -11,13 +10,13 @@ export default defineConfig({
 			},
 		}),
 		tsconfigPaths(),
-		forgetti({
-			preset: "react",
-			filter: {
-				include: "app/**/*.tsx",
-				exclude: "node_modules/**",
-			},
-		}),
+		// forgetti({
+		// 	preset: "react",
+		// 	filter: {
+		// 		include: "app/**/*.tsx",
+		// 		exclude: "node_modules/**",
+		// 	},
+		// }),
 	],
 	server: { port: 3000 },
 	test: {
