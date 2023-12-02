@@ -133,7 +133,7 @@ export function CharacterDetails({
 						</FieldInput>
 					</Field>
 
-					<Field label="Name" description="How do they identify?">
+					<Field label="Pronouns" description="How do they identify?">
 						<FieldInput asChild>
 							<Input {...characterDataInputProps("pronouns")} />
 						</FieldInput>
