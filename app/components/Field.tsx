@@ -26,6 +26,19 @@ export function useFieldContext() {
 	return useContext(FieldContext)
 }
 
+export interface FieldPropsBase {
+	asChild?: boolean
+	label?: string | React.ReactElement
+	labelText?: string | React.ReactElement
+	labelTooltip?: string | React.ReactElement
+	description?: string | React.ReactElement
+	errors?: string | string[]
+}
+
+export interface FieldProps
+	extends FieldPropsBase,
+		ComponentPropsWithRef<"div"> {}
+
 export const Field = autoRef(function Field({
 	children,
 	asChild,
@@ -35,14 +48,7 @@ export const Field = autoRef(function Field({
 	description,
 	errors,
 	...props
-}: ComponentPropsWithRef<"div"> & {
-	asChild?: boolean
-	label?: string | React.ReactElement
-	labelText?: string | React.ReactElement
-	labelTooltip?: React.ReactNode
-	description?: string | React.ReactElement
-	errors?: FieldErrorList
-}) {
+}: FieldProps) {
 	const labelId = useId()
 	const inputId = useId()
 	const descriptionId = useId()
@@ -107,8 +113,8 @@ export const FieldLabel = autoRef(function FieldLabel({
 			htmlFor={context.inputId}
 			{...props}
 			className={twMerge(
+				"select-none font-medium",
 				size === "sm" ? "text-sm/none" : "text-base/none",
-				"font-medium",
 				props.className,
 			)}
 		/>

@@ -94,7 +94,7 @@ export function buttonStyle({
 }
 
 const baseAppearanceStyle = twStyle(
-	"inline-flex min-h-10 items-center justify-center gap-3 rounded-md border border-transparent px-3 py-2 leading-tight text-white ring-accent-300 transition focus:outline-none focus-visible:ring-2 disabled:opacity-50",
+	"inline-flex items-center justify-center rounded-md border border-transparent leading-tight text-white ring-accent-300 transition focus:outline-none focus-visible:ring-2 disabled:opacity-50",
 )
 
 const buttonAppearanceStyles = {
@@ -116,8 +116,8 @@ const buttonAppearanceStyles = {
 }
 
 const buttonSizeStyles = {
-	default: twStyle(),
-	small: twStyle("min-h-8 px-2 py-0.5 text-sm"),
+	default: twStyle("min-h-10 gap-3 px-3 py-2 text-base"),
+	small: twStyle("min-h-8 gap-2 px-2 py-1 text-sm"),
 }
 
 const buttonIconSizeStyles: Record<keyof typeof buttonSizeStyles, TwStyle> = {

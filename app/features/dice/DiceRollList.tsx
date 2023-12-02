@@ -1,5 +1,5 @@
 import { api } from "convex/_generated/api.js"
-import type { DiceRollListItem } from "convex/diceRolls.ts"
+import type { ClientDiceRoll } from "convex/diceRolls.ts"
 import { useQuery } from "convex/react"
 import type { PaginationResult } from "convex/server"
 import { LucideDices, LucideList } from "lucide-react"
@@ -26,7 +26,7 @@ export function DiceRollList({
 	listResult,
 	recentRollId,
 }: {
-	listResult: PaginationResult<DiceRollListItem>
+	listResult: PaginationResult<ClientDiceRoll>
 	recentRollId: string | undefined
 }) {
 	const characters = useQuery(api.characters.list)

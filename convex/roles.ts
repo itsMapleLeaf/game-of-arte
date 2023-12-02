@@ -1,5 +1,8 @@
+import type { Nullish } from "~/helpers/types.ts"
+import type { Doc } from "./_generated/dataModel"
 import { type QueryCtx, query } from "./_generated/server.js"
-import { findUserByTokenIdentifier } from "./users.ts"
+import { getPlayerByUser } from "./players.ts"
+import { getAuthenticatedUser } from "./users.ts"
 
 export const get = query({
 	handler: async (ctx) => {
@@ -14,13 +17,18 @@ export type Roles = {
 }
 
 export async function getRoles(ctx: QueryCtx): Promise<Roles> {
-	const user = await findUserByTokenIdentifier(ctx)
+	return await getRolesByUser(ctx, await getAuthenticatedUser(ctx))
+}
+
+export async function getRolesByUser(
+	ctx: QueryCtx,
+	user: Nullish<Doc<"users">>,
+): Promise<Roles> {
 	if (!user) {
 		return { isAdmin: false, isPlayer: false, isSpectator: true }
 	}
 
-	const isAdmin = user.discordUserId === process.env.ADMIN_DISCORD_USER_ID
-	if (isAdmin) {
+	if (user.discordUserId === process.env.ADMIN_DISCORD_USER_ID) {
 		return { isAdmin: true, isPlayer: true, isSpectator: false }
 	}
 
@@ -35,11 +43,7 @@ export async function getRoles(ctx: QueryCtx): Promise<Roles> {
 		return { isAdmin: false, isPlayer: false, isSpectator: true }
 	}
 
-	return {
-		isAdmin: false,
-		isPlayer: true,
-		isSpectator: false,
-	}
+	return { isAdmin: false, isPlayer: false, isSpectator: true }
 }
 
 export async function requireAdmin(ctx: QueryCtx) {
@@ -50,23 +54,15 @@ export async function requireAdmin(ctx: QueryCtx) {
 }
 
 export async function getPlayerUser(ctx: QueryCtx) {
-	const user = await findUserByTokenIdentifier(ctx)
+	const user = await getAuthenticatedUser(ctx)
 	if (!user) return
 
 	if (user.discordUserId === process.env.ADMIN_DISCORD_USER_ID) {
 		return user
 	}
 
-	const player = await ctx.db
-		.query("players")
-		.withIndex("by_discord_user_id", (q) =>
-			q.eq("discordUserId", user.discordUserId),
-		)
-		.first()
-
-	if (!player) {
-		return
-	}
+	const player = await getPlayerByUser(ctx, user)
+	if (!player) return
 
 	return user
 }

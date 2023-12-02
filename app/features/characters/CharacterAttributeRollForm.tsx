@@ -2,6 +2,7 @@ import { api } from "convex/_generated/api.js"
 import { useMutation } from "convex/react"
 import { LucideDices, LucidePentagon } from "lucide-react"
 import { type ReactNode, useState } from "react"
+import { CheckboxField } from "~/components/CheckboxField.tsx"
 import { sum } from "~/helpers/math.ts"
 import { plural } from "~/helpers/string.ts"
 import { twMerge } from "~/styles/twMerge.ts"
@@ -63,6 +64,7 @@ export function CharacterAttributeRollForm({
 	const [resilienceToUse, setResilienceToUse] = useState(0)
 	const [additionalBoostDice, setAdditionalBoostDice] = useState(0)
 	const [additionalSnagDice, setAdditionalSnagDice] = useState(0)
+	const [isSecret, setIsSecret] = useState(false)
 
 	const isArchetypeAttribute = characterData.archetype === attribute.category.id
 
@@ -118,6 +120,7 @@ export function CharacterAttributeRollForm({
 					})),
 				],
 				characterId: character._id,
+				secret: isSecret,
 			})
 
 			await updateCharacterData({
@@ -182,6 +185,17 @@ export function CharacterAttributeRollForm({
 					</Field>
 				)}
 			</div>
+
+			<CheckboxField
+				label="Secret"
+				description={
+					isSecret ?
+						"Only you and the GM can see this."
+					:	"Everyone can see this."
+				}
+				checked={isSecret}
+				onChange={(event) => setIsSecret(event.currentTarget.checked)}
+			/>
 
 			<dl className="flex flex-col gap-1 tabular-nums">
 				<ReceiptItem
