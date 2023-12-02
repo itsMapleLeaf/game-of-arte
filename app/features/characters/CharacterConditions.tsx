@@ -6,7 +6,7 @@ import { LucideCheck, LucideEdit, LucidePlus, LucideX } from "lucide-react"
 import { useState } from "react"
 import * as v from "valibot"
 import { Button } from "~/components/Button.tsx"
-import { CounterInput } from "~/components/CounterInput.tsx"
+import { CounterInputUncontrolled } from "~/components/CounterInput.tsx"
 import { Field, FieldInput, FieldLabel } from "~/components/Field.tsx"
 import { Popover, PopoverPanel, PopoverTrigger } from "~/components/Popover.tsx"
 import { SrOnly } from "~/components/SrOnly.tsx"
@@ -154,7 +154,7 @@ function ConditionFormButton({
 					<Field>
 						<FieldLabel>Phys. Stress</FieldLabel>
 						<FieldInput asChild>
-							<CounterInput
+							<CounterInputUncontrolled
 								name="physicalStress"
 								defaultValue={initialCondition?.physicalStress}
 								min={STRESS_MIN}
@@ -165,7 +165,7 @@ function ConditionFormButton({
 					<Field>
 						<FieldLabel>Ment. Stress</FieldLabel>
 						<FieldInput asChild>
-							<CounterInput
+							<CounterInputUncontrolled
 								name="mentalStress"
 								defaultValue={initialCondition?.mentalStress}
 								min={STRESS_MIN}

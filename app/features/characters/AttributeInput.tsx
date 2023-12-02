@@ -2,6 +2,7 @@ import { LucideDices } from "lucide-react"
 import { useState } from "react"
 import { twMerge } from "tailwind-merge"
 import { clamp } from "~/helpers/math.ts"
+import type { StrictOmit } from "~/helpers/types.ts"
 import {
 	CounterInput,
 	type CounterInputProps,
@@ -28,7 +29,7 @@ export function AttributeInput({
 	attribute,
 	editable,
 	...props
-}: CounterInputProps & {
+}: StrictOmit<CounterInputProps, "value" | "onChange"> & {
 	attribute: Attribute & { id: string }
 	editable: boolean
 }) {
