@@ -1,6 +1,7 @@
 import { useQuery } from "convex/react"
 import type { FunctionReference, OptionalRestArgs } from "convex/server"
-import { useLayoutEffect, useState } from "react"
+import { useState } from "react"
+import { useIsomorphicLayoutEffect } from "./useIsomorphicLayoutEffect.tsx"
 
 export function useStableQuery<
 	FuncRef extends FunctionReference<"query", "public">,
@@ -10,7 +11,7 @@ export function useStableQuery<
 
 	// technically we can do this without an effect,
 	// but forgetti refuses to update otherwise
-	useLayoutEffect(() => {
+	useIsomorphicLayoutEffect(() => {
 		if (data !== stableData && data !== undefined) {
 			setStableData(data)
 		}

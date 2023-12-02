@@ -1,11 +1,13 @@
 import { v } from "convex/values"
-import { mutation, query } from "./_generated/server.js"
+import { raise } from "~/helpers/errors.ts"
+import type { Doc } from "./_generated/dataModel"
+import { type QueryCtx, mutation, query } from "./_generated/server.js"
 import { requireAdmin } from "./roles.ts"
-import { findUserByTokenIdentifier } from "./users.ts"
+import { getAuthenticatedUser } from "./users.ts"
 
 export const self = query({
 	handler: async (ctx) => {
-		const user = await findUserByTokenIdentifier(ctx)
+		const user = await getAuthenticatedUser(ctx)
 		if (!user) return null
 
 		return await ctx.db
@@ -86,3 +88,27 @@ export const remove = mutation({
 		await ctx.db.delete(args.id)
 	},
 })
+
+export async function getPlayer(ctx: QueryCtx) {
+	const user = await getAuthenticatedUser(ctx)
+	return user && (await getPlayerByUser(ctx, user))
+}
+
+export async function getPlayerByUser(
+	ctx: QueryCtx,
+	user: { discordUserId: string },
+) {
+	return await ctx.db
+		.query("players")
+		.withIndex("by_discord_user_id", (q) =>
+			q.eq("discordUserId", user.discordUserId),
+		)
+		.first()
+}
+
+export async function requirePlayerByUser(ctx: QueryCtx, user: Doc<"users">) {
+	return (
+		(await getPlayerByUser(ctx, user)) ??
+		raise(`User ${user.name} is not a player`)
+	)
+}

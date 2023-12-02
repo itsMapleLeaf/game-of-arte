@@ -35,12 +35,16 @@ export default defineSchema({
 	}),
 
 	diceRolls: defineTable({
-		type: v.optional(v.literal("action")),
 		label: v.optional(v.string()),
 		discordUserId: v.string(),
 		characterId: v.optional(v.id("characters")),
 		dice: v.array(dieValidator),
 		hints: v.optional(v.array(v.string())),
+		secret: v.optional(v.boolean()),
+
+		/** @deprecated */
+		type: v.optional(v.literal("action")),
+		/** @deprecated */
 		resilienceCollected: v.optional(v.boolean()),
 	}),
 

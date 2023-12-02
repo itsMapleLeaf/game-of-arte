@@ -8,7 +8,7 @@ import {
 	sorceryDeviceValidator,
 } from "./characters.validators.ts"
 import { getRoles, requireAdmin, requirePlayerUser } from "./roles.ts"
-import { findUserByTokenIdentifier } from "./users.ts"
+import { getAuthenticatedUser } from "./users.ts"
 import { nullish, record } from "./validators.ts"
 
 export const list = query({
@@ -43,7 +43,7 @@ export const get = query({
 				.query("players")
 				.filter((q) => q.eq(q.field("ownedCharacterId"), args.id))
 				.first(),
-			findUserByTokenIdentifier(ctx),
+			getAuthenticatedUser(ctx),
 		])
 
 		return {
@@ -56,7 +56,7 @@ export const get = query({
 
 export const getOwned = query({
 	handler: async (ctx) => {
-		const user = await findUserByTokenIdentifier(ctx)
+		const user = await getAuthenticatedUser(ctx)
 		if (!user) return null
 
 		const player = await ctx.db

@@ -8,7 +8,7 @@ export const update = internalMutation({
 		name: v.string(),
 	},
 	handler: async (ctx, { tokenIdentifier, ...args }) => {
-		const user = await findUserByTokenIdentifier(ctx)
+		const user = await getAuthenticatedUser(ctx)
 		if (user) {
 			await ctx.db.patch(user._id, { ...args })
 		} else {
@@ -17,7 +17,7 @@ export const update = internalMutation({
 	},
 })
 
-export async function findUserByTokenIdentifier(ctx: QueryCtx) {
+export async function getAuthenticatedUser(ctx: QueryCtx) {
 	const identity = await ctx.auth.getUserIdentity()
 	if (!identity) return
 

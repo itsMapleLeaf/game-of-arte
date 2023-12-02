@@ -14,12 +14,14 @@ export function EmptyState({
 	return (
 		<div
 			className={twMerge(
-				"flex flex-col items-center justify-center gap-2 p-4 opacity-50",
+				"flex flex-col items-center justify-center gap-2 p-4 text-center ",
 				className,
 			)}
 		>
-			{Icon && <Icon className="s-12" aria-hidden />}
-			<p className="text-lg font-light">{children}</p>
+			{Icon && <Icon className="opacity-40 s-12" aria-hidden />}
+			<p className="text-lg/tight font-light opacity-60 [text-wrap:balance]">
+				{children}
+			</p>
 		</div>
 	)
 }
