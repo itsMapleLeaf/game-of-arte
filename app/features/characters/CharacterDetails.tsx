@@ -187,11 +187,13 @@ export function CharacterDetails({
 
 						<div className={row("items-end gap-2")}>
 							<Field labelText="Resilience">
-								<CounterInput
-									{...characterDataInputProps("resilience")}
-									min={0}
-									defaultValue={2}
-								/>
+								<FieldInput asChild>
+									<CounterInput
+										{...characterDataInputProps("resilience")}
+										min={0}
+										defaultValue={2}
+									/>
+								</FieldInput>
 							</Field>
 
 							<Field labelText="Stress">
