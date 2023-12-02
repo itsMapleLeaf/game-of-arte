@@ -60,14 +60,7 @@ export const CollapseContent = autoRef(function CollapseContent({
 			{...props}
 			className="group grid overflow-hidden transition-[grid-template-rows] duration-300 data-[enter]:grid-rows-[1fr] data-[leave]:grid-rows-[0fr]"
 		>
-			<div
-				className={twMerge(
-					"min-h-0 min-w-full transition-transform",
-					className,
-				)}
-			>
-				{children}
-			</div>
+			<div className={twMerge("min-h-0 min-w-full", className)}>{children}</div>
 		</Ariakit.DisclosureContent>
 	)
 })
