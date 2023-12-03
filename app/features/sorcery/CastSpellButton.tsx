@@ -85,7 +85,7 @@ function CastSpellForm({
 }) {
 	const world = useQuery(api.world.get)
 	const subtractWorldMana = useMutation(api.world.subtractMana)
-	const updateCharacterData = useMutation(api.characters.updateData)
+	const addCondition = useMutation(api.characters.addCondition)
 	const [amplify, setAmplify] = useState(false)
 	const character = CharacterContext.useValue()
 
@@ -171,12 +171,16 @@ function CastSpellForm({
 						subtractWorldMana({
 							amount: spell.cost.mana,
 						}).catch(console.error),
-						updateCharacterData({
-							id: character._id,
-							data: {
-								mentalStress: finalMentalStress,
-							},
-						}).catch(console.error),
+						mentalStressCost > 0 &&
+							addCondition({
+								id: character._id,
+								condition: {
+									id: crypto.randomUUID(),
+									description: `Sorcery - ${spell.name}`,
+									physicalStress: 0,
+									mentalStress: mentalStressCost,
+								},
+							}).catch(console.error),
 					])
 					onSuccess()
 				}}
