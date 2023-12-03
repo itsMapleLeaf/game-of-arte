@@ -132,6 +132,34 @@ export const setSorceryDevice = mutation({
 	},
 })
 
+export const addCondition = mutation({
+	args: {
+		id: v.id("characters"),
+		condition: conditionValidator,
+	},
+	handler: async (ctx, args) => {
+		const character = await requireOwnedCharacter(ctx, args.id)
+		await ctx.db.patch(character._id, {
+			conditions: [...(character?.conditions ?? []), args.condition],
+		})
+	},
+})
+
+export const removeCondition = mutation({
+	args: {
+		id: v.id("characters"),
+		conditionId: v.string(),
+	},
+	handler: async (ctx, args) => {
+		const character = await requireOwnedCharacter(ctx, args.id)
+		await ctx.db.patch(character._id, {
+			conditions: character.conditions?.filter(
+				(c) => c.id !== args.conditionId,
+			),
+		})
+	},
+})
+
 export const remove = mutation({
 	args: { id: v.id("characters") },
 	handler: async (ctx, args) => {
