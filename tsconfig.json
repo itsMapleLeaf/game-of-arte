@@ -3,6 +3,7 @@
 	"compilerOptions": {
 		"preserveWatchOutput": true,
 		"skipLibCheck": true,
+		"checkJs": false,
 		"paths": {
 			"~/*": ["./app/*"],
 			"convex/*": ["./convex/*"]
