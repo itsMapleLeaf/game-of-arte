@@ -11,3 +11,7 @@ vite.config.ts.timestamp-*
 .vercel
 .wireit
 *.tsbuildinfo
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
