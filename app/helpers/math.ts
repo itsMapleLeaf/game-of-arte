@@ -1,4 +1,4 @@
-import { reduceIterable } from "./iterable.ts"
+import { it } from "./iterable.ts"
 
 export function clamp(value: number, min: number, max: number) {
 	return (
@@ -9,5 +9,5 @@ export function clamp(value: number, min: number, max: number) {
 }
 
 export function sum(numbers: Iterable<number>) {
-	return reduceIterable(numbers, (sum, value) => sum + value, 0)
+	return it(numbers).reduce((sum, value) => sum + value, 0)
 }

@@ -80,7 +80,7 @@ export const create = mutation({
 	args: { name: v.optional(v.string()) },
 	handler: async (ctx, args) => {
 		await requireAdmin(ctx)
-		const id = await createCharacter(ctx, args.name)
+		const id = await createCharacter(ctx, { name: args.name })
 		return { _id: id }
 	},
 })
@@ -169,10 +169,13 @@ export const remove = mutation({
 	},
 })
 
-export function createCharacter(ctx: MutationCtx, name = randimals()) {
+export function createCharacter(
+	ctx: MutationCtx,
+	{ name = randimals(), hidden = true } = {},
+) {
 	return ctx.db.insert("characters", {
 		name,
-		hidden: true,
+		hidden,
 		data: {},
 	})
 }

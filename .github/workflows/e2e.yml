@@ -33,7 +33,7 @@ jobs:
         run: pnpm exec playwright install --with-deps
 
       - name: Run Playwright tests
-        run: pnpm convex deploy --cmd 'pnpm run e2e' --cmd-url-env-var-name VITE_PUBLIC_CONVEX_URL --preview-run seed:run
+        run: pnpm convex deploy --cmd 'pnpm run e2e' --cmd-url-env-var-name VITE_PUBLIC_CONVEX_URL --preview-run seed:run --preview-name "e2e-${{ github.ref_name }}"
         env:
           CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
           CLERK_PUBLISHABLE_KEY: ${{ secrets.CLERK_PUBLISHABLE_KEY }}
