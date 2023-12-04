@@ -108,7 +108,7 @@ export const run = internalMutation({
 	},
 })
 
-export async function seedTable<TableName extends TableNames>(
+async function seedTable<TableName extends TableNames>(
 	ctx: MutationCtx,
 	tableName: TableName,
 	docs: Array<WithoutSystemFields<Doc<TableName>>>,
