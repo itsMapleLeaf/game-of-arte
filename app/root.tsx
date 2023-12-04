@@ -9,7 +9,6 @@ import type {
 	MetaFunction,
 } from "@remix-run/node"
 import {
-	Link,
 	Links,
 	LiveReload,
 	Meta,
@@ -22,12 +21,12 @@ import { ConvexReactClient, useConvexAuth } from "convex/react"
 import { ConvexProviderWithClerk } from "convex/react-clerk"
 import { LucideBookOpenText, LucideGamepad2 } from "lucide-react"
 import { useState } from "react"
-import { Button } from "~/components/Button.tsx"
 import { LoadingPlaceholder } from "~/components/LoadingPlaceholder.tsx"
 import { AuthButton } from "~/features/auth/AuthButton.tsx"
 import { container } from "~/styles/container.ts"
 import { twMerge } from "~/styles/twMerge.ts"
 import faviconUrl from "./assets/favicon.svg"
+import { NavLinkButton } from "./components/NavLinkButton.tsx"
 import { TooltipProvider } from "./components/Tooltip.tsx"
 import { env } from "./env.ts"
 
@@ -88,16 +87,22 @@ function Layout({ children }: { children: React.ReactNode }) {
 			<header className="sticky top-0 z-10 flex h-20 bg-base-950/50 shadow-md shadow-base-950/50 backdrop-blur-md">
 				<div className={container("flex items-center")}>
 					<div className="flex flex-1 items-center">
-						<Button appearance="clear" icon={{ start: LucideGamepad2 }} asChild>
-							<Link to="/">Session</Link>
-						</Button>
-						<Button
+						<NavLinkButton
+							to="/"
+							appearance="clear"
+							icon={{ start: LucideGamepad2 }}
+							prefetch="render"
+						>
+							Session
+						</NavLinkButton>
+						<NavLinkButton
+							to="/spellbook"
 							appearance="clear"
 							icon={{ start: LucideBookOpenText }}
-							asChild
+							prefetch="render"
 						>
-							<Link to="/spellbook">Spellbook</Link>
-						</Button>
+							Spellbook
+						</NavLinkButton>
 					</div>
 					<div className="flex flex-1 items-center justify-end">
 						<AuthButton />
