@@ -1,15 +1,55 @@
+import { type LoaderFunctionArgs, redirect } from "@remix-run/node"
 import { useSearchParams } from "@remix-run/react"
 import { api } from "convex/_generated/api.js"
 import type { Id } from "convex/_generated/dataModel.js"
-import { useQuery } from "convex/react"
+import { ConvexHttpClient } from "convex/browser"
 import { LoadingPlaceholder } from "~/components/LoadingPlaceholder.tsx"
+import { env } from "~/env.ts"
 import { CharacterContext } from "~/features/characters/CharacterContext.tsx"
 import { CharacterDetails } from "~/features/characters/CharacterDetails.tsx"
-import { useIsomorphicLayoutEffect } from "~/helpers/useIsomorphicLayoutEffect.tsx"
+import { getPreferences } from "~/features/preferences.server.ts"
 import { container } from "~/styles/container.ts"
 import { useStableQuery } from "../../helpers/useStableQuery.tsx"
 import { SideNav } from "./SideNav.tsx"
 import { ViewportHeightScrollArea } from "./ViewportHeightScrollArea.tsx"
+
+export async function loader({ request }: LoaderFunctionArgs) {
+	const url = new URL(request.url)
+
+	const characterId = url.searchParams.get(
+		"characterId",
+	) as Id<"characters"> | null
+
+	const preferences = await getPreferences(request)
+
+	if (characterId) {
+		return preferences.update({ characterId })
+	}
+
+	if (preferences.data.characterId) {
+		url.searchParams.set("characterId", preferences.data.characterId)
+		return redirect(url.toString())
+	}
+
+	const convex = new ConvexHttpClient(env.VITE_PUBLIC_CONVEX_URL)
+
+	const [characters, self] = await Promise.all([
+		convex.query(api.characters.list),
+		convex.query(api.players.self),
+	])
+
+	const visibleCharacters = characters?.filter((c) => !c.hidden)
+	const selfCharacter = characters?.find(
+		(c) => c._id === self?.ownedCharacterId,
+	)
+
+	const defaultCharacterId =
+		selfCharacter?._id ?? visibleCharacters?.[0]?._id ?? characters?.[0]?._id
+	if (!defaultCharacterId) return new Response()
+
+	url.searchParams.set("characterId", defaultCharacterId)
+	return redirect(url.toString())
+}
 
 export default function GamePage() {
 	return (
@@ -27,35 +67,9 @@ export default function GamePage() {
 }
 
 function MainContent() {
-	const [searchParams, setSearchParams] = useSearchParams()
+	const [searchParams] = useSearchParams()
 	const characterId = searchParams.get("characterId") as Id<"characters"> | null
-
-	const characters = useStableQuery(api.characters.list)
-	const character = characters?.find((c) => c._id === characterId)
-	const visibleCharacters = characters?.filter((c) => !c.hidden)
-
-	const self = useQuery(api.players.self)
-	const selfCharacter = characters?.find(
-		(c) => c._id === self?.ownedCharacterId,
-	)
-
-	const defaultCharacterId =
-		selfCharacter?._id ?? visibleCharacters?.[0]?._id ?? characters?.[0]?._id
-
-	useIsomorphicLayoutEffect(() => {
-		if (characterId) return
-		if (!defaultCharacterId) return
-		setSearchParams(
-			(prev) => ({
-				...prev,
-				characterId: defaultCharacterId,
-			}),
-			{
-				replace: true,
-			},
-		)
-	}, [characterId, defaultCharacterId, setSearchParams])
-
+	const character = useStableQuery(api.characters.get, { id: characterId })
 	return (
 		characterId === null ? <p>No character selected.</p>
 		: character === undefined ? <LoadingPlaceholder />
