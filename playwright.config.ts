@@ -81,7 +81,4 @@ export default defineConfig({
 	globalSetup: fileURLToPath(
 		new URL("./tests/global.setup.ts", import.meta.url),
 	),
-
-	// temporarily set a lower timeout for testing
-	globalTimeout: 5000,
 })
