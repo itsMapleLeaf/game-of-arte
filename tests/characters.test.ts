@@ -1,8 +1,13 @@
 import test, { expect } from "@playwright/test"
+import { runTestFunction } from "~/routes/test.run/test.ts"
+
+test.beforeAll(async ({ request }) => {
+	await runTestFunction(request, "seedCharacters")
+})
 
 test.beforeEach(async ({ page }) => {
 	await page.goto("/")
-	await page.waitForEvent("domcontentloaded")
+	await page.waitForEvent("load")
 })
 
 test("navigating characters", async ({ page }) => {

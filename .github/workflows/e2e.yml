@@ -37,7 +37,6 @@ jobs:
           --cmd "pnpm run build"
           --cmd-url-env-var-name VITE_PUBLIC_CONVEX_URL
           --preview-name "e2e-${{ github.ref_name }}"
-          --preview-run seed:run
         env:
           CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
 

@@ -21,7 +21,7 @@ import type * as diceRolls from "../diceRolls.js";
 import type * as http from "../http.js";
 import type * as players from "../players.js";
 import type * as roles from "../roles.js";
-import type * as seed from "../seed.js";
+import type * as test from "../test.js";
 import type * as users from "../users.js";
 import type * as validators from "../validators.js";
 import type * as world from "../world.js";
@@ -42,7 +42,7 @@ declare const fullApi: ApiFromModules<{
   http: typeof http;
   players: typeof players;
   roles: typeof roles;
-  seed: typeof seed;
+  test: typeof test;
   users: typeof users;
   validators: typeof validators;
   world: typeof world;
