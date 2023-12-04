@@ -1,3 +1,4 @@
+import { fileURLToPath } from "url"
 import { defineConfig, devices } from "@playwright/test"
 import * as dotenv from "dotenv"
 
@@ -35,26 +36,18 @@ export default defineConfig({
 	/* Configure projects for major browsers */
 	projects: [
 		{
-			name: "setup",
-			testMatch: "./tests/global.setup.ts",
-		},
-
-		{
 			name: "chromium",
 			use: { ...devices["Desktop Chrome"] },
-			dependencies: ["setup"],
 		},
 
 		{
 			name: "firefox",
 			use: { ...devices["Desktop Firefox"] },
-			dependencies: ["setup"],
 		},
 
 		{
 			name: "webkit",
 			use: { ...devices["Desktop Safari"] },
-			dependencies: ["setup"],
 		},
 
 		/* Test against mobile viewports. */
@@ -84,4 +77,8 @@ export default defineConfig({
 		url: "http://localhost:3000",
 		reuseExistingServer: !process.env.CI,
 	},
+
+	globalSetup: fileURLToPath(
+		new URL("./tests/global.setup.ts", import.meta.url),
+	),
 })

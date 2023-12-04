@@ -1,6 +1,5 @@
-import { test as setup } from "@playwright/test"
 import { execa } from "execa"
 
-setup("seed database", async () => {
+export default async function setup() {
 	await execa("pnpm", ["run", "seed"])
-})
+}
