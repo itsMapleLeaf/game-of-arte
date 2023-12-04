@@ -1,4 +1,9 @@
-import { type QueryCtx, mutation, query } from "convex/_generated/server"
+import {
+	type MutationCtx,
+	type QueryCtx,
+	mutation,
+	query,
+} from "convex/_generated/server"
 import { v } from "convex/values"
 import randimals from "randimals"
 import { compareKey } from "~/helpers/collections.ts"
@@ -75,11 +80,7 @@ export const create = mutation({
 	args: { name: v.optional(v.string()) },
 	handler: async (ctx, args) => {
 		await requireAdmin(ctx)
-		const id = await ctx.db.insert("characters", {
-			name: args.name ?? randimals(),
-			hidden: true,
-			data: {},
-		})
+		const id = await createCharacter(ctx, args.name)
 		return { _id: id }
 	},
 })
@@ -167,6 +168,14 @@ export const remove = mutation({
 		await ctx.db.delete(args.id)
 	},
 })
+
+export function createCharacter(ctx: MutationCtx, name = randimals()) {
+	return ctx.db.insert("characters", {
+		name,
+		hidden: true,
+		data: {},
+	})
+}
 
 async function requireOwnedCharacter(
 	ctx: QueryCtx,
