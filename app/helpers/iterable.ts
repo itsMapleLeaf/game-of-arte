@@ -52,3 +52,7 @@ it.factory = function factory<Args extends unknown[], Return>(
 ) {
 	return (...args: Args) => new ExtendedIterable(fn(...args))
 }
+
+it.promise = {
+	all: <T>(fn: () => Iterable<T | PromiseLike<T>>) => Promise.all(fn()),
+}

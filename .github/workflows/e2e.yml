@@ -33,7 +33,7 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium firefox webkit
 
       - name: Build with Convex deploy
-        run: pnpm convex deploy --cmd 'pnpm run build' --cmd-url-env-var-name VITE_PUBLIC_CONVEX_URL --preview-run seed:run --preview-name "e2e-${{ github.head_ref }}"
+        run: pnpm convex deploy --cmd 'pnpm run build' --cmd-url-env-var-name VITE_PUBLIC_CONVEX_URL --preview-name "e2e-${{ github.ref_name }}"
         env:
           CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
 

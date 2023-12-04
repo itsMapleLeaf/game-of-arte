@@ -171,12 +171,20 @@ export const remove = mutation({
 
 export function createCharacter(
 	ctx: MutationCtx,
-	{ name = randimals(), hidden = true } = {},
+	{
+		name = randimals(),
+		hidden = true,
+		data = {},
+	}: {
+		name?: string
+		hidden?: boolean
+		data?: Record<string, string | number>
+	} = {},
 ) {
 	return ctx.db.insert("characters", {
 		name,
 		hidden,
-		data: {},
+		data,
 	})
 }
 
