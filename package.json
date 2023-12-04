@@ -13,7 +13,7 @@
 		"lint-apply-unsafe": "biome check . --apply-unsafe",
 		"typecheck": "tsc -b",
 		"test": "vitest run",
-		"e2e": "echo \"Make sure you've run a build first!\" && playwright test",
+		"e2e": "playwright test",
 		"seed": "convex run seed:run",
 		"format": "prettier --write --cache --list-different .",
 		"fix": "run-s --continue-on-error lint-apply format typecheck test",
