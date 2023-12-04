@@ -1,4 +1,3 @@
-import { fileURLToPath } from "url"
 import { defineConfig, devices } from "@playwright/test"
 import * as dotenv from "dotenv"
 
@@ -77,8 +76,4 @@ export default defineConfig({
 		url: "http://localhost:3000",
 		reuseExistingServer: !process.env.CI,
 	},
-
-	globalSetup: fileURLToPath(
-		new URL("./tests/global.setup.ts", import.meta.url),
-	),
 })
