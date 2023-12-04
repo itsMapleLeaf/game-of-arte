@@ -1,7 +1,7 @@
 import "@fontsource-variable/rubik"
 import "tailwindcss/tailwind.css"
 
-import { ClerkApp, ClerkErrorBoundary, useAuth } from "@clerk/remix"
+import { ClerkApp, ClerkErrorBoundary, useAuth, useUser } from "@clerk/remix"
 import { rootAuthLoader } from "@clerk/remix/ssr.server"
 import type {
 	LinksFunction,
@@ -9,6 +9,7 @@ import type {
 	MetaFunction,
 } from "@remix-run/node"
 import {
+	Link,
 	Links,
 	LiveReload,
 	Meta,
@@ -17,9 +18,15 @@ import {
 	ScrollRestoration,
 	type ShouldRevalidateFunction,
 } from "@remix-run/react"
-import { ConvexReactClient } from "convex/react"
+import { ConvexReactClient, useConvexAuth } from "convex/react"
 import { ConvexProviderWithClerk } from "convex/react-clerk"
+import { LucideBookOpenText, LucideGamepad2 } from "lucide-react"
 import { useState } from "react"
+import { Button } from "~/components/Button.tsx"
+import { LoadingPlaceholder } from "~/components/LoadingPlaceholder.tsx"
+import { AuthButton } from "~/features/auth/AuthButton.tsx"
+import { container } from "~/styles/container.ts"
+import { twMerge } from "~/styles/twMerge.ts"
 import faviconUrl from "./assets/favicon.svg"
 import { TooltipProvider } from "./components/Tooltip.tsx"
 import { env } from "./env.ts"
@@ -63,10 +70,60 @@ export default ClerkApp(function Root() {
 	return (
 		<Document>
 			<ConvexProviderWithClerk client={convexClient} useAuth={useAuth}>
-				<Outlet />
+				<AuthLoadingCover>
+					<Layout>
+						<Outlet />
+					</Layout>
+				</AuthLoadingCover>
 			</ConvexProviderWithClerk>
 		</Document>
 	)
 })
 
 export const ErrorBoundary = ClerkErrorBoundary()
+
+function Layout({ children }: { children: React.ReactNode }) {
+	return (
+		<div className="isolate flex min-h-[100dvh] flex-col">
+			<header className="sticky top-0 z-10 flex h-20 bg-base-950/50 shadow-md shadow-base-950/50 backdrop-blur-md">
+				<div className={container("flex items-center")}>
+					<div className="flex flex-1 items-center">
+						<Button appearance="clear" icon={{ start: LucideGamepad2 }} asChild>
+							<Link to="/">Session</Link>
+						</Button>
+						<Button
+							appearance="clear"
+							icon={{ start: LucideBookOpenText }}
+							asChild
+						>
+							<Link to="/spellbook">Spellbook</Link>
+						</Button>
+					</div>
+					<div className="flex flex-1 items-center justify-end">
+						<AuthButton />
+					</div>
+				</div>
+			</header>
+			{children}
+		</div>
+	)
+}
+
+function AuthLoadingCover({ children }: { children: React.ReactNode }) {
+	const clerkAuth = useUser()
+	const convexAuth = useConvexAuth()
+	const authLoading = !clerkAuth.isLoaded || convexAuth.isLoading
+	return (
+		<>
+			{children}
+			<LoadingPlaceholder
+				className={twMerge(
+					"fixed inset-0 bg-base-950 transition-all duration-300",
+					authLoading ? "visible opacity-100" : "invisible opacity-0",
+				)}
+			>
+				Just a moment...
+			</LoadingPlaceholder>
+		</>
+	)
+}
