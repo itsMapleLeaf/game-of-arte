@@ -1,9 +1,11 @@
 import { useSearchParams } from "@remix-run/react"
 import { api } from "convex/_generated/api.js"
 import type { Id } from "convex/_generated/dataModel.js"
+import { useQuery } from "convex/react"
 import { LoadingPlaceholder } from "~/components/LoadingPlaceholder.tsx"
 import { CharacterContext } from "~/features/characters/CharacterContext.tsx"
 import { CharacterDetails } from "~/features/characters/CharacterDetails.tsx"
+import { useIsomorphicLayoutEffect } from "~/helpers/useIsomorphicLayoutEffect.tsx"
 import { container } from "~/styles/container.ts"
 import { useStableQuery } from "../../helpers/useStableQuery.tsx"
 import { SideNav } from "./SideNav.tsx"
@@ -25,9 +27,35 @@ export default function GamePage() {
 }
 
 function MainContent() {
-	const [searchParams] = useSearchParams()
+	const [searchParams, setSearchParams] = useSearchParams()
 	const characterId = searchParams.get("characterId") as Id<"characters"> | null
-	const character = useStableQuery(api.characters.get, { id: characterId })
+
+	const characters = useStableQuery(api.characters.list)
+	const character = characters?.find((c) => c._id === characterId)
+	const visibleCharacters = characters?.filter((c) => !c.hidden)
+
+	const self = useQuery(api.players.self)
+	const selfCharacter = characters?.find(
+		(c) => c._id === self?.ownedCharacterId,
+	)
+
+	const defaultCharacterId =
+		selfCharacter?._id ?? visibleCharacters?.[0]?._id ?? characters?.[0]?._id
+
+	useIsomorphicLayoutEffect(() => {
+		if (characterId) return
+		if (!defaultCharacterId) return
+		setSearchParams(
+			(prev) => ({
+				...prev,
+				characterId: defaultCharacterId,
+			}),
+			{
+				replace: true,
+			},
+		)
+	}, [characterId, defaultCharacterId, setSearchParams])
+
 	return (
 		characterId === null ? <p>No character selected.</p>
 		: character === undefined ? <LoadingPlaceholder />
