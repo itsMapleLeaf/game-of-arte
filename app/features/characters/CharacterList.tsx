@@ -1,4 +1,4 @@
-import { Link, useSearchParams } from "@remix-run/react"
+import { Link } from "@remix-run/react"
 import { api } from "convex/_generated/api"
 import type { Doc } from "convex/_generated/dataModel.js"
 import { useMutation, useQuery } from "convex/react"
@@ -30,6 +30,7 @@ import {
 import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
 import { AdminRoleGuard } from "../auth/AdminRoleGuard.tsx"
 import { characterNameInputId } from "./CharacterDetails.tsx"
+import { useCharacterNavigation } from "./navigation.ts"
 
 export function CharacterList() {
 	const characters = useQuery(api.characters.list)
@@ -70,8 +71,7 @@ function CharacterListItems({
 	characters: Array<Doc<"characters">>
 }) {
 	const player = useQuery(api.players.self)
-	const [searchParams] = useSearchParams()
-	const currentCharacterId = searchParams.get("characterId")
+	const characterNavigation = useCharacterNavigation()
 
 	return characters.length === 0 ?
 			<p className="px-3 py-2 opacity-75">No characters found.</p>
@@ -88,10 +88,10 @@ function CharacterListItems({
 							className="group/character-list-item relative"
 						>
 							<Link
-								to={`?characterId=${character._id}`}
+								to={characterNavigation.getCharacterLink(character._id)}
 								className={twMerge(
 									"group flex w-full gap-2 p-2 transition",
-									currentCharacterId === character._id ?
+									characterNavigation.characterId === character._id ?
 										"bg-base-800 opacity-100"
 									:	"opacity-60 hover:opacity-100",
 									player?.ownedCharacterId === character._id &&
@@ -166,13 +166,13 @@ function DeleteItem({ character }: { character: Doc<"characters"> }) {
 }
 
 function NewCharacterButton() {
-	const [, setSearchParams] = useSearchParams()
+	const navigation = useCharacterNavigation()
 
 	const [handleClick, state] = useAsyncCallback(
 		useMutation(api.characters.create),
 		{
 			async onSuccess(result) {
-				setSearchParams((prev) => ({ ...prev, characterId: result._id }))
+				navigation.setCharacterId(result._id)
 				const nameInput = await tryUntilNonNil(() =>
 					document.getElementById(characterNameInputId),
 				)

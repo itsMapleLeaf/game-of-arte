@@ -1,9 +1,13 @@
 import { createCookie } from "@remix-run/node"
+import type { Id, TableNames } from "convex/_generated/dataModel.js"
 import { z } from "zod"
+
+const convexIdSchema = <TableName extends TableNames>() =>
+	z.custom<Id<TableName>>((value) => typeof value === "string")
 
 const schema = z
 	.object({
-		characterId: z.string().optional().catch(undefined),
+		characterId: convexIdSchema<"characters">().optional().catch(undefined),
 	})
 	.catch({})
 

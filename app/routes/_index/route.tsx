@@ -1,12 +1,14 @@
 import { type LoaderFunctionArgs, redirect } from "@remix-run/node"
-import { useSearchParams } from "@remix-run/react"
 import { api } from "convex/_generated/api.js"
-import type { Id } from "convex/_generated/dataModel.js"
 import { ConvexHttpClient } from "convex/browser"
 import { LoadingPlaceholder } from "~/components/LoadingPlaceholder.tsx"
 import { env } from "~/env.ts"
 import { CharacterContext } from "~/features/characters/CharacterContext.tsx"
 import { CharacterDetails } from "~/features/characters/CharacterDetails.tsx"
+import {
+	CharacterNavigation,
+	useCharacterNavigation,
+} from "~/features/characters/navigation.ts"
 import { getPreferences } from "~/features/preferences.server.ts"
 import { container } from "~/styles/container.ts"
 import { useStableQuery } from "../../helpers/useStableQuery.tsx"
@@ -14,21 +16,15 @@ import { SideNav } from "./SideNav.tsx"
 import { ViewportHeightScrollArea } from "./ViewportHeightScrollArea.tsx"
 
 export async function loader({ request }: LoaderFunctionArgs) {
-	const url = new URL(request.url)
-
-	const characterId = url.searchParams.get(
-		"characterId",
-	) as Id<"characters"> | null
-
+	const navigation = new CharacterNavigation(new URL(request.url))
 	const preferences = await getPreferences(request)
 
-	if (characterId) {
-		return preferences.update({ characterId })
+	if (navigation.characterId) {
+		return preferences.update({ characterId: navigation.characterId })
 	}
 
 	if (preferences.data.characterId) {
-		url.searchParams.set("characterId", preferences.data.characterId)
-		return redirect(url.toString())
+		return redirect(navigation.getCharacterLink(preferences.data.characterId))
 	}
 
 	const convex = new ConvexHttpClient(env.VITE_PUBLIC_CONVEX_URL)
@@ -47,8 +43,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
 		selfCharacter?._id ?? visibleCharacters?.[0]?._id ?? characters?.[0]?._id
 	if (!defaultCharacterId) return new Response()
 
-	url.searchParams.set("characterId", defaultCharacterId)
-	return redirect(url.toString())
+	return redirect(navigation.getCharacterLink(defaultCharacterId))
 }
 
 export default function GamePage() {
@@ -67,11 +62,12 @@ export default function GamePage() {
 }
 
 function MainContent() {
-	const [searchParams] = useSearchParams()
-	const characterId = searchParams.get("characterId") as Id<"characters"> | null
-	const character = useStableQuery(api.characters.get, { id: characterId })
+	const navigation = useCharacterNavigation()
+	const character = useStableQuery(api.characters.get, {
+		id: navigation.characterId,
+	})
 	return (
-		characterId === null ? <p>No character selected.</p>
+		navigation.characterId === null ? <p>No character selected.</p>
 		: character === undefined ? <LoadingPlaceholder />
 		: character === null ? <p>Character not found.</p>
 		: <CharacterContext.Provider value={character}>

@@ -20,6 +20,7 @@ import type * as clocks from "../clocks.js";
 import type * as diceRolls from "../diceRolls.js";
 import type * as http from "../http.js";
 import type * as players from "../players.js";
+import type * as preview from "../preview.js";
 import type * as roles from "../roles.js";
 import type * as test from "../test.js";
 import type * as users from "../users.js";
@@ -41,6 +42,7 @@ declare const fullApi: ApiFromModules<{
   diceRolls: typeof diceRolls;
   http: typeof http;
   players: typeof players;
+  preview: typeof preview;
   roles: typeof roles;
   test: typeof test;
   users: typeof users;
