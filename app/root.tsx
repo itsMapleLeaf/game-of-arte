@@ -44,7 +44,7 @@ function Document({ children }: { children: React.ReactNode }) {
 	return (
 		<html
 			lang="en"
-			className="break-words bg-base-950 text-base-100 [scrollbar-gutter:stable] [&_*::-webkit-scrollbar-thumb]:bg-base-700 [&_*::-webkit-scrollbar-track]:bg-base-900 [&_*::-webkit-scrollbar]:w-2"
+			className="overflow-x-hidden break-words bg-base-950 text-base-100 [scrollbar-gutter:stable] [&_*::-webkit-scrollbar-thumb]:bg-base-700 [&_*::-webkit-scrollbar-track]:bg-base-900 [&_*::-webkit-scrollbar]:w-2"
 		>
 			<head>
 				<meta charSet="utf-8" />
