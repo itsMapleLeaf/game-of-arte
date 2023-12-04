@@ -30,7 +30,7 @@ jobs:
         run: pnpm install
 
       - name: Install Playwright Browsers
-        run: pnpm exec playwright install --with-deps
+        run: pnpm exec playwright install --with-deps chromium firefox webkit
 
       - name: Build with Convex deploy
         run: pnpm convex deploy --cmd 'pnpm run build' --cmd-url-env-var-name VITE_PUBLIC_CONVEX_URL --preview-run seed:run --preview-name "e2e-${{ github.head_ref }}"
