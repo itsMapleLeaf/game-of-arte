@@ -1,16 +1,22 @@
+import { it } from "./iterable.ts"
+
 type RangeArgs = [length: number] | [start: number, end: number, step?: number]
 
-export function* range(...args: RangeArgs): Generator<number> {
+export const range = it.factory(function* range(
+	...args: RangeArgs
+): Generator<number> {
 	const { start, end, step } = parseRangeArgs(args)
 	for (let i = start; i < end; i += step) {
 		yield i
 	}
-}
+})
 
-export function* rangeInclusive(...args: RangeArgs): Generator<number> {
+export const rangeInclusive = it.factory(function* rangeInclusive(
+	...args: RangeArgs
+) {
 	const { start, end, step } = parseRangeArgs(args)
 	yield* range(start, end + step, step)
-}
+})
 
 function parseRangeArgs(args: RangeArgs) {
 	let start

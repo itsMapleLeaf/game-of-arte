@@ -5,7 +5,6 @@ import { LucidePlus, LucideX } from "lucide-react"
 import { useId, useRef } from "react"
 import { LoadingPlaceholder } from "~/components/LoadingPlaceholder.tsx"
 import { expect } from "~/helpers/expect.ts"
-import { mapIterable } from "~/helpers/iterable.ts"
 import { Field, FieldInput, FieldLabel } from "../../components/Field.tsx"
 import { clamp } from "../../helpers/math.ts"
 import { range } from "../../helpers/range.ts"
@@ -233,15 +232,15 @@ function ClockRangeInput({
 				}}
 			>
 				<span className="sr-only">Value</span>
-				{[
-					...mapIterable(range(maxValue), (tick) => (
+				{range(maxValue)
+					.map((tick) => (
 						<div
 							key={tick}
 							className="absolute bottom-0 left-0 top-0 w-px bg-accent-500"
 							style={{ left: `${(tick / maxValue) * 100}%` }}
 						/>
-					)),
-				]}
+					))
+					.array()}
 				<div
 					className="absolute inset-0 bg-accent-500/50"
 					style={{
