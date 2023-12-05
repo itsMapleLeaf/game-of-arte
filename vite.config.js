@@ -1,10 +1,12 @@
 import { unstable_vitePlugin as remix } from "@remix-run/dev"
+import million from "million/compiler"
 import { defineConfig } from "vite"
 import tsconfigPaths from "vite-tsconfig-paths"
 import { defaultExclude } from "vitest/config"
 
 export default defineConfig({
 	plugins: [
+		million.vite({ auto: true }),
 		remix({
 			future: {
 				v3_fetcherPersist: true,
