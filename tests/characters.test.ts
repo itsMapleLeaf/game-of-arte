@@ -1,8 +1,16 @@
 import test, { expect } from "@playwright/test"
-import { runTestFunction } from "~/routes/test.run/test.ts"
+import { internal } from "convex/_generated/api.js"
+import { ConvexHttpClient } from "convex/browser"
+import { raise } from "~/helpers/errors.ts"
 
-test.beforeAll(async ({ request }) => {
-	await runTestFunction(request, "seedCharacters")
+test.beforeAll(async () => {
+	const convex = new ConvexHttpClient(
+		process.env.VITE_PUBLIC_CONVEX_URL ?? raise("Missing CONVEX_URL"),
+	)
+	// @ts-expect-error: unreleased API
+	convex.setAdminAuth(process.env.CONVEX_DEPLOY_KEY)
+	// @ts-expect-error: unreleased API
+	await convex.mutation(internal.test.seedCharacters)
 })
 
 test.beforeEach(async ({ page }) => {

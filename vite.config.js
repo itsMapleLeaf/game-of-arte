@@ -1,27 +1,11 @@
-import { unstable_vitePlugin as remix } from "@remix-run/dev"
 import { defineConfig } from "vite"
 import tsconfigPaths from "vite-tsconfig-paths"
 import { defaultExclude } from "vitest/config"
 
 export default defineConfig({
-	plugins: [
-		remix({
-			future: {
-				v3_fetcherPersist: true,
-			},
-		}),
-		tsconfigPaths(),
-		// forgetti({
-		// 	preset: "react",
-		// 	filter: {
-		// 		include: "app/**/*.tsx",
-		// 		exclude: "node_modules/**",
-		// 	},
-		// }),
-	],
-	server: { port: 3000 },
+	plugins: [tsconfigPaths()],
 	test: {
-		includeSource: ["app/**/*.{ts,tsx}"],
+		includeSource: ["src/**/*.{ts,tsx}"],
 		exclude: [...defaultExclude, "tests"],
 	},
 	define: {
@@ -29,19 +13,5 @@ export default defineConfig({
 	},
 	ssr: {
 		noExternal: ["@clerk/clerk-react"],
-	},
-	build: {
-		rollupOptions: {
-			onwarn(warning, defaultHandler) {
-				// ignore warnings for RSC directives
-				if (
-					warning.code === "MODULE_LEVEL_DIRECTIVE" &&
-					warning.message.includes("use client")
-				) {
-					return
-				}
-				defaultHandler(warning)
-			},
-		},
 	},
 })
