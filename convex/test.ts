@@ -1,10 +1,9 @@
 import type { WithoutSystemFields } from "convex/server"
 import type { Doc, TableNames } from "./_generated/dataModel"
-import { type MutationCtx, mutation } from "./_generated/server"
+import { type MutationCtx, internalMutation } from "./_generated/server"
 
-export const seedCharacters = mutation({
+export const seedCharacters = internalMutation({
 	async handler(ctx) {
-		requireTestEnv()
 		await seedTable(ctx, "characters", [
 			{
 				conditions: [
@@ -113,10 +112,4 @@ async function seedTable<TableName extends TableNames>(
 		...existing.map((doc) => ctx.db.delete(doc._id)),
 		...docs.map((doc) => ctx.db.insert(tableName, doc)),
 	])
-}
-
-function requireTestEnv() {
-	if (process.env.TEST !== "true") {
-		throw new Error("This mutation is only available in a test environment")
-	}
 }

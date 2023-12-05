@@ -1,13 +1,22 @@
 {
 	"extends": "@itsmapleleaf/configs/tsconfig.bundler.json",
 	"compilerOptions": {
+		"jsx": "preserve",
+		"jsxImportSource": "solid-js",
 		"preserveWatchOutput": true,
 		"skipLibCheck": true,
 		"checkJs": false,
+		"baseUrl": ".",
 		"paths": {
-			"~/*": ["./app/*"],
+			"~/*": ["./src/*"],
 			"convex/*": ["./convex/*"]
 		}
 	},
-	"exclude": ["node_modules", "build", "public/build", "convex/_generated"]
+	"exclude": [
+		"node_modules",
+		"build",
+		"public/build",
+		"convex/_generated",
+		"app"
+	]
 }
