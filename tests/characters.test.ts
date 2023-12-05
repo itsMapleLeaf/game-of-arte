@@ -10,7 +10,7 @@ test.beforeAll(async () => {
 	// @ts-expect-error: unreleased API
 	convex.setAdminAuth(process.env.CONVEX_DEPLOY_KEY)
 	// @ts-expect-error: unreleased API
-	await convex.mutation(internal.test.seedCharacters)
+	await convex.function(internal.test.seedCharacters)
 })
 
 test.beforeEach(async ({ page }) => {

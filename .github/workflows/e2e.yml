@@ -33,8 +33,9 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium firefox webkit
 
       - name: Build with Convex deploy
+        id: build
         run: pnpm convex deploy
-          --cmd "pnpm run build"
+          --cmd 'echo "previewUrl=$VITE_PUBLIC_CONVEX_URL" >> "$GITHUB_OUTPUT"; pnpm run build'
           --cmd-url-env-var-name VITE_PUBLIC_CONVEX_URL
           --preview-name "e2e-${{ github.ref_name }}"
         env:
@@ -43,6 +44,7 @@ jobs:
       - name: Run Playwright tests
         run: pnpm run e2e
         env:
+          VITE_PUBLIC_CONVEX_URL: ${{ steps.build.outputs.previewUrl }}
           CLERK_PUBLISHABLE_KEY: ${{ secrets.CLERK_PUBLISHABLE_KEY }}
           CLERK_SECRET_KEY: ${{ secrets.CLERK_SECRET_KEY }}
 
