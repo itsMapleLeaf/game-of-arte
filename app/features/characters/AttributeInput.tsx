@@ -1,6 +1,7 @@
 import { LucideDices } from "lucide-react"
 import { useState } from "react"
 import { twMerge } from "tailwind-merge"
+import { SrOnly } from "~/components/SrOnly.tsx"
 import { clamp } from "~/helpers/math.ts"
 import type { StrictOmit } from "~/helpers/types.ts"
 import {
@@ -79,6 +80,7 @@ export function AttributeInput({
 						className="rounded-md p-2 transition hover:bg-base-800"
 					>
 						<LucideDices />
+						<SrOnly>Roll {attribute.name}</SrOnly>
 					</PopoverTrigger>
 					<PopoverPanel
 						className="w-64 p-4"
