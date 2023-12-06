@@ -50,7 +50,6 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.4.1",
-		"@clerk/types": "3.58.0",
 		"@itsmapleleaf/configs": "github:itsMapleLeaf/configs",
 		"@playwright/test": "1.40.1",
 		"@remix-run/dev": "2.3.1",
