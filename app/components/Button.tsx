@@ -5,7 +5,7 @@ import { autoRef } from "~/helpers/autoRef.tsx"
 import type { StrictOmit } from "~/helpers/types.ts"
 import { useAsyncCallback } from "~/helpers/useAsyncCallback.ts"
 import { twMerge } from "~/styles/twMerge.ts"
-import { type TwStyle, twStyle } from "~/styles/twStyle.ts"
+import { twStyle, type TwStyle } from "~/styles/twStyle.ts"
 
 export interface ButtonProps
 	extends StrictOmit<React.ComponentPropsWithRef<"button">, "onClick">,
