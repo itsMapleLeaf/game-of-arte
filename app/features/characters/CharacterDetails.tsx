@@ -18,7 +18,7 @@ import { Field, FieldInput } from "~/components/Field.tsx"
 import { ImageInput } from "~/components/ImageInput.tsx"
 import { Input } from "~/components/Input.tsx"
 import { LoadingPlaceholder } from "~/components/LoadingPlaceholder.tsx"
-import { AttributeInput } from "~/features/characters/AttributeInput"
+import { CharacterAttributeField } from "~/features/characters/CharacterAttributeField.tsx"
 import {
 	getAttributeCategories,
 	getAttributes,
@@ -284,7 +284,7 @@ export function CharacterDetails({
 							{category.title}
 						</h3>
 						{category.attributes.map((attribute) => (
-							<AttributeInput
+							<CharacterAttributeField
 								key={attribute.id}
 								attribute={attribute}
 								editable={attributesEditable}
