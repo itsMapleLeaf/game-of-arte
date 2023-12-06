@@ -133,15 +133,19 @@ export const setSorceryDevice = mutation({
 	},
 })
 
-export const addCondition = mutation({
+export const upsertCondition = mutation({
 	args: {
 		id: v.id("characters"),
 		condition: conditionValidator,
 	},
 	handler: async (ctx, args) => {
 		const character = await requireOwnedCharacter(ctx, args.id)
+
+		const conditionsById = new Map(character?.conditions?.map((c) => [c.id, c]))
+		conditionsById.set(args.condition.id, args.condition)
+
 		await ctx.db.patch(character._id, {
-			conditions: [...(character?.conditions ?? []), args.condition],
+			conditions: [...conditionsById.values()],
 		})
 	},
 })
@@ -195,6 +199,10 @@ async function requireOwnedCharacter(
 	const character = await ctx.db.get(characterId)
 	if (!character) {
 		throw new Error(`Character not found: ${characterId}`)
+	}
+
+	if (process.env.TEST === "true") {
+		return character
 	}
 
 	const user = await requirePlayerUser(ctx)

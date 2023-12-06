@@ -205,7 +205,11 @@ export const FieldErrors = autoRef(function FieldErrors({
 	const Component = asChild ? Slot : "div"
 	return messages.length === 0 ?
 			null
-		:	<Component role="alert" className="text-sm text-error-400" {...props}>
+		:	<Component
+				role="alert"
+				{...props}
+				className={twMerge("text-sm text-error-400", props.className)}
+			>
 				{messages.map((message) => (
 					<p key={message}>{message}</p>
 				))}

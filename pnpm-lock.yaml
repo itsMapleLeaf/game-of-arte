@@ -94,6 +94,9 @@ devDependencies:
   '@biomejs/biome':
     specifier: 1.4.1
     version: 1.4.1
+  '@clerk/types':
+    specifier: 3.58.0
+    version: 3.58.0
   '@itsmapleleaf/configs':
     specifier: github:itsMapleLeaf/configs
     version: github.com/itsMapleLeaf/configs/8974a738101e7ca26d7c4467b4d3970776db0765(@biomejs/biome@1.4.1)(eslint@8.55.0)(prettier@3.1.0)(tailwindcss@3.3.6)(typescript@5.3.2)
@@ -683,7 +686,6 @@ packages:
     engines: {node: '>=14'}
     dependencies:
       csstype: 3.1.1
-    dev: false
 
   /@emotion/hash@0.9.1:
     resolution: {integrity: sha512-gJB6HLm5rYwSLI6PQa+X1t5CFGrv1J1TWG+sOyMCeKz2ojaj6Fnl/rZEspogG+cvqbt4AE/2eIyD2QfLKTBNlQ==}
@@ -3886,7 +3888,6 @@ packages:
 
   /csstype@3.1.1:
     resolution: {integrity: sha512-DJR/VvkAvSZW9bTouZue2sSxDwdTN92uHjqeKVm+0dAqdfNykRzQ95tay8aXMBAAPpUiq4Qcug2L7neoRh2Egw==}
-    dev: false
 
   /csstype@3.1.2:
     resolution: {integrity: sha512-I7K1Uu0MBPzaFKg4nI5Q7Vs2t+3gWWW648spaF+Rg7pI9ds18Ugn+lvg4SHczUdKlHI5LWBXyqfS8+DufyBsgQ==}
