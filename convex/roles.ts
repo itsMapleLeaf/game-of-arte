@@ -1,6 +1,7 @@
 import type { Nullish } from "~/helpers/types.ts"
 import type { Doc } from "./_generated/dataModel"
 import { type QueryCtx, query } from "./_generated/server.js"
+import { convexEnv } from "./env.ts"
 import { getPlayerByUser } from "./players.ts"
 import { getAuthenticatedUser } from "./users.ts"
 
@@ -24,7 +25,7 @@ export async function getRolesByUser(
 	ctx: QueryCtx,
 	user: Nullish<Doc<"users">>,
 ): Promise<Roles> {
-	if (process.env.TEST === "true") {
+	if (convexEnv.TEST === "true") {
 		return { isAdmin: true, isPlayer: true, isSpectator: false }
 	}
 
@@ -32,7 +33,7 @@ export async function getRolesByUser(
 		return { isAdmin: false, isPlayer: false, isSpectator: true }
 	}
 
-	if (user.discordUserId === process.env.ADMIN_DISCORD_USER_ID) {
+	if (user.discordUserId === convexEnv.ADMIN_DISCORD_USER_ID) {
 		return { isAdmin: true, isPlayer: true, isSpectator: false }
 	}
 
@@ -61,7 +62,7 @@ export async function getPlayerUser(ctx: QueryCtx) {
 	const user = await getAuthenticatedUser(ctx)
 	if (!user) return
 
-	if (user.discordUserId === process.env.ADMIN_DISCORD_USER_ID) {
+	if (user.discordUserId === convexEnv.ADMIN_DISCORD_USER_ID) {
 		return user
 	}
 

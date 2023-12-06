@@ -3,9 +3,10 @@ import { createClerkClient } from "@clerk/remix/api.server"
 import { Webhook } from "svix"
 import { internal } from "./_generated/api.js"
 import { httpAction } from "./_generated/server.js"
+import { convexEnv } from "./env.ts"
 
 export const clerkUserWebhook = httpAction(async (ctx, request) => {
-	const webhook = new Webhook(process.env.WEBHOOK_SECRET as string)
+	const webhook = new Webhook(convexEnv.WEBHOOK_SECRET as string)
 
 	const event = webhook.verify(
 		await request.text(),
@@ -20,7 +21,7 @@ export const clerkUserWebhook = httpAction(async (ctx, request) => {
 	}
 
 	const clerk = createClerkClient({
-		secretKey: process.env.CLERK_SECRET_KEY as string,
+		secretKey: convexEnv.CLERK_SECRET_KEY as string,
 	})
 
 	const user = await clerk.users.getUser(
@@ -39,7 +40,7 @@ export const clerkUserWebhook = httpAction(async (ctx, request) => {
 		discordUserId,
 
 		// dangerous implementation detail, but I don't know how else to get this :D
-		tokenIdentifier: `${process.env.CLERK_JWT_ISSUER_DOMAIN}|${user.id}`,
+		tokenIdentifier: `${convexEnv.CLERK_JWT_ISSUER_DOMAIN}|${user.id}`,
 	})
 
 	return new Response("OK", { status: 200 })

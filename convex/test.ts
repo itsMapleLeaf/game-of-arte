@@ -1,6 +1,7 @@
 import type { WithoutSystemFields } from "convex/server"
 import type { Doc, TableNames } from "./_generated/dataModel"
 import { type MutationCtx, mutation } from "./_generated/server"
+import { convexEnv } from "./env.ts"
 
 export const seedCharacters = mutation({
 	async handler(ctx) {
@@ -116,7 +117,7 @@ async function seedTable<TableName extends TableNames>(
 }
 
 function requireTestEnv() {
-	if (process.env.TEST !== "true") {
+	if (convexEnv.TEST !== "true") {
 		throw new Error("This mutation is only available in a test environment")
 	}
 }
