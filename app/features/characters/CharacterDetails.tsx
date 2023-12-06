@@ -35,15 +35,15 @@ import { CharacterConditions } from "./CharacterConditions.tsx"
 import { MentalStressIndicator } from "./MentalStressIndicator.tsx"
 import { PhysicalStressIndicator } from "./PhysicalStressIndicator.tsx"
 import {
+	type CharacterDataInput,
 	getCharacterAttributeValue,
 	getCharacterStress,
 	parseCharacterData,
-	type CharacterDataInput,
 } from "./data.ts"
 import { generateRandomStats } from "./generateRandomStats.tsx"
 import {
-	useUpdateCharacter,
 	type UpdateCharacterArgs,
+	useUpdateCharacter,
 } from "./useUpdateCharacter.tsx"
 import { useUpdateCharacterData } from "./useUpdateCharacterData.ts"
 
