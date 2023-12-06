@@ -5,7 +5,7 @@
 		"app/routes/*.{ts,tsx}",
 		"app/routes/*/route.{ts,tsx}",
 		"convex/**/*.{ts,tsx,js}",
-		"tests/**/*.{ts,tsx,js}",
+		"e2e/**/*.{ts,tsx,js}",
 		"api/**/*.{ts,tsx,js}"
 	],
 	"project": ["{app,convex,api}/**/*.{js,ts,tsx}"],
