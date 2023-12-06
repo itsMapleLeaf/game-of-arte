@@ -10,7 +10,6 @@ import {
 } from "lucide-react"
 import { useEffect } from "react"
 import ExpandingTextArea from "react-expanding-textarea"
-import * as v from "valibot"
 import { AsyncButton } from "~/components/AsyncButton.tsx"
 import { Button, type ButtonProps } from "~/components/Button.tsx"
 import { ConfirmDialog } from "~/components/ConfirmDialog.tsx"
@@ -36,15 +35,15 @@ import { CharacterConditions } from "./CharacterConditions.tsx"
 import { MentalStressIndicator } from "./MentalStressIndicator.tsx"
 import { PhysicalStressIndicator } from "./PhysicalStressIndicator.tsx"
 import {
-	type CharacterDataInput,
 	getCharacterAttributeValue,
 	getCharacterStress,
 	parseCharacterData,
+	type CharacterDataInput,
 } from "./data.ts"
 import { generateRandomStats } from "./generateRandomStats.tsx"
 import {
-	type UpdateCharacterArgs,
 	useUpdateCharacter,
+	type UpdateCharacterArgs,
 } from "./useUpdateCharacter.tsx"
 import { useUpdateCharacterData } from "./useUpdateCharacterData.ts"
 
@@ -91,7 +90,7 @@ export function CharacterDetails({
 
 	const [attributesLocked, setAttributesLocked] = useLocalStorageState(
 		"attributesLocked",
-		(value) => v.parse(v.fallback(v.boolean(), false), value),
+		(value) => (typeof value === "boolean" ? value : false),
 	)
 
 	const characterInputProps = <K extends keyof UpdateCharacterArgs>(

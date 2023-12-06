@@ -4,7 +4,7 @@ import type { Condition } from "convex/characters.validators.ts"
 import { useMutation } from "convex/react"
 import { LucideCheck, LucideEdit, LucidePlus, LucideX } from "lucide-react"
 import { useState } from "react"
-import * as v from "valibot"
+import { z } from "zod"
 import { Button } from "~/components/Button.tsx"
 import { CounterInputUncontrolled } from "~/components/CounterInput.tsx"
 import { Field, FieldInput, FieldLabel } from "~/components/Field.tsx"
@@ -98,20 +98,13 @@ function ConditionFormButton({
 		async (event: React.FormEvent<HTMLFormElement>) => {
 			event.preventDefault()
 
-			const values = v.parse(
-				v.object({
-					description: v.string(),
-					physicalStress: v.coerce(
-						v.number([v.integer(), v.minValue(0)]),
-						Number,
-					),
-					mentalStress: v.coerce(
-						v.number([v.integer(), v.minValue(0)]),
-						Number,
-					),
-				}),
-				Object.fromEntries(new FormData(event.currentTarget)),
-			)
+			const values = z
+				.object({
+					description: z.string(),
+					physicalStress: z.number().int().min(0),
+					mentalStress: z.number().int().min(0),
+				})
+				.parse(Object.fromEntries(new FormData(event.currentTarget)))
 
 			const conditionsById = Object.fromEntries(
 				character.conditions?.map((c) => [c.id, c]) ?? [],
