@@ -18,6 +18,7 @@ import type * as auth from "../auth.js";
 import type * as characters from "../characters.js";
 import type * as clocks from "../clocks.js";
 import type * as diceRolls from "../diceRolls.js";
+import type * as env from "../env.js";
 import type * as http from "../http.js";
 import type * as players from "../players.js";
 import type * as preview from "../preview.js";
@@ -40,6 +41,7 @@ declare const fullApi: ApiFromModules<{
   characters: typeof characters;
   clocks: typeof clocks;
   diceRolls: typeof diceRolls;
+  env: typeof env;
   http: typeof http;
   players: typeof players;
   preview: typeof preview;
