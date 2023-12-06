@@ -1,8 +1,8 @@
-import * as v from "valibot"
+import * as z from "zod"
 import { parseEnv } from "./helpers/env.ts"
 
-const schema = v.object({
-	VITE_PUBLIC_CONVEX_URL: v.string([v.minLength(1)]),
+const schema = z.object({
+	VITE_PUBLIC_CONVEX_URL: z.string().min(1),
 })
 
 const input: Partial<v.Input<typeof schema>> = {

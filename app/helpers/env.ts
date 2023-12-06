@@ -1,23 +1,23 @@
-import * as v from "valibot"
+import { z } from "zod"
 
 export function parseEnv<Env extends Record<string, string>>(
-	schema: v.BaseSchema<Env>,
+	schema: z.ZodSchema<Env>,
 	input: Partial<Env & Record<string, string>>,
 ) {
-	const result = v.safeParse(schema, input)
+	const result = schema.safeParse(input)
 
 	if (!result.success) {
 		const errorMessage = [
 			`Environment variables not defined:`,
-			...result.issues.map((issue) => {
-				const path = issue.path?.map((item) => item.key).join(".")
+			...result.error.issues.map((issue) => {
+				const path = issue.path?.join(".")
 				return `- ${path}: ${issue.message}`
 			}),
 		]
 		throw new Error(errorMessage.join("\n"))
 	}
 
-	return result.output
+	return result.data
 }
 
 if (import.meta.vitest) {
@@ -25,9 +25,9 @@ if (import.meta.vitest) {
 
 	describe("parseEnv", () => {
 		it("returns the parsed environment variables", () => {
-			const schema = v.object({
-				FOO: v.string([v.minLength(1)]),
-				BAR: v.string([v.minLength(1)]),
+			const schema = z.object({
+				FOO: z.string().min(1),
+				BAR: z.string().min(1),
 			})
 
 			const input = {
@@ -39,10 +39,10 @@ if (import.meta.vitest) {
 		})
 
 		it("throws an error if environment fails to parse", () => {
-			const schema = v.object({
-				FOO: v.string([v.minLength(1)]),
-				BAR: v.string([v.minLength(1)]),
-				BAZ: v.string([v.minLength(1)]),
+			const schema = z.object({
+				FOO: z.string().min(1),
+				BAR: z.string().min(1),
+				BAZ: z.string().min(1),
 			})
 
 			const input = {
