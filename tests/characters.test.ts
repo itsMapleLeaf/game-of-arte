@@ -1,6 +1,5 @@
 import { expect, test } from "@playwright/test"
 import { runTestFunction } from "~/routes/test.run/test.ts"
-import { signIn } from "./auth"
 
 test.beforeEach(async ({ page }) => {
 	await runTestFunction(page.request, "seedCharacters")
@@ -15,8 +14,6 @@ test("navigating characters", async ({ page }) => {
 })
 
 test("adding character condition", async ({ page }) => {
-	// await signIn(page)
-
 	const conditionDescription = `Test Condition ${Math.random()}`
 
 	const dialog = page.getByRole("dialog")
