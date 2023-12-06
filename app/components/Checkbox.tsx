@@ -14,4 +14,5 @@ export const Checkbox = autoRef(function Checkbox(props: CheckboxProps) {
 	)
 })
 
+/** @public */
 export const checkboxStyle = twStyle(panel("accent-accent-400 s-4"))

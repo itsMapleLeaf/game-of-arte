@@ -1,0 +1,29 @@
+{
+	"$schema": "https://unpkg.com/knip@3/schema.json",
+	"entry": [
+		"app/{root,entry.client,entry.server}.{ts,tsx}",
+		"app/routes/*.{ts,tsx}",
+		"app/routes/*/route.{ts,tsx}",
+		"convex/**/*.{ts,tsx,js}",
+		"tests/**/*.{ts,tsx,js}",
+		"api/**/*.{ts,tsx,js}"
+	],
+	"project": ["{app,convex,api}/**/*.{js,ts,tsx}"],
+	"ignore": [
+		".git",
+		"node_modules",
+		"dist",
+		"build",
+		"public/build",
+		"convex/_generated"
+	],
+	"ignoreDependencies": [
+		// needed by the Remix default entries
+		"isbot"
+	],
+	"rules": {
+		"exports": "warn",
+		"types": "warn",
+		"duplicates": "warn"
+	}
+}

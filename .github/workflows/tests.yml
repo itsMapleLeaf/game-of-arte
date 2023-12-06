@@ -51,6 +51,10 @@ jobs:
         if: steps.install.outcome == 'success' && always()
         run: pnpm test
 
+      - name: Knip
+        if: steps.install.outcome == 'success' && always()
+        run: pnpm knip
+
       - name: Commit changes
         if: steps.lint.outcome == 'success' && steps.format.outcome == 'success' && always()
         uses: stefanzweifel/git-auto-commit-action@v5
