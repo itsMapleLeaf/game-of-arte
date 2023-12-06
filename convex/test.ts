@@ -104,6 +104,13 @@ export const seedCharacters = mutation({
 	},
 })
 
+export const removeDiceRolls = mutation({
+	async handler(ctx) {
+		requireTestEnv()
+		await seedTable(ctx, "diceRolls", [])
+	},
+})
+
 async function seedTable<TableName extends TableNames>(
 	ctx: MutationCtx,
 	tableName: TableName,
