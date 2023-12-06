@@ -12,6 +12,7 @@ import {
 	conditionValidator,
 	sorceryDeviceValidator,
 } from "./characters.validators.ts"
+import { convexEnv } from "./env.ts"
 import { getRoles, requireAdmin, requirePlayerUser } from "./roles.ts"
 import { getAuthenticatedUser } from "./users.ts"
 import { nullish, record } from "./validators.ts"
@@ -201,12 +202,12 @@ async function requireOwnedCharacter(
 		throw new Error(`Character not found: ${characterId}`)
 	}
 
-	if (process.env.TEST === "true") {
+	if (convexEnv.TEST === "true") {
 		return character
 	}
 
 	const user = await requirePlayerUser(ctx)
-	if (user.discordUserId === process.env.ADMIN_DISCORD_USER_ID) {
+	if (user.discordUserId === convexEnv.ADMIN_DISCORD_USER_ID) {
 		return character
 	}
 
