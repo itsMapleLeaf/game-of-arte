@@ -16,7 +16,7 @@ export default defineConfig({
 	server: { port: 3000 },
 	test: {
 		includeSource: ["app/**/*.{ts,tsx}"],
-		exclude: [...defaultExclude, "tests"],
+		exclude: [...defaultExclude, "e2e"],
 	},
 	define: {
 		"import.meta.vitest": "undefined",
