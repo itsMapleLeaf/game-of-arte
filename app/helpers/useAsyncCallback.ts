@@ -54,6 +54,7 @@ export function useAsyncCallback<Args extends unknown[], Return>(
 				if (latestToken.current === token) {
 					setState({ status: "error", error })
 				}
+				console.error(error)
 			}
 		})()
 	})

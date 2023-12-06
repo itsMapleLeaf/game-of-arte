@@ -4,6 +4,7 @@ import { autoRef } from "~/helpers/autoRef.tsx"
 import type { PartialKeys, StrictOmit } from "~/helpers/types.ts"
 import { clamp } from "../helpers/math.ts"
 import { panel } from "../styles/panel.ts"
+import { SrOnly } from "./SrOnly.tsx"
 
 export interface CounterInputProps
 	extends StrictOmit<React.ComponentPropsWithRef<"input">, "onChange"> {
@@ -33,6 +34,11 @@ export const CounterInput = autoRef(function CounterInput({
 
 	return (
 		<div
+			aria-labelledby={props["aria-labelledby"]}
+			aria-describedby={props["aria-describedby"]}
+			aria-valuenow={value}
+			aria-valuemin={min}
+			aria-valuemax={max}
 			className={panel(
 				"flex h-10 items-center justify-center gap-2 rounded-md border py-1",
 				className,
@@ -54,7 +60,6 @@ export const CounterInput = autoRef(function CounterInput({
 				}
 			}}
 		>
-			<input {...props} type="hidden" value={value} />
 			<button
 				type="button"
 				className="rounded-full p-1 transition hover:bg-base-800"
@@ -64,6 +69,7 @@ export const CounterInput = autoRef(function CounterInput({
 				}}
 			>
 				<LucideMinus className="s-5" />
+				<SrOnly>Decrease</SrOnly>
 			</button>
 			<p className="min-w-7 text-center tabular-nums">
 				{value}
@@ -78,6 +84,7 @@ export const CounterInput = autoRef(function CounterInput({
 				}}
 			>
 				<LucidePlus className="s-5" />
+				<SrOnly>Increase</SrOnly>
 			</button>
 		</div>
 	)

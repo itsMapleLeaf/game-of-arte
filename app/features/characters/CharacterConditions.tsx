@@ -6,17 +6,16 @@ import { LucideCheck, LucideEdit, LucidePlus, LucideX } from "lucide-react"
 import { useState } from "react"
 import { z } from "zod"
 import { Button } from "~/components/Button.tsx"
-import { CounterInputUncontrolled } from "~/components/CounterInput.tsx"
-import { Field, FieldInput, FieldLabel } from "~/components/Field.tsx"
+import { CounterInput } from "~/components/CounterInput.tsx"
+import { Field, FieldErrors, FieldInput } from "~/components/Field.tsx"
 import { Popover, PopoverPanel, PopoverTrigger } from "~/components/Popover.tsx"
 import { SrOnly } from "~/components/SrOnly.tsx"
-import { useAsyncCallback } from "~/helpers/useAsyncCallback.ts"
 import { input } from "~/styles/index.ts"
 import { panel } from "~/styles/panel.ts"
+import { useForm } from "../../helpers/useForm.tsx"
 import { CharacterContext } from "./CharacterContext.tsx"
 import { MentalStressIndicator } from "./MentalStressIndicator.tsx"
 import { PhysicalStressIndicator } from "./PhysicalStressIndicator.tsx"
-import { STRESS_MAX, STRESS_MIN } from "./constants.ts"
 
 export function CharacterConditions() {
 	const character = CharacterContext.useValue()
@@ -90,96 +89,101 @@ function ConditionFormButton({
 }: PopoverTriggerProps & {
 	initialCondition?: Condition
 }) {
-	const character = CharacterContext.useValue()
-	const updateCharacter = useMutation(api.characters.update)
 	const [open, setOpen] = useState(false)
-
-	const [handleSubmit, state] = useAsyncCallback(
-		async (event: React.FormEvent<HTMLFormElement>) => {
-			event.preventDefault()
-
-			const values = z
-				.object({
-					description: z.string(),
-					physicalStress: z.number().int().min(0),
-					mentalStress: z.number().int().min(0),
-				})
-				.parse(Object.fromEntries(new FormData(event.currentTarget)))
-
-			const conditionsById = Object.fromEntries(
-				character.conditions?.map((c) => [c.id, c]) ?? [],
-			)
-
-			if (initialCondition?.id) {
-				conditionsById[initialCondition.id] = {
-					...initialCondition,
-					...values,
-				}
-			} else {
-				const id = crypto.randomUUID()
-				conditionsById[id] = { ...values, id }
-			}
-
-			await updateCharacter({
-				id: character._id,
-				conditions: Object.values(conditionsById),
-			})
-
-			setOpen(false)
-		},
-	)
 
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
 			<PopoverTrigger {...props} />
 			<PopoverPanel>
-				<form onSubmit={handleSubmit} className="grid grid-cols-2 gap-3 p-3">
-					<Field className="col-span-2">
-						<FieldLabel>Condition</FieldLabel>
-						<FieldInput
-							type="text"
-							name="description"
-							className={input()}
-							placeholder="What happened?"
-							defaultValue={initialCondition?.description}
-						/>
-					</Field>
-					<Field>
-						<FieldLabel>Phys. Stress</FieldLabel>
-						<FieldInput asChild>
-							<CounterInputUncontrolled
-								name="physicalStress"
-								defaultValue={initialCondition?.physicalStress}
-								min={STRESS_MIN}
-								max={STRESS_MAX}
-							/>
-						</FieldInput>
-					</Field>
-					<Field>
-						<FieldLabel>Ment. Stress</FieldLabel>
-						<FieldInput asChild>
-							<CounterInputUncontrolled
-								name="mentalStress"
-								defaultValue={initialCondition?.mentalStress}
-								min={STRESS_MIN}
-								max={STRESS_MAX}
-							/>
-						</FieldInput>
-					</Field>
-
-					<div className="col-span-2">
-						<Button
-							type="submit"
-							className="w-full"
-							pending={state.isLoading}
-							icon={{ start: LucideCheck }}
-						>
-							Submit
-						</Button>
-					</div>
-				</form>
+				<ConditionForm
+					initialCondition={initialCondition}
+					onSuccess={() => setOpen(false)}
+				/>
 			</PopoverPanel>
 		</Popover>
+	)
+}
+
+function ConditionForm({
+	initialCondition,
+	onSuccess,
+}: {
+	initialCondition?: Condition
+	onSuccess: () => void
+}) {
+	const character = CharacterContext.useValue()
+	const upsertCondition = useMutation(api.characters.upsertCondition)
+
+	const form = useForm({
+		schema: z
+			.object({
+				description: z.string().min(1, "Cannot be empty").default(""),
+				physicalStress: z.number().int().min(0),
+				mentalStress: z.number().int().min(0),
+			})
+			.refine(
+				(data) => {
+					const totalStress = data.physicalStress + data.mentalStress
+					return totalStress > 0
+				},
+				{
+					message: "Must have at least 1 stress",
+				},
+			),
+		defaultValues: {
+			physicalStress: 0,
+			mentalStress: 0,
+			...initialCondition,
+		},
+		onSubmit: async (values) => {
+			await upsertCondition({
+				id: character._id,
+				condition: {
+					...values,
+					id: initialCondition?.id || crypto.randomUUID(),
+				},
+			})
+			onSuccess()
+		},
+	})
+
+	return (
+		<form onSubmit={form.submit} className="grid w-64 grid-cols-2 gap-3 p-3">
+			<Field
+				label="Description"
+				errors={form.fieldErrors?.description}
+				className="col-span-2"
+			>
+				<FieldInput
+					{...form.textInputProps("description")}
+					className={input()}
+					placeholder="What happened?"
+				/>
+			</Field>
+			<Field label="Phys. Stress" errors={form.fieldErrors?.physicalStress}>
+				<FieldInput asChild>
+					<CounterInput {...form.numberInputProps("physicalStress")} min={0} />
+				</FieldInput>
+			</Field>
+			<Field label="Ment. Stress" errors={form.fieldErrors?.mentalStress}>
+				<FieldInput asChild>
+					<CounterInput {...form.numberInputProps("mentalStress")} min={0} />
+				</FieldInput>
+			</Field>
+
+			<div className="col-span-2">
+				<Button
+					type="submit"
+					className="w-full"
+					icon={{ start: LucideCheck }}
+					pending={form.isSubmitting}
+				>
+					Submit
+				</Button>
+			</div>
+
+			<FieldErrors className="col-span-2" errors={form.formErrors} />
+		</form>
 	)
 }
 
