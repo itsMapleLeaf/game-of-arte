@@ -6,11 +6,12 @@ import {
 } from "convex/_generated/server"
 import { v } from "convex/values"
 import randimals from "randimals"
-import { compareKey } from "~/helpers/collections.ts"
+import { compareKey, upsertArray } from "~/helpers/collections.ts"
 import type { Id } from "./_generated/dataModel"
 import {
 	conditionValidator,
 	sorceryDeviceValidator,
+	sorcerySpellValidator,
 } from "./characters.validators.ts"
 import { convexEnv } from "./env.ts"
 import { getRoles, requireAdmin, requirePlayerUser } from "./roles.ts"
@@ -134,6 +135,38 @@ export const setSorceryDevice = mutation({
 	},
 })
 
+export const upsertFreeformSpell = mutation({
+	args: {
+		id: v.id("characters"),
+		spell: sorcerySpellValidator,
+	},
+	handler: async (ctx, args) => {
+		const character = await requireOwnedCharacter(ctx, args.id)
+		await ctx.db.patch(args.id, {
+			freeformSpells: upsertArray(
+				character?.freeformSpells ?? [],
+				args.spell,
+				"id",
+			),
+		})
+	},
+})
+
+export const removeFreeformSpell = mutation({
+	args: {
+		id: v.id("characters"),
+		spellId: v.string(),
+	},
+	handler: async (ctx, args) => {
+		const character = await requireOwnedCharacter(ctx, args.id)
+		await ctx.db.patch(character._id, {
+			freeformSpells: character.freeformSpells?.filter(
+				(s) => s.id !== args.spellId,
+			),
+		})
+	},
+})
+
 export const upsertCondition = mutation({
 	args: {
 		id: v.id("characters"),
@@ -141,12 +174,12 @@ export const upsertCondition = mutation({
 	},
 	handler: async (ctx, args) => {
 		const character = await requireOwnedCharacter(ctx, args.id)
-
-		const conditionsById = new Map(character?.conditions?.map((c) => [c.id, c]))
-		conditionsById.set(args.condition.id, args.condition)
-
 		await ctx.db.patch(character._id, {
-			conditions: [...conditionsById.values()],
+			conditions: upsertArray(
+				character?.conditions ?? [],
+				args.condition,
+				"id",
+			),
 		})
 	},
 })

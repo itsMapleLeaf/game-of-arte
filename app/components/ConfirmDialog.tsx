@@ -1,4 +1,5 @@
-import type { ReactNode } from "react"
+import { type ReactNode, useState } from "react"
+import { sleep } from "~/helpers/async.ts"
 import { Button } from "./Button.tsx"
 import {
 	Dialog,
@@ -25,8 +26,9 @@ export function ConfirmDialog({
 	onConfirm: () => unknown
 	children: React.ReactNode
 }) {
+	const [open, setOpen] = useState(false)
 	return (
-		<Dialog>
+		<Dialog open={open} onOpenChange={setOpen}>
 			<DialogTrigger asChild>{children}</DialogTrigger>
 			<DialogContent>
 				<DialogPanel className="p-4">
@@ -38,11 +40,16 @@ export function ConfirmDialog({
 						<DialogClose asChild>
 							<Button appearance="clear">{cancelText}</Button>
 						</DialogClose>
-						<DialogClose asChild>
-							<Button appearance="solid" onClick={onConfirm}>
-								{confirmText}
-							</Button>
-						</DialogClose>
+						<Button
+							appearance="solid"
+							onClick={async () => {
+								await onConfirm()
+								await sleep(1000)
+								setOpen(false)
+							}}
+						>
+							{confirmText}
+						</Button>
 					</div>
 				</DialogPanel>
 			</DialogContent>

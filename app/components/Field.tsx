@@ -4,6 +4,8 @@ import {
 	type ComponentPropsWithRef,
 	type ComponentPropsWithoutRef,
 	type ForwardedRef,
+	type FunctionComponent,
+	type ReactElement,
 	type ReactNode,
 	createContext,
 	isValidElement,
@@ -12,6 +14,7 @@ import {
 	useMemo,
 } from "react"
 import { twMerge } from "tailwind-merge"
+import { pick } from "~/helpers/object.ts"
 import { autoRef } from "../helpers/autoRef.tsx"
 import type { Nullish, Spread } from "../helpers/types.ts"
 import { panel } from "../styles/panel.ts"
@@ -27,7 +30,6 @@ export function useFieldContext() {
 }
 
 export interface FieldPropsBase {
-	asChild?: boolean
 	label?: string | React.ReactElement
 	labelText?: string | React.ReactElement
 	labelTooltip?: string | React.ReactElement
@@ -37,7 +39,9 @@ export interface FieldPropsBase {
 
 export interface FieldProps
 	extends FieldPropsBase,
-		ComponentPropsWithRef<"div"> {}
+		ComponentPropsWithRef<"div"> {
+	asChild?: boolean
+}
 
 export const Field = autoRef(function Field({
 	children,
@@ -140,33 +144,33 @@ export function FieldLabelTooltip({
 	content,
 	children,
 }: {
-	content: ReactNode
+	content: string | ReactElement | undefined
 	children: ReactNode
 }) {
 	const tooltipId = useId()
-	return (
-		<div className="flex items-center gap-1">
-			{children}
-			<div className="relative h-fit">
-				<button
-					type="button"
-					className="peer block rounded-full"
-					aria-describedby={tooltipId}
-				>
-					<LucideInfo className="s-4" />
-					<span className="sr-only">More details</span>
-				</button>
-				<div
-					id={tooltipId}
-					className={panel(
-						"pointer-events-none absolute left-1/2 top-[calc(100%+4px)] z-10 w-48 -translate-x-1/2 rounded border px-2 py-1 text-sm leading-snug text-white opacity-0 shadow transition peer-hover:opacity-100 peer-focus:opacity-100",
-					)}
-				>
-					{content}
+	return content == null ? children : (
+			<div className="flex items-center gap-1">
+				{children}
+				<div className="relative h-fit">
+					<button
+						type="button"
+						className="peer block rounded-full"
+						aria-describedby={tooltipId}
+					>
+						<LucideInfo className="s-4" />
+						<span className="sr-only">More details</span>
+					</button>
+					<div
+						id={tooltipId}
+						className={panel(
+							"pointer-events-none absolute left-1/2 top-[calc(100%+4px)] z-10 w-48 -translate-x-1/2 rounded border px-2 py-1 text-sm leading-snug text-white opacity-0 shadow transition peer-hover:opacity-100 peer-focus:opacity-100",
+						)}
+					>
+						{content}
+					</div>
 				</div>
 			</div>
-		</div>
-	)
+		)
 }
 
 export const FieldDescription = autoRef(function FieldDescription({
@@ -239,3 +243,25 @@ export const FieldInput = autoRef(function FieldInput({
 		</>
 	)
 })
+
+export function createFieldComponent<Props>(
+	Component: FunctionComponent<Props>,
+) {
+	return autoRef(function FieldComponent(props: Props & FieldPropsBase) {
+		return (
+			<Field
+				{...pick(props, [
+					"label",
+					"labelText",
+					"labelTooltip",
+					"description",
+					"errors",
+				])}
+			>
+				<FieldInput asChild>
+					<Component {...props} />
+				</FieldInput>
+			</Field>
+		)
+	})
+}

@@ -4,6 +4,7 @@ import { autoRef } from "~/helpers/autoRef.tsx"
 import type { PartialKeys, StrictOmit } from "~/helpers/types.ts"
 import { clamp } from "../helpers/math.ts"
 import { panel } from "../styles/panel.ts"
+import { createFieldComponent } from "./Field.tsx"
 import { SrOnly } from "./SrOnly.tsx"
 
 export interface CounterInputProps
@@ -60,6 +61,9 @@ export const CounterInput = autoRef(function CounterInput({
 				}
 			}}
 		>
+			{props.name && (
+				<input type="hidden" aria-hidden name={props.name} value={value} />
+			)}
 			<button
 				type="button"
 				className="rounded-full p-1 transition hover:bg-base-800"
@@ -90,6 +94,8 @@ export const CounterInput = autoRef(function CounterInput({
 	)
 })
 
+export const CounterInputField = createFieldComponent(CounterInput)
+
 export const CounterInputUncontrolled = autoRef(
 	function CounterInputUncontrolled({
 		min = 0,
@@ -113,4 +119,8 @@ export const CounterInputUncontrolled = autoRef(
 			/>
 		)
 	},
+)
+
+export const CounterInputUncontrolledField = createFieldComponent(
+	CounterInputUncontrolled,
 )

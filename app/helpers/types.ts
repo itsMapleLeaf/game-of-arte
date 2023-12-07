@@ -53,7 +53,7 @@ export type StrictOmit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
  * 	type BrokenKeys = keyof Foo // never
  * 	type Keys = KeyOfUnion<Foo> // "a" | "b"
  */
-export type KeyOfUnion<T> = T extends Record<infer K, unknown> ? K : never
+export type KeyOfUnion<T> = T extends unknown ? keyof T : never
 
 type KeyOfUnionTestUnion = { foo: string } | { bar: number }
 interface KeyOfUnionTestInterface {
@@ -86,6 +86,8 @@ typesAreEqual<
 	FilterKeysByValue<{ a?: string; b: number; c: string }, string | undefined>,
 	"a" | "c"
 >(true)
+
+export type Subset<T, U extends T> = T extends U ? T : never
 
 type IsEqual<A, B> =
 	[A] extends [B] ?

@@ -3,6 +3,7 @@ import type { Doc } from "convex/_generated/dataModel"
 import { useMutation, useQuery } from "convex/react"
 import {
 	LucideBookOpenText,
+	LucideBookTemplate,
 	LucideDices,
 	LucideLock,
 	LucideUnlock,
@@ -35,6 +36,7 @@ import { center, input, textArea } from "~/styles/index.ts"
 import { panel } from "~/styles/panel.ts"
 import { twMerge } from "~/styles/twMerge.ts"
 import { twStyle } from "~/styles/twStyle.ts"
+import { AddFreeformSpellButton } from "../sorcery/AddFreeformSpellButton.tsx"
 import { CastSpellButton } from "../sorcery/CastSpellButton.tsx"
 import { RemoveSorceryDeviceButton } from "../sorcery/RemoveSorceryDeviceButton.tsx"
 import { SorceryDeviceEditor } from "../sorcery/SorceryDeviceEditor.tsx"
@@ -246,6 +248,11 @@ function SorcerySection({ character }: { character: Doc<"characters"> }) {
 						<CastSpellButton asChild>
 							<Button icon={{ start: LucideBookOpenText }}>Spellbook</Button>
 						</CastSpellButton>
+						<AddFreeformSpellButton character={character} asChild>
+							<Button appearance="outline" icon={{ start: LucideBookTemplate }}>
+								Add Freeform Spell
+							</Button>
+						</AddFreeformSpellButton>
 						<RemoveSorceryDeviceButton character={character} />
 					</section>
 				</>

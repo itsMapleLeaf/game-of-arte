@@ -1,13 +1,26 @@
+import { z } from "zod"
+import type { Subset } from "~/helpers/types.ts"
 import type { AttributeId } from "../characters/attributes.ts"
+
+export type SorcerySpellAttributeId = Subset<
+	AttributeId,
+	"nature" | "metaphysical" | "psychic" | "taboo"
+>
+export const sorcerySpellAttributeIdSchema = z.enum([
+	"nature",
+	"metaphysical",
+	"psychic",
+	"taboo",
+]) satisfies z.ZodType<SorcerySpellAttributeId>
 
 export interface SorcerySpell {
 	name: string
 	description: string
+	amplifiedDescription: string
+	attributeId: SorcerySpellAttributeId
 	cost: { mana: number; mentalStress?: number }
 	castingTime?: { turns: number }
-	amplifiedDescription: string
 	drawbacks?: string[]
-	attributeId: AttributeId
 }
 export type SorcerySpellId = string
 
