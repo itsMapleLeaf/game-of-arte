@@ -8,7 +8,7 @@ import {
 	LucideUnlock,
 	LucideWand,
 } from "lucide-react"
-import { useEffect, type ReactNode, type ReactElement } from "react"
+import { type ReactElement, type ReactNode, useEffect } from "react"
 import ExpandingTextArea from "react-expanding-textarea"
 import { AsyncButton } from "~/components/AsyncButton.tsx"
 import { Button, type ButtonProps } from "~/components/Button.tsx"
@@ -33,6 +33,7 @@ import { useLocalStorageState } from "~/helpers/useLocalStorageState.tsx"
 import { solidButton } from "~/styles/button.ts"
 import { center, input, textArea } from "~/styles/index.ts"
 import { panel } from "~/styles/panel.ts"
+import { twMerge } from "~/styles/twMerge.ts"
 import { twStyle } from "~/styles/twStyle.ts"
 import { CastSpellButton } from "../sorcery/CastSpellButton.tsx"
 import { RemoveSorceryDeviceButton } from "../sorcery/RemoveSorceryDeviceButton.tsx"
@@ -52,7 +53,6 @@ import {
 	useUpdateCharacter,
 } from "./useUpdateCharacter.tsx"
 import { useUpdateCharacterData } from "./useUpdateCharacterData.ts"
-import { twMerge } from "~/styles/twMerge.ts"
 
 export const characterNameInputId = "characterNameInput"
 
