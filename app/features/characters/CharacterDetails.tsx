@@ -8,7 +8,11 @@ import {
 	LucideUnlock,
 	LucideWand,
 } from "lucide-react"
-import { useEffect } from "react"
+import {
+	useEffect,
+	type ReactNode,
+	type ReactElement,
+} from "react"
 import ExpandingTextArea from "react-expanding-textarea"
 import { AsyncButton } from "~/components/AsyncButton.tsx"
 import { Button, type ButtonProps } from "~/components/Button.tsx"
@@ -22,6 +26,7 @@ import { CharacterAttributeField } from "~/features/characters/CharacterAttribut
 import {
 	getAttributeCategories,
 	getAttributes,
+	type AttributeCategory,
 } from "~/features/characters/attributes"
 import { useLocalStorageState } from "~/helpers/useLocalStorageState.tsx"
 import { solidButton } from "~/styles/button.ts"
@@ -83,33 +88,10 @@ export function CharacterDetails({
 	const roles = useQuery(api.roles.get)
 	const self = useQuery(api.players.self)
 
-	const updateCharacter = useUpdateCharacter().bind(null, character._id)
-	const updateCharacterData = useUpdateCharacterData().bind(null, character._id)
-	const characterData = parseCharacterData(character.data)
-	const { physicalStress, mentalStress } = getCharacterStress(character)
-
 	const [attributesLocked, setAttributesLocked] = useLocalStorageState(
 		"attributesLocked",
 		(value) => (typeof value === "boolean" ? value : false),
 	)
-
-	const characterInputProps = <K extends keyof UpdateCharacterArgs>(
-		key: K,
-	) => ({
-		value: character[key],
-		onChange: (arg: OnChangeArg<UpdateCharacterArgs[K]>) => {
-			updateCharacter({ [key]: resolveOnChangeArg(arg) })
-		},
-	})
-
-	const characterDataInputProps = <K extends keyof CharacterDataInput>(
-		key: K,
-	) => ({
-		value: characterData[key],
-		onChange: (arg: OnChangeArg<CharacterDataInput[K]>) => {
-			updateCharacterData({ [key]: resolveOnChangeArg(arg) })
-		},
-	})
 
 	const attributesEditable = (() => {
 		if (!roles?.isAdmin && character._id !== self?.ownedCharacterId)
@@ -120,202 +102,295 @@ export function CharacterDetails({
 	return (
 		<div className="grid flex-1 content-start gap-8 self-start">
 			<div className={row("fluid-cols-48")}>
-				<section className={column()}>
-					<h3 className={sectionHeading()}>Identity</h3>
-
-					<Field label="Name" description="What should we call them?">
-						<FieldInput asChild>
-							<Input
-								{...characterInputProps("name")}
-								id={characterNameInputId}
-							/>
-						</FieldInput>
-					</Field>
-
-					<Field label="Pronouns" description="How do they identify?">
-						<FieldInput asChild>
-							<Input {...characterDataInputProps("pronouns")} />
-						</FieldInput>
-					</Field>
-
-					<Field
-						label="Archetype"
-						description={`The backbone of your character. Gives +2 dice to the corresponding attribute category.`}
-					>
-						<FieldInput asChild>
-							<select
-								{...characterDataInputProps("archetype")}
-								value={character.data.archetype ?? ""} // need to use empty string to set the default value
-								className={input("py-0")}
-							>
-								<option disabled value="">
-									Select an archetype
-								</option>
-								{getAttributeCategories().map((category) => (
-									<option key={category.id} value={category.id}>
-										{category.archetypeName}
-									</option>
-								))}
-							</select>
-						</FieldInput>
-					</Field>
-
-					<Field
-						label="Notes"
-						description="Anything else important about the character."
-					>
-						<FieldInput asChild>
-							<textarea
-								{...characterDataInputProps("notes")}
-								className={textArea()}
-								rows={4}
-							/>
-						</FieldInput>
-					</Field>
-
-					<Field label="Reference Image" description="Do they have a cool hat?">
-						<FieldInput asChild>
-							<ImageInput {...characterDataInputProps("image")} />
-						</FieldInput>
-					</Field>
-				</section>
+				<IdentitySection character={character} />
 
 				<div className={column()}>
-					<section className={column()}>
-						<h3 className={sectionHeading()}>Status</h3>
-
-						<div className={row("items-end gap-2")}>
-							<Field labelText="Resilience">
-								<FieldInput asChild>
-									<CounterInput
-										{...characterDataInputProps("resilience")}
-										min={0}
-										defaultValue={2}
-									/>
-								</FieldInput>
-							</Field>
-
-							<Field labelText="Stress">
-								<FieldInput asChild>
-									<p className={panel(input(), center(), "h-10 gap-3")}>
-										<PhysicalStressIndicator value={physicalStress} />
-										<MentalStressIndicator value={mentalStress} />
-									</p>
-								</FieldInput>
-							</Field>
-						</div>
-
-						<Field
-							labelText="Conditions"
-							description="List your character's sources of stress."
-						>
-							<CharacterConditions />
-						</Field>
-					</section>
-
-					<section className={column()}>
-						<h3 className={sectionHeading()}>Sorcery</h3>
-
-						{character.sorceryDevice == null ?
-							<AddSorceryDeviceButton character={character} />
-						:	<>
-								<SorceryDeviceEditor
-									character={character}
-									sorceryDevice={character.sorceryDevice}
-								/>
-
-								{(character._id === self?.ownedCharacterId ||
-									roles?.isAdmin) && (
-									<section className={column("gap-2")}>
-										<CastSpellButton asChild>
-											<Button icon={{ start: LucideBookOpenText }}>
-												Spellbook
-											</Button>
-										</CastSpellButton>
-										<RemoveSorceryDeviceButton character={character} />
-									</section>
-								)}
-							</>
-						}
-					</section>
-
-					<section className={column()}>
-						<h3 className={sectionHeading()}>Progression</h3>
-
-						<Field
-							labelText="Experience"
-							description="Spend these points on attributes!"
-						>
-							<ExperienceDisplay character={character} />
-						</Field>
-
-						<div className={row("fluid-cols-36")}>
-							<RandomizeStatsButton character={character} />
-							{attributesLocked ?
-								<Button
-									appearance="outline"
-									icon={{ start: LucideUnlock }}
-									onClick={() => setAttributesLocked(!attributesLocked)}
-								>
-									Unlock Stats
-								</Button>
-							:	<Button
-									appearance="outline"
-									icon={{ start: LucideLock }}
-									onClick={() => setAttributesLocked(!attributesLocked)}
-								>
-									Lock Stats
-								</Button>
-							}
-						</div>
-					</section>
+					<StatusSection character={character} />
+					<SorcerySection character={character} />
+					<ProgressionSection
+						character={character}
+						attributesLocked={attributesLocked}
+						onAttributesLockedChange={setAttributesLocked}
+					/>
 				</div>
 			</div>
 
 			<div className={row("content-center fluid-cols-36")}>
 				{getAttributeCategories().map((category) => (
-					<div key={category.id} className={column("gap-4")}>
-						<h3
-							className={sectionHeading(
-								"transition-colors",
-								character.data.archetype === category.id && "text-accent-400",
-							)}
-						>
-							{category.title}
-						</h3>
-						{category.attributes.map((attribute) => (
-							<CharacterAttributeField
-								key={attribute.id}
-								attribute={attribute}
-								editable={attributesEditable}
-							/>
-						))}
-					</div>
+					<AttributeCategorySection
+						key={category.id}
+						character={character}
+						category={category}
+						editable={attributesEditable}
+					/>
 				))}
 			</div>
 
-			<section className={column()}>
-				<h3 className={sectionHeading()}>Description</h3>
+			<DescriptionSection character={character} />
+		</div>
+	)
+}
 
-				<Field label="Inventory" description="What are you carrying?">
+function IdentitySection({ character }: { character: Doc<"characters"> }) {
+	return (
+		<Section title="Identity">
+			<Field label="Name" description="What should we call them?">
+				<FieldInput asChild>
+					<Input
+						{...useCharacterInputProps(character, "name")}
+						id={characterNameInputId}
+					/>
+				</FieldInput>
+			</Field>
+
+			<Field label="Pronouns" description="How do they identify?">
+				<FieldInput asChild>
+					<Input {...useCharacterDataInputProps(character, "pronouns")} />
+				</FieldInput>
+			</Field>
+
+			<Field
+				label="Archetype"
+				description={`The backbone of your character. Gives +2 dice to the corresponding attribute category.`}
+			>
+				<FieldInput asChild>
+					<select
+						{...useCharacterDataInputProps(character, "archetype")}
+						value={character.data.archetype ?? ""} // need to use empty string to set the default value
+						className={input("py-0")}
+					>
+						<option disabled value="">
+							Select an archetype
+						</option>
+						{getAttributeCategories().map((category) => (
+							<option key={category.id} value={category.id}>
+								{category.archetypeName}
+							</option>
+						))}
+					</select>
+				</FieldInput>
+			</Field>
+
+			<Field
+				label="Notes"
+				description="Anything else important about the character."
+			>
+				<FieldInput asChild>
+					<textarea
+						{...useCharacterDataInputProps(character, "notes")}
+						className={textArea()}
+						rows={4}
+					/>
+				</FieldInput>
+			</Field>
+
+			<Field label="Reference Image" description="Do they have a cool hat?">
+				<FieldInput asChild>
+					<ImageInput {...useCharacterDataInputProps(character, "image")} />
+				</FieldInput>
+			</Field>
+		</Section>
+	)
+}
+
+function StatusSection({ character }: { character: Doc<"characters"> }) {
+	const { physicalStress, mentalStress } = getCharacterStress(character)
+	return (
+		<Section title="Status">
+			<div className={row("items-end gap-2")}>
+				<Field labelText="Resilience">
 					<FieldInput asChild>
-						<ExpandingTextArea
-							{...characterDataInputProps("inventory")}
-							className={textArea()}
+						<CounterInput
+							{...useCharacterDataInputProps(character, "resilience")}
+							min={0}
+							defaultValue={2}
 						/>
 					</FieldInput>
 				</Field>
 
-				<Field
-					label="Background"
-					description={`Write your character's backstory. Doesn't have to be too long. Unless you want it to be!`}
+				<Field labelText="Stress">
+					<FieldInput asChild>
+						<p className={panel(input(), center(), "h-10 gap-3")}>
+							<PhysicalStressIndicator value={physicalStress} />
+							<MentalStressIndicator value={mentalStress} />
+						</p>
+					</FieldInput>
+				</Field>
+			</div>
+
+			<Field
+				labelText="Conditions"
+				description="List your character's sources of stress."
+			>
+				<CharacterConditions />
+			</Field>
+		</Section>
+	)
+}
+
+function SorcerySection({ character }: { character: Doc<"characters"> }) {
+	return (
+		<Section title="Sorcery">
+			{character.sorceryDevice == null ?
+				<AddSorceryDeviceButton character={character} />
+			:	<>
+					<SorceryDeviceEditor
+						character={character}
+						sorceryDevice={character.sorceryDevice}
+					/>
+
+					<section className={column("gap-2")}>
+						<CastSpellButton asChild>
+							<Button icon={{ start: LucideBookOpenText }}>Spellbook</Button>
+						</CastSpellButton>
+						<RemoveSorceryDeviceButton character={character} />
+					</section>
+				</>
+			}
+		</Section>
+	)
+}
+
+function ProgressionSection({
+	character,
+	attributesLocked,
+	onAttributesLockedChange,
+}: {
+	character: Doc<"characters">
+	attributesLocked: boolean
+	onAttributesLockedChange: (value: boolean) => void
+}) {
+	return (
+		<Section title="Progression">
+			<Field
+				labelText="Experience"
+				description="Spend these points on attributes!"
+			>
+				<ExperienceDisplay character={character} />
+			</Field>
+
+			<div className={row("fluid-cols-36")}>
+				<RandomizeStatsButton character={character} />
+				{attributesLocked ?
+					<Button
+						appearance="outline"
+						icon={{ start: LucideUnlock }}
+						onClick={() => onAttributesLockedChange(false)}
+					>
+						Unlock Stats
+					</Button>
+				:	<Button
+						appearance="outline"
+						icon={{ start: LucideLock }}
+						onClick={() => onAttributesLockedChange(true)}
+					>
+						Lock Stats
+					</Button>
+				}
+			</div>
+		</Section>
+	)
+}
+
+function AttributeCategorySection({
+	character,
+	category,
+	editable,
+}: {
+	character: Doc<"characters">
+	category: AttributeCategory
+	editable: boolean
+}) {
+	return (
+		<Section
+			title={
+				<h3
+					className={sectionHeading(
+						"transition-colors",
+						parseCharacterData(character.data).archetype === category.id &&
+							"text-accent-400",
+					)}
 				>
+					{category.title}
+				</h3>
+			}
+		>
+			{category.attributes.map((attribute) => (
+				<CharacterAttributeField
+					key={attribute.id}
+					attribute={attribute}
+					editable={editable}
+				/>
+			))}
+		</Section>
+	)
+}
+
+function DescriptionSection({ character }: { character: Doc<"characters"> }) {
+	return (
+		<Section title="Description">
+			<Field label="Inventory" description="What are you carrying?">
+				<FieldInput asChild>
 					<ExpandingTextArea
-						{...characterDataInputProps("background")}
+						{...useCharacterDataInputProps(character, "inventory")}
 						className={textArea()}
 					/>
-				</Field>
-			</section>
+				</FieldInput>
+			</Field>
+
+			<Field
+				label="Background"
+				description={`Write your character's backstory. Doesn't have to be too long. Unless you want it to be!`}
+			>
+				<ExpandingTextArea
+					{...useCharacterDataInputProps(character, "background")}
+					className={textArea()}
+				/>
+			</Field>
+		</Section>
+	)
+}
+
+function useCharacterInputProps<K extends keyof UpdateCharacterArgs>(
+	character: Doc<"characters">,
+	key: K,
+) {
+	const updateCharacter = useUpdateCharacter().bind(null, character._id)
+	return {
+		value: character[key],
+		onChange: (arg: OnChangeArg<UpdateCharacterArgs[K]>) => {
+			updateCharacter({ [key]: resolveOnChangeArg(arg) })
+		},
+	}
+}
+
+function useCharacterDataInputProps<K extends keyof CharacterDataInput>(
+	character: Doc<"characters">,
+	key: K,
+) {
+	const updateCharacterData = useUpdateCharacterData().bind(null, character._id)
+	const characterData = parseCharacterData(character.data)
+	return {
+		value: characterData[key],
+		onChange: (arg: OnChangeArg<CharacterDataInput[K]>) => {
+			updateCharacterData({ [key]: resolveOnChangeArg(arg) })
+		},
+	}
+}
+
+function Section({
+	title,
+	children,
+}: {
+	title: string | ReactElement
+	children: ReactNode
+}) {
+	return (
+		<div className={column()}>
+			{typeof title === "string" ?
+				<h3 className={sectionHeading()}>{title}</h3>
+			:	title}
+			{children}
 		</div>
 	)
 }
