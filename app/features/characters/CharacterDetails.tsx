@@ -8,13 +8,18 @@ import {
 	LucideUnlock,
 	LucideWand,
 } from "lucide-react"
-import { type ReactElement, type ReactNode, useEffect } from "react"
+import { useEffect, type ReactNode, type ReactElement } from "react"
 import ExpandingTextArea from "react-expanding-textarea"
 import { AsyncButton } from "~/components/AsyncButton.tsx"
 import { Button, type ButtonProps } from "~/components/Button.tsx"
 import { ConfirmDialog } from "~/components/ConfirmDialog.tsx"
 import { CounterInput } from "~/components/CounterInput.tsx"
-import { Field, FieldInput } from "~/components/Field.tsx"
+import {
+	Field,
+	FieldDescription,
+	FieldInput,
+	FieldLabelText,
+} from "~/components/Field.tsx"
 import { ImageInput } from "~/components/ImageInput.tsx"
 import { Input } from "~/components/Input.tsx"
 import { LoadingPlaceholder } from "~/components/LoadingPlaceholder.tsx"
@@ -47,6 +52,7 @@ import {
 	useUpdateCharacter,
 } from "./useUpdateCharacter.tsx"
 import { useUpdateCharacterData } from "./useUpdateCharacterData.ts"
+import { twMerge } from "~/styles/twMerge.ts"
 
 export const characterNameInputId = "characterNameInput"
 
@@ -103,13 +109,14 @@ export function CharacterDetails({
 				<div className={column()}>
 					<StatusSection character={character} />
 					<SorcerySection character={character} />
-					<ProgressionSection
-						character={character}
-						attributesLocked={attributesLocked}
-						onAttributesLockedChange={setAttributesLocked}
-					/>
 				</div>
 			</div>
+
+			<ProgressionSection
+				character={character}
+				attributesLocked={attributesLocked}
+				onAttributesLockedChange={setAttributesLocked}
+			/>
 
 			<div className={row("content-center fluid-cols-36")}>
 				{getAttributeCategories().map((category) => (
@@ -256,16 +263,31 @@ function ProgressionSection({
 	attributesLocked: boolean
 	onAttributesLockedChange: (value: boolean) => void
 }) {
+	const world = useQuery(api.world.get)
+	const usedExperience = getUsedExperience(character)
+
 	return (
 		<Section title="Progression">
-			<Field
-				labelText="Experience"
-				description="Spend these points on attributes!"
-			>
-				<ExperienceDisplay character={character} />
-			</Field>
+			{world === undefined ?
+				<LoadingPlaceholder />
+			:	<Field>
+					<FieldLabelText
+						className={twMerge(
+							"tabular-nums transition-colors",
+							usedExperience < world.experience ? "text-green-400"
+							: usedExperience > world.experience ? "text-error-400"
+							: "",
+						)}
+					>
+						Experience: {world.experience - usedExperience}
+						<span aria-label="out of">/</span>
+						{world.experience}
+					</FieldLabelText>
+					<FieldDescription>Spend these points on attributes!</FieldDescription>
+				</Field>
+			}
 
-			<div className={row("fluid-cols-36")}>
+			<div className="flex flex-wrap gap-2">
 				<RandomizeStatsButton character={character} />
 				{attributesLocked ?
 					<Button
@@ -388,30 +410,6 @@ function Section({
 			:	title}
 			{children}
 		</div>
-	)
-}
-
-function ExperienceDisplay({ character }: { character: Doc<"characters"> }) {
-	const world = useQuery(api.world.get)
-	const usedExperience = getUsedExperience(character)
-
-	return (
-		<FieldInput asChild>
-			{world === undefined ?
-				<LoadingPlaceholder />
-			:	<p
-					data-negative={usedExperience > world.experience}
-					className={panel(
-						input(),
-						center(),
-						"h-auto tabular-nums data-[negative=true]:text-error-400",
-					)}
-				>
-					{world.experience - usedExperience} <span aria-label="out of">/</span>{" "}
-					{world.experience}
-				</p>
-			}
-		</FieldInput>
 	)
 }
 
