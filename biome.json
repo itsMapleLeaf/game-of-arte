@@ -17,20 +17,20 @@
 		"rules": {
 			"recommended": true,
 			"correctness": {
-				"noUnusedVariables": "warn",
+				"noUnusedVariables": "error",
 				"useHookAtTopLevel": "error",
 				"useExhaustiveDependencies": "error"
 			},
 			"suspicious": {
-				"noConsoleLog": "warn",
+				"noConsoleLog": "error",
 				"noEmptyInterface": "off"
 			},
 			"nursery": {
-				"useGroupedTypeImport": "warn"
+				"useGroupedTypeImport": "error"
 			},
 			"style": {
-				"noNegationElse": "warn",
-				"useSingleCaseStatement": "warn",
+				"noNegationElse": "error",
+				"useSingleCaseStatement": "error",
 				"noUnusedTemplateLiteral": "off"
 			}
 		}
