@@ -1,5 +1,4 @@
 import { type ReactNode, useState } from "react"
-import { sleep } from "~/helpers/async.ts"
 import { Button } from "./Button.tsx"
 import {
 	Dialog,
@@ -44,7 +43,6 @@ export function ConfirmDialog({
 							appearance="solid"
 							onClick={async () => {
 								await onConfirm()
-								await sleep(1000)
 								setOpen(false)
 							}}
 						>
