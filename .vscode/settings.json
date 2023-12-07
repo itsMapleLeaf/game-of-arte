@@ -13,8 +13,8 @@
 	"eslint.enable": false,
 	"editor.codeActionsOnSave": {
 		"source.organizeImports": "never",
-		"source.organizeImports.biome": "explicit",
-		"quickfix.biome": "explicit",
+		"source.organizeImports.biome": true,
+		"quickfix.biome": true,
 		"source.fixAll": "explicit"
 	},
 
