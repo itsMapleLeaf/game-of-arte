@@ -19,6 +19,7 @@ import {
 	FieldInput,
 	FieldLabel,
 } from "~/components/Field.tsx"
+import { Form } from "~/components/Form.tsx"
 import { LoadingPlaceholder } from "~/components/LoadingPlaceholder.tsx"
 import { checkbox } from "~/styles/index.ts"
 import { twMerge } from "~/styles/twMerge.ts"
@@ -32,21 +33,16 @@ import {
 } from "../characters/data.ts"
 import { WORLD_MANA_MAX } from "../worlds/constants.ts"
 import { SorcerySpellSelect } from "./SorcerySpellSelect.tsx"
-import {
-	type SorcerySpell,
-	type SorcerySpellId,
-	sorcerySpells,
-} from "./spells.ts"
+import type { SorcerySpell } from "./spells.ts"
 
 export function CastSpellButton(props: DialogTriggerProps) {
 	const [open, setOpen] = useState(false)
 
-	const [spellId, setSpellId] = useState<SorcerySpellId>()
-	const spell = spellId ? sorcerySpells[spellId] : undefined
+	const [spell, setSpell] = useState<SorcerySpell>()
 
 	useLayoutEffect(() => {
 		if (open) {
-			setSpellId(undefined)
+			setSpell(undefined)
 		}
 	}, [open])
 
@@ -58,14 +54,14 @@ export function CastSpellButton(props: DialogTriggerProps) {
 				className={spell == null ? "max-w-xl" : "max-w-md"}
 			>
 				{spell == null ?
-					<SorcerySpellSelect onSelect={setSpellId} />
+					<SorcerySpellSelect onSelect={setSpell} />
 				:	<CastSpellForm
 						spell={spell}
 						onSuccess={() => {
 							setOpen(false)
 						}}
 						onBack={() => {
-							setSpellId(undefined)
+							setSpell(undefined)
 						}}
 					/>
 				}
@@ -105,98 +101,100 @@ function CastSpellForm({
 	const stressRisk = finalMentalStress >= 6
 
 	return (
-		<div className="grid gap-4">
-			<section className="text-center" aria-label="Spell Details">
-				<h3 className="text-xl font-light">{spell.name}</h3>
-				<p className="mb-3 [text-wrap:balance]">{spell.description}</p>
+		<Form asChild>
+			<div>
+				<section className="text-center" aria-label="Spell Details">
+					<h3 className="text-xl font-light">{spell.name}</h3>
+					<p className="mb-3 [text-wrap:balance]">{spell.description}</p>
 
-				<p
-					className={twMerge(
-						"flex items-center justify-center gap-1 transition",
-						worldMana <= spell.cost.mana && "text-yellow-400",
-						worldMana === 0 && "text-red-400",
-					)}
-				>
-					Mana:
-					<span className="sr-only">from</span>
-					<strong>{worldMana}</strong>
-					<LucideArrowRight aria-label="to" className="s-5" />
-					<strong>{finalWorldMana}</strong>
-					{worldMana <= spell.cost.mana && (
-						<LucideAlertTriangle className="s-5" />
-					)}
-				</p>
-
-				{mentalStressCost > 0 && (
 					<p
 						className={twMerge(
 							"flex items-center justify-center gap-1 transition",
-							stressRisk && "text-red-400",
+							worldMana <= spell.cost.mana && "text-yellow-400",
+							worldMana === 0 && "text-red-400",
 						)}
 					>
-						Mental Stress:
+						Mana:
 						<span className="sr-only">from</span>
-						<strong>{mentalStress}</strong>
+						<strong>{worldMana}</strong>
 						<LucideArrowRight aria-label="to" className="s-5" />
-						<strong>{finalMentalStress}</strong>
-						{stressRisk && <LucideAlertTriangle className="s-5" />}
+						<strong>{finalWorldMana}</strong>
+						{worldMana <= spell.cost.mana && (
+							<LucideAlertTriangle className="s-5" />
+						)}
 					</p>
-				)}
-			</section>
 
-			<Field>
-				<div className="flex flex-row items-center gap-2">
-					<FieldLabel>Amplify</FieldLabel>
-					<FieldInput
-						type="checkbox"
-						checked={amplify}
-						className={checkbox()}
-						onChange={(event) => setAmplify(event.target.checked)}
-					/>
-				</div>
-				<FieldDescription>
-					When amplified: {spell.amplifiedDescription}
-				</FieldDescription>
-			</Field>
+					{mentalStressCost > 0 && (
+						<p
+							className={twMerge(
+								"flex items-center justify-center gap-1 transition",
+								stressRisk && "text-red-400",
+							)}
+						>
+							Mental Stress:
+							<span className="sr-only">from</span>
+							<strong>{mentalStress}</strong>
+							<LucideArrowRight aria-label="to" className="s-5" />
+							<strong>{finalMentalStress}</strong>
+							{stressRisk && <LucideAlertTriangle className="s-5" />}
+						</p>
+					)}
+				</section>
 
-			<CharacterAttributeRollForm
-				attribute={getAttributeById(spell.attributeId)}
-				defaultLabel={`${character.name}: ${
-					getAttributeById(spell.attributeId).name
-				} ${getCharacterAttributeValue(character, spell.attributeId)} - ${
-					spell.name
-				}${amplify ? " (Amplified)" : ""}`}
-				onSuccess={async () => {
-					await Promise.all([
-						subtractWorldMana({
-							amount: spell.cost.mana,
-						}).catch(console.error),
-						mentalStressCost > 0 &&
-							upsertCondition({
-								id: character._id,
-								condition: {
-									id: crypto.randomUUID(),
-									description: `Sorcery - ${spell.name}`,
-									physicalStress: 0,
-									mentalStress: mentalStressCost,
-								},
+				<Field>
+					<div className="flex flex-row items-center gap-2">
+						<FieldLabel>Amplify</FieldLabel>
+						<FieldInput
+							type="checkbox"
+							checked={amplify}
+							className={checkbox()}
+							onChange={(event) => setAmplify(event.target.checked)}
+						/>
+					</div>
+					<FieldDescription>
+						When amplified: {spell.amplifiedDescription}
+					</FieldDescription>
+				</Field>
+
+				<CharacterAttributeRollForm
+					attribute={getAttributeById(spell.attributeId)}
+					defaultLabel={`${character.name}: ${
+						getAttributeById(spell.attributeId).name
+					} ${getCharacterAttributeValue(character, spell.attributeId)} - ${
+						spell.name
+					}${amplify ? " (Amplified)" : ""}`}
+					onSuccess={async () => {
+						await Promise.all([
+							subtractWorldMana({
+								amount: spell.cost.mana,
 							}).catch(console.error),
-					])
-					onSuccess()
-				}}
-			/>
+							mentalStressCost > 0 &&
+								upsertCondition({
+									id: character._id,
+									condition: {
+										id: crypto.randomUUID(),
+										description: `Sorcery - ${spell.name}`,
+										physicalStress: 0,
+										mentalStress: mentalStressCost,
+									},
+								}).catch(console.error),
+						])
+						onSuccess()
+					}}
+				/>
 
-			<Button
-				appearance="outline"
-				icon={{ start: LucideChevronLeft }}
-				onClick={onBack}
-			>
-				Back
-			</Button>
+				<Button
+					appearance="outline"
+					icon={{ start: LucideChevronLeft }}
+					onClick={onBack}
+				>
+					Back
+				</Button>
 
-			<aside className="text-center text-sm opacity-75">
-				Spell costs will be applied automatically after rolling.
-			</aside>
-		</div>
+				<aside className="text-center text-sm opacity-75">
+					Spell costs will be applied automatically after rolling.
+				</aside>
+			</div>
+		</Form>
 	)
 }

@@ -1,4 +1,6 @@
-import { Composite, CompositeItem, CompositeProvider } from "@ariakit/react"
+import { api } from "convex/_generated/api.js"
+import { useMutation } from "convex/react"
+import { LucideSparkles, LucideX } from "lucide-react"
 import { matchSorter } from "match-sorter"
 import { useState } from "react"
 import { Button } from "~/components/Button.tsx"
@@ -7,7 +9,14 @@ import {
 	CollapseButton,
 	CollapseContent,
 } from "~/components/Collapse.tsx"
+import { ConfirmDialog } from "~/components/ConfirmDialog.tsx"
 import { ScrollArea } from "~/components/ScrollArea.tsx"
+import { SrOnly } from "~/components/SrOnly.tsx"
+import {
+	Tooltip,
+	TooltipContent,
+	TooltipTrigger,
+} from "~/components/Tooltip.tsx"
 import { autoRef } from "~/helpers/autoRef.tsx"
 import { groupBy } from "~/helpers/collections.ts"
 import { plural } from "~/helpers/string.ts"
@@ -15,30 +24,40 @@ import { input } from "~/styles/index.ts"
 import { CharacterContext } from "../characters/CharacterContext.tsx"
 import { getAttributeById } from "../characters/attributes.ts"
 import { getCharacterAttributeValue } from "../characters/data.ts"
-import { type SorcerySpellId, sorcerySpells } from "./spells"
+import { type SorcerySpell, sorcerySpells } from "./spells"
 
 export const SorcerySpellSelect = autoRef(function SorcerySpellSelect({
 	onSelect,
 }: {
-	onSelect: (spellId: SorcerySpellId) => void
+	onSelect: (spell: SorcerySpell) => void
 }) {
+	const character = CharacterContext.useValue()
+
 	const [search, setSearch] = useState("")
 
-	const matchedSpells = matchSorter(Object.entries(sorcerySpells), search, {
-		keys: [
-			"1.name",
-			"1.description",
-			"1.amplifyDescription",
-			"1.caveats",
-			"1.attributeId",
+	const matchedSpells = matchSorter(
+		[
+			...Object.entries(sorcerySpells),
+			...(character.freeformSpells?.map(
+				(spell) => [spell.id, spell] as const,
+			) ?? []),
 		],
-	})
-
-	const spellsByAttribute = groupBy(matchedSpells, ([, spell]) =>
-		getAttributeById(spell.attributeId),
+		search,
+		{
+			keys: [
+				"1.name",
+				"1.description",
+				"1.amplifyDescription",
+				"1.caveats",
+				"1.attributeId",
+			],
+		},
 	)
 
-	const character = CharacterContext.useValue()
+	const spellsByAttribute = groupBy(matchedSpells, ([, spell]) =>
+		// this will probably crash
+		getAttributeById(spell.attributeId),
+	)
 
 	return (
 		<div className="flex flex-col gap-3 p-3">
@@ -51,67 +70,116 @@ export const SorcerySpellSelect = autoRef(function SorcerySpellSelect({
 				}}
 			/>
 
-			<CompositeProvider>
-				<Composite className="h-[calc(100dvh-20rem)]">
-					<ScrollArea className="-mr-3 h-full pr-3">
-						{[...spellsByAttribute.entries()]
-							.sort(([a], [b]) => a.name.localeCompare(b.name))
-							.map(([attribute, spells]) => (
-								<div key={attribute.id} className="pb-3">
-									<Collapse
-										persistenceKey={`spellbook-${attribute.id}`}
-										defaultOpen
-									>
-										<CollapseButton className="py-2 text-3xl font-light">
-											{attribute.name} (
-											{getCharacterAttributeValue(character, attribute.id)})
-										</CollapseButton>
-										<CollapseContent className="flex flex-col space-y-2">
-											{spells.map(([id, spell]) => (
-												<Button
-													key={id}
-													appearance="outline"
-													onClick={() => onSelect(id)}
-													className="shrink-0 flex-col items-start gap-3 py-3"
-													asChild
-												>
-													<CompositeItem>
-														<h4 className="text-xl font-light">{spell.name}</h4>
-														<p>{spell.description}</p>
-														<section>
-															<h5 className="text-sm/relaxed font-medium uppercase tracking-wide opacity-75">
-																Amplify
-															</h5>
-															<p>{spell.amplifiedDescription}</p>
-														</section>
-														<section>
-															<h5 className="text-sm/relaxed font-medium uppercase tracking-wide opacity-75">
-																Cost
-															</h5>
-															<p>
-																<span>{spell.cost.mana} mana</span>
-																{spell.cost.mentalStress && (
-																	<span>
-																		, {spell.cost.mentalStress} stress
-																	</span>
-																)}
-																{spell.castingTime && (
-																	<span>
-																		, {plural(spell.castingTime.turns, "turn")}
-																	</span>
-																)}
-															</p>
-														</section>
-													</CompositeItem>
-												</Button>
-											))}
-										</CollapseContent>
-									</Collapse>
-								</div>
-							))}
-					</ScrollArea>
-				</Composite>
-			</CompositeProvider>
+			<ScrollArea className="-mr-3 h-[calc(100dvh-20rem)] pr-3">
+				{[...spellsByAttribute.entries()]
+					.sort(([a], [b]) => a.name.localeCompare(b.name))
+					.map(([attribute, spells]) => (
+						<div key={attribute.id} className="pb-3">
+							<AttributeSectionCollapse attribute={attribute}>
+								{spells.map(([id, spell]) => (
+									<SpellButton
+										key={id}
+										spell={{ ...spell, id }}
+										onClick={() => onSelect(spell)}
+									/>
+								))}
+							</AttributeSectionCollapse>
+						</div>
+					))}
+			</ScrollArea>
 		</div>
 	)
 })
+
+function AttributeSectionCollapse({
+	attribute,
+	children,
+}: {
+	attribute: ReturnType<typeof getAttributeById>
+	children: React.ReactNode
+}) {
+	const character = CharacterContext.useValue()
+	return (
+		<Collapse persistenceKey={`spellbook-${attribute.id}`} defaultOpen>
+			<CollapseButton className="py-2 text-2xl font-light">
+				{attribute.name} ({getCharacterAttributeValue(character, attribute.id)})
+			</CollapseButton>
+			<CollapseContent className="flex flex-col space-y-2">
+				{children}
+			</CollapseContent>
+		</Collapse>
+	)
+}
+
+function SpellButton({
+	spell,
+	onClick,
+}: {
+	spell: SorcerySpell & { id: string }
+	onClick: () => void
+}) {
+	const character = CharacterContext.useValue()
+	const removeFreeformSpell = useMutation(api.characters.removeFreeformSpell)
+	const isFreeform = sorcerySpells[spell.id] == null
+	return (
+		<div className="relative">
+			<Button
+				appearance="outline"
+				onClick={onClick}
+				className="w-full flex-col items-start gap-3 py-3"
+			>
+				<h4 className="text-xl font-light">
+					{isFreeform ?
+						<Tooltip>
+							<TooltipTrigger asChild>
+								<LucideSparkles className="inline" />
+							</TooltipTrigger>
+							<TooltipContent>Freeform spell</TooltipContent>
+						</Tooltip>
+					:	null}{" "}
+					{spell.name}
+				</h4>
+				<p>{spell.description}</p>
+				<section>
+					<h5 className="text-sm/relaxed font-medium uppercase tracking-wide opacity-75">
+						Amplify
+					</h5>
+					<p>{spell.amplifiedDescription}</p>
+				</section>
+				<section>
+					<h5 className="text-sm/relaxed font-medium uppercase tracking-wide opacity-75">
+						Cost
+					</h5>
+					<p>
+						<span>{spell.cost.mana} mana</span>
+						{spell.cost.mentalStress ?
+							<span>, {spell.cost.mentalStress} stress</span>
+						:	null}
+						{spell.castingTime?.turns ?
+							<span>, {plural(spell.castingTime.turns, "turn")}</span>
+						:	null}
+					</p>
+				</section>
+			</Button>
+			{isFreeform && (
+				<ConfirmDialog
+					title="Remove spell"
+					description="Are you sure you want to remove this spell from your spellbook?"
+					confirmText="Remove"
+					onConfirm={() =>
+						removeFreeformSpell({ id: character._id, spellId: spell.id })
+					}
+				>
+					<Button
+						appearance="faded"
+						className="absolute right-0 top-0"
+						square
+						icon={{ end: LucideX }}
+					>
+						<SrOnly>Remove</SrOnly>
+					</Button>
+				</ConfirmDialog>
+			)}
+		</div>
+	)
+}

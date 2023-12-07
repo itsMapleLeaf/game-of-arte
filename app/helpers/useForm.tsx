@@ -1,15 +1,11 @@
 import { useState } from "react"
 import { type ZodTypeDef, z } from "zod"
-import { isObject } from "~/helpers/is.ts"
 import { useAsyncCallback } from "~/helpers/useAsyncCallback.ts"
+import type { KeyOfUnion } from "./types.ts"
 
-type EventLike = {
-	currentTarget: {
-		type: string
-		value: string
-		valueAsNumber: number
-		checked: boolean
-	}
+type FormErrors<Keys extends PropertyKey> = {
+	formErrors?: string[]
+	fieldErrors?: Partial<Record<Keys, string[]>>
 }
 
 export function useForm<
@@ -24,17 +20,16 @@ export function useForm<
 	defaultValues?: Partial<Input>
 	onSubmit: (values: Output) => unknown
 }) {
-	const [values, setValues] =
-		useState<Partial<Record<string, string | number | boolean>>>(defaultValues)
-
-	const [errors, setErrors] = useState<z.typeToFlattenedError<Input>>()
+	const [errors, setErrors] = useState<FormErrors<KeyOfUnion<Input>>>()
 
 	const [submit, submitState] = useAsyncCallback(
-		async (event: React.FormEvent) => {
+		async (event: React.FormEvent<HTMLFormElement>) => {
 			event.preventDefault()
 			setErrors(undefined)
 
-			const result = await schema.safeParseAsync(values)
+			const result = await schema.safeParseAsync(
+				Object.fromEntries(new FormData(event.currentTarget)),
+			)
 			if (result.success) {
 				try {
 					await onSubmit(result.data)
@@ -46,68 +41,49 @@ export function useForm<
 					})
 				}
 			} else {
-				setErrors(result.error.flatten())
+				console.error(result.error.flatten())
+				setErrors(
+					result.error.flatten() as unknown as FormErrors<KeyOfUnion<Input>>,
+				)
 			}
 		},
 	)
 
-	const getValue = <V,>(
-		eventOrValue: V | EventLike,
-	): string | number | boolean | V => {
-		if (!isObject(eventOrValue)) {
-			return eventOrValue
-		}
-
-		const { currentTarget } = eventOrValue
-		if (currentTarget.type === "checkbox" || currentTarget.type === "radio") {
-			return currentTarget.checked
-		}
-		if (currentTarget.type === "number") {
-			return currentTarget.valueAsNumber
-		}
-		return currentTarget.value
-	}
-
-	const baseProps = <K extends keyof Input>(name: string) => ({
+	const inputProps = <K extends KeyOfUnion<Input>>(name: K) => ({
 		name,
-		onChange: (eventOrValue: Input[K] | EventLike) => {
-			const value = getValue(eventOrValue)
-			setValues((prev) => ({ ...prev, [name]: value }))
-		},
+		defaultValue: defaultValues[name],
+		errors: errors?.fieldErrors?.[name],
 	})
 
-	const textInputProps = <K extends Extract<keyof Input, string>>(name: K) => ({
-		...baseProps(name),
+	const textInputProps = <K extends KeyOfUnion<Input>>(name: K) => ({
+		name,
 		type: "text",
-		value: values[name] === undefined ? "" : String(values[name]),
+		defaultValue: defaultValues[name],
+		errors: errors?.fieldErrors?.[name],
 	})
 
-	const numberInputProps = <K extends Extract<keyof Input, string>>(
-		name: K,
-	) => ({
-		...baseProps(name),
+	const numberInputProps = <K extends KeyOfUnion<Input>>(name: K) => ({
+		name,
 		type: "number",
-		value: values[name] === undefined ? 0 : Number(values[name]),
+		defaultValue: defaultValues[name],
+		errors: errors?.fieldErrors?.[name],
 	})
 
-	const checkboxProps = <K extends Extract<keyof Input, string>>(name: K) => ({
-		...baseProps(name),
+	const checkboxProps = <K extends KeyOfUnion<Input>>(name: K) => ({
+		name,
 		type: "checkbox",
-		value: Boolean(values[name]),
+		defaultValue: defaultValues[name],
+		errors: errors?.fieldErrors?.[name],
 	})
-
-	const setValue = <K extends keyof Input>(name: K, value: Input[K]) => {
-		setValues((prev) => ({ ...prev, [name]: value }))
-	}
 
 	return {
-		values,
-		setValue,
 		submit,
+		inputProps,
 		textInputProps,
 		numberInputProps,
 		checkboxProps,
 		isSubmitting: submitState.isLoading,
+		hasErrors: !!errors,
 		formErrors: errors?.formErrors,
 		fieldErrors: errors?.fieldErrors,
 	}
