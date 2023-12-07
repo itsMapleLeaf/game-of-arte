@@ -8,11 +8,7 @@ import {
 	LucideUnlock,
 	LucideWand,
 } from "lucide-react"
-import {
-	useEffect,
-	type ReactNode,
-	type ReactElement,
-} from "react"
+import { type ReactElement, type ReactNode, useEffect } from "react"
 import ExpandingTextArea from "react-expanding-textarea"
 import { AsyncButton } from "~/components/AsyncButton.tsx"
 import { Button, type ButtonProps } from "~/components/Button.tsx"
@@ -24,9 +20,9 @@ import { Input } from "~/components/Input.tsx"
 import { LoadingPlaceholder } from "~/components/LoadingPlaceholder.tsx"
 import { CharacterAttributeField } from "~/features/characters/CharacterAttributeField.tsx"
 import {
+	type AttributeCategory,
 	getAttributeCategories,
 	getAttributes,
-	type AttributeCategory,
 } from "~/features/characters/attributes"
 import { useLocalStorageState } from "~/helpers/useLocalStorageState.tsx"
 import { solidButton } from "~/styles/button.ts"
