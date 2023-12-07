@@ -15,7 +15,7 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.40.1-jammy
     steps:
       - uses: actions/checkout@v3
-      - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/setup-node-pnpm
 
       - name: Build with Convex deploy
         run: pnpm convex deploy
