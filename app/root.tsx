@@ -40,7 +40,7 @@ export function loader(args: LoaderFunctionArgs) {
 
 export const shouldRevalidate: ShouldRevalidateFunction = () => false
 
-function Document({ children }: { children: React.ReactNode }) {
+function Document({ children }:                      { children: React.ReactNode }) {
 	return (
 		<html
 			lang="en"
