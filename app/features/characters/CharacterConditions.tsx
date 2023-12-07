@@ -6,11 +6,11 @@ import { LucideCheck, LucideEdit, LucidePlus, LucideX } from "lucide-react"
 import { useState } from "react"
 import { z } from "zod"
 import { Button } from "~/components/Button.tsx"
-import { CounterInput } from "~/components/CounterInput.tsx"
-import { Field, FieldErrors, FieldInput } from "~/components/Field.tsx"
+import { CounterInputUncontrolledField } from "~/components/CounterInput.tsx"
+import { FieldErrors } from "~/components/Field.tsx"
+import { InputField } from "~/components/Input.tsx"
 import { Popover, PopoverPanel, PopoverTrigger } from "~/components/Popover.tsx"
 import { SrOnly } from "~/components/SrOnly.tsx"
-import { input } from "~/styles/index.ts"
 import { panel } from "~/styles/panel.ts"
 import { useForm } from "../../helpers/useForm.tsx"
 import { CharacterContext } from "./CharacterContext.tsx"
@@ -118,8 +118,8 @@ function ConditionForm({
 		schema: z
 			.object({
 				description: z.string().min(1, "Cannot be empty").default(""),
-				physicalStress: z.number().int().min(0),
-				mentalStress: z.number().int().min(0),
+				physicalStress: z.coerce.number().int().min(0),
+				mentalStress: z.coerce.number().int().min(0),
 			})
 			.refine(
 				(data) => {
@@ -149,38 +149,34 @@ function ConditionForm({
 
 	return (
 		<form onSubmit={form.submit} className="grid w-64 grid-cols-2 gap-3 p-3">
-			<Field
-				label="Description"
-				errors={form.fieldErrors?.description}
-				className="col-span-2"
-			>
-				<FieldInput
+			<div className="col-span-2">
+				<InputField
 					{...form.textInputProps("description")}
-					className={input()}
+					label="Description"
 					placeholder="What happened?"
 				/>
-			</Field>
-			<Field label="Phys. Stress" errors={form.fieldErrors?.physicalStress}>
-				<FieldInput asChild>
-					<CounterInput {...form.numberInputProps("physicalStress")} min={0} />
-				</FieldInput>
-			</Field>
-			<Field label="Ment. Stress" errors={form.fieldErrors?.mentalStress}>
-				<FieldInput asChild>
-					<CounterInput {...form.numberInputProps("mentalStress")} min={0} />
-				</FieldInput>
-			</Field>
-
-			<div className="col-span-2">
-				<Button
-					type="submit"
-					className="w-full"
-					icon={{ start: LucideCheck }}
-					pending={form.isSubmitting}
-				>
-					Submit
-				</Button>
 			</div>
+
+			<CounterInputUncontrolledField
+				{...form.numberInputProps("physicalStress")}
+				min={0}
+				label="Phys. Stress"
+			/>
+
+			<CounterInputUncontrolledField
+				{...form.numberInputProps("mentalStress")}
+				min={0}
+				label="Ment. Stress"
+			/>
+
+			<Button
+				type="submit"
+				className="col-span-2 w-full"
+				icon={{ start: LucideCheck }}
+				pending={form.isSubmitting}
+			>
+				Submit
+			</Button>
 
 			<FieldErrors className="col-span-2" errors={form.formErrors} />
 		</form>
