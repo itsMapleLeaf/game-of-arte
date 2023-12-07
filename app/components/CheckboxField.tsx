@@ -12,7 +12,7 @@ import {
 
 export interface CheckboxFieldProps
 	extends React.ComponentPropsWithRef<"input">,
-		StrictOmit<FieldPropsBase, "asChild" | "labelText"> {
+		StrictOmit<FieldPropsBase, "labelText"> {
 	label: string | React.ReactElement
 }
 
