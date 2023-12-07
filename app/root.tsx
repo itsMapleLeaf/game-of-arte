@@ -17,6 +17,7 @@ import {
 	ScrollRestoration,
 	type ShouldRevalidateFunction,
 } from "@remix-run/react"
+import { SpeedInsights } from "@vercel/speed-insights/remix"
 import { ConvexReactClient, useConvexAuth } from "convex/react"
 import { ConvexProviderWithClerk } from "convex/react-clerk"
 import { LucideBookOpenText, LucideGamepad2 } from "lucide-react"
@@ -57,6 +58,7 @@ function Document({ children }: { children: React.ReactNode }) {
 				<ScrollRestoration />
 				<Scripts />
 				<LiveReload />
+				<SpeedInsights />
 			</body>
 		</html>
 	)

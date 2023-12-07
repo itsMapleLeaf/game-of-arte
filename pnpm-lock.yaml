@@ -52,6 +52,9 @@ dependencies:
   '@vercel/remix':
     specifier: 2.3.1
     version: 2.3.1(react-dom@18.2.0)(react@18.2.0)(typescript@5.3.3)
+  '@vercel/speed-insights':
+    specifier: 1.0.0
+    version: 1.0.0
   convex:
     specifier: 1.6.3
     version: 1.6.3(react-dom@18.2.0)(react@18.2.0)
@@ -2564,7 +2567,7 @@ packages:
     peerDependencies:
       '@remix-run/serve': ^2.3.1
       typescript: ^5.1.0
-      vite: 5.0.3
+      vite: ^4.4.9 || ^5.0.0
     peerDependenciesMeta:
       '@remix-run/serve':
         optional: true
@@ -3223,6 +3226,11 @@ packages:
       react-dom: 18.2.0(react@18.2.0)
     transitivePeerDependencies:
       - typescript
+    dev: false
+
+  /@vercel/speed-insights@1.0.0:
+    resolution: {integrity: sha512-5blmCVGGPn+3BqwBPb1jc3OnzRozNuLgJVr7xH6XjxCTvocs7z/Bml7lo+JzLKUXR1Q35qI/PlEllmNbZmP9Ew==}
+    requiresBuild: true
     dev: false
 
   /@vitest/expect@1.0.1:
