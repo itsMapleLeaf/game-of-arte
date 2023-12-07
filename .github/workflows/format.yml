@@ -13,7 +13,7 @@ jobs:
       - uses: actions/checkout@v3
         with:
           token: ${{ secrets.PAT }}
-      - uses: ./.github/actions/setup-node
+      - uses: ./.github/actions/setup-node-pnpm
       - run: pnpm run format
       - uses: stefanzweifel/git-auto-commit-action@v5
         with:
