@@ -108,6 +108,9 @@ devDependencies:
   '@total-typescript/ts-reset':
     specifier: 0.5.1
     version: 0.5.1
+  '@types/lodash-es':
+    specifier: 4.17.12
+    version: 4.17.12
   '@types/node':
     specifier: 20.10.4
     version: 20.10.4
@@ -126,6 +129,9 @@ devDependencies:
   knip:
     specifier: 3.5.1
     version: 3.5.1(@types/node@20.10.4)(typescript@5.3.3)
+  lodash-es:
+    specifier: 4.17.21
+    version: 4.17.21
   npm-run-all:
     specifier: 4.1.5
     version: 4.1.5
@@ -2939,6 +2945,16 @@ packages:
 
   /@types/json-schema@7.0.15:
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
+    dev: true
+
+  /@types/lodash-es@4.17.12:
+    resolution: {integrity: sha512-0NgftHUcV4v34VhXm8QBSftKVXtbkBG3ViCjs6+eJ5a6y6Mi/jiFGPc1sC7QK+9BFhWrURE3EOggmWaSxL9OzQ==}
+    dependencies:
+      '@types/lodash': 4.14.202
+    dev: true
+
+  /@types/lodash@4.14.202:
+    resolution: {integrity: sha512-OvlIYQK9tNneDlS0VN54LLd5uiPCBOp7gS5Z0f1mjoJYBrtStzgmJBxONW3U6OZqdtNzZPmn9BS/7WI7BFFcFQ==}
     dev: true
 
   /@types/mdast@3.0.15:
@@ -6024,6 +6040,10 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       p-locate: 5.0.0
+    dev: true
+
+  /lodash-es@4.17.21:
+    resolution: {integrity: sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==}
     dev: true
 
   /lodash.camelcase@4.3.0:
