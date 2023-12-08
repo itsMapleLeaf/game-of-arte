@@ -99,7 +99,7 @@ function RevealRollButton({ roll }: { roll: { _id: Id<"diceRolls"> } }) {
 			appearance="outline"
 			size="small"
 			onClick={() => reveal({ rollId: roll._id })}
-			icon={{ start: LucideEye }}
+			icon={LucideEye}
 		>
 			Reveal
 		</Button>
@@ -147,7 +147,7 @@ function ResilienceActions({
 				onClick={async () => {
 					await setHints({ rollId: roll._id, hints: [] })
 				}}
-				icon={{ start: LucideX }}
+				icon={LucideX}
 			>
 				<SrOnly>Hide resilience button</SrOnly>
 			</Button>

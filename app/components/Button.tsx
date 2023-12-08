@@ -2,7 +2,7 @@ import { Slot, Slottable } from "@radix-ui/react-slot"
 import { LucideLoader2 } from "lucide-react"
 import type { ClassNameValue } from "tailwind-merge"
 import { autoRef } from "~/helpers/autoRef.tsx"
-import type { StrictOmit } from "~/helpers/types.ts"
+import type { PartialKeys, StrictOmit } from "~/helpers/types.ts"
 import { useAsyncCallback } from "~/helpers/useAsyncCallback.ts"
 import { twMerge } from "~/styles/twMerge.ts"
 import { type TwStyle, twStyle } from "~/styles/twStyle.ts"
@@ -11,7 +11,8 @@ export interface ButtonProps
 	extends StrictOmit<React.ComponentPropsWithRef<"button">, "onClick">,
 		StrictOmit<ButtonStyleProps, "className"> {
 	asChild?: boolean
-	icon?: { start: ButtonIconComponent } | { end: ButtonIconComponent }
+	icon?: ButtonIconComponent
+	iconPosition?: "start" | "end"
 	pending?: boolean
 	onClick?: (event: React.MouseEvent<HTMLButtonElement>) => unknown
 }
@@ -21,45 +22,35 @@ export type ButtonIconComponent = (props: {
 	"aria-hidden": true
 }) => React.ReactNode
 
-export const Button = autoRef(function Button(props: ButtonProps) {
+export const Button = autoRef(function Button({
+	asChild,
+	size = "default",
+	icon: IconComponent,
+	iconPosition = "start",
+	pending,
+	children,
+	appearance = "solid",
+	square = false,
+	className,
+	onClick,
+	...buttonProps
+}: ButtonProps) {
 	const [handleClick, state] = useAsyncCallback(
 		async (event: React.MouseEvent<HTMLButtonElement>) => {
-			await props.onClick?.(event)
+			await onClick?.(event)
 		},
 	)
 
-	const {
-		asChild,
-		size = "default",
-		icon: iconProp,
-		pending = state.isLoading,
-		children,
-		appearance: _appearance,
-		square: _square,
-		...buttonProps
-	} = props
-
-	let iconStart
-	let iconEnd
-	if (iconProp) {
-		if ("start" in iconProp) {
-			iconStart =
-				pending ?
-					<LucideLoader2
-						aria-hidden
-						className={buttonIconStyle({ size, className: "animate-spin" })}
-					/>
-				:	<iconProp.start aria-hidden className={buttonIconStyle({ size })} />
-		}
-		if ("end" in iconProp) {
-			iconEnd =
-				pending ?
-					<LucideLoader2
-						aria-hidden
-						className={buttonIconStyle({ size, className: "animate-spin" })}
-					/>
-				:	<iconProp.end aria-hidden className={buttonIconStyle({ size })} />
-		}
+	let icon
+	if (pending ?? state.isLoading) {
+		icon = (
+			<LucideLoader2
+				aria-hidden
+				className={buttonIconStyle({ size, className: "animate-spin" })}
+			/>
+		)
+	} else if (IconComponent) {
+		icon = <IconComponent aria-hidden className={buttonIconStyle({ size })} />
 	}
 
 	const Component = asChild ? Slot : "button"
@@ -67,12 +58,17 @@ export const Button = autoRef(function Button(props: ButtonProps) {
 		<Component
 			type="button"
 			{...buttonProps}
-			className={buttonStyle(props)}
+			className={buttonStyle({
+				appearance,
+				size,
+				square,
+				className,
+			})}
 			onClick={handleClick}
 		>
-			{iconStart}
+			{iconPosition === "start" && icon}
 			<Slottable>{children}</Slottable>
-			{iconEnd}
+			{iconPosition === "end" && icon}
 		</Component>
 	)
 })
@@ -85,11 +81,11 @@ export interface ButtonStyleProps {
 }
 
 export function buttonStyle({
-	appearance = "solid",
-	size = "default",
+	appearance,
+	size,
 	square,
 	className,
-}: ButtonStyleProps) {
+}: PartialKeys<Required<ButtonStyleProps>, "className">) {
 	return twMerge(
 		buttonAppearanceStyles[appearance](),
 		buttonSizeStyles[size](),

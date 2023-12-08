@@ -183,11 +183,7 @@ function CastSpellForm({
 					}}
 				/>
 
-				<Button
-					appearance="outline"
-					icon={{ start: LucideChevronLeft }}
-					onClick={onBack}
-				>
+				<Button appearance="outline" icon={LucideChevronLeft} onClick={onBack}>
 					Back
 				</Button>
 

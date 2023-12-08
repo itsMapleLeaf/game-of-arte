@@ -150,11 +150,7 @@ function FreeformSpellForm({
 				/>
 			</div>
 
-			<Button
-				type="submit"
-				icon={{ start: LucideWand2 }}
-				pending={form.isSubmitting}
-			>
+			<Button type="submit" icon={LucideWand2} pending={form.isSubmitting}>
 				Save
 			</Button>
 

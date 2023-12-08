@@ -42,7 +42,7 @@ export function DiceRollList({
 				{!listResult.isDone && (
 					<Dialog>
 						<DialogTrigger asChild>
-							<Button appearance="outline" icon={{ start: LucideList }}>
+							<Button appearance="outline" icon={LucideList}>
 								Show All
 							</Button>
 						</DialogTrigger>
