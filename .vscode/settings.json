@@ -13,9 +13,9 @@
 	"eslint.enable": false,
 	"editor.codeActionsOnSave": {
 		"source.organizeImports": "never",
-		"source.organizeImports.biome": true,
-		"source.removeUnusedImports": true,
-		"quickfix.biome": true,
+		"source.organizeImports.biome": "explicit",
+		"source.removeUnusedImports": "explicit",
+		"quickfix.biome": "explicit",
 		"source.fixAll": "explicit"
 	},
 
