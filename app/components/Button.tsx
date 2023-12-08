@@ -81,6 +81,15 @@ export interface ButtonStyleProps {
 }
 
 export function buttonStyle({
+	appearance = "solid",
+	size = "default",
+	square = false,
+	className,
+}: ButtonStyleProps) {
+	return buttonStyleInternal({ appearance, size, square, className })
+}
+
+function buttonStyleInternal({
 	appearance,
 	size,
 	square,

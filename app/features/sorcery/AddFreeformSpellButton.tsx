@@ -4,26 +4,18 @@ import { useMutation } from "convex/react"
 import { LucideWand2 } from "lucide-react"
 import { type ComponentPropsWithoutRef, useState } from "react"
 import { z } from "zod"
-import { Button } from "~/components/Button.tsx"
 import { CounterInputUncontrolledField } from "~/components/CounterInput.tsx"
 import {
 	Dialog,
 	DialogTrigger,
 	SimpleDialogContent,
 } from "~/components/Dialog.tsx"
-import { FieldErrors } from "~/components/Field.tsx"
-import { Form } from "~/components/Form.tsx"
-import { InputField } from "~/components/Input.tsx"
+import { Input } from "~/components/Input.tsx"
 import { PopoverTrigger } from "~/components/Popover.tsx"
-import { SelectField, SelectItem } from "~/components/Select.tsx"
-import { TextAreaField } from "~/components/TextArea.tsx"
-import { compareKey } from "~/helpers/collections.ts"
-import { useForm } from "~/helpers/useForm.tsx"
+import { Select } from "~/components/Select.tsx"
+import { useForm } from "~/components/useForm.tsx"
 import { getAttributeById } from "../characters/attributes.ts"
-import {
-	type SorcerySpellAttributeId,
-	sorcerySpellAttributeIdSchema,
-} from "./spells.ts"
+import { sorcerySpellAttributeIdSchema } from "./spells.ts"
 
 export function AddFreeformSpellButton({
 	character,
@@ -55,7 +47,6 @@ function FreeformSpellForm({
 	onSuccess: () => void
 }) {
 	const upsertFreeformSpell = useMutation(api.characters.upsertFreeformSpell)
-	const [attributeId, setAttributeId] = useState<SorcerySpellAttributeId>()
 
 	const form = useForm({
 		schema: z.object({
@@ -90,80 +81,61 @@ function FreeformSpellForm({
 	})
 
 	return (
-		<Form className="@container" onSubmit={form.submit}>
+		<form.Form className="@container">
 			<div className="grid auto-cols-fr gap-4 @sm:grid-flow-col">
-				<InputField {...form.textInputProps("name")} label="Name" />
+				<form.Field
+					name="name"
+					label="Name"
+					input={<Input placeholder="Fireball" />}
+				/>
 
-				<SelectField
-					{...form.inputProps("attributeId")}
+				<form.Field
+					name="attributeId"
 					label="Attribute"
-					value={attributeId}
-					setValue={(value) => {
-						setAttributeId(sorcerySpellAttributeIdSchema.parse(value))
-					}}
-					buttonContent={
-						attributeId ?
-							getAttributeById(attributeId).name
-						:	"Select Attribute"
+					input={
+						<Select
+							options={sorcerySpellAttributeIdSchema.options.map((id) => ({
+								label: getAttributeById(id).name,
+								value: id,
+							}))}
+						/>
 					}
-				>
-					{sorcerySpellAttributeIdSchema.options
-						.map(getAttributeById)
-						.toSorted(compareKey("name"))
-						.map((attribute) => (
-							<SelectItem key={attribute.id} value={attribute.id}>
-								{attribute.name}
-							</SelectItem>
-						))}
-				</SelectField>
+				/>
 			</div>
 
-			<TextAreaField
-				{...form.textInputProps("description")}
+			<form.Field
+				name="description"
 				label="Description"
-				expands
+				input={<Input placeholder="What does the spell do?" />}
 			/>
 
-			<TextAreaField
-				{...form.textInputProps("amplifiedDescription")}
+			<form.Field
+				name="amplifiedDescription"
 				label="Amplified Description"
-				expands
+				input={<Input placeholder="What does the spell do when amplified?" />}
 			/>
 
 			<div className="grid auto-cols-fr gap-4 @sm:grid-flow-col">
-				<CounterInputUncontrolledField
-					{...form.numberInputProps("manaCost")}
+				<form.Field
+					name="manaCost"
 					label="Mana Cost"
-					min={1}
+					input={<CounterInputUncontrolledField min={1} />}
 				/>
 
-				<CounterInputUncontrolledField
-					{...form.numberInputProps("stressCost")}
+				<form.Field
+					name="stressCost"
 					label="Stress Cost"
-					min={0}
+					input={<CounterInputUncontrolledField min={0} />}
 				/>
 
-				<CounterInputUncontrolledField
-					{...form.numberInputProps("castingTime")}
+				<form.Field
+					name="castingTime"
 					label="Casting Time"
-					min={0}
+					input={<CounterInputUncontrolledField min={0} />}
 				/>
 			</div>
 
-			<Button type="submit" icon={LucideWand2} pending={form.isSubmitting}>
-				Save
-			</Button>
-
-			{form.hasErrors && (
-				<FieldErrors
-					className="text-center"
-					errors={
-						form.formErrors?.length ?
-							form.formErrors
-						:	"Something went wrong. Check for issues and try again."
-					}
-				/>
-			)}
-		</Form>
+			<form.Button icon={LucideWand2}>Save</form.Button>
+		</form.Form>
 	)
 }

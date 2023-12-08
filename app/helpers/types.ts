@@ -53,7 +53,7 @@ export type StrictOmit<T, K extends keyof T> = Pick<T, Exclude<keyof T, K>>
  * 	type BrokenKeys = keyof Foo // never
  * 	type Keys = KeyOfUnion<Foo> // "a" | "b"
  */
-export type KeyOfUnion<T> = T extends unknown ? keyof T : never
+export type KeyOfUnion<T> = T extends any ? keyof T : never
 
 type KeyOfUnionTestUnion = { foo: string } | { bar: number }
 interface KeyOfUnionTestInterface {
