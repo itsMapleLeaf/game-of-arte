@@ -174,7 +174,8 @@ function SpellButton({
 						appearance="faded"
 						className="absolute right-0 top-0"
 						square
-						icon={{ end: LucideX }}
+						icon={LucideX}
+						iconPosition="end"
 					>
 						<SrOnly>Remove</SrOnly>
 					</Button>

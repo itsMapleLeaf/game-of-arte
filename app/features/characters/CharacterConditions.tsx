@@ -31,7 +31,7 @@ export function CharacterConditions() {
 			</ul>
 
 			<ConditionFormButton asChild>
-				<Button appearance="outline" icon={{ start: LucidePlus }}>
+				<Button appearance="outline" icon={LucidePlus}>
 					Add Condition
 				</Button>
 			</ConditionFormButton>
@@ -62,7 +62,7 @@ function CharacterConditionItem({ condition }: { condition: Condition }) {
 			<ConditionFormButton initialCondition={condition} asChild>
 				<Button
 					appearance="faded"
-					icon={{ start: LucideEdit }}
+					icon={LucideEdit}
 					square
 					className="-mx-2 min-h-8"
 				>
@@ -72,7 +72,7 @@ function CharacterConditionItem({ condition }: { condition: Condition }) {
 
 			<Button
 				appearance="faded"
-				icon={{ start: LucideX }}
+				icon={LucideX}
 				square
 				className="-mx-2 min-h-8"
 				onClick={removeCondition}
@@ -172,7 +172,7 @@ function ConditionForm({
 			<Button
 				type="submit"
 				className="col-span-2 w-full"
-				icon={{ start: LucideCheck }}
+				icon={LucideCheck}
 				pending={form.isSubmitting}
 			>
 				Submit

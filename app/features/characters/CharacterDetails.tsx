@@ -246,10 +246,10 @@ function SorcerySection({ character }: { character: Doc<"characters"> }) {
 
 					<section className={column("gap-2")}>
 						<CastSpellButton asChild>
-							<Button icon={{ start: LucideBookOpenText }}>Spellbook</Button>
+							<Button icon={LucideBookOpenText}>Spellbook</Button>
 						</CastSpellButton>
 						<AddFreeformSpellButton character={character} asChild>
-							<Button appearance="outline" icon={{ start: LucideBookTemplate }}>
+							<Button appearance="outline" icon={LucideBookTemplate}>
 								Add Freeform Spell
 							</Button>
 						</AddFreeformSpellButton>
@@ -299,14 +299,14 @@ function ProgressionSection({
 				{attributesLocked ?
 					<Button
 						appearance="outline"
-						icon={{ start: LucideUnlock }}
+						icon={LucideUnlock}
 						onClick={() => onAttributesLockedChange(false)}
 					>
 						Unlock Stats
 					</Button>
 				:	<Button
 						appearance="outline"
-						icon={{ start: LucideLock }}
+						icon={LucideLock}
 						onClick={() => onAttributesLockedChange(true)}
 					>
 						Lock Stats
@@ -427,7 +427,7 @@ function RandomizeStatsButton({ character }: { character: Doc<"characters"> }) {
 
 	const buttonProps: ButtonProps = {
 		appearance: "outline",
-		icon: { start: LucideDices },
+		icon: LucideDices,
 		children: "Random Stats",
 	}
 

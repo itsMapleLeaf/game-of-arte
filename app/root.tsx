@@ -92,7 +92,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 						<NavLinkButton
 							to="/"
 							appearance="clear"
-							icon={{ start: LucideGamepad2 }}
+							icon={LucideGamepad2}
 							prefetch="render"
 						>
 							Session
@@ -100,7 +100,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 						<NavLinkButton
 							to="/spellbook"
 							appearance="clear"
-							icon={{ start: LucideBookOpenText }}
+							icon={LucideBookOpenText}
 							prefetch="render"
 						>
 							Spellbook
