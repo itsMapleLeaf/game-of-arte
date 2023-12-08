@@ -8,3 +8,7 @@ export function pick<T extends object, K extends keyof T>(
 	}
 	return result
 }
+
+export function isObject(value: unknown): value is object {
+	return typeof value === "object" && value !== null
+}

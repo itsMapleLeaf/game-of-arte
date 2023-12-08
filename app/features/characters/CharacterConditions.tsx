@@ -2,17 +2,16 @@ import type { PopoverTriggerProps } from "@radix-ui/react-popover"
 import { api } from "convex/_generated/api"
 import type { Condition } from "convex/characters.validators.ts"
 import { useMutation } from "convex/react"
-import { LucideCheck, LucideEdit, LucidePlus, LucideX } from "lucide-react"
+import { LucideEdit, LucidePlus, LucideX } from "lucide-react"
 import { useState } from "react"
 import { z } from "zod"
 import { Button } from "~/components/Button.tsx"
-import { CounterInputUncontrolledField } from "~/components/CounterInput.tsx"
-import { FieldErrors } from "~/components/Field.tsx"
-import { InputField } from "~/components/Input.tsx"
+import { CounterInputUncontrolled } from "~/components/CounterInput.tsx"
+import { Input } from "~/components/Input.tsx"
 import { Popover, PopoverPanel, PopoverTrigger } from "~/components/Popover.tsx"
 import { SrOnly } from "~/components/SrOnly.tsx"
 import { panel } from "~/styles/panel.ts"
-import { useForm } from "../../helpers/useForm.tsx"
+import { useForm } from "../../components/useForm.tsx"
 import { CharacterContext } from "./CharacterContext.tsx"
 import { MentalStressIndicator } from "./MentalStressIndicator.tsx"
 import { PhysicalStressIndicator } from "./PhysicalStressIndicator.tsx"
@@ -94,7 +93,7 @@ function ConditionFormButton({
 	return (
 		<Popover open={open} onOpenChange={setOpen}>
 			<PopoverTrigger {...props} />
-			<PopoverPanel>
+			<PopoverPanel className="w-64 p-3">
 				<ConditionForm
 					initialCondition={initialCondition}
 					onSuccess={() => setOpen(false)}
@@ -130,11 +129,6 @@ function ConditionForm({
 					message: "Must have at least 1 stress",
 				},
 			),
-		defaultValues: {
-			physicalStress: 0,
-			mentalStress: 0,
-			...initialCondition,
-		},
 		onSubmit: async (values) => {
 			await upsertCondition({
 				id: character._id,
@@ -148,38 +142,41 @@ function ConditionForm({
 	})
 
 	return (
-		<form onSubmit={form.submit} className="grid w-64 grid-cols-2 gap-3 p-3">
-			<div className="col-span-2">
-				<InputField
-					{...form.textInputProps("description")}
-					label="Description"
-					placeholder="What happened?"
+		<form.Form className="@container">
+			<form.Field
+				name="description"
+				label="Description"
+				input={
+					<Input
+						placeholder="What happened?"
+						defaultValue={initialCondition?.description}
+					/>
+				}
+			/>
+			<div className="grid grid-cols-2 gap-2">
+				<form.Field
+					name="physicalStress"
+					label="Phys. Stress"
+					input={
+						<CounterInputUncontrolled
+							min={0}
+							defaultValue={initialCondition?.physicalStress}
+						/>
+					}
+				/>
+				<form.Field
+					name="mentalStress"
+					label="Ment. Stress"
+					input={
+						<CounterInputUncontrolled
+							min={0}
+							defaultValue={initialCondition?.mentalStress}
+						/>
+					}
 				/>
 			</div>
-
-			<CounterInputUncontrolledField
-				{...form.numberInputProps("physicalStress")}
-				min={0}
-				label="Phys. Stress"
-			/>
-
-			<CounterInputUncontrolledField
-				{...form.numberInputProps("mentalStress")}
-				min={0}
-				label="Ment. Stress"
-			/>
-
-			<Button
-				type="submit"
-				className="col-span-2 w-full"
-				icon={LucideCheck}
-				pending={form.isSubmitting}
-			>
-				Submit
-			</Button>
-
-			<FieldErrors className="col-span-2" errors={form.formErrors} />
-		</form>
+			<form.Button />
+		</form.Form>
 	)
 }
 
