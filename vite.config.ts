@@ -19,9 +19,6 @@ export default defineConfig({
 	define: {
 		"import.meta.vitest": "undefined",
 	},
-	ssr: {
-		noExternal: ["@clerk/clerk-react"],
-	},
 	build: {
 		rollupOptions: {
 			onwarn(warning, defaultHandler) {
