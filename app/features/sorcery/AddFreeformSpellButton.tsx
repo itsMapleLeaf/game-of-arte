@@ -13,6 +13,7 @@ import {
 import { Input } from "~/components/Input.tsx"
 import { PopoverTrigger } from "~/components/Popover.tsx"
 import { Select } from "~/components/Select.tsx"
+import { TextArea } from "~/components/TextArea.tsx"
 import { Form, FormButton, FormField, useForm } from "~/components/form.tsx"
 import { getAttributeById } from "../characters/attributes.ts"
 import { sorcerySpellAttributeIdSchema } from "./spells.ts"
@@ -101,14 +102,14 @@ function FreeformSpellForm({
 			</div>
 
 			<FormField name={form.names.description} label="Description">
-				<Input placeholder="What does the spell do?" />
+				<TextArea placeholder="What does the spell do?" />
 			</FormField>
 
 			<FormField
 				name={form.names.amplifiedDescription}
 				label="Amplified Description"
 			>
-				<Input placeholder="What does the spell do when amplified?" />
+				<TextArea placeholder="What does the spell do when amplified?" />
 			</FormField>
 
 			<div className="grid auto-cols-fr gap-4 @sm:grid-flow-col">
