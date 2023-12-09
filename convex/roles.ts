@@ -1,5 +1,5 @@
 import { type QueryCtx, query } from "./_generated/server.js"
-import { getPlayerByUser } from "./players.ts"
+import { getAuthenticatedPlayer } from "./players.ts"
 import { getAuthenticatedUser } from "./users.ts"
 import { getWorld } from "./world.ts"
 
@@ -34,17 +34,11 @@ export async function requireAdminRole(ctx: QueryCtx) {
 }
 
 export async function hasPlayerRole(ctx: QueryCtx) {
-	const [isAdmin, user] = await Promise.all([
+	const [isAdmin, player] = await Promise.all([
 		hasAdminRole(ctx),
-		getAuthenticatedUser(ctx),
+		getAuthenticatedPlayer(ctx),
 	])
-
-	if (isAdmin) {
-		return true
-	}
-
-	const player = user && (await getPlayerByUser(ctx, user))
-	return player != null
+	return isAdmin || player != null
 }
 
 export async function requirePlayerRole(ctx: QueryCtx) {

@@ -1,10 +1,18 @@
 import { api } from "convex/_generated/api.js"
 import type { Doc } from "convex/_generated/dataModel.js"
+import type { PlayerListResult } from "convex/players.ts"
 import { useMutation, useQuery } from "convex/react"
-import { LucideUserPlus, LucideX } from "lucide-react"
-import { useRef } from "react"
-import { useSpinDelay } from "spin-delay"
-import { expect } from "~/helpers/expect.ts"
+import {
+	LucideMailPlus,
+	LucideUserPlus,
+	LucideUserPlus2,
+	LucideUserX2,
+	LucideX,
+} from "lucide-react"
+import { useState } from "react"
+import { Button } from "~/components/Button.tsx"
+import { EmptyState } from "~/components/EmptyState.tsx"
+import { panel } from "~/styles/panel.ts"
 import { AsyncButton } from "../../components/AsyncButton.tsx"
 import {
 	LoadingPlaceholder,
@@ -16,75 +24,47 @@ import {
 	MenuPanel,
 	MenuTrigger,
 } from "../../components/Menu.tsx"
-import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
 
 export function PlayerList() {
 	const players = useQuery(api.players.list)
+	const invites = useQuery(api.invites.list)
+	const createInvite = useMutation(api.invites.create)
 	return (
-		<div className="flex h-full flex-col divide-y divide-base-800">
-			<NewPlayerForm />
-			{players === undefined ?
+		<div className="grid gap-2">
+			<Button icon={LucideUserPlus2} onClick={() => createInvite()}>
+				Add Player
+			</Button>
+
+			{players === undefined || invites === undefined ?
 				<LoadingPlaceholder />
-			: players.length === 0 ?
-				<p className="p-3">No players have been added yet.</p>
-			:	<ul className="flex min-h-0 flex-1 flex-col gap-4 overflow-y-auto p-3">
-					{players.map((player) => (
-						<li key={player._id}>
-							<PlayerListItem player={player} />
-						</li>
-					))}
-				</ul>
+			: players.length === 0 && invites.length === 0 ?
+				<EmptyState icon={LucideUserX2}>
+					No players have been added yet.
+				</EmptyState>
+			:	<>
+					<ul className="contents">
+						{players.map((player) => (
+							<li key={player._id}>
+								<PlayerListItem player={player} />
+							</li>
+						))}
+					</ul>
+					<ul className="contents">
+						{invites.map((invite) => (
+							<li key={invite._id}>
+								<InviteListItem invite={invite} />
+							</li>
+						))}
+					</ul>
+				</>
 			}
 		</div>
 	)
 }
 
-function NewPlayerForm() {
-	const formRef = useRef<HTMLFormElement>(null)
-
-	const [addPlayer, state] = useAsyncCallback(useMutation(api.players.add), {
-		onSuccess() {
-			expect(formRef.current).reset()
-		},
-	})
-
-	const isLoading = useSpinDelay(state.isLoading)
-
-	return (
-		<form
-			ref={formRef}
-			className="flex divide-x divide-base-800"
-			onSubmit={(event) => {
-				const formData = new FormData(event.currentTarget)
-				event.preventDefault()
-				addPlayer({
-					discordUserId: formData.get("discordUserId") as string,
-				})
-			}}
-		>
-			<input
-				type="text"
-				name="discordUserId"
-				className="min-w-0 flex-1 bg-transparent px-3"
-				placeholder="Discord User ID (e.g. 123456789012345678)"
-			/>
-			<button type="submit" className="p-2">
-				{isLoading ?
-					<LoadingSpinner />
-				:	<LucideUserPlus />}
-				<span className="sr-only">Add Player</span>
-			</button>
-		</form>
-	)
-}
-
-function PlayerListItem({
-	player,
-}: {
-	player: Doc<"players"> & { name: string | undefined }
-}) {
+function PlayerListItem({ player }: { player: PlayerListResult }) {
 	const character = useQuery(api.characters.get, {
-		id: player.ownedCharacterId,
+		id: player.assignedCharacterId,
 	})
 	const removePlayer = useMutation(api.players.remove)
 
@@ -95,12 +75,6 @@ function PlayerListItem({
 			</h2>
 
 			<dl className="grid gap-1.5">
-				<div>
-					<dt className="text-sm/snug font-medium uppercase text-base-400">
-						Discord ID
-					</dt>
-					<dd className="leading-snug">{player.discordUserId}</dd>
-				</div>
 				{character && (
 					<div>
 						<dt className="text-sm/snug font-medium uppercase text-base-400">
@@ -124,9 +98,57 @@ function PlayerListItem({
 	)
 }
 
-function SetCharacterMenu({ player }: { player: Doc<"players"> }) {
+function InviteListItem({ invite }: { invite: Doc<"invites"> }) {
+	const [copied, setCopied] = useState(false)
+	const copyInviteLink = () => {
+		navigator.clipboard.writeText(
+			`${window.location.origin}/join?invite=${invite._id}`,
+		)
+		setCopied(true)
+		setTimeout(() => setCopied(false), 1000)
+	}
+
+	const remove = useMutation(api.invites.remove)
+
+	return (
+		<section
+			className={panel(
+				"flex flex-col items-center gap-4 rounded-md border p-4",
+			)}
+		>
+			<EmptyState icon={LucideMailPlus} className="p-0 py-1">
+				Invite someone to fill this slot.
+			</EmptyState>
+			<div className="flex h-8 flex-wrap items-center justify-center gap-1">
+				{copied ?
+					<p>Copied!</p>
+				:	<>
+						<Button
+							size="small"
+							appearance="outline"
+							icon={LucideMailPlus}
+							onClick={copyInviteLink}
+						>
+							Copy Link
+						</Button>
+						<Button
+							size="small"
+							appearance="clear"
+							icon={LucideX}
+							onClick={() => remove({ id: invite._id })}
+						>
+							Remove
+						</Button>
+					</>
+				}
+			</div>
+		</section>
+	)
+}
+
+function SetCharacterMenu({ player }: { player: PlayerListResult }) {
 	const characters = useQuery(api.characters.list)
-	const updatePlayer = useMutation(api.players.update)
+	const setAssignedCharacterId = useMutation(api.players.setAssignedCharacterId)
 
 	return characters === undefined ?
 			<LoadingSpinner />
@@ -143,9 +165,9 @@ function SetCharacterMenu({ player }: { player: Doc<"players"> }) {
 						<MenuItem key={character._id} asChild>
 							<AsyncButton
 								onClick={() =>
-									updatePlayer({
+									setAssignedCharacterId({
 										id: player._id,
-										ownedCharacterId: character._id,
+										assignedCharacterId: character._id,
 									})
 								}
 							>

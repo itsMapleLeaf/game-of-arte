@@ -90,7 +90,7 @@ export function CharacterDetails({
 	})
 
 	const roles = useQuery(api.roles.get)
-	const self = useQuery(api.players.self)
+	const assignedCharacterId = useQuery(api.players.getAssignedCharacterId)
 
 	const [attributesLocked, setAttributesLocked] = useLocalStorageState(
 		"attributesLocked",
@@ -98,8 +98,7 @@ export function CharacterDetails({
 	)
 
 	const attributesEditable = (() => {
-		if (!roles?.isAdmin && character._id !== self?.ownedCharacterId)
-			return false
+		if (!roles?.isAdmin && character._id !== assignedCharacterId) return false
 		return !attributesLocked
 	})()
 

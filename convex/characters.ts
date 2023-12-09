@@ -16,7 +16,6 @@ import {
 } from "./characters.validators.ts"
 import { getAuthenticatedPlayer } from "./players.ts"
 import { hasAdminRole, requireAdminRole, requirePlayerRole } from "./roles.ts"
-import { getAuthenticatedUser } from "./users.ts"
 import { nullish, record } from "./validators.ts"
 
 export const list = query({
@@ -44,37 +43,17 @@ export const get = query({
 		])
 
 		if (!character) return null
-		if (!isAdmin && character.hidden) return null
+		if (character.hidden && !isAdmin) return null
 
-		const [ownerPlayer, user] = await Promise.all([
-			ctx.db
-				.query("players")
-				.filter((q) => q.eq(q.field("ownedCharacterId"), args.id))
-				.first(),
-			getAuthenticatedUser(ctx),
-		])
-
-		return {
-			...character,
-			isOwner: ownerPlayer?.discordUserId === user?.discordUserId || isAdmin,
-		}
+		return character
 	},
 })
 
 export const getOwned = query({
 	handler: async (ctx) => {
-		const user = await getAuthenticatedUser(ctx)
-		if (!user) return null
-
-		const player = await ctx.db
-			.query("players")
-			.withIndex("by_discord_user_id", (q) =>
-				q.eq("discordUserId", user.discordUserId),
-			)
-			.first()
-		if (!player?.ownedCharacterId) return null
-
-		return await ctx.db.get(player.ownedCharacterId)
+		const player = await getAuthenticatedPlayer(ctx)
+		if (!player?.assignedCharacterId) return null
+		return await ctx.db.get(player.assignedCharacterId)
 	},
 })
 
@@ -241,7 +220,7 @@ async function requireOwnedCharacter(
 		ctx.auth.getUserIdentity(),
 	])
 
-	if (isAdmin || player?.ownedCharacterId === character._id) {
+	if (isAdmin || player?.assignedCharacterId === character._id) {
 		return character
 	}
 

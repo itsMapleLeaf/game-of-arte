@@ -29,15 +29,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 	const convex = new ConvexHttpClient(env.VITE_PUBLIC_CONVEX_URL)
 
-	const [characters, self] = await Promise.all([
+	const [characters, assignedCharacterId] = await Promise.all([
 		convex.query(api.characters.list),
-		convex.query(api.players.self),
+		convex.query(api.players.getAssignedCharacterId),
 	])
 
 	const visibleCharacters = characters?.filter((c) => !c.hidden)
-	const selfCharacter = characters?.find(
-		(c) => c._id === self?.ownedCharacterId,
-	)
+	const selfCharacter = characters?.find((c) => c._id === assignedCharacterId)
 
 	const defaultCharacterId =
 		selfCharacter?._id ?? visibleCharacters?.[0]?._id ?? characters?.[0]?._id

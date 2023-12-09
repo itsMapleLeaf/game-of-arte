@@ -29,13 +29,17 @@ export function SideNav() {
 	return (
 		<nav className="flex flex-col gap-2">
 			<SideNavCollapse title="Characters" icon={<LucideUsers />} defaultOpen>
-				<CharacterList />
+				<div className={panel("group overflow-clip rounded-md border")}>
+					<CharacterList />
+				</div>
 			</SideNavCollapse>
 
 			<DiceCollapse />
 
 			<SideNavCollapse title="Clocks" icon={<LucideClock />}>
-				<ClockList />
+				<div className={panel("group overflow-clip rounded-md border")}>
+					<ClockList />
+				</div>
 			</SideNavCollapse>
 
 			<AdminRoleGuard>
@@ -44,7 +48,9 @@ export function SideNav() {
 				</SideNavCollapse>
 
 				<SideNavCollapse title="Manage World" icon={<LucideWrench />}>
-					<WorldSettings />
+					<div className={panel("group overflow-clip rounded-md border")}>
+						<WorldSettings />
+					</div>
 				</SideNavCollapse>
 			</AdminRoleGuard>
 		</nav>
@@ -84,7 +90,11 @@ function DiceCollapse() {
 				setIndicatorVisible(false)
 			}}
 		>
-			<div className="flex flex-col divide-y divide-base-800">
+			<div
+				className={panel(
+					"group flex flex-col divide-y divide-base-800 overflow-clip rounded-md border",
+				)}
+			>
 				<div className="-mt-px flex-1">
 					{listResult === undefined ?
 						<LoadingPlaceholder />
@@ -138,11 +148,7 @@ function SideNavCollapse({
 						)}
 					</div>
 				</CollapseButton>
-				<CollapseContent className="pt-1">
-					<div className={panel("group overflow-clip rounded-md border")}>
-						{children}
-					</div>
-				</CollapseContent>
+				<CollapseContent className="pt-1">{children}</CollapseContent>
 			</Collapse>
 		</div>
 	)

@@ -1,77 +1,57 @@
 import { v } from "convex/values"
 import { raise } from "~/helpers/errors.ts"
-import type { Doc } from "./_generated/dataModel"
+import type { Id } from "./_generated/dataModel"
 import { type QueryCtx, mutation, query } from "./_generated/server.js"
 import { requireAdminRole } from "./roles.ts"
-import { getAuthenticatedUser } from "./users.ts"
 
-export const self = query({
-	handler: async (ctx) => {
-		const user = await getAuthenticatedUser(ctx)
-		if (!user) return null
-
-		return await ctx.db
-			.query("players")
-			.withIndex("by_discord_user_id", (q) =>
-				q.eq("discordUserId", user.discordUserId),
-			)
-			.first()
-	},
-})
+export type PlayerListResult = {
+	_id: Id<"players_v2">
+	name: string
+	assignedCharacterId?: Id<"characters">
+}
 
 export const list = query({
-	handler: async (ctx) => {
+	handler: async (ctx): Promise<PlayerListResult[]> => {
 		await requireAdminRole(ctx)
 
-		const players = await ctx.db.query("players").collect()
-		const discordUserIds = players.map((player) => player.discordUserId)
+		const players = await ctx.db.query("players_v2").collect()
+
+		const userTokenIdentifiers = players
+			.map((player) => player.userTokenIdentifier)
+			.filter(Boolean)
 
 		const users = await ctx.db
 			.query("users")
 			.filter((q) =>
-				q.or(...discordUserIds.map((id) => q.eq(q.field("discordUserId"), id))),
+				q.or(
+					...userTokenIdentifiers.map((id) =>
+						q.eq(q.field("tokenIdentifier"), id),
+					),
+				),
 			)
 			.collect()
 
-		const usersByDiscordUserId = new Map(
-			users.map((user) => [user.discordUserId, user]),
-		)
+		const usersById = new Map(users.map((user) => [user.tokenIdentifier, user]))
 
 		return players.map((player) => ({
-			...player,
-			name: usersByDiscordUserId.get(player.discordUserId)?.name,
+			_id: player._id,
+			name: usersById.get(player.userTokenIdentifier)?.name ?? "Unknown",
+			assignedCharacterId: player.assignedCharacterId,
 		}))
 	},
 })
 
-export const add = mutation({
-	args: {
-		discordUserId: v.string(),
-	},
-	handler: async (ctx, args) => {
-		await requireAdminRole(ctx)
-
-		const existing = await ctx.db
-			.query("players")
-			.withIndex("by_discord_user_id", (q) =>
-				q.eq("discordUserId", args.discordUserId),
-			)
-			.first()
-
-		if (existing) {
-			throw new Error("Player already exists")
-		}
-
-		await ctx.db.insert("players", {
-			discordUserId: args.discordUserId,
-		})
+export const getAssignedCharacterId = query({
+	handler: async (ctx) => {
+		const player = await getAuthenticatedPlayer(ctx)
+		return player?.assignedCharacterId
 	},
 })
 
-export const update = mutation({
+export const setAssignedCharacterId = mutation({
 	args: {
-		id: v.id("players"),
-		ownedCharacterId: v.optional(v.id("characters")),
+		id: v.id("players_v2"),
+		assignedCharacterId: v.id("characters"),
 	},
 	handler: async (ctx, { id, ...args }) => {
 		await requireAdminRole(ctx)
@@ -81,7 +61,7 @@ export const update = mutation({
 
 export const remove = mutation({
 	args: {
-		id: v.id("players"),
+		id: v.id("players_v2"),
 	},
 	handler: async (ctx, args) => {
 		await requireAdminRole(ctx)
@@ -90,32 +70,20 @@ export const remove = mutation({
 })
 
 export async function getAuthenticatedPlayer(ctx: QueryCtx) {
-	const user = await getAuthenticatedUser(ctx)
-	return user && (await getPlayerByUser(ctx, user))
+	const user = await ctx.auth.getUserIdentity()
+	if (!user) return
+
+	return await ctx.db
+		.query("players_v2")
+		.withIndex("by_user_token_identifier", (q) =>
+			q.eq("userTokenIdentifier", user.tokenIdentifier),
+		)
+		.first()
 }
 
 export async function requireAuthenticatedPlayer(ctx: QueryCtx) {
 	return (
 		(await getAuthenticatedPlayer(ctx)) ??
 		raise("You must be a player to perform this action")
-	)
-}
-
-export async function getPlayerByUser(
-	ctx: QueryCtx,
-	user: { discordUserId: string },
-) {
-	return await ctx.db
-		.query("players")
-		.withIndex("by_discord_user_id", (q) =>
-			q.eq("discordUserId", user.discordUserId),
-		)
-		.first()
-}
-
-export async function requirePlayerByUser(ctx: QueryCtx, user: Doc<"users">) {
-	return (
-		(await getPlayerByUser(ctx, user)) ??
-		raise(`User ${user.name} is not a player`)
 	)
 }
