@@ -153,7 +153,7 @@ function ConditionForm({
 				<FormField name={form.names.physicalStress} label="Phys. Stress">
 					<CounterInput min={0} />
 				</FormField>
-				<FormField name={form.names.mentalStress} label="Mental Stress">
+				<FormField name={form.names.mentalStress} label="Ment. Stress">
 					<CounterInput min={0} />
 				</FormField>
 			</div>
