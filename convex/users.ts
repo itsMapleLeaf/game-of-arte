@@ -1,18 +1,32 @@
 import { v } from "convex/values"
 import { type QueryCtx, internalMutation } from "./_generated/server.js"
 
-export const update = internalMutation({
+export const upsert = internalMutation({
 	args: {
 		tokenIdentifier: v.string(),
 		discordUserId: v.string(),
 		name: v.string(),
 	},
-	handler: async (ctx, { tokenIdentifier, ...args }) => {
-		const user = await getAuthenticatedUser(ctx)
+	handler: async (ctx, args) => {
+		const [user, ...duplicates] = await ctx.db
+			.query("users")
+			.withIndex("by_token_identifier", (q) =>
+				q.eq("tokenIdentifier", args.tokenIdentifier),
+			)
+			.collect()
+
+		await Promise.all(
+			duplicates.map((user) =>
+				ctx.db.delete(user._id).catch((error) => {
+					console.error(`Failed to delete duplicate user ${user._id}:`, error)
+				}),
+			),
+		)
+
 		if (user) {
-			await ctx.db.patch(user._id, { ...args })
+			await ctx.db.replace(user._id, args)
 		} else {
-			await ctx.db.insert("users", { tokenIdentifier, ...args })
+			await ctx.db.insert("users", args)
 		}
 	},
 })
