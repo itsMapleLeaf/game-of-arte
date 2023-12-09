@@ -15,19 +15,14 @@ export const upsert = internalMutation({
 			)
 			.collect()
 
-		await Promise.all(
-			duplicates.map((user) =>
+		await Promise.all([
+			...duplicates.map((user) =>
 				ctx.db.delete(user._id).catch((error) => {
 					console.error(`Failed to delete duplicate user ${user._id}:`, error)
 				}),
 			),
-		)
-
-		if (user) {
-			await ctx.db.replace(user._id, args)
-		} else {
-			await ctx.db.insert("users", args)
-		}
+			user ? ctx.db.patch(user._id, args) : ctx.db.insert("users", args),
+		])
 	},
 })
 
