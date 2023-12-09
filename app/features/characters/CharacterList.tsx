@@ -70,7 +70,7 @@ function CharacterListItems({
 }: {
 	characters: Array<Doc<"characters">>
 }) {
-	const player = useQuery(api.players.self)
+	const assignedCharacterId = useQuery(api.players.getAssignedCharacterId)
 	const characterNavigation = useCharacterNavigation()
 
 	return characters.length === 0 ?
@@ -79,8 +79,8 @@ function CharacterListItems({
 				{characters
 					.toSorted(
 						(a, b) =>
-							Number(player?.ownedCharacterId === b._id) -
-							Number(player?.ownedCharacterId === a._id),
+							Number(assignedCharacterId === b._id) -
+							Number(assignedCharacterId === a._id),
 					)
 					.map((character) => (
 						<li
@@ -94,8 +94,7 @@ function CharacterListItems({
 									characterNavigation.characterId === character._id ?
 										"bg-base-800 opacity-100"
 									:	"opacity-60 hover:opacity-100",
-									player?.ownedCharacterId === character._id &&
-										"text-accent-300",
+									assignedCharacterId === character._id && "text-accent-300",
 								)}
 							>
 								<LucideUser className="group-data-[pending]:hidden" />

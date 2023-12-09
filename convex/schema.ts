@@ -28,6 +28,15 @@ export default defineSchema({
 		ownedCharacterId: v.optional(v.id("characters")),
 	}).index("by_discord_user_id", ["discordUserId"]),
 
+	players_v2: defineTable({
+		userTokenIdentifier: v.string(),
+		assignedCharacterId: v.optional(v.id("characters")),
+	})
+		.index("by_user_token_identifier", ["userTokenIdentifier"])
+		.index("by_assigned_character_id", ["assignedCharacterId"]),
+
+	invites: defineTable({}),
+
 	characters: defineTable({
 		name: v.string(),
 		hidden: v.optional(v.boolean()),
