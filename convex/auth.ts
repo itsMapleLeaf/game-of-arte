@@ -35,7 +35,7 @@ export const clerkUserWebhook = httpAction(async (ctx, request) => {
 		throw new Error("Discord account not found")
 	}
 
-	await ctx.scheduler.runAfter(0, internal.users.update, {
+	await ctx.scheduler.runAfter(0, internal.users.upsert, {
 		name: user.username || "unnamed",
 		discordUserId,
 
