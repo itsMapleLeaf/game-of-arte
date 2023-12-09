@@ -6,7 +6,7 @@ import { LucideEdit, LucidePlus, LucideX } from "lucide-react"
 import { useState } from "react"
 import { z } from "zod"
 import { Button } from "~/components/Button.tsx"
-import { CounterInputUncontrolled } from "~/components/CounterInput.tsx"
+import { CounterInput } from "~/components/CounterInput.tsx"
 import { Input } from "~/components/Input.tsx"
 import { Popover, PopoverPanel, PopoverTrigger } from "~/components/Popover.tsx"
 import { SrOnly } from "~/components/SrOnly.tsx"
@@ -103,6 +103,22 @@ function ConditionFormButton({
 	)
 }
 
+const schema = z
+	.object({
+		description: z.string().min(1, "Cannot be empty").default(""),
+		physicalStress: z.number().int().min(0).default(0),
+		mentalStress: z.number().int().min(0).default(0),
+	})
+	.refine(
+		(data) => {
+			const totalStress = data.physicalStress + data.mentalStress
+			return totalStress > 0
+		},
+		{
+			message: "Must have at least 1 stress",
+		},
+	)
+
 function ConditionForm({
 	initialCondition,
 	onSuccess,
@@ -114,22 +130,9 @@ function ConditionForm({
 	const upsertCondition = useMutation(api.characters.upsertCondition)
 
 	const form = useForm({
-		schema: z
-			.object({
-				description: z.string().min(1, "Cannot be empty").default(""),
-				physicalStress: z.coerce.number().int().min(0),
-				mentalStress: z.coerce.number().int().min(0),
-			})
-			.refine(
-				(data) => {
-					const totalStress = data.physicalStress + data.mentalStress
-					return totalStress > 0
-				},
-				{
-					message: "Must have at least 1 stress",
-				},
-			),
-		onSubmit: async (values) => {
+		schema,
+		defaultValues: initialCondition,
+		async onSubmit(values) {
 			await upsertCondition({
 				id: character._id,
 				condition: {
@@ -142,38 +145,17 @@ function ConditionForm({
 	})
 
 	return (
-		<Form form={form} className="@container">
-			<FormField
-				name={form.names.description}
-				label="Description"
-				input={
-					<Input
-						placeholder="What happened?"
-						defaultValue={initialCondition?.description}
-					/>
-				}
-			/>
+		<Form state={form} className="@container">
+			<FormField name={form.names.description} label="Description">
+				<Input placeholder="What happened?" />
+			</FormField>
 			<div className="grid grid-cols-2 gap-2">
-				<FormField
-					name={form.names.physicalStress}
-					label="Phys. Stress"
-					input={
-						<CounterInputUncontrolled
-							min={0}
-							defaultValue={initialCondition?.physicalStress}
-						/>
-					}
-				/>
-				<FormField
-					name={form.names.mentalStress}
-					label="Ment. Stress"
-					input={
-						<CounterInputUncontrolled
-							min={0}
-							defaultValue={initialCondition?.mentalStress}
-						/>
-					}
-				/>
+				<FormField name={form.names.physicalStress} label="Phys. Stress">
+					<CounterInput min={0} />
+				</FormField>
+				<FormField name={form.names.mentalStress} label="Mental Stress">
+					<CounterInput min={0} />
+				</FormField>
 			</div>
 			<FormButton />
 		</Form>
