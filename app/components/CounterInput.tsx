@@ -9,20 +9,20 @@ import { SrOnly } from "./SrOnly.tsx"
 
 export interface CounterInputProps
 	extends StrictOmit<React.ComponentPropsWithRef<"input">, "onChange"> {
-	value: number
+	value?: number
+	defaultValue?: number
 	min?: number
 	max?: number
-	defaultValue?: number
 	name?: string
 	className?: string
-	onChange: (value: number) => void
+	onChange?: (value: number) => void
 }
 
 export const CounterInput = autoRef(function CounterInput({
-	value: valueProp,
 	min = 0,
 	max = Infinity,
-	defaultValue = clamp(valueProp, min, max),
+	defaultValue = clamp(0, min, max),
+	value: valueProp = defaultValue,
 	className,
 	onChange,
 	...props
@@ -30,7 +30,7 @@ export const CounterInput = autoRef(function CounterInput({
 	const value = clamp(valueProp, min, max)
 
 	const setValue = (newValue: number) => {
-		onChange(clamp(newValue, min, max))
+		onChange?.(clamp(newValue, min, max))
 	}
 
 	return (

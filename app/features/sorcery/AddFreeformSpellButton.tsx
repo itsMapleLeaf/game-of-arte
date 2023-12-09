@@ -50,16 +50,16 @@ function FreeformSpellForm({
 
 	const form = useForm({
 		schema: z.object({
-			name: z.string().min(1, "Cannot be empty"),
-			description: z.string().min(1, "Cannot be empty"),
+			name: z.string().min(1, "Cannot be empty").default(""),
+			description: z.string().min(1, "Cannot be empty").default(""),
 			attributeId: z
 				.string()
 				.transform((it) => (it === "" ? undefined : it))
 				.pipe(sorcerySpellAttributeIdSchema),
-			amplifiedDescription: z.string().min(1, "Cannot be empty"),
-			manaCost: z.coerce.number().int().min(1),
-			stressCost: z.coerce.number().int().min(0),
-			castingTime: z.coerce.number().int().min(0),
+			amplifiedDescription: z.string().min(1, "Cannot be empty").default(""),
+			manaCost: z.number().int().min(1).default(1),
+			stressCost: z.number().int().min(0).default(0),
+			castingTime: z.number().int().min(0).default(0),
 		}),
 		async onSubmit(values) {
 			await upsertFreeformSpell({
@@ -84,58 +84,45 @@ function FreeformSpellForm({
 	})
 
 	return (
-		<Form form={form} className="@container">
+		<Form state={form} className="@container">
 			<div className="grid auto-cols-fr gap-4 @sm:grid-flow-col">
-				<FormField
-					name={form.names.name}
-					label="Name"
-					input={<Input placeholder="Fireball" />}
-				/>
+				<FormField name={form.names.name} label="Name">
+					<Input placeholder="Fireball" />
+				</FormField>
 
-				<FormField
-					name={form.names.attributeId}
-					label="Attribute"
-					input={
-						<Select
-							options={sorcerySpellAttributeIdSchema.options.map((id) => ({
-								label: getAttributeById(id).name,
-								value: id,
-							}))}
-						/>
-					}
-				/>
+				<FormField name={form.names.attributeId} label="Attribute">
+					<Select
+						options={sorcerySpellAttributeIdSchema.options.map((id) => ({
+							label: getAttributeById(id).name,
+							value: id,
+						}))}
+					/>
+				</FormField>
 			</div>
 
-			<FormField
-				name={form.names.description}
-				label="Description"
-				input={<Input placeholder="What does the spell do?" />}
-			/>
+			<FormField name={form.names.description} label="Description">
+				<Input placeholder="What does the spell do?" />
+			</FormField>
 
 			<FormField
 				name={form.names.amplifiedDescription}
 				label="Amplified Description"
-				input={<Input placeholder="What does the spell do when amplified?" />}
-			/>
+			>
+				<Input placeholder="What does the spell do when amplified?" />
+			</FormField>
 
 			<div className="grid auto-cols-fr gap-4 @sm:grid-flow-col">
-				<FormField
-					name={form.names.manaCost}
-					label="Mana Cost"
-					input={<CounterInputUncontrolledField min={1} />}
-				/>
+				<FormField name={form.names.manaCost} label="Mana Cost">
+					<CounterInputUncontrolledField min={1} />
+				</FormField>
 
-				<FormField
-					name={form.names.stressCost}
-					label="Stress Cost"
-					input={<CounterInputUncontrolledField min={0} />}
-				/>
+				<FormField name={form.names.stressCost} label="Stress Cost">
+					<CounterInputUncontrolledField min={0} />
+				</FormField>
 
-				<FormField
-					name={form.names.castingTime}
-					label="Casting Time"
-					input={<CounterInputUncontrolledField min={0} />}
-				/>
+				<FormField name={form.names.castingTime} label="Casting Time">
+					<CounterInputUncontrolledField min={0} />
+				</FormField>
 			</div>
 
 			<FormButton icon={LucideWand2}>Save</FormButton>

@@ -54,7 +54,6 @@ export function useAsyncCallback<Args extends unknown[], Return>(
 				if (latestToken.current === token) {
 					setState({ status: "error", error })
 				}
-				console.error(error)
 			}
 		})()
 	})
@@ -63,6 +62,7 @@ export function useAsyncCallback<Args extends unknown[], Return>(
 	if (state.status === "idle") {
 		computedState = {
 			...state,
+			isIdle: true,
 			isLoading: false,
 			isSuccess: false,
 			isError: false,
@@ -70,6 +70,7 @@ export function useAsyncCallback<Args extends unknown[], Return>(
 	} else if (state.status === "loading") {
 		computedState = {
 			...state,
+			isIdle: false,
 			isLoading: true,
 			isSuccess: false,
 			isError: false,
@@ -77,6 +78,7 @@ export function useAsyncCallback<Args extends unknown[], Return>(
 	} else if (state.status === "success") {
 		computedState = {
 			...state,
+			isIdle: false,
 			isLoading: false,
 			isSuccess: true,
 			isError: false,
@@ -84,6 +86,7 @@ export function useAsyncCallback<Args extends unknown[], Return>(
 	} else {
 		computedState = {
 			...state,
+			isIdle: false,
 			isLoading: false,
 			isSuccess: false,
 			isError: true,

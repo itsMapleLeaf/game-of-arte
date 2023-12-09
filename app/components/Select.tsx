@@ -31,7 +31,7 @@ export function Select<Value extends string>({
 			{label && <Ariakit.SelectLabel>{label}</Ariakit.SelectLabel>}
 			<Ariakit.Select
 				className={panel(
-					"inline-flex h-10 items-center justify-between gap-2 rounded border px-3 transition",
+					"inline-flex h-10 items-center justify-between gap-2 rounded-md border px-3 transition",
 				)}
 			>
 				{(value && options.find((option) => option.value === value)?.label) || (
