@@ -13,7 +13,7 @@ import {
 import { Input } from "~/components/Input.tsx"
 import { PopoverTrigger } from "~/components/Popover.tsx"
 import { Select } from "~/components/Select.tsx"
-import { useForm } from "~/components/useForm.tsx"
+import { Form, FormButton, FormField, useForm } from "~/components/form.tsx"
 import { getAttributeById } from "../characters/attributes.ts"
 import { sorcerySpellAttributeIdSchema } from "./spells.ts"
 
@@ -52,7 +52,10 @@ function FreeformSpellForm({
 		schema: z.object({
 			name: z.string().min(1, "Cannot be empty"),
 			description: z.string().min(1, "Cannot be empty"),
-			attributeId: sorcerySpellAttributeIdSchema,
+			attributeId: z
+				.string()
+				.transform((it) => (it === "" ? undefined : it))
+				.pipe(sorcerySpellAttributeIdSchema),
 			amplifiedDescription: z.string().min(1, "Cannot be empty"),
 			manaCost: z.coerce.number().int().min(1),
 			stressCost: z.coerce.number().int().min(0),
@@ -81,16 +84,16 @@ function FreeformSpellForm({
 	})
 
 	return (
-		<form.Form className="@container">
+		<Form form={form} className="@container">
 			<div className="grid auto-cols-fr gap-4 @sm:grid-flow-col">
-				<form.Field
-					name="name"
+				<FormField
+					name={form.names.name}
 					label="Name"
 					input={<Input placeholder="Fireball" />}
 				/>
 
-				<form.Field
-					name="attributeId"
+				<FormField
+					name={form.names.attributeId}
 					label="Attribute"
 					input={
 						<Select
@@ -103,39 +106,39 @@ function FreeformSpellForm({
 				/>
 			</div>
 
-			<form.Field
-				name="description"
+			<FormField
+				name={form.names.description}
 				label="Description"
 				input={<Input placeholder="What does the spell do?" />}
 			/>
 
-			<form.Field
-				name="amplifiedDescription"
+			<FormField
+				name={form.names.amplifiedDescription}
 				label="Amplified Description"
 				input={<Input placeholder="What does the spell do when amplified?" />}
 			/>
 
 			<div className="grid auto-cols-fr gap-4 @sm:grid-flow-col">
-				<form.Field
-					name="manaCost"
+				<FormField
+					name={form.names.manaCost}
 					label="Mana Cost"
 					input={<CounterInputUncontrolledField min={1} />}
 				/>
 
-				<form.Field
-					name="stressCost"
+				<FormField
+					name={form.names.stressCost}
 					label="Stress Cost"
 					input={<CounterInputUncontrolledField min={0} />}
 				/>
 
-				<form.Field
-					name="castingTime"
+				<FormField
+					name={form.names.castingTime}
 					label="Casting Time"
 					input={<CounterInputUncontrolledField min={0} />}
 				/>
 			</div>
 
-			<form.Button icon={LucideWand2}>Save</form.Button>
-		</form.Form>
+			<FormButton icon={LucideWand2}>Save</FormButton>
+		</Form>
 	)
 }

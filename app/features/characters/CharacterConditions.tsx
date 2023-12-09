@@ -11,7 +11,7 @@ import { Input } from "~/components/Input.tsx"
 import { Popover, PopoverPanel, PopoverTrigger } from "~/components/Popover.tsx"
 import { SrOnly } from "~/components/SrOnly.tsx"
 import { panel } from "~/styles/panel.ts"
-import { useForm } from "../../components/useForm.tsx"
+import { Form, FormButton, FormField, useForm } from "../../components/form.tsx"
 import { CharacterContext } from "./CharacterContext.tsx"
 import { MentalStressIndicator } from "./MentalStressIndicator.tsx"
 import { PhysicalStressIndicator } from "./PhysicalStressIndicator.tsx"
@@ -142,9 +142,9 @@ function ConditionForm({
 	})
 
 	return (
-		<form.Form className="@container">
-			<form.Field
-				name="description"
+		<Form form={form} className="@container">
+			<FormField
+				name={form.names.description}
 				label="Description"
 				input={
 					<Input
@@ -154,8 +154,8 @@ function ConditionForm({
 				}
 			/>
 			<div className="grid grid-cols-2 gap-2">
-				<form.Field
-					name="physicalStress"
+				<FormField
+					name={form.names.physicalStress}
 					label="Phys. Stress"
 					input={
 						<CounterInputUncontrolled
@@ -164,8 +164,8 @@ function ConditionForm({
 						/>
 					}
 				/>
-				<form.Field
-					name="mentalStress"
+				<FormField
+					name={form.names.mentalStress}
 					label="Ment. Stress"
 					input={
 						<CounterInputUncontrolled
@@ -175,8 +175,8 @@ function ConditionForm({
 					}
 				/>
 			</div>
-			<form.Button />
-		</form.Form>
+			<FormButton />
+		</Form>
 	)
 }
 
