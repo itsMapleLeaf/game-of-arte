@@ -1,16 +1,15 @@
 import * as Ariakit from "@ariakit/react"
 import { LucideChevronDown } from "lucide-react"
 import type { ReactElement } from "react"
+import { panel } from "~/styles/panel.ts"
 import { buttonStyle } from "./Button.tsx"
 
 export function Select<Value extends string>({
-	name,
 	label,
-	value,
+	value: valueProp,
 	options,
 	onChange,
 }: {
-	name?: string
 	label?: string | ReactElement
 	value?: Value
 	options: Array<{
@@ -22,16 +21,19 @@ export function Select<Value extends string>({
 }) {
 	const store = Ariakit.useSelectStore({
 		animated: true,
-		value,
+		value: valueProp,
 		setValue: onChange,
 	})
+	const value = store.useState((state) => state.value)
+
 	return (
 		<Ariakit.SelectProvider store={store}>
 			{label && <Ariakit.SelectLabel>{label}</Ariakit.SelectLabel>}
-			{name && (
-				<input type="hidden" name={name} value={store.getState().value} />
-			)}
-			<Ariakit.Select className="inline-flex h-10 items-center justify-between gap-2 rounded border px-3 transition">
+			<Ariakit.Select
+				className={panel(
+					"inline-flex h-10 items-center justify-between gap-2 rounded border px-3 transition",
+				)}
+			>
 				{(value && options.find((option) => option.value === value)?.label) || (
 					<span className="italic opacity-75">Choose one...</span>
 				)}
@@ -40,7 +42,11 @@ export function Select<Value extends string>({
 			<Ariakit.SelectPopover
 				gutter={8}
 				render={
-					<div className="flex min-w-[--popover-anchor-width] flex-col rounded border shadow-md transition ring-no-inset data-[enter]:translate-y-0 data-[leave]:translate-y-2 data-[enter]:opacity-100 data-[leave]:opacity-0" />
+					<div
+						className={panel(
+							"flex min-w-[--popover-anchor-width] flex-col rounded border shadow-md transition ring-no-inset data-[enter]:translate-y-0 data-[leave]:translate-y-2 data-[enter]:opacity-100 data-[leave]:opacity-0",
+						)}
+					/>
 				}
 			>
 				{options.map((option) => (
