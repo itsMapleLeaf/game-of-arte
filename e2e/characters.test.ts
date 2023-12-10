@@ -1,12 +1,15 @@
 import { expect, test } from "@playwright/test"
 import { runTestFunction } from "~/routes/test.run/test.ts"
+import { signIn } from "./auth.ts"
 
 test.beforeAll(async ({ request }) => {
+	await runTestFunction(request, "seedTestUser")
 	await runTestFunction(request, "seedWorld")
 })
 
 test.beforeEach(async ({ page }) => {
 	await runTestFunction(page.request, "seedCharacters")
+	await runTestFunction(page.request, "seedPlayers")
 	await page.goto("/", { waitUntil: "networkidle" })
 })
 
@@ -31,6 +34,8 @@ test("adding character condition", async ({ page }) => {
 	const zeroStressError = dialog
 		.getByRole("alert")
 		.getByText("Must have at least 1 stress")
+
+	await signIn(page)
 
 	await page.click("text=Eris")
 
