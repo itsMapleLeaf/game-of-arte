@@ -42,13 +42,7 @@ export const subtractMana = mutation({
 
 export async function getWorld(ctx: QueryCtx) {
 	const world = await ctx.db.query("worlds").first()
-	if (world) return world
-
-	const message = [
-		"The world has not been configured.",
-		"Please create a world document in the Convex dashboard.",
-	]
-	throw new Error(message.join(" "))
+	return world ?? { experience: 0, mana: 12 }
 }
 
 async function updateWorld(
