@@ -2,11 +2,15 @@ import test, { expect } from "@playwright/test"
 import { runTestFunction } from "~/routes/test.run/test.ts"
 import { signIn } from "./auth.ts"
 
+test.beforeAll(async ({ request }) => {
+	await runTestFunction(request, "seedWorld")
+})
+
 test("managing invites", async ({ page }) => {
 	await page.goto("/", { waitUntil: "networkidle" })
 
 	await signIn(page)
-	await runTestFunction(page.request, "seedWorldOwner")
+	await runTestFunction(page.request, "seedWorld")
 	await runTestFunction(page.request, "removeInvites")
 
 	await page.getByRole("button", { name: "Players" }).click()

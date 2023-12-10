@@ -117,7 +117,7 @@ export const seedTestUser = mutation({
 	},
 })
 
-export const seedWorldOwner = mutation({
+export const seedWorld = mutation({
 	async handler(ctx) {
 		requireTestEnv()
 		const ownerId = await upsertUser(ctx, {
