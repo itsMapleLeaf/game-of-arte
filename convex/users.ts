@@ -9,7 +9,6 @@ import {
 export const upsert = internalMutation({
 	args: {
 		tokenIdentifier: v.string(),
-		discordUserId: v.string(),
 		name: v.string(),
 	},
 	handler: async (ctx, args) => {
@@ -19,7 +18,7 @@ export const upsert = internalMutation({
 
 export async function upsertUser(
 	ctx: MutationCtx,
-	args: { tokenIdentifier: string; discordUserId?: string; name: string },
+	args: { tokenIdentifier: string; name: string },
 ): Promise<Id<"users">> {
 	const [user, ...duplicates] = await ctx.db
 		.query("users")

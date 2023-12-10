@@ -1,5 +1,6 @@
 import type { PaginationResult } from "convex/server"
 import { v } from "convex/values"
+import { it } from "~/helpers/iterable.ts"
 import type { Doc, Id } from "./_generated/dataModel"
 import { type QueryCtx, mutation, query } from "./_generated/server.js"
 import { type Die, diceRuleValidator } from "./diceRolls.validators.ts"
@@ -35,7 +36,7 @@ export const list = query({
 					visible:
 						isAdmin ||
 						roll.secret === false ||
-						(roll.discordUserId === user?.discordUserId && isPlayer),
+						(roll.userId === user?._id && isPlayer),
 				}),
 			),
 		}
@@ -85,7 +86,7 @@ export const roll = mutation({
 
 		const id = await ctx.db.insert("diceRolls", {
 			...data,
-			discordUserId: user.discordUserId,
+			userId: user._id,
 			dice: rolls,
 		})
 
@@ -138,7 +139,7 @@ async function requireRoll(ctx: QueryCtx, id: Id<"diceRolls">) {
 
 export type ClientDiceRoll = ReturnType<typeof createClientDiceRoll>
 function createClientDiceRoll({
-	discordUserId: _,
+	userId: _userId,
 	initiatorName,
 	visible,
 	...roll
@@ -175,7 +176,7 @@ async function requireRollPermissions(ctx: QueryCtx, rollId: Id<"diceRolls">) {
 		hasAdminRole(ctx),
 		hasPlayerRole(ctx),
 	])
-	return isAdmin || (roll.discordUserId === user?.discordUserId && isPlayer)
+	return isAdmin || (roll.userId === user?._id && isPlayer)
 }
 
 async function getPaginatedRolls(
@@ -190,22 +191,25 @@ async function getPaginatedRolls(
 			cursor: args.cursor ?? null,
 		})
 
-	const discordUserIds = [...new Set(result.page.map((r) => r.discordUserId))]
+	const users = await Promise.all(
+		it(result.page)
+			.map((roll) => roll.userId)
+			.filter(Boolean)
+			.unique()
+			.map((id) => ctx.db.get(id)),
+	)
 
-	const users = await ctx.db
-		.query("users")
-		.filter((q) =>
-			q.or(...discordUserIds.map((id) => q.eq(q.field("discordUserId"), id))),
-		)
-		.collect()
-
-	const usersById = new Map(users.map((u) => [u.discordUserId, u]))
+	const usersById = new Map(
+		it(users)
+			.filter(Boolean)
+			.map((user) => [user._id, user]),
+	)
 
 	return {
 		...result,
 		page: result.page.map((roll) => ({
 			...roll,
-			initiatorName: usersById.get(roll.discordUserId)?.name,
+			initiatorName: roll.userId ? usersById.get(roll.userId)?.name : undefined,
 		})),
 	}
 }
