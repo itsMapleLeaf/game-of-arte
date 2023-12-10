@@ -58,7 +58,7 @@ function Document({ children }: { children: React.ReactNode }) {
 				<ScrollRestoration />
 				<Scripts />
 				<LiveReload />
-				<SpeedInsights />
+				{process.env.NODE_ENV === "production" && <SpeedInsights />}
 			</body>
 		</html>
 	)
