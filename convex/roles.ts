@@ -1,15 +1,7 @@
-import type { Nullish } from "~/helpers/types.ts"
-import type { Doc } from "./_generated/dataModel"
 import { type QueryCtx, query } from "./_generated/server.js"
-import { convexEnv } from "./env.ts"
 import { getPlayerByUser } from "./players.ts"
 import { getAuthenticatedUser } from "./users.ts"
-
-export const get = query({
-	handler: async (ctx) => {
-		return await getRoles(ctx)
-	},
-})
+import { getWorld } from "./world.ts"
 
 export type Roles = {
 	isAdmin: boolean
@@ -17,65 +9,46 @@ export type Roles = {
 	isSpectator: boolean
 }
 
-export async function getRoles(ctx: QueryCtx): Promise<Roles> {
-	return await getRolesByUser(ctx, await getAuthenticatedUser(ctx))
+export const get = query({
+	handler: async (ctx): Promise<Roles> => {
+		const [isAdmin, isPlayer] = await Promise.all([
+			hasAdminRole(ctx),
+			hasPlayerRole(ctx),
+		])
+		return { isAdmin, isPlayer, isSpectator: !isPlayer }
+	},
+})
+
+export async function hasAdminRole(ctx: QueryCtx) {
+	const [user, world] = await Promise.all([
+		getAuthenticatedUser(ctx),
+		getWorld(ctx),
+	])
+	return user != null && world.ownerId === user._id
 }
 
-export async function getRolesByUser(
-	ctx: QueryCtx,
-	user: Nullish<Doc<"users">>,
-): Promise<Roles> {
-	if (convexEnv.TEST === "true") {
-		return { isAdmin: true, isPlayer: true, isSpectator: false }
-	}
-
-	if (!user) {
-		return { isAdmin: false, isPlayer: false, isSpectator: true }
-	}
-
-	if (user.discordUserId === convexEnv.ADMIN_DISCORD_USER_ID) {
-		return { isAdmin: true, isPlayer: true, isSpectator: false }
-	}
-
-	const player = await ctx.db
-		.query("players")
-		.withIndex("by_discord_user_id", (q) =>
-			q.eq("discordUserId", user.discordUserId),
-		)
-		.first()
-
-	if (!player) {
-		return { isAdmin: false, isPlayer: false, isSpectator: true }
-	}
-
-	return { isAdmin: false, isPlayer: false, isSpectator: true }
-}
-
-export async function requireAdmin(ctx: QueryCtx) {
-	const roles = await getRoles(ctx)
-	if (!roles.isAdmin) {
-		throw new Error("Unauthorized")
+export async function requireAdminRole(ctx: QueryCtx) {
+	if (!(await hasAdminRole(ctx))) {
+		throw new Error("You must be an admin to perform this action.")
 	}
 }
 
-export async function getPlayerUser(ctx: QueryCtx) {
-	const user = await getAuthenticatedUser(ctx)
-	if (!user) return
+export async function hasPlayerRole(ctx: QueryCtx) {
+	const [isAdmin, user] = await Promise.all([
+		hasAdminRole(ctx),
+		getAuthenticatedUser(ctx),
+	])
 
-	if (user.discordUserId === convexEnv.ADMIN_DISCORD_USER_ID) {
-		return user
+	if (isAdmin) {
+		return true
 	}
 
-	const player = await getPlayerByUser(ctx, user)
-	if (!player) return
-
-	return user
+	const player = user && (await getPlayerByUser(ctx, user))
+	return player != null
 }
 
-export async function requirePlayerUser(ctx: QueryCtx) {
-	const user = await getPlayerUser(ctx)
-	if (!user) {
-		throw new Error("Unauthorized")
+export async function requirePlayerRole(ctx: QueryCtx) {
+	if (!(await hasPlayerRole(ctx))) {
+		throw new Error("You must be a player to perform this action.")
 	}
-	return user
 }

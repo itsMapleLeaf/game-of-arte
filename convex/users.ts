@@ -37,3 +37,11 @@ export async function getAuthenticatedUser(ctx: QueryCtx) {
 		)
 		.first()
 }
+
+export async function requireAuthenticatedUser(ctx: QueryCtx) {
+	const user = await getAuthenticatedUser(ctx)
+	if (!user) {
+		throw new Error("Not authenticated")
+	}
+	return user
+}

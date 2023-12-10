@@ -2,7 +2,7 @@ import { v } from "convex/values"
 import { raise } from "~/helpers/errors.ts"
 import type { Doc } from "./_generated/dataModel"
 import { type QueryCtx, mutation, query } from "./_generated/server.js"
-import { requireAdmin } from "./roles.ts"
+import { requireAdminRole } from "./roles.ts"
 import { getAuthenticatedUser } from "./users.ts"
 
 export const self = query({
@@ -21,7 +21,7 @@ export const self = query({
 
 export const list = query({
 	handler: async (ctx) => {
-		await requireAdmin(ctx)
+		await requireAdminRole(ctx)
 
 		const players = await ctx.db.query("players").collect()
 		const discordUserIds = players.map((player) => player.discordUserId)
@@ -49,7 +49,7 @@ export const add = mutation({
 		discordUserId: v.string(),
 	},
 	handler: async (ctx, args) => {
-		await requireAdmin(ctx)
+		await requireAdminRole(ctx)
 
 		const existing = await ctx.db
 			.query("players")
@@ -74,7 +74,7 @@ export const update = mutation({
 		ownedCharacterId: v.optional(v.id("characters")),
 	},
 	handler: async (ctx, { id, ...args }) => {
-		await requireAdmin(ctx)
+		await requireAdminRole(ctx)
 		await ctx.db.patch(id, args)
 	},
 })
@@ -84,14 +84,21 @@ export const remove = mutation({
 		id: v.id("players"),
 	},
 	handler: async (ctx, args) => {
-		await requireAdmin(ctx)
+		await requireAdminRole(ctx)
 		await ctx.db.delete(args.id)
 	},
 })
 
-export async function getPlayer(ctx: QueryCtx) {
+export async function getAuthenticatedPlayer(ctx: QueryCtx) {
 	const user = await getAuthenticatedUser(ctx)
 	return user && (await getPlayerByUser(ctx, user))
+}
+
+export async function requireAuthenticatedPlayer(ctx: QueryCtx) {
+	return (
+		(await getAuthenticatedPlayer(ctx)) ??
+		raise("You must be a player to perform this action")
+	)
 }
 
 export async function getPlayerByUser(
