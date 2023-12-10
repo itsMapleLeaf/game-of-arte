@@ -1,6 +1,10 @@
 import { expect, test } from "@playwright/test"
 import { runTestFunction } from "~/routes/test.run/test.ts"
 
+test.beforeAll(async ({ request }) => {
+	await runTestFunction(request, "seedWorld")
+})
+
 test.beforeEach(async ({ page }) => {
 	await runTestFunction(page.request, "seedCharacters")
 	await page.goto("/", { waitUntil: "networkidle" })
