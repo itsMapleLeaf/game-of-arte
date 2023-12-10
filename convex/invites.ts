@@ -18,10 +18,11 @@ export const list = query({
 
 export const get = query({
 	args: {
-		id: v.id("invites"),
+		id: v.string(),
 	},
-	async handler(ctx, { id }) {
-		return await ctx.db.get(id)
+	async handler(ctx, args) {
+		const inviteId = ctx.db.normalizeId("invites", args.id)
+		return inviteId ? await ctx.db.get(inviteId) : null
 	},
 })
 
