@@ -10,10 +10,14 @@ concurrency:
 
 jobs:
   e2e-test:
+    name: e2e test - ${{ matrix.project }}
     timeout-minutes: 60
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.40.1-jammy
+    strategy:
+      matrix:
+        project: [chrome, firefox, webkit]
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup-node-pnpm
@@ -27,7 +31,7 @@ jobs:
           CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
 
       - name: Run Playwright tests
-        run: pnpm run e2e
+        run: pnpm run e2e --project ${{ matrix.project }}
         env:
           HOME: /root
           CLERK_PUBLISHABLE_KEY: ${{ secrets.CLERK_PUBLISHABLE_KEY }}
