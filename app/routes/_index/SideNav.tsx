@@ -27,7 +27,7 @@ import { panel } from "~/styles/panel.ts"
 
 export function SideNav() {
 	return (
-		<>
+		<nav className="flex flex-col gap-2">
 			<SideNavCollapse title="Characters" icon={<LucideUsers />} defaultOpen>
 				<CharacterList />
 			</SideNavCollapse>
@@ -47,7 +47,7 @@ export function SideNav() {
 					<WorldSettings />
 				</SideNavCollapse>
 			</AdminRoleGuard>
-		</>
+		</nav>
 	)
 }
 
@@ -122,14 +122,14 @@ function SideNavCollapse({
 	children: React.ReactNode
 }) {
 	return (
-		<div className={panel("group rounded-md border bg-base-800")}>
+		<div>
 			<Collapse
 				persistenceKey={`side-nav-collapse:${title}`}
 				defaultOpen={defaultOpen}
 				open={open}
 				setOpen={setOpen}
 			>
-				<CollapseButton className="p-2">
+				<CollapseButton className="px-1 py-2">
 					<div className="flex items-center gap-2 rounded-t-md">
 						{icon}
 						{title}
@@ -138,7 +138,11 @@ function SideNavCollapse({
 						)}
 					</div>
 				</CollapseButton>
-				<CollapseContent className="bg-base-900">{children}</CollapseContent>
+				<CollapseContent className="pt-1">
+					<div className={panel("group overflow-clip rounded-md border")}>
+						{children}
+					</div>
+				</CollapseContent>
 			</Collapse>
 		</div>
 	)

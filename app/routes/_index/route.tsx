@@ -50,9 +50,7 @@ export default function GamePage() {
 	return (
 		<div className={container("flex flex-1 gap-4 pb-8 pt-4")}>
 			<ViewportHeightScrollArea>
-				<nav className="flex flex-col gap-4">
-					<SideNav />
-				</nav>
+				<SideNav />
 			</ViewportHeightScrollArea>
 			<main className="flex-1">
 				<MainContent />
