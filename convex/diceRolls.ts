@@ -3,9 +3,13 @@ import { v } from "convex/values"
 import type { Doc, Id } from "./_generated/dataModel"
 import { type QueryCtx, mutation, query } from "./_generated/server.js"
 import { type Die, diceRuleValidator } from "./diceRolls.validators.ts"
-import { getAuthenticatedPlayer } from "./players.ts"
-import { hasAdminRole, requireAdminRole, requirePlayerRole } from "./roles.ts"
-import { requireAuthenticatedUser } from "./users.ts"
+import {
+	hasAdminRole,
+	hasPlayerRole,
+	requireAdminRole,
+	requirePlayerRole,
+} from "./roles.ts"
+import { getAuthenticatedUser, requireAuthenticatedUser } from "./users.ts"
 import { nullish } from "./validators.ts"
 
 const maxRolls = 250
@@ -16,10 +20,11 @@ export const list = query({
 		cursor: nullish(v.string()),
 	},
 	handler: async (ctx, args): Promise<PaginationResult<ClientDiceRoll>> => {
-		const [result, isAdmin, player] = await Promise.all([
+		const [result, user, isAdmin, isPlayer] = await Promise.all([
 			getPaginatedRolls(ctx, args),
+			getAuthenticatedUser(ctx),
 			hasAdminRole(ctx),
-			getAuthenticatedPlayer(ctx),
+			hasPlayerRole(ctx),
 		])
 
 		return {
@@ -30,7 +35,7 @@ export const list = query({
 					visible:
 						isAdmin ||
 						roll.secret === false ||
-						roll.discordUserId === player?.discordUserId,
+						(roll.discordUserId === user?.discordUserId && isPlayer),
 				}),
 			),
 		}
@@ -164,12 +169,13 @@ function createClientDiceRoll({
 }
 
 async function requireRollPermissions(ctx: QueryCtx, rollId: Id<"diceRolls">) {
-	const [roll, player, isAdmin] = await Promise.all([
+	const [roll, user, isAdmin, isPlayer] = await Promise.all([
 		requireRoll(ctx, rollId),
-		getAuthenticatedPlayer(ctx),
+		getAuthenticatedUser(ctx),
 		hasAdminRole(ctx),
+		hasPlayerRole(ctx),
 	])
-	return isAdmin || roll.discordUserId === player?.discordUserId
+	return isAdmin || (roll.discordUserId === user?.discordUserId && isPlayer)
 }
 
 async function getPaginatedRolls(
