@@ -42,7 +42,7 @@ export const subtractMana = mutation({
 
 export async function getWorld(ctx: QueryCtx) {
 	const world = await ctx.db.query("worlds").first()
-	return world ?? { experience: 0, mana: 12 }
+	return world ?? { experience: 0, mana: 12, ownerId: undefined }
 }
 
 async function updateWorld(
