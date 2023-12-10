@@ -11,7 +11,7 @@ import { record } from "./validators.ts"
 export default defineSchema({
 	users: defineTable({
 		tokenIdentifier: v.string(),
-		discordUserId: v.string(),
+		discordUserId: v.optional(v.string()),
 		name: v.string(),
 	})
 		.index("by_token_identifier", ["tokenIdentifier"])
