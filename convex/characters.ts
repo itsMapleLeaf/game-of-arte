@@ -7,22 +7,23 @@ import {
 import { v } from "convex/values"
 import randimals from "randimals"
 import { compareKey, upsertArray } from "~/helpers/collections.ts"
+import { raise } from "~/helpers/errors.ts"
 import type { Id } from "./_generated/dataModel"
 import {
 	conditionValidator,
 	sorceryDeviceValidator,
 	sorcerySpellValidator,
 } from "./characters.validators.ts"
-import { convexEnv } from "./env.ts"
-import { getRoles, requireAdmin, requirePlayerUser } from "./roles.ts"
+import { getAuthenticatedPlayer } from "./players.ts"
+import { hasAdminRole, requireAdminRole, requirePlayerRole } from "./roles.ts"
 import { getAuthenticatedUser } from "./users.ts"
 import { nullish, record } from "./validators.ts"
 
 export const list = query({
 	handler: async (ctx) => {
-		const roles = await getRoles(ctx)
+		const isAdmin = await hasAdminRole(ctx)
 		let query = ctx.db.query("characters")
-		if (!roles.isAdmin) {
+		if (!isAdmin) {
 			query = query.filter((q) => q.neq(q.field("hidden"), true))
 		}
 		const characters = await query.collect()
@@ -37,13 +38,13 @@ export const get = query({
 	handler: async (ctx, args) => {
 		if (!args.id) return null
 
-		const [character, roles] = await Promise.all([
+		const [character, isAdmin] = await Promise.all([
 			ctx.db.get(args.id),
-			getRoles(ctx),
+			hasAdminRole(ctx),
 		])
 
 		if (!character) return null
-		if (!roles.isAdmin && character.hidden) return null
+		if (!isAdmin && character.hidden) return null
 
 		const [ownerPlayer, user] = await Promise.all([
 			ctx.db
@@ -55,8 +56,7 @@ export const get = query({
 
 		return {
 			...character,
-			isOwner:
-				ownerPlayer?.discordUserId === user?.discordUserId || roles.isAdmin,
+			isOwner: ownerPlayer?.discordUserId === user?.discordUserId || isAdmin,
 		}
 	},
 })
@@ -81,7 +81,7 @@ export const getOwned = query({
 export const create = mutation({
 	args: { name: v.optional(v.string()) },
 	handler: async (ctx, args) => {
-		await requireAdmin(ctx)
+		await requireAdminRole(ctx)
 		const id = await createCharacter(ctx, { name: args.name })
 		return { _id: id }
 	},
@@ -95,7 +95,7 @@ export const update = mutation({
 		conditions: v.optional(v.array(conditionValidator)),
 	},
 	handler: async (ctx, { id, ...args }) => {
-		await requirePlayerUser(ctx)
+		await requirePlayerRole(ctx)
 		await ctx.db.patch(id, args)
 	},
 })
@@ -106,7 +106,7 @@ export const updateData = mutation({
 		data: record<string | number>(),
 	},
 	handler: async (ctx, args) => {
-		await requirePlayerUser(ctx)
+		await requirePlayerRole(ctx)
 
 		const character = await ctx.db.get(args.id)
 		if (!character) {
@@ -202,7 +202,7 @@ export const removeCondition = mutation({
 export const remove = mutation({
 	args: { id: v.id("characters") },
 	handler: async (ctx, args) => {
-		await requireAdmin(ctx)
+		await requireAdminRole(ctx)
 		await ctx.db.delete(args.id)
 	},
 })
@@ -226,40 +226,28 @@ export function createCharacter(
 	})
 }
 
+async function requireCharacter(ctx: QueryCtx, characterId: Id<"characters">) {
+	return (await ctx.db.get(characterId)) ?? raise("Character not found")
+}
+
 async function requireOwnedCharacter(
 	ctx: QueryCtx,
 	characterId: Id<"characters">,
 ) {
-	const character = await ctx.db.get(characterId)
-	if (!character) {
-		throw new Error(`Character not found: ${characterId}`)
-	}
+	const [character, player, isAdmin, identity] = await Promise.all([
+		requireCharacter(ctx, characterId),
+		getAuthenticatedPlayer(ctx),
+		hasAdminRole(ctx),
+		ctx.auth.getUserIdentity(),
+	])
 
-	if (convexEnv.TEST === "true") {
+	if (isAdmin || player?.ownedCharacterId === character._id) {
 		return character
 	}
 
-	const user = await requirePlayerUser(ctx)
-	if (user.discordUserId === convexEnv.ADMIN_DISCORD_USER_ID) {
-		return character
-	}
-
-	const player = await ctx.db
-		.query("players")
-		.withIndex("by_discord_user_id", (q) =>
-			q.eq("discordUserId", user.discordUserId),
-		)
-		.first()
-
-	if (!player) {
-		throw new Error(`User ${user.name} is not a player`)
-	}
-
-	if (player.ownedCharacterId !== character._id) {
-		throw new Error(
-			`User ${user.name} does not own character ${character.name}`,
-		)
-	}
-
-	return character
+	const id = identity?.tokenIdentifier ?? "anonymous"
+	const name = identity?.name ?? "(anonymous user)"
+	throw new Error(
+		`User ${name} (${id}) does not own character ${character.name}`,
+	)
 }

@@ -1,15 +1,19 @@
 import { v } from "convex/values"
 import type { Simplify } from "../app/helpers/types.ts"
 import type { Doc } from "./_generated/dataModel"
-import { type MutationCtx, mutation, query } from "./_generated/server.js"
-import { requireAdmin, requirePlayerUser } from "./roles.ts"
+import {
+	type MutationCtx,
+	type QueryCtx,
+	mutation,
+	query,
+} from "./_generated/server.js"
+import { requireAdminRole, requirePlayerRole } from "./roles.ts"
 
 export type World = Simplify<Omit<Doc<"worlds">, "_id" | "_creationTime">>
 
 export const get = query({
 	handler: async (ctx): Promise<World> => {
-		const world = await ctx.db.query("worlds").first()
-		return world ?? { experience: 0 }
+		return await getWorld(ctx)
 	},
 })
 
@@ -19,7 +23,7 @@ export const update = mutation({
 		mana: v.optional(v.number()),
 	},
 	handler: async (ctx, args) => {
-		await requireAdmin(ctx)
+		await requireAdminRole(ctx)
 		await updateWorld(ctx, args)
 	},
 })
@@ -29,13 +33,23 @@ export const subtractMana = mutation({
 		amount: v.number(),
 	},
 	handler: async (ctx, args) => {
-		await requirePlayerUser(ctx)
-		const world = await ctx.db.query("worlds").first()
+		const [world] = await Promise.all([getWorld(ctx), requirePlayerRole(ctx)])
 		await updateWorld(ctx, {
 			mana: Math.max(0, (world?.mana ?? 0) - args.amount),
 		})
 	},
 })
+
+export async function getWorld(ctx: QueryCtx) {
+	const world = await ctx.db.query("worlds").first()
+	if (world) return world
+
+	const message = [
+		"The world has not been configured.",
+		"Please create a world document in the Convex dashboard.",
+	]
+	throw new Error(message.join(" "))
+}
 
 async function updateWorld(
 	ctx: MutationCtx,

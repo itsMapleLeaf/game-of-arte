@@ -1,17 +1,11 @@
 import type { PaginationResult } from "convex/server"
 import { v } from "convex/values"
-import type { Nullish } from "~/helpers/types.ts"
 import type { Doc, Id } from "./_generated/dataModel"
 import { type QueryCtx, mutation, query } from "./_generated/server.js"
 import { type Die, diceRuleValidator } from "./diceRolls.validators.ts"
-import { getPlayerByUser } from "./players.ts"
-import {
-	type Roles,
-	getRolesByUser,
-	requireAdmin,
-	requirePlayerUser,
-} from "./roles.ts"
-import { getAuthenticatedUser } from "./users.ts"
+import { getAuthenticatedPlayer } from "./players.ts"
+import { hasAdminRole, requireAdminRole, requirePlayerRole } from "./roles.ts"
+import { requireAuthenticatedUser } from "./users.ts"
 import { nullish } from "./validators.ts"
 
 const maxRolls = 250
@@ -22,22 +16,22 @@ export const list = query({
 		cursor: nullish(v.string()),
 	},
 	handler: async (ctx, args): Promise<PaginationResult<ClientDiceRoll>> => {
-		const [user, { result, usersById }] = await Promise.all([
-			getAuthenticatedUser(ctx),
+		const [result, isAdmin, player] = await Promise.all([
 			getPaginatedRolls(ctx, args),
+			hasAdminRole(ctx),
+			getAuthenticatedPlayer(ctx),
 		])
-		const player = user && (await getPlayerByUser(ctx, user))
-		const roles = await getRolesByUser(ctx, user)
 
 		return {
 			...result,
 			page: result.page.map((roll) =>
-				createClientDiceRoll(
-					roll,
-					usersById.get(roll.discordUserId)?.name,
-					player,
-					roles,
-				),
+				createClientDiceRoll({
+					...roll,
+					visible:
+						isAdmin ||
+						roll.secret === false ||
+						roll.discordUserId === player?.discordUserId,
+				}),
 			),
 		}
 	},
@@ -58,7 +52,10 @@ export const roll = mutation({
 		secret: v.optional(v.boolean()),
 	},
 	handler: async (ctx, { dice, ...data }) => {
-		const user = await requirePlayerUser(ctx)
+		const [user] = await Promise.all([
+			requireAuthenticatedUser(ctx),
+			requirePlayerRole(ctx),
+		])
 
 		const rolls: Die[] = []
 		for (const diceInput of dice) {
@@ -101,7 +98,7 @@ export const setHints = mutation({
 		hints: v.array(v.string()),
 	},
 	handler: async (ctx, { rollId, hints }) => {
-		await requirePlayerUser(ctx)
+		await requirePlayerRole(ctx)
 		await ctx.db.patch(rollId, { hints })
 	},
 })
@@ -111,8 +108,7 @@ export const reveal = mutation({
 		rollId: v.id("diceRolls"),
 	},
 	handler: async (ctx, { rollId }) => {
-		const roll = await requireRoll(ctx, rollId)
-		await requireRollPermissions(ctx, roll)
+		await requireRollPermissions(ctx, rollId)
 		await ctx.db.patch(rollId, { secret: false })
 	},
 })
@@ -122,7 +118,7 @@ export const remove = mutation({
 		id: v.id("diceRolls"),
 	},
 	handler: async (ctx, args) => {
-		await requireAdmin(ctx)
+		await requireAdminRole(ctx)
 		await ctx.db.delete(args.id)
 	},
 })
@@ -136,21 +132,21 @@ async function requireRoll(ctx: QueryCtx, id: Id<"diceRolls">) {
 }
 
 export type ClientDiceRoll = ReturnType<typeof createClientDiceRoll>
-function createClientDiceRoll(
-	{ discordUserId, ...roll }: Doc<"diceRolls">,
-	initiatorName: string | undefined,
-	player: Nullish<Doc<"players">>,
-	roles: Roles,
-) {
+function createClientDiceRoll({
+	discordUserId: _,
+	initiatorName,
+	visible,
+	...roll
+}: Doc<"diceRolls"> & {
+	initiatorName: string | undefined
+	visible: boolean
+}) {
 	const clientRoll = {
 		...roll,
 		initiatorName,
 	}
 
-	const hasPermissions = hasRollPermissions({ discordUserId }, roles, player)
-	const isVisible = !clientRoll.secret || hasPermissions
-
-	if (isVisible) {
+	if (visible) {
 		return {
 			...clientRoll,
 			visible: true,
@@ -167,22 +163,13 @@ function createClientDiceRoll(
 	} as const
 }
 
-function hasRollPermissions(
-	roll: { discordUserId: string },
-	roles: { isAdmin: boolean },
-	player: { discordUserId: string } | null | undefined,
-) {
-	return roles.isAdmin || roll.discordUserId === player?.discordUserId
-}
-
-async function requireRollPermissions(
-	ctx: QueryCtx,
-	roll: { discordUserId: string },
-) {
-	const user = await getAuthenticatedUser(ctx)
-	const roles = await getRolesByUser(ctx, user)
-	const player = user && (await getPlayerByUser(ctx, user))
-	return hasRollPermissions(roll, roles, player)
+async function requireRollPermissions(ctx: QueryCtx, rollId: Id<"diceRolls">) {
+	const [roll, player, isAdmin] = await Promise.all([
+		requireRoll(ctx, rollId),
+		getAuthenticatedPlayer(ctx),
+		hasAdminRole(ctx),
+	])
+	return isAdmin || roll.discordUserId === player?.discordUserId
 }
 
 async function getPaginatedRolls(
@@ -208,5 +195,11 @@ async function getPaginatedRolls(
 
 	const usersById = new Map(users.map((u) => [u.discordUserId, u]))
 
-	return { result, usersById }
+	return {
+		...result,
+		page: result.page.map((roll) => ({
+			...roll,
+			initiatorName: usersById.get(roll.discordUserId)?.name,
+		})),
+	}
 }

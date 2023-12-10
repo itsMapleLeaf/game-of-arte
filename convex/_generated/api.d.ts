@@ -14,8 +14,8 @@ import type {
   FilterApi,
   FunctionReference,
 } from "convex/server";
-import type * as auth from "../auth.js";
 import type * as characters from "../characters.js";
+import type * as clerk from "../clerk.js";
 import type * as clocks from "../clocks.js";
 import type * as diceRolls from "../diceRolls.js";
 import type * as env from "../env.js";
@@ -37,8 +37,8 @@ import type * as world from "../world.js";
  * ```
  */
 declare const fullApi: ApiFromModules<{
-  auth: typeof auth;
   characters: typeof characters;
+  clerk: typeof clerk;
   clocks: typeof clocks;
   diceRolls: typeof diceRolls;
   env: typeof env;

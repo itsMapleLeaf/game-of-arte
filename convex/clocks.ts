@@ -1,6 +1,6 @@
 import { v } from "convex/values"
-import { mutation, query } from "./_generated/server"
-import { requirePlayerUser } from "./roles.ts"
+import { mutation, query } from "./_generated/server.js"
+import { requirePlayerRole } from "./roles.ts"
 
 export const list = query({
 	handler: async (ctx) => {
@@ -10,7 +10,7 @@ export const list = query({
 
 export const add = mutation({
 	handler: async (ctx) => {
-		await requirePlayerUser(ctx)
+		await requirePlayerRole(ctx)
 		await ctx.db.insert("clocks", {
 			name: "New Clock",
 			value: 0,
@@ -27,7 +27,7 @@ export const update = mutation({
 		maxValue: v.optional(v.number()),
 	},
 	handler: async (ctx, { id, ...args }) => {
-		await requirePlayerUser(ctx)
+		await requirePlayerRole(ctx)
 		await ctx.db.patch(id, args)
 	},
 })
@@ -37,7 +37,7 @@ export const remove = mutation({
 		id: v.id("clocks"),
 	},
 	handler: async (ctx, args) => {
-		await requirePlayerUser(ctx)
+		await requirePlayerRole(ctx)
 		await ctx.db.delete(args.id)
 	},
 })

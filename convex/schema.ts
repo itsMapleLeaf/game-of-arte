@@ -18,6 +18,7 @@ export default defineSchema({
 		.index("by_discord_user_id", ["discordUserId"]),
 
 	worlds: defineTable({
+		ownerId: v.optional(v.id("users")),
 		experience: v.number(),
 		mana: v.optional(v.number()),
 	}),
