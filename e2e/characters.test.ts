@@ -3,8 +3,8 @@ import { runTestFunction } from "~/routes/test.run/test.ts"
 import { signIn } from "./auth.ts"
 
 test.beforeAll(async ({ request }) => {
-	await runTestFunction(request, "seedTestUser")
 	await runTestFunction(request, "seedWorld")
+	await runTestFunction(request, "seedTestUser")
 })
 
 test.beforeEach(async ({ page }) => {
