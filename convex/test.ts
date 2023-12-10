@@ -1,6 +1,5 @@
 import type { WithoutSystemFields } from "convex/server"
-import { expect } from "~/helpers/expect.ts"
-import type { Doc, Id, TableNames } from "./_generated/dataModel"
+import type { Doc, TableNames } from "./_generated/dataModel"
 import { type MutationCtx, mutation } from "./_generated/server"
 import { convexEnv } from "./env.ts"
 import { upsertUser } from "./users.ts"
@@ -112,7 +111,7 @@ export const seedTestUser = mutation({
 		await seedTable(ctx, "users", [
 			{
 				name: "hellotest",
-				tokenIdentifier: expect(convexEnv.TEST_WORLD_OWNER_ID) as Id<"users">,
+				tokenIdentifier: `${convexEnv.CLERK_JWT_ISSUER_DOMAIN}|${convexEnv.TEST_WORLD_OWNER_ID}`,
 			},
 		])
 	},
@@ -139,6 +138,14 @@ export const removeInvites = mutation({
 	async handler(ctx) {
 		requireTestEnv()
 		await seedTable(ctx, "invites", [])
+	},
+})
+
+export const seedInvite = mutation({
+	async handler(ctx) {
+		requireTestEnv()
+		await seedTable(ctx, "invites", [])
+		return await ctx.db.insert("invites", {})
 	},
 })
 

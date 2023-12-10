@@ -12,8 +12,6 @@ export function AuthButton() {
 				</Button>
 			</SignOutButton>
 		:	<SignInButton>
-				<Button icon={LucideLogIn} iconPosition="end">
-					Sign In
-				</Button>
+				<Button icon={LucideLogIn}>Sign In</Button>
 			</SignInButton>
 }

@@ -38,3 +38,26 @@ test("managing invites", async ({ page }) => {
 			.filter({ hasText: /^Invite someone to fill this slot\.$/ }),
 	).toHaveCount(1)
 })
+
+test("accepting an invite", async ({ page }) => {
+	await runTestFunction(page.request, "seedCharacters")
+	await runTestFunction(page.request, "seedTestUser")
+	const inviteId = await runTestFunction(page.request, "seedInvite")
+
+	await page.goto(`/join?invite=${inviteId}`, { waitUntil: "networkidle" })
+
+	await signIn(page)
+
+	await page.getByRole("button", { name: /let me in/i }).click()
+	await page.getByLabel("Name").click()
+	await page.getByLabel("Name").fill("Eris!!!")
+	await expect(page.getByRole("link", { name: "Eris!!!" })).toBeVisible()
+})
+
+test("invalid invite", async ({ page }) => {
+	await page.goto("/join?invite=invalid", { waitUntil: "networkidle" })
+	await signIn(page)
+	await expect(page.getByTestId("invalidInviteMessage")).toBeVisible()
+	await page.getByRole("link", { name: /go home/i }).click()
+	await expect(page).not.toHaveURL(/^\/join/)
+})

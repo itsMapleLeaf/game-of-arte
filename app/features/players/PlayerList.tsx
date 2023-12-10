@@ -69,7 +69,7 @@ function PlayerListItem({ player }: { player: PlayerListResult }) {
 	const removePlayer = useMutation(api.players.remove)
 
 	return (
-		<section className="flex flex-col gap-2">
+		<section className={panel("flex flex-col gap-2 rounded-md border p-2")}>
 			<h2 className="text-xl/tight font-light">
 				{player.name ?? <span className="opacity-75">Unknown</span>}
 			</h2>

@@ -126,13 +126,15 @@ const buttonAppearanceStyles = {
 }
 
 const buttonSizeStyles = {
-	default: twStyle("min-h-10 gap-3 px-3 py-2 text-base"),
 	small: twStyle("min-h-8 gap-2 px-2 py-1 text-sm"),
+	default: twStyle("min-h-10 gap-3 px-3 py-2 text-base"),
+	large: twStyle("min-h-12 gap-4 px-5 py-2 text-lg"),
 }
 
 const buttonIconSizeStyles: Record<keyof typeof buttonSizeStyles, TwStyle> = {
-	default: twStyle("-mx-1 flex-shrink-0 s-5"),
 	small: twStyle("-mx-0.5 flex-shrink-0 s-4"),
+	default: twStyle("-mx-1 flex-shrink-0 s-5"),
+	large: twStyle("-mx-1.5 flex-shrink-0 s-6"),
 }
 
 export function buttonIconStyle({
