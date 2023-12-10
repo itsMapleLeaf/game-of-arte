@@ -54,7 +54,7 @@ export function DiceRollList({
 					</Dialog>
 				)}
 				<ul className="contents">
-					{listResult.page.toReversed().map((roll) => (
+					{listResult.page.map((roll) => (
 						<ListItem key={roll._id} active={roll._id === recentRollId}>
 							<DiceRollDetails
 								roll={roll}
