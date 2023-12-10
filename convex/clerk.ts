@@ -28,17 +28,8 @@ export const clerkUserWebhook = httpAction(async (ctx, request) => {
 		event.type === "session.created" ? event.data.user_id : event.data.id,
 	)
 
-	const discordUserId = user.externalAccounts.find(
-		(a) => a.provider === "oauth_discord",
-	)?.externalId
-	if (!discordUserId) {
-		throw new Error("Discord account not found")
-	}
-
 	await ctx.scheduler.runAfter(0, internal.users.upsert, {
 		name: user.username || "unnamed",
-		discordUserId,
-
 		// dangerous implementation detail, but I don't know how else to get this :D
 		tokenIdentifier: `${convexEnv.CLERK_JWT_ISSUER_DOMAIN}|${user.id}`,
 	})

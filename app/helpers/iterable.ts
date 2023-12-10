@@ -40,6 +40,18 @@ class ExtendedIterable<T> implements Iterable<T> {
 	array() {
 		return [...this.iterable]
 	}
+
+	unique() {
+		return this.apply(function* (iterable: ExtendedIterable<T>) {
+			const seen = new Set<T>()
+			for (const value of iterable) {
+				if (!seen.has(value)) {
+					seen.add(value)
+					yield value
+				}
+			}
+		})
+	}
 }
 
 /** Helper to wrap an iterator with useful methods */
