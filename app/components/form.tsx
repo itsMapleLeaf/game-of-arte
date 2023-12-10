@@ -44,6 +44,8 @@ export function useForm<Schema extends FormSchema>({
 		(values: Partial<z.input<Schema>>) => schema.parseAsync(values),
 	)
 
+	const [submitFailed, setSubmitFailed] = useState(false)
+
 	useEffect(() => {
 		validate(values)
 	}, [validate, values])
@@ -56,8 +58,17 @@ export function useForm<Schema extends FormSchema>({
 	}
 
 	const [submit, submitState] = useAsyncCallback(async () => {
-		if (validation.isSuccess && validation.data) {
+		if (!validation.isSuccess) {
+			setSubmitFailed(true)
+			return
+		}
+
+		setSubmitFailed(false)
+		try {
 			await onSubmit(validation.data)
+		} catch (error) {
+			console.error("Submit failed:", error)
+			setSubmitFailed(true)
 		}
 	})
 
@@ -68,7 +79,7 @@ export function useForm<Schema extends FormSchema>({
 		| Partial<Record<AllKeys<z.input<Schema>>, string[]>>
 		| undefined
 
-	if (!submitState.isIdle && validation.isError) {
+	if (validation.isError) {
 		if (validation.error instanceof z.ZodError) {
 			const flattened = validation.error.flatten()
 			formErrors = flattened.formErrors
@@ -114,6 +125,7 @@ export function useForm<Schema extends FormSchema>({
 		validation,
 		submit,
 		submitState,
+		submitFailed,
 		pending,
 		formErrors,
 		fieldErrors,
@@ -149,7 +161,10 @@ export function Form({
 			className={twMerge("grid gap-4", props.className)}
 		>
 			<FormContext.Provider value={state}>{children}</FormContext.Provider>
-			<FieldErrors className="text-center" errors={state.formErrors} />
+			<FieldErrors
+				className="text-center"
+				errors={state.submitFailed ? state.formErrors : undefined}
+			/>
 		</form>
 	)
 }
@@ -158,10 +173,17 @@ export function FormField({
 	name,
 	children,
 	...props
-}: FieldPropsBase & { name: string; children: ReactElement }) {
+}: FieldPropsBase & {
+	name: string
+	children: ReactElement
+	className?: string
+}) {
 	const form = useFormContext()
 	return (
-		<Field errors={form.fieldErrors?.[name]} {...props}>
+		<Field
+			errors={form.submitFailed ? form.fieldErrors?.[name] : undefined}
+			{...props}
+		>
 			<FieldInput {...form.inputProps(name)} asChild>
 				{children}
 			</FieldInput>
