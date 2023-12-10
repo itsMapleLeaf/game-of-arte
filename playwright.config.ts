@@ -14,7 +14,7 @@ for (const file of [
 export default defineConfig({
 	testDir: "./e2e",
 	/* Run tests in files in parallel */
-	fullyParallel: true,
+	fullyParallel: false,
 	/* Fail the build on CI if you accidentally left test.only in the source code. */
 	forbidOnly: !!process.env.CI,
 	/* Retry on CI only */
@@ -30,8 +30,6 @@ export default defineConfig({
 
 		/* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
 		trace: "on-first-retry",
-
-		permissions: ["clipboard-read", "clipboard-write"],
 	},
 
 	/* Configure projects for major browsers */

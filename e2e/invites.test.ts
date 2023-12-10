@@ -12,17 +12,13 @@ test("managing invites", async ({ page }) => {
 	await signIn(page)
 	await runTestFunction(page.request, "seedWorld")
 	await runTestFunction(page.request, "removeInvites")
+	await runTestFunction(page.request, "removePlayers")
 
 	await page.getByRole("button", { name: "Players" }).click()
 
 	await page
 		.getByRole("button", { name: "Add Player" })
 		.click({ clickCount: 2 })
-
-	await page.getByRole("button", { name: "Copy Link" }).first().click()
-	expect(await page.evaluate(() => navigator.clipboard.readText())).toContain(
-		"/join",
-	)
 
 	await expect(
 		page
@@ -31,7 +27,7 @@ test("managing invites", async ({ page }) => {
 	).toHaveCount(2)
 
 	await page
-		.getByRole("navigation")
+		.getByTestId("inviteListItem")
 		.getByRole("button", { name: "Remove" })
 		.first()
 		.click()

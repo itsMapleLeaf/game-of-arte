@@ -112,6 +112,7 @@ function InviteListItem({ invite }: { invite: Doc<"invites"> }) {
 
 	return (
 		<section
+			data-testid="inviteListItem"
 			className={panel(
 				"flex flex-col items-center gap-4 rounded-md border p-4",
 			)}
