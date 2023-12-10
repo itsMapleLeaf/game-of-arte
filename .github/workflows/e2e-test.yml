@@ -22,7 +22,7 @@ jobs:
         run: pnpm convex deploy
           --cmd "pnpm run build"
           --cmd-url-env-var-name VITE_PUBLIC_CONVEX_URL
-          --preview-name "e2e-${{ github.event.pull_request.head.ref }}"
+          --preview-name "e2e-${{ github.ref }}"
         env:
           CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
 
