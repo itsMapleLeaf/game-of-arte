@@ -48,7 +48,7 @@ export default defineSchema({
 
 	diceRolls: defineTable({
 		label: v.optional(v.string()),
-		discordUserId: v.string(),
+		discordUserId: v.optional(v.string()),
 		characterId: v.optional(v.id("characters")),
 		dice: v.array(dieValidator),
 		hints: v.optional(v.array(v.string())),
