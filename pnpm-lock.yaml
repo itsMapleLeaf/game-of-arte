@@ -79,9 +79,6 @@ dependencies:
   react-virtuoso:
     specifier: 4.6.2
     version: 4.6.2(react-dom@18.2.0)(react@18.2.0)
-  spin-delay:
-    specifier: 1.2.0
-    version: 1.2.0(react@18.2.0)
   svix:
     specifier: 1.15.0
     version: 1.15.0
@@ -8666,14 +8663,6 @@ packages:
   /spdx-license-ids@3.0.16:
     resolution: {integrity: sha512-eWN+LnM3GR6gPu35WxNgbGl8rmY1AEmoMDvL/QD6zYmPWgywxWqJWNdLGT+ke8dKNWrcYgYjPpG5gbTfghP8rw==}
     dev: true
-
-  /spin-delay@1.2.0(react@18.2.0):
-    resolution: {integrity: sha512-PkZl5FHWOMrwQgoWejG1hBkIlVx4KbdL/37RPr5/pGq5+NWcGx7NNDukFct2yr8yRZuvwEompNR/in9nWj4sTw==}
-    peerDependencies:
-      react: '>=17.0.1'
-    dependencies:
-      react: 18.2.0
-    dev: false
 
   /split2@3.2.2:
     resolution: {integrity: sha512-9NThjpgZnifTkJpzTZ7Eue85S49QwpNhZTq6GRJwObb6jnLFNGB7Qm73V5HewTROPyxD0C29xqmaI68bQtV+hg==}
