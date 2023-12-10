@@ -148,13 +148,19 @@ export const seedPlayers = mutation({
 	},
 })
 
+export const removePlayers = mutation({
+	async handler(ctx) {
+		requireTestEnv()
+		await seedTable(ctx, "players_v2", [])
+	},
+})
+
 export const removeInvites = mutation({
 	async handler(ctx) {
 		requireTestEnv()
 		await seedTable(ctx, "invites", [])
 	},
 })
-
 export const seedInvite = mutation({
 	async handler(ctx) {
 		requireTestEnv()
