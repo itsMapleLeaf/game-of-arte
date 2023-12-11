@@ -139,7 +139,7 @@ export const seedPlayers = mutation({
 	async handler(ctx) {
 		requireTestEnv()
 		const character = await ctx.db.query("characters").first()
-		await seedTable(ctx, "players_v2", [
+		await seedTable(ctx, "players", [
 			{
 				userTokenIdentifier: `${convexEnv.CLERK_JWT_ISSUER_DOMAIN}|${convexEnv.TEST_WORLD_OWNER_ID}`,
 				assignedCharacterId: expect(character)._id,
@@ -151,7 +151,7 @@ export const seedPlayers = mutation({
 export const removePlayers = mutation({
 	async handler(ctx) {
 		requireTestEnv()
-		await seedTable(ctx, "players_v2", [])
+		await seedTable(ctx, "players", [])
 	},
 })
 

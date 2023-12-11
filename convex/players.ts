@@ -5,7 +5,7 @@ import { type QueryCtx, mutation, query } from "./_generated/server.js"
 import { requireAdminRole } from "./roles.ts"
 
 export type PlayerListResult = {
-	_id: Id<"players_v2">
+	_id: Id<"players">
 	name: string
 	assignedCharacterId?: Id<"characters">
 }
@@ -14,7 +14,7 @@ export const list = query({
 	handler: async (ctx): Promise<PlayerListResult[]> => {
 		await requireAdminRole(ctx)
 
-		const players = await ctx.db.query("players_v2").collect()
+		const players = await ctx.db.query("players").collect()
 
 		const userTokenIdentifiers = players
 			.map((player) => player.userTokenIdentifier)
@@ -50,7 +50,7 @@ export const getAssignedCharacterId = query({
 
 export const setAssignedCharacterId = mutation({
 	args: {
-		id: v.id("players_v2"),
+		id: v.id("players"),
 		assignedCharacterId: v.id("characters"),
 	},
 	handler: async (ctx, { id, ...args }) => {
@@ -61,7 +61,7 @@ export const setAssignedCharacterId = mutation({
 
 export const remove = mutation({
 	args: {
-		id: v.id("players_v2"),
+		id: v.id("players"),
 	},
 	handler: async (ctx, args) => {
 		await requireAdminRole(ctx)
@@ -74,7 +74,7 @@ export async function getAuthenticatedPlayer(ctx: QueryCtx) {
 	if (!user) return
 
 	return await ctx.db
-		.query("players_v2")
+		.query("players")
 		.withIndex("by_user_token_identifier", (q) =>
 			q.eq("userTokenIdentifier", user.tokenIdentifier),
 		)

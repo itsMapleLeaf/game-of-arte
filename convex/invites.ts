@@ -45,7 +45,7 @@ export const accept = mutation({
 		}
 
 		const [player] = await Promise.all([
-			ctx.db.insert("players_v2", {
+			ctx.db.insert("players", {
 				userTokenIdentifier: identity.tokenIdentifier,
 			}),
 			ctx.db.delete(invite._id),
