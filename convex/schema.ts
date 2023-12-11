@@ -11,11 +11,8 @@ import { record } from "./validators.ts"
 export default defineSchema({
 	users: defineTable({
 		tokenIdentifier: v.string(),
-		discordUserId: v.optional(v.string()),
 		name: v.string(),
-	})
-		.index("by_token_identifier", ["tokenIdentifier"])
-		.index("by_discord_user_id", ["discordUserId"]),
+	}).index("by_token_identifier", ["tokenIdentifier"]),
 
 	worlds: defineTable({
 		ownerId: v.optional(v.id("users")),
@@ -44,7 +41,6 @@ export default defineSchema({
 	diceRolls: defineTable({
 		label: v.optional(v.string()),
 		userId: v.optional(v.id("users")),
-		discordUserId: v.optional(v.string()),
 		characterId: v.optional(v.id("characters")),
 		dice: v.array(dieValidator),
 		hints: v.optional(v.array(v.string())),
