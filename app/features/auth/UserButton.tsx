@@ -1,5 +1,6 @@
 import { SignOutButton } from "@clerk/remix"
 import { LucideLogOut, LucideUserCog2 } from "lucide-react"
+import { ExternalLink } from "~/components/ExternalLink.tsx"
 import { Menu, MenuItem, MenuPanel, MenuTrigger } from "~/components/Menu.tsx"
 import { env } from "~/env.ts"
 
@@ -11,9 +12,9 @@ export function UserButton({ user }: { user: { imageUrl: string } }) {
 			</MenuTrigger>
 			<MenuPanel align="end">
 				<MenuItem icon={LucideUserCog2} asChild>
-					<a href={new URL("/user", env.VITE_CLERK_DOMAIN).toString()}>
+					<ExternalLink href={new URL("/user", env.VITE_CLERK_DOMAIN).href}>
 						My Account
-					</a>
+					</ExternalLink>
 				</MenuItem>
 				<SignOutButton>
 					<MenuItem icon={LucideLogOut}>Sign Out</MenuItem>
