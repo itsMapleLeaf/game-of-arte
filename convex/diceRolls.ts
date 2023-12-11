@@ -35,7 +35,7 @@ export const list = query({
 					...roll,
 					visible:
 						isAdmin ||
-						roll.secret === false ||
+						roll.secret !== true ||
 						(roll.userId === user?._id && isPlayer),
 				}),
 			),
