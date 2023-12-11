@@ -1,5 +1,13 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
+import { autoRef } from "~/helpers/autoRef.tsx"
+import type { StrictOmit } from "~/helpers/types.ts"
+import { twMerge } from "~/styles/twMerge.ts"
 import { panel } from "../styles/panel.ts"
+import {
+	Button,
+	type ButtonIconComponent,
+	type ButtonStyleProps,
+} from "./Button.tsx"
 
 export const Menu = DropdownMenu.Root
 export const MenuTrigger = DropdownMenu.Trigger
@@ -11,7 +19,7 @@ export function MenuPanel(props: DropdownMenu.DropdownMenuContentProps) {
 				sideOffset={8}
 				{...props}
 				className={panel(
-					"min-w-32 overflow-clip rounded-md border shadow-md focus-visible:ring-0",
+					"flex min-w-32 flex-col items-start divide-none rounded-md border text-start shadow-md duration-150 focus-visible:ring-0 data-[state=closed]:ease-in data-[state=open]:ease-out data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out data-[state=open]:fade-in data-[state=closed]:slide-out-to-bottom-2 data-[state=open]:slide-in-from-bottom-2",
 					props.className,
 				)}
 			/>
@@ -19,14 +27,37 @@ export function MenuPanel(props: DropdownMenu.DropdownMenuContentProps) {
 	)
 }
 
-export function MenuItem(props: DropdownMenu.DropdownMenuItemProps) {
-	return (
-		<DropdownMenu.Item
-			{...props}
-			className={panel(
-				"flex w-full cursor-pointer items-center gap-2 px-2 py-2 transition focus-visible:ring-0 data-[highlighted]:bg-base-800",
-				props.className,
-			)}
-		/>
-	)
+export interface MenuItemProps
+	extends ButtonStyleProps,
+		StrictOmit<DropdownMenu.DropdownMenuItemProps, "className"> {
+	icon?: ButtonIconComponent
 }
+
+export const MenuItem = autoRef(function MenuItem({
+	appearance = "clear",
+	size,
+	className,
+	square,
+	children,
+	asChild,
+	icon,
+	...props
+}: MenuItemProps) {
+	return (
+		<DropdownMenu.Item {...props} asChild>
+			<Button
+				appearance={appearance}
+				size={size}
+				square={square}
+				className={twMerge(
+					"w-full justify-start rounded-none first:rounded-t-[inherit] last:rounded-b-[inherit] focus-visible:ring-0",
+					className,
+				)}
+				icon={icon}
+				asChild={asChild}
+			>
+				{children}
+			</Button>
+		</DropdownMenu.Item>
+	)
+})
