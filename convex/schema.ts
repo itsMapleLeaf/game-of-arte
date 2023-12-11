@@ -23,11 +23,6 @@ export default defineSchema({
 		mana: v.optional(v.number()),
 	}),
 
-	players: defineTable({
-		discordUserId: v.string(),
-		ownedCharacterId: v.optional(v.id("characters")),
-	}).index("by_discord_user_id", ["discordUserId"]),
-
 	players_v2: defineTable({
 		userTokenIdentifier: v.string(),
 		assignedCharacterId: v.optional(v.id("characters")),
