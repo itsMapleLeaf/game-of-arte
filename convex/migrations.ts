@@ -2,9 +2,6 @@ import { mutation } from "./_generated/server"
 
 export const removeDiscordUserId = mutation({
 	async handler(ctx) {
-		for await (const user of ctx.db.query("users")) {
-			await ctx.db.patch(user._id, { discordUserId: undefined })
-		}
 		for await (const roll of ctx.db.query("diceRolls")) {
 			const { discordUserId } = roll
 			let userId
@@ -24,6 +21,9 @@ export const removeDiscordUserId = mutation({
 				userId,
 				discordUserId: undefined,
 			})
+		}
+		for await (const user of ctx.db.query("users")) {
+			await ctx.db.patch(user._id, { discordUserId: undefined })
 		}
 	},
 })
