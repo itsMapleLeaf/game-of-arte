@@ -58,19 +58,28 @@ export function DiceRollDetails({
 				</Foldable>
 
 				<p className="text-sm leading-tight">
-					{totalSuccesses != null && (
-						<>
-							<span
-								className={
-									totalSuccesses > 0 ? "text-green-300" : "text-red-300"
-								}
-							>
-								{plural(totalSuccesses, "success", { pluralWord: "successes" })}
-							</span>
-							{" • "}
-						</>
+					{infix(
+						[
+							totalSuccesses != null && (
+								<span
+									className={
+										totalSuccesses > 0 ? "text-green-300" : "text-red-300"
+									}
+								>
+									{plural(totalSuccesses, "success", {
+										pluralWord: "successes",
+									})}
+								</span>
+							),
+							roll.initiatorName && (
+								<>
+									<span className="text-base-400">rolled by</span>{" "}
+									{roll.initiatorName}
+								</>
+							),
+						].filter(Boolean),
+						" • ",
 					)}
-					<span className="text-base-400">rolled by</span> {roll.initiatorName}
 				</p>
 
 				{roll.secret && (
@@ -90,6 +99,12 @@ export function DiceRollDetails({
 		:	<EmptyState icon={LucideEyeOff} className="p-2">
 				This roll is a secret.
 			</EmptyState>
+}
+
+function infix<Item, Separator>(items: Item[], separator: Separator) {
+	return items.flatMap((item, index) =>
+		index === 0 ? [item] : [separator, item],
+	)
 }
 
 function RevealRollButton({ roll }: { roll: { _id: Id<"diceRolls"> } }) {
