@@ -53,7 +53,9 @@ function Document({ children }: { children: React.ReactNode }) {
 				<Meta />
 				<Links />
 			</head>
-			<body>
+			{/* counteract the scrollbar hiding logic in radix */}
+			{/* https://github.com/radix-ui/primitives/issues/1925 */}
+			<body className="!mr-0 ![overflow:unset]">
 				<TooltipProvider delayDuration={250}>{children}</TooltipProvider>
 				<ScrollRestoration />
 				<Scripts />

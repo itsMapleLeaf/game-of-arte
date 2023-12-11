@@ -25,6 +25,7 @@ jobs:
           --preview-name "e2e-${{ github.head_ref || github.ref_name }}"
         env:
           CONVEX_DEPLOY_KEY: ${{ secrets.CONVEX_DEPLOY_KEY }}
+          VITE_CLERK_DOMAIN: ${{ secrets.VITE_CLERK_DOMAIN }}
 
       - name: Run Playwright tests
         run: pnpm run e2e
