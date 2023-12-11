@@ -21,6 +21,7 @@ import type * as diceRolls from "../diceRolls.js";
 import type * as env from "../env.js";
 import type * as http from "../http.js";
 import type * as invites from "../invites.js";
+import type * as migrations from "../migrations.js";
 import type * as players from "../players.js";
 import type * as preview from "../preview.js";
 import type * as roles from "../roles.js";
@@ -45,6 +46,7 @@ declare const fullApi: ApiFromModules<{
   env: typeof env;
   http: typeof http;
   invites: typeof invites;
+  migrations: typeof migrations;
   players: typeof players;
   preview: typeof preview;
   roles: typeof roles;

@@ -20,6 +20,13 @@ export default defineSchema({
 		mana: v.optional(v.number()),
 	}),
 
+	players: defineTable({
+		userTokenIdentifier: v.string(),
+		assignedCharacterId: v.optional(v.id("characters")),
+	})
+		.index("by_user_token_identifier", ["userTokenIdentifier"])
+		.index("by_assigned_character_id", ["assignedCharacterId"]),
+
 	players_v2: defineTable({
 		userTokenIdentifier: v.string(),
 		assignedCharacterId: v.optional(v.id("characters")),
