@@ -1,14 +1,12 @@
 import { LucideMinus, LucidePlus } from "lucide-react"
-import { useState } from "react"
 import { autoRef } from "~/helpers/autoRef.tsx"
-import type { PartialKeys, StrictOmit } from "~/helpers/types.ts"
+import type { StrictOmit } from "~/helpers/types.ts"
 import { clamp } from "../helpers/math.ts"
 import { panel } from "../styles/panel.ts"
-import { createFieldComponent } from "./Field.tsx"
 import { SrOnly } from "./SrOnly.tsx"
 
 export interface CounterInputProps
-	extends StrictOmit<React.ComponentPropsWithRef<"input">, "onChange"> {
+	extends StrictOmit<React.ComponentPropsWithRef<"div">, "onChange"> {
 	value?: number
 	defaultValue?: number
 	min?: number
@@ -35,17 +33,16 @@ export const CounterInput = autoRef(function CounterInput({
 
 	return (
 		<div
-			aria-labelledby={props["aria-labelledby"]}
-			aria-describedby={props["aria-describedby"]}
+			// biome-ignore lint/a11y/noNoninteractiveTabindex: keyboard interaction is handled
+			tabIndex={0}
 			aria-valuenow={value}
 			aria-valuemin={min}
 			aria-valuemax={max}
+			{...props}
 			className={panel(
 				"flex h-10 items-center justify-center gap-2 rounded-md border py-1",
 				className,
 			)}
-			// biome-ignore lint/a11y/noNoninteractiveTabindex: keyboard interaction is handled
-			tabIndex={0}
 			onKeyDown={(event) => {
 				if (event.key === "ArrowUp" || event.key === "ArrowRight") {
 					event.preventDefault()
@@ -59,11 +56,9 @@ export const CounterInput = autoRef(function CounterInput({
 					event.preventDefault()
 					setValue(defaultValue)
 				}
+				props.onKeyDown?.(event)
 			}}
 		>
-			{props.name && (
-				<input type="hidden" aria-hidden name={props.name} value={value} />
-			)}
 			<button
 				type="button"
 				className="rounded-full p-1 transition hover:bg-base-800"
@@ -93,34 +88,3 @@ export const CounterInput = autoRef(function CounterInput({
 		</div>
 	)
 })
-
-export const CounterInputField = createFieldComponent(CounterInput)
-
-export const CounterInputUncontrolled = autoRef(
-	function CounterInputUncontrolled({
-		min = 0,
-		max = Infinity,
-		defaultValue = min,
-		onChange,
-		...props
-	}: PartialKeys<Omit<CounterInputProps, "value">, "onChange">) {
-		const [value, setValue] = useState(defaultValue)
-		return (
-			<CounterInput
-				{...props}
-				value={value}
-				min={min}
-				max={max}
-				defaultValue={defaultValue}
-				onChange={(newValue) => {
-					setValue(newValue)
-					onChange?.(newValue)
-				}}
-			/>
-		)
-	},
-)
-
-export const CounterInputUncontrolledField = createFieldComponent(
-	CounterInputUncontrolled,
-)

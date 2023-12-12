@@ -4,7 +4,7 @@ import { useMutation } from "convex/react"
 import { LucideWand2 } from "lucide-react"
 import { type ComponentPropsWithoutRef, useState } from "react"
 import { z } from "zod"
-import { CounterInputUncontrolledField } from "~/components/CounterInput.tsx"
+import { CounterInput } from "~/components/CounterInput.tsx"
 import {
 	Dialog,
 	DialogTrigger,
@@ -114,15 +114,15 @@ function FreeformSpellForm({
 
 			<div className="grid auto-cols-fr gap-4 @sm:grid-flow-col">
 				<FormField name={form.names.manaCost} label="Mana Cost">
-					<CounterInputUncontrolledField min={1} />
+					<CounterInput min={1} />
 				</FormField>
 
 				<FormField name={form.names.stressCost} label="Stress Cost">
-					<CounterInputUncontrolledField min={0} />
+					<CounterInput min={0} />
 				</FormField>
 
 				<FormField name={form.names.castingTime} label="Casting Time">
-					<CounterInputUncontrolledField min={0} />
+					<CounterInput min={0} />
 				</FormField>
 			</div>
 
