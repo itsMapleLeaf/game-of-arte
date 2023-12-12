@@ -60,18 +60,22 @@ export const getOwned = query({
 export const getDefault = query({
 	handler: async (ctx) => {
 		const player = await getAuthenticatedPlayer(ctx)
-		if (player?.assignedCharacterId) {
-			const character = await ctx.db.get(player.assignedCharacterId)
-			if (character) return character
-		}
 
-		const firstVisible = await ctx.db
-			.query("characters")
-			.filter((q) => q.neq(q.field("hidden"), true))
-			.first()
-		if (firstVisible) return firstVisible
+		const assignedCharacter = async () =>
+			player?.assignedCharacterId &&
+			(await ctx.db.get(player.assignedCharacterId))
 
-		return await ctx.db.query("characters").first()
+		const firstVisible = async () =>
+			await ctx.db
+				.query("characters")
+				.filter((q) => q.neq(q.field("hidden"), true))
+				.first()
+
+		return (
+			(await assignedCharacter()) ||
+			(await firstVisible()) ||
+			(await ctx.db.query("characters").first())
+		)
 	},
 })
 
