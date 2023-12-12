@@ -28,20 +28,12 @@ export async function loader({ request }: LoaderFunctionArgs) {
 	}
 
 	const convex = new ConvexHttpClient(env.VITE_PUBLIC_CONVEX_URL)
+	const defaultCharacter = await convex.query(api.characters.getDefault)
+	if (!defaultCharacter) {
+		return new Response()
+	}
 
-	const [characters, assignedCharacterId] = await Promise.all([
-		convex.query(api.characters.list),
-		convex.query(api.players.getAssignedCharacterId),
-	])
-
-	const visibleCharacters = characters?.filter((c) => !c.hidden)
-	const selfCharacter = characters?.find((c) => c._id === assignedCharacterId)
-
-	const defaultCharacterId =
-		selfCharacter?._id ?? visibleCharacters?.[0]?._id ?? characters?.[0]?._id
-	if (!defaultCharacterId) return new Response()
-
-	return redirect(navigation.getCharacterLink(defaultCharacterId))
+	return redirect(navigation.getCharacterLink(defaultCharacter._id))
 }
 
 export default function GamePage() {
