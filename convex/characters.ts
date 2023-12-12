@@ -57,6 +57,24 @@ export const getOwned = query({
 	},
 })
 
+export const getDefault = query({
+	handler: async (ctx) => {
+		const player = await getAuthenticatedPlayer(ctx)
+		if (player?.assignedCharacterId) {
+			const character = await ctx.db.get(player.assignedCharacterId)
+			if (character) return character
+		}
+
+		const firstVisible = await ctx.db
+			.query("characters")
+			.filter((q) => q.neq(q.field("hidden"), true))
+			.first()
+		if (firstVisible) return firstVisible
+
+		return await ctx.db.query("characters").first()
+	},
+})
+
 export const create = mutation({
 	args: { name: v.optional(v.string()) },
 	handler: async (ctx, args) => {
