@@ -12,6 +12,7 @@
 		"lint": "biome check .",
 		"typecheck": "tsc -b",
 		"test": "vitest run",
+		"knip": "knip",
 		"e2e": "playwright test",
 		"e2e-dev": "playwright test --ui",
 		"seed": "convex run seed:run",

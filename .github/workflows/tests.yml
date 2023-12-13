@@ -1,3 +1,5 @@
+name: tests
+
 on:
   push:
     branches: [main]
@@ -8,9 +10,9 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  unit-test:
+  tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - uses: ./.github/actions/setup-node-pnpm
-      - run: pnpm run test
+      - run: pnpm run-s --continue-on-error lint typecheck test knip

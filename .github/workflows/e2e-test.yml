@@ -1,3 +1,5 @@
+name: e2e tests
+
 on:
   push:
     branches: [main]
@@ -9,7 +11,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  e2e-test:
+  test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     container:
