@@ -1,0 +1,1 @@
+Attributes represent how good your character is at doing various things. Your character has a level in each attribute, starting at 1, with a maximum of 5. These levels determine the number of dice used for action rolls.
