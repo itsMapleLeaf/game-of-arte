@@ -3,7 +3,7 @@ import type { Doc, Id } from "convex/_generated/dataModel.js"
 import type { ClientDiceRoll } from "convex/diceRolls.ts"
 import { useMutation } from "convex/react"
 import { LucideEye, LucideEyeOff, LucideX } from "lucide-react"
-import { startTransition, useEffect, useState } from "react"
+import { Fragment, startTransition, useEffect, useState } from "react"
 import { Button } from "~/components/Button.tsx"
 import { EmptyState } from "~/components/EmptyState.tsx"
 import { Foldable } from "~/components/Foldable.tsx"
@@ -62,6 +62,7 @@ export function DiceRollDetails({
 						[
 							totalSuccesses != null && (
 								<span
+									key="successes"
 									className={
 										totalSuccesses > 0 ? "text-green-300" : "text-red-300"
 									}
@@ -72,10 +73,10 @@ export function DiceRollDetails({
 								</span>
 							),
 							roll.initiatorName && (
-								<>
+								<Fragment key="initiator">
 									<span className="text-base-400">rolled by</span>{" "}
 									{roll.initiatorName}
-								</>
+								</Fragment>
 							),
 						].filter(Boolean),
 						" • ",
