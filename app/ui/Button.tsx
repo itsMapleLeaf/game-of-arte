@@ -4,8 +4,8 @@ import type { ClassNameValue } from "tailwind-merge"
 import { autoRef } from "~/helpers/autoRef.tsx"
 import type { PartialKeys, StrictOmit } from "~/helpers/types.ts"
 import { useAsyncCallback } from "~/helpers/useAsyncCallback.ts"
-import { twMerge } from "~/styles/twMerge.ts"
-import { type TwStyle, twStyle } from "~/styles/twStyle.ts"
+import { twMerge } from "~/ui/twMerge"
+import { type TwStyle, twStyle } from "~/ui/twStyle"
 
 export interface ButtonProps
 	extends StrictOmit<React.ComponentPropsWithRef<"button">, "onClick">,
@@ -14,6 +14,7 @@ export interface ButtonProps
 	icon?: ButtonIconComponent
 	iconPosition?: "start" | "end"
 	pending?: boolean
+	pendingIcon?: ButtonIconComponent
 	onClick?: (event: React.MouseEvent<HTMLButtonElement>) => unknown
 }
 
@@ -28,6 +29,7 @@ export const Button = autoRef(function Button({
 	icon: IconComponent,
 	iconPosition = "start",
 	pending,
+	pendingIcon: PendingIconComponent = LucideLoader2,
 	children,
 	appearance = "solid",
 	square = false,
@@ -44,7 +46,7 @@ export const Button = autoRef(function Button({
 	let icon
 	if (pending ?? state.isLoading) {
 		icon = (
-			<LucideLoader2
+			<PendingIconComponent
 				aria-hidden
 				className={buttonIconStyle({ size, className: "animate-spin" })}
 			/>

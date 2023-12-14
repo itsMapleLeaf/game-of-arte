@@ -1,8 +1,8 @@
 import ExpandingTextArea from "react-expanding-textarea"
 import { autoRef } from "~/helpers/autoRef.tsx"
-import { panel } from "~/styles/panel.ts"
-import { twStyle } from "~/styles/twStyle.ts"
+import { twStyle } from "~/ui/twStyle.ts"
 import { createFieldComponent } from "./Field.tsx"
+import { panel } from "./styles.ts"
 
 export interface TextAreaProps extends React.ComponentPropsWithRef<"textarea"> {
 	value?: string

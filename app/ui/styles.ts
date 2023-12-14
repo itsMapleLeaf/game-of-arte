@@ -1,5 +1,11 @@
-import { panel } from "./panel.ts"
+import { type ClassNameValue, twMerge } from "tailwind-merge"
 import { twStyle } from "./twStyle.ts"
+
+export const panel = (...classes: ClassNameValue[]) =>
+	twMerge(
+		"divide-base-800 border-base-800 bg-base-900 shadow-black/50",
+		...classes,
+	)
 
 export const center = twStyle("flex items-center justify-center")
 
@@ -14,3 +20,6 @@ export const textArea = twStyle(
 )
 
 export const checkbox = twStyle("accent-accent-400 s-4")
+
+export const container = (...classes: ClassNameValue[]) =>
+	twMerge("mx-auto w-full max-w-screen-lg px-4", classes)

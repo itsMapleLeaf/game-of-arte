@@ -1,17 +1,17 @@
 import { api } from "convex/_generated/api.js"
 import { useMutation, useQuery } from "convex/react"
 import { LucideRotateCw } from "lucide-react"
-import { LoadingPlaceholder } from "~/components/LoadingPlaceholder.tsx"
-import { ConfirmDialog } from "../../components/ConfirmDialog.tsx"
+import { Button } from "~/ui/Button.tsx"
+import { LoadingPlaceholder } from "~/ui/LoadingPlaceholder.tsx"
+import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
+import { ConfirmDialog } from "../../ui/ConfirmDialog.tsx"
 import {
 	Field,
 	FieldDescription,
 	FieldInput,
 	FieldLabel,
-} from "../../components/Field.tsx"
-import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
-import { solidButton } from "../../styles/button.ts"
-import { input } from "../../styles/index.ts"
+} from "../../ui/Field.tsx"
+import { input } from "../../ui/styles.ts"
 
 export function WorldSettings() {
 	const world = useQuery(api.world.get)
@@ -65,18 +65,14 @@ function ResetResilienceButton() {
 			confirmText="Yes, reset resilience"
 			onConfirm={resetResilience}
 		>
-			<button
-				type="button"
-				className={solidButton()}
-				disabled={resetResilienceState.isLoading}
+			<Button
+				appearance="solid"
+				icon={LucideRotateCw}
+				pending={resetResilienceState.isLoading}
+				pendingIcon={LucideRotateCw}
 			>
-				<LucideRotateCw
-					className={
-						resetResilienceState.isLoading ? "animate-spin" : undefined
-					}
-				/>
 				Reset Resilience
-			</button>
+			</Button>
 		</ConfirmDialog>
 	)
 }

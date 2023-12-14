@@ -2,23 +2,22 @@ import { api } from "convex/_generated/api.js"
 import { useMutation } from "convex/react"
 import { LucideDices, LucidePentagon } from "lucide-react"
 import { type ReactNode, useState } from "react"
-import { CheckboxField } from "~/components/CheckboxField.tsx"
 import { sum } from "~/helpers/math.ts"
 import { plural } from "~/helpers/string.ts"
-import { twMerge } from "~/styles/twMerge.ts"
-import { CounterInput } from "../../components/CounterInput.tsx"
+import { Button } from "~/ui/Button.tsx"
+import { CheckboxField } from "~/ui/CheckboxField.tsx"
+import { twMerge } from "~/ui/twMerge.ts"
+import { raise } from "../../helpers/errors.ts"
+import { withPreventDefault } from "../../helpers/events.ts"
+import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
+import { CounterInput } from "../../ui/CounterInput.tsx"
 import {
 	Field,
 	FieldInput,
 	FieldLabel,
 	FieldLabelText,
-} from "../../components/Field.tsx"
-import { LoadingSpinner } from "../../components/LoadingPlaceholder.tsx"
-import { raise } from "../../helpers/errors.ts"
-import { withPreventDefault } from "../../helpers/events.ts"
-import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
-import { solidButton } from "../../styles/button.ts"
-import { input } from "../../styles/index.ts"
+} from "../../ui/Field.tsx"
+import { input } from "../../ui/styles.ts"
 import type { DiceHint } from "../dice/DiceHint.ts"
 import { DieIcon } from "../dice/DieIcon.tsx"
 import { ACTION_DICE_SIDES, MODIFIER_DICE_SIDES } from "../dice/constants.ts"
@@ -225,12 +224,14 @@ export function CharacterAttributeRollForm({
 				))}
 			</dl>
 
-			<button type="submit" className={solidButton()}>
-				{handleSubmitState.isLoading ?
-					<LoadingSpinner />
-				:	<LucideDices />}{" "}
+			<Button
+				type="submit"
+				appearance="solid"
+				icon={LucideDices}
+				pending={handleSubmitState.isLoading}
+			>
 				Roll {plural(diceCount, "Die", { pluralWord: "Dice" })}
-			</button>
+			</Button>
 		</form>
 	)
 }

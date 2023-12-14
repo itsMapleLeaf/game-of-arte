@@ -1,9 +1,5 @@
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipTrigger,
-} from "~/components/Tooltip.tsx"
-import { twMerge } from "~/styles/twMerge.ts"
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/ui/Tooltip"
+import { twMerge } from "~/ui/twMerge"
 
 export function Indicator({
 	label,

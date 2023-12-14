@@ -4,17 +4,13 @@ import { useMutation } from "convex/react"
 import { LucideWand2 } from "lucide-react"
 import { type ComponentPropsWithoutRef, useState } from "react"
 import { z } from "zod"
-import { CounterInput } from "~/components/CounterInput.tsx"
-import {
-	Dialog,
-	DialogTrigger,
-	SimpleDialogContent,
-} from "~/components/Dialog.tsx"
-import { Input } from "~/components/Input.tsx"
-import { PopoverTrigger } from "~/components/Popover.tsx"
-import { Select } from "~/components/Select.tsx"
-import { TextArea } from "~/components/TextArea.tsx"
-import { Form, FormButton, FormField, useForm } from "~/components/form.tsx"
+import { CounterInput } from "~/ui/CounterInput.tsx"
+import { Dialog, DialogTrigger, SimpleDialogContent } from "~/ui/Dialog.tsx"
+import { Input } from "~/ui/Input.tsx"
+import { PopoverTrigger } from "~/ui/Popover.tsx"
+import { Select } from "~/ui/Select.tsx"
+import { TextArea } from "~/ui/TextArea.tsx"
+import { Form, FormButton, FormField, useForm } from "~/ui/form.tsx"
 import { getAttributeById } from "../characters/attributes.ts"
 import { sorcerySpellAttributeIdSchema } from "./spells.ts"
 

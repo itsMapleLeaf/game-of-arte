@@ -2,8 +2,8 @@ import * as BasePopover from "@radix-ui/react-popover"
 import {
 	radixAnimationFade,
 	radixAnimationSlideBottom,
-} from "~/styles/radixAnimations.ts"
-import { panel } from "../styles/panel.ts"
+} from "~/ui/radixAnimations.ts"
+import { panel } from "./styles.ts"
 
 export const Popover = BasePopover.Root
 export const PopoverTrigger = BasePopover.Trigger

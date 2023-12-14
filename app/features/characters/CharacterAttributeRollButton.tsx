@@ -1,11 +1,7 @@
 import { LucideDices } from "lucide-react"
 import { useState } from "react"
-import { SrOnly } from "~/components/SrOnly.tsx"
-import {
-	Popover,
-	PopoverPanel,
-	PopoverTrigger,
-} from "../../components/Popover.tsx"
+import { SrOnly } from "~/ui/SrOnly.tsx"
+import { Popover, PopoverPanel, PopoverTrigger } from "../../ui/Popover.tsx"
 import { CharacterAttributeRollForm } from "./CharacterAttributeRollForm.tsx"
 import type { Attribute } from "./attributes.ts"
 

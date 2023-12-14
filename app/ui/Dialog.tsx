@@ -1,7 +1,7 @@
 import * as DialogBase from "@radix-ui/react-dialog"
 import { LucideX } from "lucide-react"
-import { twMerge } from "~/styles/twMerge.ts"
-import { panel } from "../styles/panel.ts"
+import { twMerge } from "~/ui/twMerge.ts"
+import { panel } from "./styles.ts"
 
 export const Dialog = DialogBase.Root
 export const DialogTrigger = DialogBase.Trigger

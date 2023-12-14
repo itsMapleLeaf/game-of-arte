@@ -4,14 +4,14 @@ import type { Id } from "./_generated/dataModel"
 import { type QueryCtx, mutation, query } from "./_generated/server.js"
 import { requireAdminRole } from "./roles.ts"
 
-export type PlayerListResult = {
+export type ClientPlayer = {
 	_id: Id<"players">
 	name: string
 	assignedCharacterId?: Id<"characters">
 }
 
 export const list = query({
-	handler: async (ctx): Promise<PlayerListResult[]> => {
+	handler: async (ctx): Promise<ClientPlayer[]> => {
 		await requireAdminRole(ctx)
 
 		const players = await ctx.db.query("players").collect()

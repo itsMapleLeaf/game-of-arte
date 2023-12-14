@@ -1,6 +1,6 @@
 import { SignInButton, useUser } from "@clerk/remix"
 import { LucideLogIn } from "lucide-react"
-import { Button } from "~/components/Button.tsx"
+import { Button } from "~/ui/Button.tsx"
 import { UserButton } from "./UserButton.tsx"
 
 export function AuthButton() {

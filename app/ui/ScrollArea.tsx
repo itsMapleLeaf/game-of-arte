@@ -1,6 +1,6 @@
 import * as ScrollAreaBase from "@radix-ui/react-scroll-area"
 import { autoRef } from "~/helpers/autoRef.tsx"
-import { twMerge } from "~/styles/twMerge.ts"
+import { twMerge } from "~/ui/twMerge"
 
 export const ScrollArea = autoRef(function ScrollArea({
 	children,

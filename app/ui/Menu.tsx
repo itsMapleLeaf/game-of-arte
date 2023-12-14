@@ -1,13 +1,13 @@
 import * as DropdownMenu from "@radix-ui/react-dropdown-menu"
 import { autoRef } from "~/helpers/autoRef.tsx"
 import type { StrictOmit } from "~/helpers/types.ts"
-import { twMerge } from "~/styles/twMerge.ts"
-import { panel } from "../styles/panel.ts"
+import { twMerge } from "~/ui/twMerge.ts"
 import {
 	Button,
 	type ButtonIconComponent,
 	type ButtonStyleProps,
 } from "./Button.tsx"
+import { panel } from "./styles.ts"
 
 export const Menu = DropdownMenu.Root
 export const MenuTrigger = DropdownMenu.Trigger

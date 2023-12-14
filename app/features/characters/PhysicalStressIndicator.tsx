@@ -1,5 +1,5 @@
 import { LucideHeartCrack } from "lucide-react"
-import { Indicator } from "~/components/Indicator.tsx"
+import { Indicator } from "~/ui/Indicator"
 
 export function PhysicalStressIndicator({ value }: { value: number }) {
 	return (

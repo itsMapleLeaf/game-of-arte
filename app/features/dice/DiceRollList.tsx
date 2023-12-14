@@ -5,21 +5,17 @@ import type { PaginationResult } from "convex/server"
 import { LucideDices, LucideList } from "lucide-react"
 import { useEffect, useRef } from "react"
 import { type ScrollerProps, Virtuoso } from "react-virtuoso"
-import { Button } from "~/components/Button.tsx"
-import {
-	Dialog,
-	DialogTrigger,
-	SimpleDialogContent,
-} from "~/components/Dialog.tsx"
-import { LoadingPlaceholder } from "~/components/LoadingPlaceholder.tsx"
+import { autoRef } from "~/helpers/autoRef.tsx"
+import { Button } from "~/ui/Button.tsx"
+import { Dialog, DialogTrigger, SimpleDialogContent } from "~/ui/Dialog.tsx"
+import { LoadingPlaceholder } from "~/ui/LoadingPlaceholder.tsx"
 import {
 	ScrollAreaRoot,
 	ScrollAreaScrollbar,
 	ScrollAreaViewport,
-} from "~/components/ScrollArea.tsx"
-import { autoRef } from "~/helpers/autoRef.tsx"
-import { panel } from "~/styles/panel.ts"
-import { EmptyState } from "../../components/EmptyState.tsx"
+} from "~/ui/ScrollArea.tsx"
+import { panel } from "~/ui/styles.ts"
+import { EmptyState } from "../../ui/EmptyState.tsx"
 import { DiceRollDetails } from "./DiceRollDetails.tsx"
 
 export function DiceRollList({

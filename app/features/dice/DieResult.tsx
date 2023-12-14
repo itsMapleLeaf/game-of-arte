@@ -1,12 +1,8 @@
 import type { Die } from "convex/diceRolls.validators.ts"
 import { LucideStar, LucideX } from "lucide-react"
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipTrigger,
-} from "~/components/Tooltip.tsx"
 import { autoRef } from "~/helpers/autoRef.tsx"
-import { twMerge } from "~/styles/twMerge.ts"
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/ui/Tooltip"
+import { twMerge } from "~/ui/twMerge"
 import { DieIcon } from "./DieIcon"
 
 export const DieResult = autoRef(function DieResult({

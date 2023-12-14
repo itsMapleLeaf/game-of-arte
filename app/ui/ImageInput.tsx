@@ -1,5 +1,5 @@
 import { isUrl } from "~/helpers/url.ts"
-import { panel } from "../styles/panel.ts"
+import { panel } from "./styles.ts"
 
 export function ImageInput(props: React.InputHTMLAttributes<HTMLInputElement>) {
 	return (

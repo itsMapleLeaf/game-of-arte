@@ -1,12 +1,12 @@
 import { useRef } from "react"
+import { expect } from "~/helpers/expect.ts"
+import { useEffectEvent } from "~/helpers/useEffectEvent.ts"
+import { useWindowEvent } from "~/helpers/useWindowEvent.tsx"
 import {
 	ScrollAreaRoot,
 	ScrollAreaScrollbar,
 	ScrollAreaViewport,
-} from "~/components/ScrollArea.tsx"
-import { expect } from "~/helpers/expect.ts"
-import { useEffectEvent } from "~/helpers/useEffectEvent.ts"
-import { useWindowEvent } from "~/helpers/useWindowEvent.tsx"
+} from "~/ui/ScrollArea.tsx"
 import { useIsomorphicLayoutEffect } from "../../helpers/useIsomorphicLayoutEffect.tsx"
 
 export function ViewportHeightScrollArea({

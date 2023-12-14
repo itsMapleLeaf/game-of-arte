@@ -1,5 +1,5 @@
 import * as TooltipBase from "@radix-ui/react-tooltip"
-import { panel } from "~/styles/panel.ts"
+import { panel } from "./styles"
 
 export const TooltipProvider = TooltipBase.Provider
 export const Tooltip = TooltipBase.Root

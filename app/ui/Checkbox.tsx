@@ -1,6 +1,6 @@
 import { autoRef } from "~/helpers/autoRef.tsx"
-import { panel } from "~/styles/panel.ts"
-import { twStyle } from "~/styles/twStyle.ts"
+import { twStyle } from "~/ui/twStyle"
+import { panel } from "./styles"
 
 export interface CheckboxProps extends React.ComponentPropsWithRef<"input"> {}
 
