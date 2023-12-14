@@ -31,7 +31,7 @@ class ExtendedIterable<T> implements Iterable<T> {
 		return Promise.all(this)
 	}
 
-	toMap<K, V>(fn: (value: T, index: number) => [key: K, value: V]) {
+	toMap<K, V>(fn: (value: T, index: number) => readonly [K, V]) {
 		return new Map(this.map(fn))
 	}
 
