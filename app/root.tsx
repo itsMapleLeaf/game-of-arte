@@ -103,6 +103,7 @@ function Layout({ children }: { children: React.ReactNode }) {
 							Session
 						</NavLinkButton>
 						<NavLinkButton
+							partial
 							to="/guide"
 							appearance="clear"
 							icon={LucideHelpCircle}
