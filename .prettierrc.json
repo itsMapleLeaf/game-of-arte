@@ -3,5 +3,11 @@
 	"useTabs": true,
 	"plugins": ["prettier-plugin-jsdoc", "prettier-plugin-tailwindcss"],
 	"tailwindFunctions": ["twMerge", "twStyle"],
-	"experimentalTernaries": true
+	"experimentalTernaries": true,
+	"overrides": [
+		{
+			"files": ["pnpm-lock.yaml", "convex/_generated/**"],
+			"options": { "requirePragma": true }
+		}
+	]
 }
