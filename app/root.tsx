@@ -3,15 +3,12 @@ import "tailwindcss/tailwind.css"
 
 import { ClerkApp, ClerkErrorBoundary, useAuth, useUser } from "@clerk/remix"
 import { rootAuthLoader } from "@clerk/remix/ssr.server"
-import type {
-	LinksFunction,
-	LoaderFunctionArgs,
-	MetaFunction,
-} from "@remix-run/node"
+import type { LinksFunction, LoaderFunctionArgs } from "@remix-run/node"
 import {
 	Links,
 	LiveReload,
 	Meta,
+	type MetaFunction,
 	Outlet,
 	Scripts,
 	ScrollRestoration,
@@ -30,8 +27,9 @@ import faviconUrl from "./assets/favicon.svg"
 import { NavLinkButton } from "./components/NavLinkButton.tsx"
 import { TooltipProvider } from "./components/Tooltip.tsx"
 import { env } from "./env.ts"
+import { getMeta } from "./meta.server.ts"
 
-export const meta: MetaFunction = () => [{ title: "Game of Arte" }]
+export const meta: MetaFunction = () => getMeta()
 
 export const links: LinksFunction = () => [{ rel: "icon", href: faviconUrl }]
 
