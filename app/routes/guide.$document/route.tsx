@@ -3,14 +3,12 @@ import { Suspense } from "react"
 import { LoadingPlaceholder } from "~/components/LoadingPlaceholder.tsx"
 import { guideDocuments } from "~/features/guide/data.ts"
 import { expect } from "~/helpers/expect.ts"
+import { getMeta } from "~/meta.ts"
 
-export const meta: MetaFunction = ({ params }) => [
-	{
-		title: [guideDocuments[expect(params.document)]?.title, "Game of Arte"]
-			.filter(Boolean)
-			.join(" | "),
-	},
-]
+export const meta: MetaFunction = ({ params }) => {
+	const document = guideDocuments[expect(params.document)]
+	return getMeta({ title: document?.title })
+}
 
 export default function RulesDocumentPage() {
 	const params = useParams()
