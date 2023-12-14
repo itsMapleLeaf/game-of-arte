@@ -1,4 +1,4 @@
-import { createCookie } from "@remix-run/node"
+import { type TypedResponse, createCookie } from "@remix-run/node"
 import type { Id, TableNames } from "convex/_generated/dataModel.js"
 import { z } from "zod"
 
@@ -19,9 +19,9 @@ export async function getPreferences(request: Request) {
 	const data = schema.parse(await cookie.parse(request.headers.get("Cookie")))
 	return {
 		data,
-		async update(
+		async update<T>(
 			updates: Partial<z.output<typeof schema>>,
-			response = new Response(),
+			response: TypedResponse<T> = new Response(),
 		) {
 			response.headers.append(
 				"Set-Cookie",
