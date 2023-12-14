@@ -89,6 +89,7 @@ function CharacterListItems({
 						>
 							<Link
 								to={characterNavigation.getCharacterLink(character._id)}
+								prefetch="intent"
 								className={twMerge(
 									"group flex w-full gap-2 p-2 transition",
 									characterNavigation.characterId === character._id ?
