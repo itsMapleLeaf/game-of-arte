@@ -82,8 +82,5 @@
 		"patchedDependencies": {
 			"randimals@2.0.3": "patches/randimals@2.0.3.patch"
 		}
-	},
-	"resolutions": {
-		"@remix-run/server-runtime": "2.3.1"
 	}
 }
