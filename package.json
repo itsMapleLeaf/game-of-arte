@@ -8,7 +8,7 @@
 		"dev:vite": "vite dev",
 		"dev:convex": "convex dev",
 		"build": "vite build && vite build --ssr",
-		"start": "remix-serve build/index.js",
+		"start": "remix-serve build/server/index.js",
 		"lint": "biome check .",
 		"typecheck": "tsc -b",
 		"test": "vitest run",
