@@ -9,7 +9,9 @@ export default function RulesRoute() {
 			<nav className="sticky top-20 flex flex-col children:justify-start">
 				{Object.entries(guideDocuments).map(([key, document]) => (
 					<Button key={key} appearance="clear" icon={document.icon} asChild>
-						<Link to={`/guide/${key}`}>{document.title}</Link>
+						<Link to={`/guide/${key}`} prefetch="intent">
+							{document.title}
+						</Link>
 					</Button>
 				))}
 			</nav>
