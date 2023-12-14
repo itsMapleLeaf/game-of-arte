@@ -27,7 +27,7 @@ import faviconUrl from "./assets/favicon.svg"
 import { NavLinkButton } from "./components/NavLinkButton.tsx"
 import { TooltipProvider } from "./components/Tooltip.tsx"
 import { env } from "./env.ts"
-import { getMeta } from "./meta.server.ts"
+import { getMeta } from "./meta.ts"
 
 export const meta: MetaFunction = () => getMeta()
 
