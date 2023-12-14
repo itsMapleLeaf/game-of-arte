@@ -2,8 +2,8 @@ import { LucideMinus, LucidePlus } from "lucide-react"
 import { autoRef } from "~/helpers/autoRef.tsx"
 import type { StrictOmit } from "~/helpers/types.ts"
 import { clamp } from "../helpers/math.ts"
-import { panel } from "../styles/panel.ts"
 import { SrOnly } from "./SrOnly.tsx"
+import { panel } from "./styles.ts"
 
 export interface CounterInputProps
 	extends StrictOmit<React.ComponentPropsWithRef<"div">, "onChange"> {

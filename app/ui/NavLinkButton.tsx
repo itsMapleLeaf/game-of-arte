@@ -1,9 +1,9 @@
 import { Link, useMatch } from "@remix-run/react"
 import type { RemixLinkProps } from "@remix-run/react/dist/components"
-import { Button, type ButtonProps } from "~/components/Button.tsx"
 import { autoRef } from "~/helpers/autoRef.tsx"
 import type { StrictOmit } from "~/helpers/types.ts"
-import { twMerge } from "~/styles/twMerge.ts"
+import { Button, type ButtonProps } from "~/ui/Button"
+import { twMerge } from "~/ui/twMerge"
 
 export interface NavLinkButtonProps extends StrictOmit<ButtonProps, "asChild"> {
 	to: string

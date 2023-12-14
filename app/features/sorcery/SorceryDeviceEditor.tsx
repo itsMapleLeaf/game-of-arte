@@ -1,15 +1,10 @@
 import type { Doc } from "convex/_generated/dataModel"
 import { useState } from "react"
 import ExpandingTextArea from "react-expanding-textarea"
-import {
-	Field,
-	FieldDescription,
-	FieldInput,
-	FieldLabel,
-} from "~/components/Field.tsx"
 import { randomItem } from "~/helpers/random.ts"
 import type { NonEmptyArray } from "~/helpers/types.ts"
-import { textArea } from "~/styles/index.ts"
+import { Field, FieldDescription, FieldInput, FieldLabel } from "~/ui/Field.tsx"
+import { textArea } from "~/ui/styles.ts"
 import { useSetSorceryDeviceMutation } from "./useSetSorceryDeviceMutation.tsx"
 
 export function SorceryDeviceEditor({

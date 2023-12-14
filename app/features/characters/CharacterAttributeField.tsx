@@ -1,11 +1,7 @@
 import { twMerge } from "tailwind-merge"
 import type { StrictOmit } from "~/helpers/types.ts"
-import type { CounterInputProps } from "../../components/CounterInput.tsx"
-import {
-	Field,
-	FieldLabelText,
-	FieldLabelTooltip,
-} from "../../components/Field.tsx"
+import type { CounterInputProps } from "../../ui/CounterInput.tsx"
+import { Field, FieldLabelText, FieldLabelTooltip } from "../../ui/Field.tsx"
 import { CharacterAttributeRollButton } from "./CharacterAttributeRollButton.tsx"
 import { CharacterAttributeValueInput } from "./CharacterAttributeValueInput.tsx"
 import { CharacterContext } from "./CharacterContext.tsx"

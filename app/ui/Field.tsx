@@ -17,7 +17,7 @@ import { twMerge } from "tailwind-merge"
 import { pick } from "~/helpers/object.ts"
 import { autoRef } from "../helpers/autoRef.tsx"
 import type { Nullish, Spread } from "../helpers/types.ts"
-import { panel } from "../styles/panel.ts"
+import { panel } from "./styles.ts"
 
 const FieldContext = createContext({
 	labelId: "",

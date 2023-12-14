@@ -1,8 +1,8 @@
 import { SignOutButton } from "@clerk/remix"
 import { LucideLogOut, LucideUserCog2 } from "lucide-react"
-import { ExternalLink } from "~/components/ExternalLink.tsx"
-import { Menu, MenuItem, MenuPanel, MenuTrigger } from "~/components/Menu.tsx"
 import { env } from "~/env.ts"
+import { ExternalLink } from "~/ui/ExternalLink"
+import { Menu, MenuItem, MenuPanel, MenuTrigger } from "~/ui/Menu"
 
 export function UserButton({ user }: { user: { imageUrl: string } }) {
 	return (

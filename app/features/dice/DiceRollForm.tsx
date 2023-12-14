@@ -2,14 +2,9 @@ import { api } from "convex/_generated/api.js"
 import { useMutation } from "convex/react"
 import { LucideDices } from "lucide-react"
 import { useState } from "react"
-import { CounterInput } from "~/components/CounterInput.tsx"
-import {
-	Field,
-	FieldInput,
-	FieldLabel,
-	FieldLabelText,
-} from "~/components/Field.tsx"
 import { useAsyncCallback } from "~/helpers/useAsyncCallback.ts"
+import { CounterInput } from "~/ui/CounterInput"
+import { Field, FieldInput, FieldLabel, FieldLabelText } from "~/ui/Field"
 
 export function DiceRollForm() {
 	const [label, setLabel] = useState("")

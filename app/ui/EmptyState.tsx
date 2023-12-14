@@ -1,4 +1,4 @@
-import { twMerge } from "~/styles/twMerge.ts"
+import { twMerge } from "~/ui/twMerge"
 
 export function EmptyState({
 	children,

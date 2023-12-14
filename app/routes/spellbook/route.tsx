@@ -8,8 +8,8 @@ import { sorcerySpells } from "~/features/sorcery/spells.ts"
 import { createConvexClient } from "~/helpers/convex.server"
 import { pick } from "~/helpers/object.ts"
 import { plural } from "~/helpers/string.ts"
-import { container } from "~/styles/container.ts"
-import { panel } from "~/styles/panel.ts"
+import { panel } from "~/ui/styles"
+import { container } from "~/ui/styles"
 
 export async function loader(args: LoaderFunctionArgs) {
 	const convex = await createConvexClient(args)

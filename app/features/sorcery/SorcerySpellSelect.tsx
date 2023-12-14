@@ -3,24 +3,16 @@ import { useMutation } from "convex/react"
 import { LucideSparkles, LucideX } from "lucide-react"
 import { matchSorter } from "match-sorter"
 import { useState } from "react"
-import { Button } from "~/components/Button.tsx"
-import {
-	Collapse,
-	CollapseButton,
-	CollapseContent,
-} from "~/components/Collapse.tsx"
-import { ConfirmDialog } from "~/components/ConfirmDialog.tsx"
-import { ScrollArea } from "~/components/ScrollArea.tsx"
-import { SrOnly } from "~/components/SrOnly.tsx"
-import {
-	Tooltip,
-	TooltipContent,
-	TooltipTrigger,
-} from "~/components/Tooltip.tsx"
 import { autoRef } from "~/helpers/autoRef.tsx"
 import { groupBy } from "~/helpers/collections.ts"
 import { plural } from "~/helpers/string.ts"
-import { input } from "~/styles/index.ts"
+import { Button } from "~/ui/Button.tsx"
+import { Collapse, CollapseButton, CollapseContent } from "~/ui/Collapse.tsx"
+import { ConfirmDialog } from "~/ui/ConfirmDialog.tsx"
+import { ScrollArea } from "~/ui/ScrollArea.tsx"
+import { SrOnly } from "~/ui/SrOnly.tsx"
+import { Tooltip, TooltipContent, TooltipTrigger } from "~/ui/Tooltip.tsx"
+import { input } from "~/ui/styles.ts"
 import { CharacterContext } from "../characters/CharacterContext.tsx"
 import { getAttributeById } from "../characters/attributes.ts"
 import { getCharacterAttributeValue } from "../characters/data.ts"

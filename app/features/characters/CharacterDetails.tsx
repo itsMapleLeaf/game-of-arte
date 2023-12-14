@@ -11,19 +11,6 @@ import {
 } from "lucide-react"
 import { type ReactElement, type ReactNode, useEffect } from "react"
 import ExpandingTextArea from "react-expanding-textarea"
-import { AsyncButton } from "~/components/AsyncButton.tsx"
-import { Button, type ButtonProps } from "~/components/Button.tsx"
-import { ConfirmDialog } from "~/components/ConfirmDialog.tsx"
-import { CounterInput } from "~/components/CounterInput.tsx"
-import {
-	Field,
-	FieldDescription,
-	FieldInput,
-	FieldLabelText,
-} from "~/components/Field.tsx"
-import { ImageInput } from "~/components/ImageInput.tsx"
-import { Input } from "~/components/Input.tsx"
-import { LoadingPlaceholder } from "~/components/LoadingPlaceholder.tsx"
 import { CharacterAttributeField } from "~/features/characters/CharacterAttributeField.tsx"
 import {
 	type AttributeCategory,
@@ -31,11 +18,22 @@ import {
 	getAttributes,
 } from "~/features/characters/attributes"
 import { useLocalStorageState } from "~/helpers/useLocalStorageState.tsx"
-import { solidButton } from "~/styles/button.ts"
-import { center, input, textArea } from "~/styles/index.ts"
-import { panel } from "~/styles/panel.ts"
-import { twMerge } from "~/styles/twMerge.ts"
-import { twStyle } from "~/styles/twStyle.ts"
+import { Button, type ButtonProps } from "~/ui/Button.tsx"
+import { ConfirmDialog } from "~/ui/ConfirmDialog.tsx"
+import { CounterInput } from "~/ui/CounterInput.tsx"
+import {
+	Field,
+	FieldDescription,
+	FieldInput,
+	FieldLabelText,
+} from "~/ui/Field.tsx"
+import { ImageInput } from "~/ui/ImageInput.tsx"
+import { Input } from "~/ui/Input.tsx"
+import { LoadingPlaceholder } from "~/ui/LoadingPlaceholder.tsx"
+import { panel } from "~/ui/styles.ts"
+import { center, input, textArea } from "~/ui/styles.ts"
+import { twMerge } from "~/ui/twMerge.ts"
+import { twStyle } from "~/ui/twStyle.ts"
 import { AddFreeformSpellButton } from "../sorcery/AddFreeformSpellButton.tsx"
 import { CastSpellButton } from "../sorcery/CastSpellButton.tsx"
 import { RemoveSorceryDeviceButton } from "../sorcery/RemoveSorceryDeviceButton.tsx"
@@ -467,22 +465,21 @@ function AddSorceryDeviceButton({
 	character: Doc<"characters">
 }) {
 	const setSorceryDevice = useMutation(api.characters.setSorceryDevice)
+
+	const handleClick = async () => {
+		await setSorceryDevice({
+			id: character._id,
+			sorceryDevice: {
+				description: "",
+				affinities: null,
+			},
+		})
+	}
+
 	return (
-		<AsyncButton
-			type="button"
-			className={solidButton()}
-			onClick={() => {
-				return setSorceryDevice({
-					id: character._id,
-					sorceryDevice: {
-						description: "",
-						affinities: null,
-					},
-				})
-			}}
-		>
+		<Button appearance="solid" onClick={handleClick}>
 			<LucideWand /> Add Sorcery Device
-		</AsyncButton>
+		</Button>
 	)
 }
 

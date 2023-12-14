@@ -5,9 +5,9 @@ import { api } from "convex/_generated/api.js"
 import type { Id } from "convex/_generated/dataModel.js"
 import { useConvexAuth, useMutation, useQuery } from "convex/react"
 import { LucideHome, LucideLogIn, LucideSparkles } from "lucide-react"
-import { Button } from "~/components/Button.tsx"
-import { LoadingPlaceholder } from "~/components/LoadingPlaceholder.tsx"
 import { useAsyncCallback } from "~/helpers/useAsyncCallback.ts"
+import { Button } from "~/ui/Button"
+import { LoadingPlaceholder } from "~/ui/LoadingPlaceholder"
 
 export async function loader({ request }: LoaderFunctionArgs) {
 	const inviteId = new URL(request.url).searchParams.get("invite")

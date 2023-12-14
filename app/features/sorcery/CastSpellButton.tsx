@@ -7,21 +7,12 @@ import {
 	LucideChevronLeft,
 } from "lucide-react"
 import { useLayoutEffect, useState } from "react"
-import { Button } from "~/components/Button.tsx"
-import {
-	Dialog,
-	DialogTrigger,
-	SimpleDialogContent,
-} from "~/components/Dialog.tsx"
-import {
-	Field,
-	FieldDescription,
-	FieldInput,
-	FieldLabel,
-} from "~/components/Field.tsx"
-import { LoadingPlaceholder } from "~/components/LoadingPlaceholder.tsx"
-import { checkbox } from "~/styles/index.ts"
-import { twMerge } from "~/styles/twMerge.ts"
+import { Button } from "~/ui/Button.tsx"
+import { Dialog, DialogTrigger, SimpleDialogContent } from "~/ui/Dialog.tsx"
+import { Field, FieldDescription, FieldInput, FieldLabel } from "~/ui/Field.tsx"
+import { LoadingPlaceholder } from "~/ui/LoadingPlaceholder.tsx"
+import { checkbox } from "~/ui/styles.ts"
+import { twMerge } from "~/ui/twMerge.ts"
 import { CharacterAttributeRollForm } from "../characters/CharacterAttributeRollForm.tsx"
 import { CharacterContext } from "../characters/CharacterContext.tsx"
 import { getAttributeById } from "../characters/attributes.ts"

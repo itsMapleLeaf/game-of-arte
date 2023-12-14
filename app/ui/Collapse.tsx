@@ -2,7 +2,7 @@ import * as Ariakit from "@ariakit/react"
 import { LucideChevronRight } from "lucide-react"
 import { autoRef } from "~/helpers/autoRef.tsx"
 import { useLocalStorageState } from "~/helpers/useLocalStorageState.tsx"
-import { twMerge } from "~/styles/twMerge.ts"
+import { twMerge } from "~/ui/twMerge"
 
 export interface CollapseProps extends Ariakit.DisclosureProviderProps {
 	persistenceKey: string

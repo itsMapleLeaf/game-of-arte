@@ -1,7 +1,7 @@
 import { autoRef } from "~/helpers/autoRef.tsx"
-import { panel } from "~/styles/panel.ts"
-import { twStyle } from "~/styles/twStyle.ts"
+import { twStyle } from "~/ui/twStyle.ts"
 import { createFieldComponent } from "./Field.tsx"
+import { panel } from "./styles.ts"
 
 export interface InputProps extends React.ComponentPropsWithRef<"input"> {}
 

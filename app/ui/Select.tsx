@@ -1,8 +1,8 @@
 import * as Ariakit from "@ariakit/react"
 import { LucideChevronDown } from "lucide-react"
 import type { ReactElement } from "react"
-import { panel } from "~/styles/panel.ts"
-import { buttonStyle } from "./Button.tsx"
+import { Button, type ButtonIconComponent } from "./Button.tsx"
+import { panel } from "./styles.ts"
 
 export function Select<Value extends string>({
 	label,
@@ -15,7 +15,7 @@ export function Select<Value extends string>({
 	options: Array<{
 		value: Value
 		label: string
-		icon?: React.ElementType<{ className: string; "aria-hidden": true }>
+		icon?: ButtonIconComponent
 	}>
 	onChange?: (value: Value) => void
 }) {
@@ -54,18 +54,13 @@ export function Select<Value extends string>({
 						key={option.value}
 						value={option.value}
 						render={
-							<div
-								className={buttonStyle({
-									appearance: "clear",
-									className:
-										"cursor-pointer justify-start rounded-none border-none first:rounded-t last:rounded-b data-[active-item]:bg-base-800 data-[active-item]:text-accent-400",
-								})}
+							<Button
+								appearance="clear"
+								className="cursor-pointer justify-start rounded-none border-none first:rounded-t last:rounded-b data-[active-item]:bg-base-800 data-[active-item]:text-accent-400"
+								icon={option.icon}
 							>
-								{option.icon && (
-									<option.icon className="mr-2 flex-shrink-0 s-5" aria-hidden />
-								)}
 								{option.label}
-							</div>
+							</Button>
 						}
 					/>
 				))}

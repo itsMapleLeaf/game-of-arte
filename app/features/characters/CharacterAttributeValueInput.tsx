@@ -1,10 +1,7 @@
 import { clamp } from "~/helpers/math.ts"
 import type { StrictOmit } from "~/helpers/types.ts"
-import {
-	CounterInput,
-	type CounterInputProps,
-} from "../../components/CounterInput.tsx"
-import { input } from "../../styles/index.ts"
+import { CounterInput, type CounterInputProps } from "../../ui/CounterInput.tsx"
+import { input } from "../../ui/styles.ts"
 import { CharacterContext } from "./CharacterContext.tsx"
 import type { Attribute } from "./attributes.ts"
 import { ATTRIBUTE_MAX, ATTRIBUTE_MIN } from "./constants.ts"

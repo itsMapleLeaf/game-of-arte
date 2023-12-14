@@ -11,23 +11,14 @@ import {
 	LucideUser,
 } from "lucide-react"
 import { twMerge } from "tailwind-merge"
-import {
-	Collapse,
-	CollapseButton,
-	CollapseContent,
-} from "~/components/Collapse.tsx"
 import { tryUntilNonNil } from "~/helpers/async.ts"
+import { Collapse, CollapseButton, CollapseContent } from "~/ui/Collapse.tsx"
+import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
 import {
 	LoadingPlaceholder,
 	LoadingSpinner,
-} from "../../components/LoadingPlaceholder.tsx"
-import {
-	Menu,
-	MenuItem,
-	MenuPanel,
-	MenuTrigger,
-} from "../../components/Menu.tsx"
-import { useAsyncCallback } from "../../helpers/useAsyncCallback.ts"
+} from "../../ui/LoadingPlaceholder.tsx"
+import { Menu, MenuItem, MenuPanel, MenuTrigger } from "../../ui/Menu.tsx"
 import { AdminRoleGuard } from "../auth/AdminRoleGuard.tsx"
 import { characterNameInputId } from "./CharacterDetails.tsx"
 import { useCharacterNavigation } from "./navigation.ts"

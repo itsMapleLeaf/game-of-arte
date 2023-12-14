@@ -1,6 +1,6 @@
 import { api } from "convex/_generated/api.js"
 import type { Doc } from "convex/_generated/dataModel.js"
-import type { PlayerListResult } from "convex/players.ts"
+import type { ClientPlayer } from "convex/players.ts"
 import { useMutation, useQuery } from "convex/react"
 import {
 	LucideMailPlus,
@@ -10,20 +10,15 @@ import {
 	LucideX,
 } from "lucide-react"
 import { useState } from "react"
-import { Button } from "~/components/Button.tsx"
-import { EmptyState } from "~/components/EmptyState.tsx"
-import { panel } from "~/styles/panel.ts"
-import { AsyncButton } from "../../components/AsyncButton.tsx"
+import { useStableQuery } from "~/helpers/useStableQuery.tsx"
+import { Button } from "~/ui/Button.tsx"
+import { EmptyState } from "~/ui/EmptyState.tsx"
+import { panel } from "~/ui/styles.ts"
 import {
 	LoadingPlaceholder,
 	LoadingSpinner,
-} from "../../components/LoadingPlaceholder.tsx"
-import {
-	Menu,
-	MenuItem,
-	MenuPanel,
-	MenuTrigger,
-} from "../../components/Menu.tsx"
+} from "../../ui/LoadingPlaceholder.tsx"
+import { Menu, MenuItem, MenuPanel, MenuTrigger } from "../../ui/Menu.tsx"
 
 export function PlayerList() {
 	const players = useQuery(api.players.list)
@@ -41,29 +36,25 @@ export function PlayerList() {
 				<EmptyState icon={LucideUserX2}>
 					No players have been added yet.
 				</EmptyState>
-			:	<>
-					<ul className="contents">
-						{players.map((player) => (
-							<li key={player._id}>
-								<PlayerListItem player={player} />
-							</li>
-						))}
-					</ul>
-					<ul className="contents">
-						{invites.map((invite) => (
-							<li key={invite._id}>
-								<InviteListItem invite={invite} />
-							</li>
-						))}
-					</ul>
-				</>
+			:	<ul className="contents">
+					{players.map((player) => (
+						<li key={player._id}>
+							<PlayerListItem player={player} />
+						</li>
+					))}
+					{invites.map((invite) => (
+						<li key={invite._id}>
+							<InviteListItem invite={invite} />
+						</li>
+					))}
+				</ul>
 			}
 		</div>
 	)
 }
 
-function PlayerListItem({ player }: { player: PlayerListResult }) {
-	const character = useQuery(api.characters.get, {
+function PlayerListItem({ player }: { player: ClientPlayer }) {
+	const character = useStableQuery(api.characters.get, {
 		id: player.assignedCharacterId,
 	})
 	const removePlayer = useMutation(api.players.remove)
@@ -86,12 +77,14 @@ function PlayerListItem({ player }: { player: PlayerListResult }) {
 			</dl>
 
 			<footer className="flex flex-wrap gap-2">
-				<AsyncButton
-					className="flex items-center gap-1 rounded border border-base-600 bg-base-700/50 p-1.5 text-sm leading-none transition hover:bg-base-800"
+				<Button
+					appearance="outline"
+					size="small"
+					icon={LucideX}
 					onClick={() => removePlayer({ id: player._id })}
 				>
-					<LucideX className="-mx-0.5 s-4" /> Remove
-				</AsyncButton>
+					Remove
+				</Button>
 				<SetCharacterMenu player={player} />
 			</footer>
 		</section>
@@ -147,15 +140,17 @@ function InviteListItem({ invite }: { invite: Doc<"invites"> }) {
 	)
 }
 
-function SetCharacterMenu({ player }: { player: PlayerListResult }) {
+function SetCharacterMenu({ player }: { player: ClientPlayer }) {
 	const characters = useQuery(api.characters.list)
 	const setAssignedCharacterId = useMutation(api.players.setAssignedCharacterId)
 
 	return characters === undefined ?
 			<LoadingSpinner />
 		:	<Menu>
-				<MenuTrigger className="flex items-center gap-1 rounded border border-base-600 bg-base-700/50 p-1.5 text-sm leading-none transition hover:bg-base-800">
-					<LucideUserPlus className="s-4" /> Set Character
+				<MenuTrigger asChild>
+					<Button appearance="outline" size="small" icon={LucideUserPlus}>
+						Set Character
+					</Button>
 				</MenuTrigger>
 				<MenuPanel
 					side="bottom"
@@ -163,17 +158,16 @@ function SetCharacterMenu({ player }: { player: PlayerListResult }) {
 					className="max-h-64 max-w-48 overflow-y-auto"
 				>
 					{characters.map((character) => (
-						<MenuItem key={character._id} asChild>
-							<AsyncButton
-								onClick={() =>
-									setAssignedCharacterId({
-										id: player._id,
-										assignedCharacterId: character._id,
-									})
-								}
-							>
-								{character.name}
-							</AsyncButton>
+						<MenuItem
+							key={character._id}
+							onClick={() =>
+								setAssignedCharacterId({
+									id: player._id,
+									assignedCharacterId: character._id,
+								})
+							}
+						>
+							{character.name}
 						</MenuItem>
 					))}
 				</MenuPanel>

@@ -1,7 +1,6 @@
 import { type LoaderFunctionArgs, redirect } from "@remix-run/node"
 import { api } from "convex/_generated/api.js"
 import { ConvexHttpClient } from "convex/browser"
-import { LoadingPlaceholder } from "~/components/LoadingPlaceholder.tsx"
 import { env } from "~/env.ts"
 import { CharacterContext } from "~/features/characters/CharacterContext.tsx"
 import { CharacterDetails } from "~/features/characters/CharacterDetails.tsx"
@@ -10,7 +9,8 @@ import {
 	useCharacterNavigation,
 } from "~/features/characters/navigation.ts"
 import { getPreferences } from "~/features/preferences.server.ts"
-import { container } from "~/styles/container.ts"
+import { LoadingPlaceholder } from "~/ui/LoadingPlaceholder.tsx"
+import { container } from "~/ui/styles.ts"
 import { useStableQuery } from "../../helpers/useStableQuery.tsx"
 import { SideNav } from "./SideNav.tsx"
 import { ViewportHeightScrollArea } from "./ViewportHeightScrollArea.tsx"

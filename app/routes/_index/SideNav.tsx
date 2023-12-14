@@ -8,12 +8,6 @@ import {
 	LucideWrench,
 } from "lucide-react"
 import { useEffect, useState } from "react"
-import {
-	Collapse,
-	CollapseButton,
-	CollapseContent,
-} from "~/components/Collapse.tsx"
-import { LoadingPlaceholder } from "~/components/LoadingPlaceholder.tsx"
 import { AdminRoleGuard } from "~/features/auth/AdminRoleGuard.tsx"
 import { CharacterList } from "~/features/characters/CharacterList.tsx"
 import { ClockList } from "~/features/clocks/ClockList.tsx"
@@ -23,7 +17,9 @@ import { PlayerList } from "~/features/players/PlayerList.tsx"
 import { WorldSettings } from "~/features/worlds/WorldSettings.tsx"
 import { useLocalStorageState } from "~/helpers/useLocalStorageState.tsx"
 import { useNow } from "~/helpers/useNow.tsx"
-import { panel } from "~/styles/panel.ts"
+import { Collapse, CollapseButton, CollapseContent } from "~/ui/Collapse.tsx"
+import { LoadingPlaceholder } from "~/ui/LoadingPlaceholder"
+import { panel } from "~/ui/styles"
 
 export function SideNav() {
 	return (
