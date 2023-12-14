@@ -67,6 +67,7 @@ function ResetResilienceButton() {
 		>
 			<Button
 				appearance="solid"
+				color="accent"
 				icon={LucideRotateCw}
 				pending={resetResilienceState.isLoading}
 				pendingIcon={LucideRotateCw}

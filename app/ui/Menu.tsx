@@ -5,7 +5,7 @@ import { twMerge } from "~/ui/twMerge.ts"
 import {
 	Button,
 	type ButtonIconComponent,
-	type ButtonStyleProps,
+	type ButtonProps,
 } from "./Button.tsx"
 import { panel } from "./styles.ts"
 
@@ -28,8 +28,8 @@ export function MenuPanel(props: DropdownMenu.DropdownMenuContentProps) {
 }
 
 export interface MenuItemProps
-	extends ButtonStyleProps,
-		StrictOmit<DropdownMenu.DropdownMenuItemProps, "className"> {
+	extends StrictOmit<ButtonProps, "onClick" | "ref">,
+		StrictOmit<DropdownMenu.DropdownMenuItemProps, "color" | "className"> {
 	icon?: ButtonIconComponent
 }
 

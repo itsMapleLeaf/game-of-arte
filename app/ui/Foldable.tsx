@@ -26,14 +26,14 @@ export const Foldable = autoRef(function Foldable({ children }: FoldableProps) {
 				<Button
 					appearance="faded"
 					size="small"
-					className="-mx-2"
+					className="-mx-2 w-full justify-start"
 					onClick={() => setOpen(!open)}
 				>
 					<ChevronDown
 						aria-hidden
 						className={buttonIconStyle({
 							size: "small",
-							className: ["transition", open ? "rotate-180" : ""],
+							className: ["transition-transform", open ? "rotate-180" : ""],
 						})}
 					/>
 					{open ? "Collapse" : "Expand"}

@@ -37,10 +37,13 @@ export function ConfirmDialog({
 					<DialogDescription className="my-4">{description}</DialogDescription>
 					<div className="flex justify-end gap-2">
 						<DialogClose asChild>
-							<Button appearance="clear">{cancelText}</Button>
+							<Button appearance="clear" color="default">
+								{cancelText}
+							</Button>
 						</DialogClose>
 						<Button
 							appearance="solid"
+							color="negative"
 							onClick={async () => {
 								await onConfirm()
 								setOpen(false)
