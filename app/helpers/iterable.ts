@@ -1,4 +1,4 @@
-import type { Truthy } from "./types.ts"
+import type { Falsy, Truthy } from "./types.ts"
 
 class ExtendedIterable<T> implements Iterable<T> {
 	constructor(private iterable: Iterable<T>) {}
@@ -27,12 +27,12 @@ class ExtendedIterable<T> implements Iterable<T> {
 		return this.accept(predicate).first()
 	}
 
-	promiseAll() {
-		return Promise.all(this)
+	async promiseAll() {
+		return it(await Promise.all(this))
 	}
 
-	toMap<K, V>(fn: (value: T, index: number) => readonly [K, V]) {
-		return new Map(this.map(fn))
+	toMap<K, V>(fn: (value: T, index: number) => Falsy<readonly [K, V]>) {
+		return new Map(this.map(fn).accept(Boolean))
 	}
 
 	apply<U>(fn: (iterable: ExtendedIterable<T>) => Iterable<U>) {
