@@ -4,7 +4,7 @@ import type { ForwardedRef } from "react"
 import type { ClassValue, VariantProps } from "tailwind-variants"
 import { autoRef } from "~/helpers/autoRef.tsx"
 import { useAsyncCallback } from "~/helpers/useAsyncCallback.ts"
-import { tv } from "./tv.ts"
+import { twVariants } from "./twVariants.ts"
 
 export interface ButtonProps extends VariantProps<typeof buttonStyle> {
 	type?: "button" | "submit" | "reset"
@@ -78,7 +78,7 @@ export const Button = autoRef(function Button({
 	)
 })
 
-export const buttonStyle = tv({
+export const buttonStyle = twVariants({
 	base: "inline-flex items-center justify-center rounded-md border border-transparent leading-tight text-white ring-accent-300 transition focus:outline-none focus-visible:ring-2 disabled:opacity-50",
 	variants: {
 		appearance: {
@@ -125,7 +125,7 @@ export const buttonStyle = tv({
 	},
 })
 
-export const buttonIconStyle = tv({
+export const buttonIconStyle = twVariants({
 	base: "flex-shrink-0",
 	variants: {
 		size: {
