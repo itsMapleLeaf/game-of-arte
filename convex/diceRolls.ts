@@ -191,19 +191,16 @@ async function getPaginatedRolls(
 			cursor: args.cursor ?? null,
 		})
 
-	const users = await Promise.all(
-		it(result.page)
-			.map((roll) => roll.userId)
-			.filter(Boolean)
-			.unique()
-			.map((id) => ctx.db.get(id)),
-	)
+	const users = await it(result.page)
+		.map((roll) => roll.userId)
+		.accept(Boolean)
+		.unique()
+		.map((id) => ctx.db.get(id))
+		.promiseAll()
 
-	const usersById = new Map(
-		it(users)
-			.filter(Boolean)
-			.map((user) => [user._id, user]),
-	)
+	const usersById = it(users)
+		.accept(Boolean)
+		.toMap((user) => [user._id, user])
 
 	return {
 		...result,
