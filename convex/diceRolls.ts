@@ -198,9 +198,7 @@ async function getPaginatedRolls(
 		.map((id) => ctx.db.get(id))
 		.promiseAll()
 
-	const usersById = it(users)
-		.accept(Boolean)
-		.toMap((user) => [user._id, user])
+	const usersById = users.toMap((user) => user && [user._id, user])
 
 	return {
 		...result,
