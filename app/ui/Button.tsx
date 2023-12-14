@@ -1,20 +1,21 @@
 import { Slot, Slottable } from "@radix-ui/react-slot"
 import { LucideLoader2 } from "lucide-react"
-import type { ClassNameValue } from "tailwind-merge"
+import type { ForwardedRef } from "react"
+import type { ClassValue, VariantProps } from "tailwind-variants"
 import { autoRef } from "~/helpers/autoRef.tsx"
-import type { PartialKeys, StrictOmit } from "~/helpers/types.ts"
 import { useAsyncCallback } from "~/helpers/useAsyncCallback.ts"
-import { twMerge } from "~/ui/twMerge"
-import { type TwStyle, twStyle } from "~/ui/twStyle"
+import { tv } from "./tv.ts"
 
-export interface ButtonProps
-	extends StrictOmit<React.ComponentPropsWithRef<"button">, "onClick">,
-		StrictOmit<ButtonStyleProps, "className"> {
+export interface ButtonProps extends VariantProps<typeof buttonStyle> {
+	type?: "button" | "submit" | "reset"
+	children?: React.ReactNode
+	className?: ClassValue
 	asChild?: boolean
 	icon?: ButtonIconComponent
 	iconPosition?: "start" | "end"
 	pending?: boolean
 	pendingIcon?: ButtonIconComponent
+	ref?: ForwardedRef<HTMLButtonElement>
 	onClick?: (event: React.MouseEvent<HTMLButtonElement>) => unknown
 }
 
@@ -33,6 +34,7 @@ export const Button = autoRef(function Button({
 	children,
 	appearance = "solid",
 	square = false,
+	color,
 	className,
 	onClick,
 	...buttonProps
@@ -64,6 +66,7 @@ export const Button = autoRef(function Button({
 				appearance,
 				size,
 				square,
+				color,
 				className,
 			})}
 			onClick={handleClick}
@@ -75,73 +78,63 @@ export const Button = autoRef(function Button({
 	)
 })
 
-export interface ButtonStyleProps {
-	appearance?: keyof typeof buttonAppearanceStyles
-	size?: keyof typeof buttonSizeStyles
-	className?: ClassNameValue
-	square?: boolean
-}
+export const buttonStyle = tv({
+	base: "inline-flex items-center justify-center rounded-md border border-transparent leading-tight text-white ring-accent-300 transition focus:outline-none focus-visible:ring-2 disabled:opacity-50",
+	variants: {
+		appearance: {
+			solid: `border-[--button-bg] bg-[--button-bg-25] text-base-50 hover:bg-[--button-bg-50]`,
+			outline: `border-[--button-bg] text-base-50 hover:bg-[--button-bg-25]`,
+			clear: `text-[--button-text] hover:bg-[--button-bg-25]`,
+			faded: `text-[--button-text-50] hover:text-[--button-text] focus-visible:text-[--button-text]`,
+		},
+		color: {
+			default: `
+				[--button-bg-25:theme(colors.base.700/0.25)]
+				[--button-bg-50:theme(colors.base.700/0.50)]
+				[--button-bg:theme(colors.base.700)]
+				[--button-text-50:theme(colors.base.50/0.50)]
+				[--button-text:theme(colors.base.50)]
+			`,
+			accent: `
+				[--button-bg-25:theme(colors.accent.700/0.25)]
+				[--button-bg-50:theme(colors.accent.700/0.50)]
+				[--button-bg:theme(colors.accent.700)]
+				[--button-text-50:theme(colors.accent.400/0.50)]
+				[--button-text:theme(colors.accent.400)]
+			`,
+			negative: `
+				[--button-bg-25:theme(colors.error.700/0.25)]
+				[--button-bg-50:theme(colors.error.700/0.50)]
+				[--button-bg:theme(colors.error.700)]
+				[--button-text-50:theme(colors.error.400/0.50)]
+				[--button-text:theme(colors.error.400)]
+			`,
+		},
+		size: {
+			small: `min-h-8 gap-2 px-2 py-1 text-sm`,
+			default: `min-h-10 gap-3 px-3 py-2 text-base`,
+			large: `min-h-12 gap-4 px-5 py-2 text-lg`,
+		},
+		square: {
+			true: "aspect-square",
+		},
+	},
+	defaultVariants: {
+		appearance: "solid",
+		color: "default",
+	},
+})
 
-export function buttonStyle({
-	appearance = "solid",
-	size = "default",
-	square = false,
-	className,
-}: ButtonStyleProps) {
-	return buttonStyleInternal({ appearance, size, square, className })
-}
-
-function buttonStyleInternal({
-	appearance,
-	size,
-	square,
-	className,
-}: PartialKeys<Required<ButtonStyleProps>, "className">) {
-	return twMerge(
-		buttonAppearanceStyles[appearance](),
-		buttonSizeStyles[size](),
-		square && "aspect-square",
-		className,
-	)
-}
-
-const baseAppearanceStyle = twStyle(
-	"inline-flex items-center justify-center rounded-md border border-transparent leading-tight text-white ring-accent-300 transition focus:outline-none focus-visible:ring-2 disabled:opacity-50",
-)
-
-const buttonAppearanceStyles = {
-	solid: twStyle(
-		baseAppearanceStyle(
-			"border-accent-700 bg-accent-700 bg-opacity-25 hover:bg-opacity-50",
-		),
-	),
-	negative: twStyle(
-		baseAppearanceStyle(
-			"border-error-700 bg-error-700 bg-opacity-25 hover:bg-opacity-50",
-		),
-	),
-	outline: twStyle(baseAppearanceStyle("border-base-700 hover:bg-base-800")),
-	clear: twStyle(baseAppearanceStyle("hover:bg-base-800")),
-	faded: twStyle(
-		baseAppearanceStyle("opacity-50 hover:opacity-100 focus:opacity-100"),
-	),
-}
-
-const buttonSizeStyles = {
-	small: twStyle("min-h-8 gap-2 px-2 py-1 text-sm"),
-	default: twStyle("min-h-10 gap-3 px-3 py-2 text-base"),
-	large: twStyle("min-h-12 gap-4 px-5 py-2 text-lg"),
-}
-
-const buttonIconSizeStyles: Record<keyof typeof buttonSizeStyles, TwStyle> = {
-	small: twStyle("-mx-0.5 flex-shrink-0 s-4"),
-	default: twStyle("-mx-1 flex-shrink-0 s-5"),
-	large: twStyle("-mx-1.5 flex-shrink-0 s-6"),
-}
-
-export function buttonIconStyle({
-	size = "default",
-	className,
-}: Pick<ButtonStyleProps, "size" | "className"> = {}) {
-	return buttonIconSizeStyles[size](className)
-}
+export const buttonIconStyle = tv({
+	base: "flex-shrink-0",
+	variants: {
+		size: {
+			small: "-mx-0.5 s-4",
+			default: "-mx-1 s-5",
+			large: "-mx-1.5 s-6",
+		},
+	},
+	defaultVariants: {
+		size: "default",
+	},
+})

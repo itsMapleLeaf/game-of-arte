@@ -2,7 +2,7 @@
 	"semi": false,
 	"useTabs": true,
 	"plugins": ["prettier-plugin-jsdoc", "prettier-plugin-tailwindcss"],
-	"tailwindFunctions": ["twMerge", "twStyle"],
+	"tailwindFunctions": ["twMerge", "twStyle", "tv"],
 	"experimentalTernaries": true,
 	"overrides": [
 		{

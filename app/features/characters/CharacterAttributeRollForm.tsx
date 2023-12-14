@@ -227,6 +227,7 @@ export function CharacterAttributeRollForm({
 			<Button
 				type="submit"
 				appearance="solid"
+				color="accent"
 				icon={LucideDices}
 				pending={handleSubmitState.isLoading}
 			>

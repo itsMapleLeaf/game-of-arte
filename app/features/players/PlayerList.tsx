@@ -26,7 +26,12 @@ export function PlayerList() {
 	const createInvite = useMutation(api.invites.create)
 	return (
 		<div className="grid gap-2">
-			<Button icon={LucideUserPlus2} onClick={() => createInvite()}>
+			<Button
+				appearance="solid"
+				color="accent"
+				icon={LucideUserPlus2}
+				onClick={() => createInvite()}
+			>
 				Add Player
 			</Button>
 

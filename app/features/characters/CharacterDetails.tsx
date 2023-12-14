@@ -243,7 +243,9 @@ function SorcerySection({ character }: { character: Doc<"characters"> }) {
 
 					<section className={column("gap-2")}>
 						<CastSpellButton asChild>
-							<Button icon={LucideBookOpenText}>Spellbook</Button>
+							<Button icon={LucideBookOpenText} color="accent">
+								Spellbook
+							</Button>
 						</CastSpellButton>
 						<AddFreeformSpellButton character={character} asChild>
 							<Button appearance="outline" icon={LucideBookTemplate}>
@@ -477,8 +479,13 @@ function AddSorceryDeviceButton({
 	}
 
 	return (
-		<Button appearance="solid" onClick={handleClick}>
-			<LucideWand /> Add Sorcery Device
+		<Button
+			appearance="solid"
+			color="accent"
+			icon={LucideWand}
+			onClick={handleClick}
+		>
+			Add Sorcery Device
 		</Button>
 	)
 }

@@ -201,6 +201,7 @@ export function FormButton({
 		<Button
 			type="submit"
 			appearance="solid"
+			color="accent"
 			icon={icon}
 			pending={form.pending}
 			{...props}
