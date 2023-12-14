@@ -4,7 +4,7 @@ const isInteger = (classPart: string) => /^\d+$/.test(classPart)
 
 const isArbitraryValue = (classPart: string) => /^\[.+\]$/.test(classPart)
 
-export const tv = createTV({
+export const twVariants = createTV({
 	twMergeConfig: {
 		classGroups: {
 			"grid-cols": [
