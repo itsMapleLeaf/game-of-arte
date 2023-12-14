@@ -1,15 +1,26 @@
+import { type LoaderFunctionArgs, json } from "@remix-run/node"
+import { useLoaderData } from "@remix-run/react"
 import { api } from "convex/_generated/api.js"
-import { useQuery } from "convex/react"
 import { LucideSparkles } from "lucide-react"
 import type { Key, ReactNode } from "react"
 import { getAttributeById } from "~/features/characters/attributes.ts"
 import { sorcerySpells } from "~/features/sorcery/spells.ts"
+import { createConvexClient } from "~/helpers/convex.server"
+import { pick } from "~/helpers/object.ts"
 import { plural } from "~/helpers/string.ts"
 import { container } from "~/styles/container.ts"
 import { panel } from "~/styles/panel.ts"
 
+export async function loader(args: LoaderFunctionArgs) {
+	const convex = await createConvexClient(args)
+	const character = await convex.query(api.characters.getOwned)
+	return json({
+		character: character && pick(character, ["freeformSpells"]),
+	})
+}
+
 export default function SpellbookPage() {
-	const character = useQuery(api.characters.getOwned)
+	const { character } = useLoaderData<typeof loader>()
 
 	type Row = {
 		id: Key
