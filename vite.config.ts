@@ -1,3 +1,4 @@
+import mdx from "@mdx-js/rollup"
 import { unstable_vitePlugin as remix } from "@remix-run/dev"
 import tsconfigPaths from "vite-tsconfig-paths"
 import { defaultExclude, defineConfig } from "vitest/config"
@@ -11,6 +12,7 @@ export default defineConfig({
 			},
 		}),
 		tsconfigPaths(),
+		mdx(),
 	],
 	server: { port: 3000 },
 	test: {

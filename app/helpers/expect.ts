@@ -1,8 +1,11 @@
 import { raise } from "./errors.ts"
 import type { NonEmptyArray } from "./types.ts"
 
-export function expect<T>(value: T): NonNullable<T> {
-	return value ?? raise("Expected non-nullish value", expect)
+export function expect<T>(
+	value: T,
+	message = "Expected non-nullish value",
+): NonNullable<T> {
+	return value ?? raise(message, expect)
 }
 
 export function expectNonEmptyArray<T>(value: readonly T[]): NonEmptyArray<T> {

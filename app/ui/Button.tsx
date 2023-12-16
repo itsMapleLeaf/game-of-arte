@@ -60,7 +60,7 @@ export const Button = autoRef(function Button({
 	const Component = asChild ? Slot : "button"
 	return (
 		<Component
-			type="button"
+			type={Component === "button" ? "button" : undefined}
 			{...buttonProps}
 			className={buttonStyle({
 				appearance,

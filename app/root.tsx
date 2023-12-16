@@ -17,7 +17,11 @@ import {
 import { SpeedInsights } from "@vercel/speed-insights/remix"
 import { ConvexReactClient, useConvexAuth } from "convex/react"
 import { ConvexProviderWithClerk } from "convex/react-clerk"
-import { LucideBookOpenText, LucideGamepad2 } from "lucide-react"
+import {
+	LucideBookOpenText,
+	LucideGamepad2,
+	LucideHelpCircle,
+} from "lucide-react"
 import { useState } from "react"
 import faviconUrl from "./assets/favicon.svg"
 import { env } from "./env.ts"
@@ -97,6 +101,15 @@ function Layout({ children }: { children: React.ReactNode }) {
 							prefetch="render"
 						>
 							Session
+						</NavLinkButton>
+						<NavLinkButton
+							partial
+							to="/guide"
+							appearance="clear"
+							icon={LucideHelpCircle}
+							prefetch="render"
+						>
+							How to Play
 						</NavLinkButton>
 						<NavLinkButton
 							to="/spellbook"
